@@ -1,0 +1,10 @@
+\documentclass{book}
+
+%\title{Trying a Title}
+%\author{The Authors' Names}
+\begin{document}
+\maketitle
+
+I want to see what happens here
+
+\end{document}

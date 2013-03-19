@@ -1,0 +1,29 @@
+Transferring Files from the `mosaic-web.org` repository
+========================================================
+
+### March 19, 2013
+
+* ./Chap-ByHand.Rnw
+* ./Chap-CalculusForStats.Rnw
+* ./Chap-Core.Rnw
+* ./Chap-ForAuthors.Rnw
+* ./Chap-FrontMatter.Rnw
+* ./Chap-GettingStarted.Rnw
+* ./Chap-GettingStartedshort.Rnw
+* ./Chap-Handouts.Rnw
+* ./Chap-Internet.Rnw
+* ./Chap-Manipulate.Rnw
+* ./Chap-Misc.Rnw
+* ./Chap-MoreExamples.Rnw
+* ./Chap-MoreR.Rnw
+* ./Chap-Multivariable.Rnw
+* ./Chap-RForInstructors.Rnw
+* ./Chap-RForStudents.Rnw
+* ./Chap-RIntro.Rnw
+* ./Chap-SimulationBased.Rnw
+* ./Dierker.Rnw
+* ./Master-TeachingStatsWithR.Rnw
+* ./Scraps.Rnw
+* ./Testing.Rnw
+
+

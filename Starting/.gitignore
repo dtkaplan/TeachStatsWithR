@@ -1,0 +1,6 @@
+Master-Starting-concordance.tex
+*.log
+*.pdf
+*.synctex.gz
+*.tex
+*.toc
