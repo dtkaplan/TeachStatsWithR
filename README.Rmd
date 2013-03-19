@@ -1,8 +1,9 @@
 TeachStatsWithR
 ===============
 
-
-
+```{r include=FALSE}
+require(mosaic)
+```
 
 
 Materials for the MOSAIC "Teaching Statistics with R and RStudio"
