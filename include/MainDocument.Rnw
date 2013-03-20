@@ -17,10 +17,10 @@
 
 
 \usepackage[margin=.5in,outer=1.5in,inner=.9in,includehead,includefoot,paperwidth=7.25in,paperheight=9.5in]{geometry}
-\usepackage{/Users/kaplan/texmf/tex/latex/probstat}
-\usepackage[shownotes]{/Users/kaplan/texmf/tex/latex/authNote}
+\usepackage{probstat}
+\usepackage[shownotes]{authNote}
 % \usepackage[hidenotes]{authNote}
-\usepackage[answerdelayed,exercisedelayed,lastexercise,chapter]{/Users/kaplan/texmf/tex/latex/problems}
+\usepackage[answerdelayed,exercisedelayed,lastexercise,chapter]{problems}
 \usepackage{longtable}
 
 \def\R{{\sf R}}
