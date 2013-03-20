@@ -1,16 +1,12 @@
-% All pre-amble stuff should go into ../include/MainDocument.Rnw
-\title{Document: Introducing R to Students}
-\author{Randall Pruim and Nicholas Horton and Daniel Kaplan}
-\date{DRAFT: \today}
-% Uncomment the next to be able to compile this separately
-% Then comment it back and recompile to set things up for the all-together
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
 opts_chunk$set( fig.path="figure/RIntro-fig-" ) 
-standalone=TRUE
-if (standalone) set_parent('../include/MainDocument.Rnw')
+if (!exists("notAsStandAlone")) set_parent('../include/MainDocument.Rnw')
 set.seed(123)
-@ 
+@
+
+ 
+
 \chapter{An Introduction to R}
 
 

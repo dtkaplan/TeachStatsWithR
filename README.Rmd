@@ -7,6 +7,22 @@ require(mosaic)
 
 Materials for the MOSAIC "Teaching Statistics with R and RStudio"
 
+### Compiling
+
+The content of each book is in a separate directory.  That directory has a subdirectory, `Master` with a file `Master-*.Rnw`.  
+
+Each of the `.Rnw` files in the content directory can be compiled on it's own.  Just "Knit HTML" in RStudio.  This will create a PDF file.
+
+To create the whole book, you need to recompile each `.Rnw` after setting a variable, `notAsStandAlone=TRUE`.  The process is
+```{r eval=FALSE}
+require(knitr)
+# Change to the directory, e.g. "Starting"
+setwd("Starting") # go to your own directory
+notAsStandAlong=TRUE
+fnames <- list.files(pattern="*.Rnw") # files to recompile
+for (k in fnames) knit(k)
+```
+
 ### Outline
 
 This project consists of several short books that are inter-related.
