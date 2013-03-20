@@ -1,0 +1,1808 @@
+% All pre-amble stuff should go into ../include/MainDocument.Rnw
+\title{Document: RForInstructors}
+\author{Randall Pruim and Nicholas Horton and Daniel Kaplan}
+\date{DRAFT: \today}
+% Uncomment the next to be able to compile this separately
+% Then comment it back and recompile to set things up for the all-together
+% \Sexpr{set_parent('../include/MainDocument.Rnw')} % All the latex pre-amble for the book
+% \maketitle
+
+\chapter{What Instructors Need to Know about R}
+\label{chap:RForInstructors}
+
+
+<<setup,include=FALSE>>=
+source('../include/setup.R')
+opts_chunk$set( fig.path="figures/RForInstructors-fig-" )  
+@ 
+
+
+
+\authNote{Need motivation for this chapter}
+
+\section{Installing and Using Packages}
+
+\R\ is open source software.  Its development is supported by
+a team of core developers and a large community of users.
+One way that users support
+\R\ is by providing \term{packages} that contain data and functions
+for a wide variety of tasks.  
+
+\subsection{Installing packages from \cran}
+If you need to install a package, most likely it will be on \cran, 
+the Comprehensive R Archive Network.\footnote{R-forge and Bioconductor 
+are two other repositories of \R\ packages.}
+\authNote{need to simplify this: is it really needed?}
+Before a package can be used, it must be \term{installed} 
+(once per computer)
+and
+\term{loaded} (once per \R\ session).  
+Installing downloads the package software and prepares it for use
+by compiling (if necessary) and putting its components in the proper
+location for future use.
+Loading makes a previously installed package available for use 
+in an \R\ session.
+
+For example, to use the \pkg{mosaic} package:
+\Rindex{install.packages()}%
+\Rindex{require()}%
+
+<<eval=FALSE,tidy=FALSE>>=
+install.packages("mosaic") # fetch package from CRAN to local machine.
+require(mosaic)            # load the package so it can be used.
+@
+
+If you are running on a machine where you don't have privileges to
+write to the default library location, you can install a personal 
+copy of a package.  If the location of your personal library is 
+first in \verb!R_LIBS!, this will probably happen automatically.  If not,
+you can specify the location manually:
+
+<<eval=FALSE>>=
+install.packages("mosaic", lib="~/R/library")
+@
+On a networked machine, be sure to use a different local directory for 
+each platform since packages must match the platform.
+
+Installing  packages on a Mac or PC is something you might like to do 
+from the GUI since it will provide you with a list of packages from 
+which you can select the ones of interest.
+Binary packages have been precompiled for a 
+particular platform and are generally faster and easier to set up, if they 
+are available.  Source packages need to be compiled and built on your local
+machine.  Usually this happens automatically -- provided you have all the 
+necessary tools installed on your machine -- so the only disadvantage is the
+extra time it takes to do the compiling and building.
+
+\subsection{Installing other packages}
+
+Occasionally you might find a package of interest that is not available via
+a repository like \cran.  
+Typically, if you find such a package, you will also find instructions
+on how to install it.  If not, you can usually install directly from the 
+zipped up package file.
+
+<<eval=FALSE,echo=TRUE>>=
+# repos = NULL indicates to use a file, not a repository
+install.packages('some-package.tar.gz', repos=NULL)           
+@
+
+
+\subsection{Finding packages}
+There are several ways to find packages
+\begin{itemize}
+  \item Ask your friends.
+  \item Google:  Put `cran' in the search.
+  \item Rseek:  \url{http://rseek.org} provides a search engine specifically
+  designed to find information about \R.
+  \item CRAN task views.
+
+  A number of folks have put together task views that annotate a large
+  number of packages and summarize they are good for.  They are 
+  organized according to themes.  Here are a few examples
+  of available task views:
+\authNote{NJH to update}
+
+  \begin{center}
+    \begin{tabular}{lp{0.7\textwidth}}
+    Bayesian &    Bayesian Inference \\
+%    Cluster &   Cluster Analysis \& Finite Mixture Models \\
+    Econometrics &   Computational Econometrics \\
+%    Environmetrics &   Analysis of ecological and environmental data \\
+    Finance &   Empirical Finance \\
+    Genetics &   Statistical Genetics \\
+    Graphics &   Graphic Displays,  Dynamic Graphics,
+          Graphic Devices, and Visualization \\
+%    gR &   gRaphical models in R \\
+%    MachineLearning &   Machine Learning \& Statistical Learning \\
+    Multivariate &   Multivariate Statistics \\
+%    Psychometrics &   Psychometric Models and Methods \\
+    SocialSciences &   Statistics for the Social Sciences \\
+%    Spatial &   Analysis of Spatial Data \\
+    \end{tabular}
+  \end{center}
+
+  \item Bioconductor (\url{http://www.bioconductor.org/}) 
+  and Omegahat (\url{http://www.omegahat.org/R}) 
+are another
+  sources of packages (specify the \verb!repos=! option to use these).
+
+  \item 
+  \textit{R Journal}  (formerly \textit{R News})
+  is available via \cran\ and 
+  often has articles about new packages and their capabilities.
+
+  \item Write your own.
+
+  You can write your own packages, and it isn't that hard to do (but 
+we won't cover this here).
+\end{itemize}
+
+\section{Working with Data}
+\label{sec:MoreR-Data}%
+
+\subsection{Data in {\sf R} packages}
+
+Data sets in the \verb!datasets! package or any other loaded package
+are available via the \verb!data()! function.  Usually, the use
+of \verb!data()! is unnecessary, however, since \R\ will search
+most loaded packages (they must have been created with the 
+lazy-load option) for data sets without the explicit use of 
+\verb!data()!.  The \verb!data()! function can be used to 
+restore data after it has been modified or to control which package
+is used when data sets with the same name appear in multiple packages.
+
+\subsection{Loading data from flat files}
+\R\ can read data from a number of file formats.  
+The two most useful formats are csv 
+(comma separated values) and white space delimited.  
+Excel and most statistical packages can read and write data in these 
+formats, so these formats  make it easy to transfer data
+between different software.  
+\R\ provides \function{read.csv()} and \function{read.table()} to
+\Rindex{read.csv()}%
+\Rindex{read.table()}%
+\Rindex{read.file()}%
+handle these two situations.  They work nearly identically except for their 
+default settings:
+\function{read.csv()} assumes that the first line of the file contains
+the variable names but \function{read.table()} assumes that the data begins on the first
+line with no names for the variables,
+and \function{read.table()} will ignore lines that begin with `\verb!#!' 
+but \function{read.csv()} will not.
+
+The default behavior can be overridden for each function, 
+and there are a number of options that make it possible to 
+read other file formats,
+to omit a specified number of lines at the top of the file, etc.
+If you are making the file yourself,
+always include meaningful names in either file format. 
+
+
+It is also possible to read data from a file located on the Internet.  
+Simply replace the file name with a URL.
+The data read below come from \cite{Tufte:2001:Visual}.
+\authNoted{Check citation for Tufte.}%
+
+<<read-table>>=
+# need header=TRUE because there is a header line.
+# could also use read.file() without header=TRUE
+traffic <- 
+    read.table("http://www.calvin.edu/~rpruim/fastR/trafficTufte.txt", 
+    header=TRUE)
+traffic
+@
+
+Notice the use of \code{<-} in the example above.  
+This is the \rterm{assignment operator}
+%\myindex{<-@\texttt{<-}|seeonly{assignment operator}}%
+%\myindex{assignment operator}%
+in \R.  
+It can be used in either direction (\code{<-} or \code{->}).  In the first line of the 
+example above, the results of \function{read.table()} are stored in a variable called 
+\dfn{traffic}.  \dfn{traffic} is a \rterm{data frame}, \R's preferred container for
+data.  (More about data types in \R\ as we go along.)
+
+
+
+The \option{na.strings} argument can be used to specify
+codes for missing values.  
+The following can be useful for SAS output, for example:
+<<eval=FALSE>>=
+read.csv('file.csv', na.strings=c('NA','','.','na')) -> someData
+@
+because SAS uses a period (\verb!.!) to code missing data, but \R\ by default
+reads that as string data, which forces the entire variable to be of character 
+type instead of numeric.
+
+\subsection{Saving Data}
+\function{write.table()} and \function{write.csv()} can be used to save data from \R\ into
+delimited flat files.
+
+<<writingData>>=
+ddd <- data.frame(number=1:5, letter=letters[1:5])
+args(write.table)
+write.table(ddd, "ddd.txt")
+write.csv(ddd, "ddd.csv")
+# this system call should work on a Mac or Linux machine
+system("head -20 ddd.txt ddd.csv")
+@
+
+
+Data can also be saved in native \R\ format.  Saving data sets 
+(and other \R\ objects) using \function{save()} has some advantages over other file formats:
+\begin{itemize}
+  \item 
+  Complete information about the objects is saved, including attributes.
+  \item
+  Data saved this way takes less space and loads much more quickly.
+  \item
+  Multiple objects can be saved to and loaded from a single file.
+\end{itemize}
+The downside is that these files are only readable in \R.
+
+<<savingData,exec=FALSE,echo=TRUE>>=
+abc <- "abc"
+ddd <- data.frame(number=1:5, letter=letters[1:5])
+save(ddd, abc, file="ddd.rda")   # saves both objects in a single file
+load("ddd.rda")                  # loads them both
+@
+
+Here we show how to modify the \dataframe{Births78} data frame so 
+that it contains a new variable \variable{day} that is an ordered factor.
+(Details about some of the functions involved will be presented later 
+in this chapter).
+<<>>=
+trellis.par.set(superpose.symbol=list(pch=16))
+@
+<<Births-make,fig.width=6,out.width=".8\\textwidth">>=
+data(Births78)
+weekdays <- c("Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat") 
+Births <- Births78
+Births$day <- with( Births, factor(weekdays[1 + (dayofyear - 1) %% 7], 
+					 ordered=TRUE,
+					 levels = weekdays) )
+xyplot( births ~ dayofyear, Births, groups=day, auto.key=list(space='right') )
+@
+If we save \dataframe{Births} using \function{write.csv()}, we will lose the ordering 
+of the days.  (The default order when reading the csv file is alphabetical.)
+If we use \function{save()} instead, the natural order of the days is preserved.
+<<Births-save>>=
+save(Births, file="Births.rda")
+load("Births.rda")
+tally(~day, Births)  # note order of days
+@
+
+For more on importing and exporting data, especially from other
+formats, see the 
+%\href{http://cran.r-project.org/manuals.html}%
+\textit{R Data Import/Export} manual available on \cran.
+
+
+\subsection{\texttt{read.file()}}
+For convenience the \verb!mosaic! package provides \function{read.file()} which
+uses the file name to determine which of \function{read.csv()},
+\function{read.table()}, and \function{load()} to use and sets the defaults
+to 
+\begin{itemize}
+\item
+\verb!header=TRUE!, 
+\item
+\verb!comment.char="#"!, and 
+\item
+\verb!na.strings=c('NA','','.','na')! 
+\end{itemize}
+for \function{read.csv()} and \function{read.table()}.
+
+<<tuffte-trafic>>=
+traffic <- read.file("http://www.calvin.edu/~rpruim/fastR/trafficTufte.txt")
+@
+
+\subsection{Manually typing in data}
+
+The \function{c()} function combines elements into a single list or vector.
+<<label="c-function",tidy=FALSE>>=
+x <- c(1,1,2,3,5,8,13); x
+@
+
+The \function{scan()} function can speed up data entry by allowing you to
+avoid the commas
+\Rindex{scan()}%
+Individual values are separated by white space or new lines.  
+A blank line is used to signal the end of the data.
+By default, \function{scan()} is expecting decimal data (which it calls \rterm{double}, 
+for double precision), but it is possible to tell \function{scan()} to expect something else,
+like \rterm{character} data (i.e., text). 
+There are other options for data types, but numerical and text data handle the most
+important cases.  See \code{?scan} for more information and examples.
+
+\begin{Rcode}
+myData1 <- scan()
+15 18
+12
+21 23 50 15
+
+myData1
+
+myData2 <- scan(what="character")
+"red" "red" "orange" "green" "blue" "blue" "red"
+
+myData2
+\end{Rcode}
+
+<<scan-prep,echo=FALSE>>=
+myData1 <- c(15, 18, 12, 21, 23, 50, 15)
+myData2 <- c("red","red","orange","green","blue","blue","red")
+@
+%
+Be sure when using \function{scan()} that you remember to save your data somewhere.
+Otherwise you will have to type it again.
+
+\subsection{Creating data frames from vectors}
+
+\Rindex{data.frame()}%
+The \function{scan()} function puts data into a \rterm{vector}, not a \rterm{data frame}.  We can
+build a \rterm{data frame} for our data as follows.
+
+<<dataframe>>=
+myDataFrame <- data.frame(color=myData2, number=myData1)
+myDataFrame
+@
+
+\subsection{Getting data from mySQL data bases}
+
+The \pkg{RMySQL} package allows direct access to data in MySQL data bases.
+This can be convenient when dealing with subsets of very large data sets.
+A great example of this is the 12 gigabytes of data from the Airline on-time
+performance dataset included in the 2009 Data Expo (\url{http://stat-computing.org/dataexpo/2009}).
+\Rindex{RMySQL}%
+\myindex{SQL}%
+There is an \href{http://csg.sph.umich.edu/docs/R/rsql.html}{online document}
+describing this type of manipulation. 
+
+
+\subsection{Generating data}
+\label{sec:generatingData}
+\Rindex{rep()}%
+\Rindex{seq()}%
+\Rindex{c()}%
+\Rindex{rnorm()}%
+\Rindex{sample()}%
+
+The following code shows a number of ways to generate data systematically.
+This can be useful for designing experiments, for creating illustrations,
+or for performing simulations.
+
+<<generatingData01,tidy=FALSE>>=
+x <- 5:20; x                 # all integers in a range
+# structured sequences
+seq(0, 50, by=5)               
+seq(0, 50, length=7)               
+rep(1:5, each=3)
+rep(1:5, times=3)
+c(1:5, 10, 3:5)              # c() concatenates vectors
+@
+
+\R\ can also sample from several different distributions.
+
+<<generatingData02>>=
+rnorm(10, mean=10, sd=2)  # random draws from normal distribution
+x <- 5:20                 # all integers in a range
+sample(x, size=5)         # random sample of size 5 from x (no replacement)
+@
+
+Functions for sampling from other distributions include
+\function{rbinom()},
+\function{rchisq()},
+\function{rt()},
+\function{rf()},
+\function{rhyper()},
+etc.
+See Section~\ref{sec:DiscreteDistributions} for more information.
+
+
+
+
+
+\section{Sharing With and Among Your Students}
+\label{sec:distributing-data}
+
+Instructors often have their own data sets to illustrate 
+points of statistical interest or to make a particular connection with
+a class.  Sometimes you may want your class as a whole to construct a
+data set, perhaps by filling in a survey or by contributing
+their own small bit of data to a class collection.  Students may be
+working on projects in small groups; it's nice to have tools to
+support such work so that all members of the group have access to the
+data and can contribute to a written report.
+
+There are now many technologies for supporting such sharing.  For the
+sake of simplicity, we will emphasize three that we have found
+particularly useful both in teaching statistics and in our
+professional collaborative work.  These are:
+\begin{itemize}
+\item Within \RStudio\ server.
+\item A web site with minimal overhead, such as provided by Dropbox.
+\item The services of Google Docs.
+\item A web-based \RStudio\ server for \R.
+\end{itemize}
+The first two are already widely used in university environments and
+are readily accessible simply by setting up accounts.  Setting up an
+\RStudio\ web server requires some IT support, but is well within the
+range of skills found in IT offices and even among some individual faculty.
+
+\subsection{Using \RStudio\ server to share files}
+
+\subsection{Your own web site}
+
+You may already have a web site.  We have in mind a place where you
+can place files and have them accessed directly from the Internet.
+For sharing data, it's best if this site is public, that is, it does not require a login.
+That rules out most ``course support'' systems such as Moodle or
+Blackboard.  
+\FoodForThought{Our discussion of Dropbox is primarily for those who do
+not already know how to do this other ways.}%
+
+The Dropbox service for storing files in the ``cloud'' provides a very
+convenient way to distribute files over the web.  (Go to
+\texttt{dropbox.com} for information and to sign up for a free account.)
+Dropbox is routinely used to provide automated backup and coordinated
+file access on multiple computers.  But the Dropbox service also
+provides a \code{Public} directory.  Any files that you place in that
+directory can be accessed directly by a URL.  
+
+To illustrate, suppose you wish to share some data set with your
+students.  You've constructed this data set in a spreadsheet and
+stored it as a csv file, let's call it \code{example-A.csv}.  Move this
+file into the \code{Public} directory under Dropbox --- on most
+computers Dropbox arranges things so that its directories appear
+exactly like ordinary directories and you'll use the ordinary, familiar
+file management techniques as in Figure \ref{fig:dropbox1}.
+\begin{figure}
+\begin{center}
+\includegraphics[width=3.5in]{images/dropbox1.png}
+\end{center}
+\caption{\label{fig:dropbox1} Dragging a csv file to a Dropbox Public directory}
+\end{figure}
+
+Dropbox also makes it straightforward to construct the web-location
+identifying URL for any file by using mouse-based menu commands to
+place the URL into the clipboard, whence it can be copied to your
+course-support software system or any other place for distribution to
+students.  For a csv file, reading the contents of the file into \R\
+can be done with the \function{read.csv} function, by giving it the
+quoted URL:
+<<read-quoted-URL>>=
+a <- read.csv("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
+@ 
+\InstructorNote{The history feature in \RStudio\ can be used to 
+re-run this command in future sessions.}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=4.5in]{images/dropbox2.png}
+\end{center}
+\caption{\label{fig:dropbox2}Getting the URL of a file in a Dropbox Public directory}
+\end{figure}
+
+This technique makes it easy to distribute data with little
+advance preparation.  It's fast enough to do in the middle of a
+class: the csv file is available to your students (after a brief lag
+while Dropbox synchronizes).  
+It can even be edited by you (but not by your students).
+
+The same technique can be applied to all sorts of files like 
+\R\ workspaces or \R\ scripts (files containing code).  
+Of course, your students need to
+use the appropriate \R\ command: \function{load()} for a workspace or
+\function{source()} for a script.
+
+The example below will source a file that will print a welcoming message for you.
+<<source-example>>=
+source('http://mosaic-web.org/go/R/hello.R')
+@
+But you can put any \R\ code you like in the files you have your students source.
+You can install and load packages, retrieve or modify data sets, define new functions,
+or anything else \R\ allows.
+
+Many instructors will find it useful to 
+create a file with your course-specific \R\
+scripts, adding on to it and modifying it as the course progresses.
+This allows you to distribute all sorts of special-purpose functions,
+letting you distribute new \R\ material to your students.  
+That brilliant new idea you had at 2 am can be
+programmed up and put in place for your students to use the next
+morning in class.  Then as you identify bugs and refine the program,
+you can make the updated software immediately available to your students.
+
+If privacy is a concern, for instance if you want the data available
+only to your students, you can effectively accomplish this 
+by giving files names known only to your students, e.g.,
+\code{Example-A78r423.csv}.  
+
+\Caution{\emph{Security through Obscurity} of this sort will 
+not generally satisfy institutional data protection regulations nor
+professional ethical requirements, so nothing truly
+sensitive or
+confidential should be ``protected" in this manner.}
+
+
+\subsection{GoogleDocs}
+
+The Dropbox technique (or any other system of posting files to the Internet)
+is excellent for broadcasting: taking files you
+create and distributing them in a read-only fashion to your students.
+But when you want two-way or multi-way
+sharing of files, other techniques are called for, such as provided by
+the GoogleDocs service.
+
+GoogleDocs allows students and instructors to create various forms of
+documents, including reports, presentations, and spreadsheets. (In
+addition to creating documents {\em de novo}, Google will also convert
+existing documents in a variety of formats.)
+
+Once on the GoogleDocs system, the documents can be edited 
+{\em  simultaneously} by multiple users in different locations.  They
+can be shared with individuals or groups and published for
+unrestricted viewing and even editing.
+
+For teaching, this has a variety of uses:
+\begin{itemize}
+  \item Students working on group projects can all simultaneously have
+    access to the report as it is being written and to data that is
+    being assembled by the group.
+  \item The entire class can be given access to a data set, both for
+    reading and for writing.
+  \item The Google Forms system can be used to construct surveys, the
+    responses to which can populate a spreadsheet that can
+    be read back into \RStudio\ by the survey creators.
+  \item Students can ``hand in'' reports and data sets by copying a link
+    into a course support system such as Moodle or Blackboard, or
+    emailing the link.
+  \item The instructor can insert comments and/or corrections directly
+    into the document.
+\end{itemize}
+
+An effective technique for organizing student work and ensuring
+that the instructor (and other graders) have access to it, is to
+create a separate Google directory for each student in your class
+(Dropbox can also be used in this manner).
+Set the permission on this directory to share it with the
+student.  Anything she or he drops into the directory is automatically
+available to the instructor.  The student can also share with specific
+other students (e.g., members of a project group).
+
+We will illustrate the entire process in the context of the following 
+example.
+
+\begin{example}
+One exercise for students starting out in a statistics course is to
+collect data to find out whether the ``close door'' button on an
+elevator has any effect.  This is an opportunity to introduce simple
+ideas of experimental design.  But it's also a chance to teach about
+the organization of data.
+
+Have your students, as individuals or small groups, study a particular
+elevator, organize their data into a spreadsheet, and hand in their
+individual spreadsheet.  Then review the spreadsheets in class.  You
+will likely find that many groups did not understand clearly the
+distinction between cases and variables, or coded their data in
+ambiguous or inconsistent ways.
+
+Work with the class to establish a consistent scheme for the variables
+and their coding, e.g.,  a variable \VN{ButtonPress} with levels
+``Yes'' and ``No'',  a variable \VN{Time} with the time in seconds
+from a fiducial time (e.g. when the button was pressed or would have
+been pressed) with time measured in seconds, and variables \VN{ElevatorLocation}
+and \VN{GroupName}.  Create a spreadsheet
+with these variables and a few cases filled in.  Share it with the class.
+
+Have each of your students add their own data to the class data
+set.  Although this is a trivial task, having to translate their
+individual data into a common format strongly reinforces the
+importance of a consistent measurement and coding system for recording
+data. 
+
+Once you have a spreadsheet file in GoogleDocs, you will want to open
+it in \R.  This can be exported as a csv file, then
+open it using the csv tools in \R, such as \function{read.csv}.
+%But there are easier ways that let you work with the data ``live.''
+
+%\paragraph{In the web-server version of \RStudio,} described below, you can
+%  use a menu item to locate and load your spreadsheet.
+%
+%\begin{center}
+%  \includegraphics[width=3in]{images/google-spreadsheet1.png}
+%\end{center}
+
+%\paragraph{If you are using other \R\ interfaces,} you must first use the Google
+%  facilities for publishing documents.
+
+%\begin{enumerate}
+  %\item From within the document, use the ``Share'' dropdown menu and
+    %choose ``Publish as a Web Page.''
+   %\item Press the ``Start Publishing'' button in the ``Publish to the
+     %web'' dialog box. (See figure \ref{fig:publish-google}.)
+   %\item In that dialog box, go to ``Get a link to the published
+     %data.''  Choose the csv format and copy out the link that's
+     %provided.  You can then publish that link on your web site, or via
+     %course-support software.  Only people with the link can see the
+     %document, so it remains effectively private to outsiders.
+%\end{enumerate}
+
+
+%\begin{figure}
+%\begin{center}
+  %\includegraphics[width=4.5in]{images/publishing-google1.png}
+%\end{center}
+%\caption{\label{fig:publish-google}Publishing a Google Spreadsheet so that it can be read
+    %directly into \R.}
+%\end{figure}
+
+%\iffalse
+Direct communication with
+GoogleDocs requires facilities
+that are not present in the base version of \R, but are available
+through the \texttt{RCurl} package.  
+
+%\fi
+
+In order to make these readily
+available to students, the \pkg{mosaic} package contains a function that takes the quoted (and cumbersome)
+string with the Google-published URL and reads the corresponding file
+into a data frame:
+<<"read-from-google1",echo=FALSE,results="hide">>=
+elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
+@
+<<"read-from-google2",eval=FALSE,tidy=FALSE>>=
+elev <- fetchGoogle(
+"https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=
+0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
+@
+<<"read-from-google3">>=
+head(elev)
+@ 
+
+Of course, you'd never want your students to type that URL by hand;
+you should provide it in a copy-able form on a web site or within a
+course support system.
+\end{example}
+
+
+\section{Primary \R\ Data Structures}
+\label{sec:datastruct}
+
+\subsection{Modes and other attributes} %factors, numeric, character, etc.}
+In \R, data is stored in objects.  Each \rterm{object} 
+has a \emph{name}, \emph{contents}, and also various \emph{attributes}.
+Attributes are used to tell \R\ something about the kind
+of data stored in an object and to store other auxiliary information.  
+Two important attributes shared 
+by all objects are \rterm{mode} and \rterm{length}.
+
+\Rindex{mode()}%
+\Rindex{attributes()}%
+\Rindex{length()}%
+\Rindex{attr()}%
+\Rindex{[ ]}%
+
+<<mode01-defs>>=
+w <- 2.5; x <- c(1,2); y <- "foo"; z <- TRUE; abc <- letters[1:3]
+@
+
+<<mode01>>=
+mode(w); length(w)
+mode(x); length(x)
+mode(y); length(y)
+@
+
+<<mode01a>>=
+y[1]; y[2]             # not an error to ask for y[2]
+mode(z); length(z)
+abc
+mode(abc); length(abc)
+abc[3]
+@
+
+Each of the objects in the example above is a \rterm{vector}, an ordered container
+of values that all have the same mode.%
+\footnote{
+There are other modes in addition to the ones shown here, including
+\code{complex} (for complex numbers), 
+\code{function}, \code{list}, \code{call}, and \code{expression}.}
+The \function{c()} function concatenates vectors (or lists).
+Notice that \code{w}, \code{y}, and \code{z} are 
+vectors of length~1.  Missing values are coded as \code{NA} (not available).  Asking
+for an entry ``off the end'' of a vector returns \code{NA}.
+Assigning a value ``off the end'' of a vector results in the vector being
+lengthened so that the new value can be stored in the appropriate location.
+
+There are important ways that \R\ has 
+been optimized to work with vectors since they correspond to variables 
+(in the sense of statistics).
+For categorical data, a \rterm{factor} is a special type of vector that includes
+an additional attribute called \emph{levels}.  
+A factor can be ordered or unordered (which can affect how statistics
+are done and graphs are made) and its elements can have mode
+\code{numeric} or \code{character}.
+
+A \rterm{list} is similar to a vector, but its elements may be of different 
+modes (including \code{list}, \code{vector}, etc.).
+A \rterm{data frame} is a list of vectors (or factors), 
+each of the same length, but not necessarily of the same mode.  
+This is \R's primary way of storing data sets.
+An \rterm{array} is a multi-dimensional table of values that all have the same 
+mode.  A \rterm{matrix} is a 2-dimensional array.
+\Rindex{matrix()}%
+
+\Rindex{[ ]}%
+\Rindex{[[ ]]}%
+The access operators (\code{[ ]} for vectors, matrices, arrays, and data frames,
+and  \code{[[ ]]} for lists) are actually \emph{functions} in \R.
+This has some important consequences:
+\begin{itemize}
+  \item Accessing elements is slower than in a language like C/C++
+  where access is done by pointer arithmetic.
+  \item
+  These functions also have named arguments, so you can see code like the following
+\end{itemize}
+
+<<"bracket-function">>=
+xm <- matrix(1:16, nrow=4); xm
+xm[5]
+xm[,2]                   # this is 1 dimensional (a vector)
+xm[,2, drop=FALSE]        # this is 2 dimensional (still a matrix)
+@
+
+Many objects have a \rterm{dim attribute} that stores the dimension
+of the object.  You can change it to change the shape (or even the number
+of dimensions) of a vector, matrix, or array.
+You can see all of the non-intrinsic attributes (mode and 
+length are intrinsic) using \function{attributes()}, 
+and you can set attributes (including 
+new ones you make up) using \function{attr()}.  Some attributes, like dimension,
+have special functions for accessing or setting.
+The \verb!dim()! function returns the dimensions of an object
+as a vector.  The number of rows and columns can be 
+obtained using \verb!nrow()! and \verb!ncol()!.
+
+\Rindex{dim()}%
+\Rindex{nrow()}%
+\Rindex{ncol()}%
+\Rindex{letters[]}%
+\Rindex{names()}%
+\Rindex{row.names()}%
+\Rindex{attr()}%
+\Rindex{attributes()}%
+
+<<attributes>>=
+ddd <- data.frame(number=1:5, letter=letters[1:5])
+attributes(ddd)
+@
+<<>>=
+dim(ddd)
+nrow(ddd)
+ncol(ddd)
+@
+<<>>=
+names(ddd)
+row.names(ddd)
+@
+
+
+\subsection{What \texttt{is} it?}
+
+\R\ provides a number of functions for testing the mode or class of an object.
+
+<<whatIsThis>>=
+mode(xm); class(xm)
+c(is.numeric(xm), is.character(xm), is.integer(xm), is.logical(xm))
+c(is.vector(xm), is.matrix(xm), is.array(xm))
+@
+
+
+\subsection{Changing modes (coercion)}
+\Rindex{is.numeric()}%
+\Rindex{as.numeric()}%
+\Rindex{is.integer()}%
+\Rindex{as.integer()}%
+
+If \R\ is expecting an object of a certain mode or class but gets 
+something else, it will often try to \rterm{coerce} the object to meet 
+its expectations.  You
+can also coerce things manually using one of the many \code{as.???()} functions.
+
+<<asYouLikeIt>>=
+apropos("^as\\.")[1:10]      # just a small sample
+xm
+# convert numbers to strings (this drops attributes, including dimension)
+as.character(xm)             
+@
+<<>>=
+# convert matrix to vector
+as.vector(xm)
+as.logical(xm)
+@
+<<>>=
+alpha <- c("a", "1", "b", "0.5")    
+mode(alpha)
+@
+<<>>=
+as.numeric(alpha)      # can't do the coercion, so NAs are introduced
+as.integer(alpha)      # notice coercion of 0.5 to 0
+@
+
+\section{More About Vectors}
+\label{sec:Rvectors}
+Vectors are so important in \R\ that they deserve some additional discussion.
+In Section~\ref{sec:generatingData} we learned how to generate some simple
+vectors.  Here we will learn about some of the operations and functions
+that can be applied to vectors.
+
+\subsection{Names and vectors}
+
+We can give each position in a vector a name.  This can be very handy for certain uses
+of vectors.
+
+<<>>=
+myvec <- 1:5; myvec
+names(myvec) <- c('one','two','three','four','five'); myvec
+@
+
+Names can also be specified as a vector is created using \function{c()}.
+<<>>=
+another <- c(mean=10, sd=2, "trimmed mean"=9.7); another
+@
+\subsection{Vectorized functions}
+
+Many \R\ functions and operations are ``vectorized'' and can be applied
+not just to an individual value but to an entire vector, in which case
+they are applied componentwise and return a vector of transformed values.  
+Most traditional mathematics functions are available and work this way.
+\Rindex{mean()}%
+\Rindex{sd()}%
+\Rindex{var()}%
+\Rindex{median()}%
+\Rindex{log()}%
+
+<<vectors01>>=
+x <- 1:5; y <- seq(10, 60, by=10); z <- rnorm(10); x; y
+y + 1
+x * 10
+x < 3
+x^2
+log(x); log(x, base=10)            # natural and base 10 logs
+@
+
+\noindent
+Vectors can be combined into a matrix using \function{rbind()} or \function{cbind()}.  
+This can facilitate side-by-side comparisons.
+\Rindex{rbind()}%
+\Rindex{cbind()}%
+\Rindex{round()}%
+\Rindex{signif()}%
+
+<<vectors01a>>=
+# compare round() and signif() by binding rowwise into matrix
+rbind(round(z, digits=2), signif(z, digits=2))   
+@
+
+
+\subsection{Functions that act on vectors as vectors}
+
+Other functions, including many statistical functions,
+are designed to work on the vector as a vector.  Often these 
+return a single value (technically a vector of length~1), but
+other return types are used as appropriate.
+
+<<vectors02>>=
+x <- 1:10; z <- rnorm(100)
+mean(z); sd(z); var(z); median(z)  # basic statistical functions
+range(z)                           # range returns a vector of length 2
+sum(x); prod(x)                         # sums and products
+@
+
+<<vectors02a>>=
+z <- rnorm(5); z
+sort(z); rank(z); order(z)              # sort, rank, order
+rev(x)                                  # reverse x
+@
+
+<<vectors02b>>=
+diff(x)                                 # pairwise differences
+cumsum(x)                               # cumulative sum
+cumprod(x)                              # cumulative product
+sum(x); prod(x)                         # sums and products
+@
+\label{r:sumprod}%
+
+Whether a function is vectorized or treats a vector as a unit
+depends on its implementation.  Usually, things are implemented 
+the way you would expect.  Occasionally you may discover a function
+that you wish were vectorized and is not.    
+When writing your own functions, give some thought to whether they
+should be vectorized, and test them with vectors of length greater than 1
+to make sure you get the intended behavior.
+\Rindex{sum()}%
+\Rindex{prod()}%
+\Rindex{cumsum()}%
+\Rindex{cumprod()}%
+\Rindex{cummin()}%
+\Rindex{cummax()}%
+\Rindex{diff()}%
+\Rindex{rev()}%
+\Rindex{sort()}%
+\Rindex{rank()}%
+\Rindex{order()}%
+\Rindex{which()}%
+\Rindex{any()}%
+\Rindex{unique()}%
+\Rindex{table()}%
+\Rindex{paste()}%
+\Rindex{na.omit()}%
+\Rindex{pmin()}%
+\Rindex{pmax()}%
+
+
+Some additional useful functions are included in Table~\ref{table:useful-functions}.
+
+\begin{table}
+\caption{Some useful \R\ functions.}
+\label{table:useful-functions}%
+\begin{center}
+  \begin{longtable}{|p{1.2in}|p{3.5in}|}
+  \hline
+  \verb!cumsum()!
+
+  \verb!cumprod()!
+
+  \verb!cummin()!
+
+  \verb!cummax()!
+  &
+  Returns vector of cumulative sums, products, minima, or maxima.
+  \\ \hline
+  \verb!pmin(x,y,...)!
+
+  \verb!pmax(x,y,...)!
+  &
+  Returns vector of parallel minima or maxima where $i$th element is
+  max or min of \verb!x[i]!, \verb!y[i]!, \dots.
+  \\ \hline
+  \verb!which(x)! 
+  &
+  Returns a vector of indices of elements of \verb!x! that are true.
+  Typical use: \verb!which(y > 5)! returns the indices where elements
+  of \verb&y& are larger than 5.
+  \\ \hline
+  \verb!any(x)! 
+  &
+  Returns a \verb!logical! indicating whether any elements of \verb!x! 
+  are true.
+  Typical use: \verb!if ( any(y > 5) ) { ...}!.
+  \\ \hline
+  \verb!na.omit(x)! & Returns a vector with missing values removed.
+  \\ \hline
+  \verb!unique(x)! & Returns a vector with repeated values removed.
+  \\ \hline
+  \verb!table(x)! & Returns a table of counts of the number of 
+  occurrences of each value in \verb!x!.  The table is similar
+  to a vector with names indicating the values, but it is not a vector.
+  \\ \hline
+  \verb!paste(x,y,...,!
+  
+  \verb!  sep=" ")! 
+  & Pastes \verb!x! and \verb!y! together
+  componentwise (as strings) with \verb!sep! between elements.
+  Recycling applies.
+  \\ \hline
+  \end{longtable}
+\end{center}
+\end{table}
+
+
+\subsection{Recycling}
+\myindex{recycling}%
+When vectors operate on each other, the operation is done componentwise, 
+recycling the shorter vector to match the length of the longer.
+
+<<vectors03>>=
+x <- 1:5; y <- seq(10, 70, by=10)
+x + y
+@
+
+\noindent
+In fact, this is exactly how things like \code{x + 1} actually work.
+If \variable{x} is a vector of length $n$, then \verb!1! (a vector of length 1) is 
+first recycled into a vector of length $n$; then the two vectors are
+added componentwise.
+Some vectorized functions that take multiple vectors as arguments
+will first use recycling to make them the same length.
+
+\subsection{Accessing elements of vectors}
+\R\ allows for some very interesting and useful methods for accessing
+elements of a vector that combine the ideas above.
+First, recall that the \code{[ ]} operator is actually a function.
+Furthermore, it is vectorized.
+
+<<vectors04a>>=
+x <- seq(2, 20, by=2)
+x[1:5]; x[c(1, 4, 7)]
+@
+
+\code{[ ]} accepts logical (i.e. boolean) arguments well.
+The boolean values (recycled, if necessary)
+are used to select or deselect elements of the vector.
+
+<<vectors04b>>=
+x <- seq(2, 20, by=2)
+x[c(TRUE, TRUE, FALSE)]      # skips every third element (recycling!)
+x[x > 10]                    # more typical use of boolean in selection
+@
+
+\noindent
+Negative indices are used to omit elements.
+
+<<vectors04c>>=
+x <- seq(2, 20, by=2)
+x[c(TRUE,TRUE,FALSE)]        # skips every third element (recycling!)
+x[x > 10]                    # more typical use of boolean in selection
+@
+
+\noindent
+Here are some more examples.
+\Rindex{toupper()}%
+\Rindex{tolower()}%
+
+<<vectors04d>>=
+notes <- toupper(letters[1:7]); a <- 1:5; b <- seq(10, 100, by=10)
+toupper(letters[5:10])                
+paste(letters[1:5], 1:3, sep='-')
+a+b
+(a+b)[ a+b > 50]
+length((a+b)[a+b > 50])
+table(a+b > 50)
+@
+
+%\includepdf[pages=35-39,frame]{Paradis-rdebuts_en.pdf}
+
+%\includepdf[pages=36-37,landscape,rotateoversize,turn=false,nup=1x2,frame]{Paradis-rdebuts_en.pdf}
+
+\section{Manipulating Data Frames}
+\label{sec:manipulatingData}%
+
+%\subsection{Cross Tabulation with \texttt{xtabs()}}
+%\subsection{\texttt{aggregate()} and \texttt{Hmisc::summary()}}
+\subsection{Adding new variables to a data frame}
+We can add additional variables to an existing data frame by simple assignment.
+
+<<"adding-variable2">>=
+head(iris)
+@
+
+<<"adding-variable">>=
+iris$SLength <- cut(iris$Sepal.Length, 4:8)    # cut places data into bins
+@
+
+<<"adding-variable2again">>=
+head(iris)
+@
+\Rindex{summary()}
+
+It is an error to add a vector of the wrong length.
+
+The \dfn{CPS85} data frame contains data from a Current Population Survey (current in 1985, that is).
+Two of the variables in this data frame are \variable{age} and \variable{educ}.  We can estimate
+the number of years a worker has been in the workforce if we assume they have been in the workforce
+since completing their education and that their age at graduation is 6 more than the number
+of years of education obtained.  We can this as a new variable in the data frame simply
+by assigning to it:
+<<>>=
+CPS85$workforce.years <- with(CPS85, age - 6 - educ)
+favstats(~workforce.yeas, data=CPS85)
+@
+In fact this is what was done for all but one of the cases to create the \variable{exper} 
+variable that is already in the \dfn{CPS85} data.
+<<>>=
+with(CPS85, table(exper - workforce.years))
+@
+
+\subsection{Dropping variables}
+Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
+Notice the clever use of the minus sign.
+<<>>=
+CPS1 <- subset(CPS85, select = -workforce.years)
+@
+Any number of variables can be dropped or kept in this manner by supplying a vectors
+of variables names.
+<<>>=
+CPS1 <- subset(CPS85, select = -c(workforce.years,exper))
+@
+
+If we only want to work with the first few variables, we can discard the rest in a similar way.
+Columns can be specified by number as well as name (but this can be dangerous if you are wrong 
+about where the columns are):
+<<>>=
+CPSsmall <- subset(CPS85, select=1:4)
+head(CPSsmall,2)
+@
+
+\subsection{Renaming variables}
+Both the column (variable) names and the row names of a data frames can be changed by
+simple assignment using \function{names()} or \function{row.names()}.
+<<>>=
+ddd                        # small data frame we defined earlier
+row.names(ddd) <- c("Abe","Betty","Claire","Don","Ethel")
+ddd                        # row.names affects how a data.frame prints
+@
+More interestingly, it is possible to reset just individual names with the following
+syntax.
+<<>>=
+row.names(ddd)[2] <- "Bette"         # misspelled a name, let's fix it
+row.names(ddd)
+@
+
+The \dfn{faithful} data set (in the \pkg{datasets} package, which is always available)
+has very unfortunate names.
+<<>>=
+names(faithful)
+@
+The measurements are the duration of an euption and the time until the subsequent eruption,
+so let's give it some better names.
+<<>>=
+names(faithful) <- c('duration', 'time.til.next')
+head(faithful, 3)
+@
+\begin{center}
+<<faithful-xy>>=
+xyplot(time.til.next ~ duration, faithful)
+@
+\end{center}
+If the variable containing a data frame is modified or used to store a different object,
+the original data from the package can be recovered using \function{data()}.
+<<>>=
+data(faithful)
+head(faithful, 3)
+@
+
+\begin{problem}
+Using \dfn{faithful} data frame, make a scatter plot of eruption duration times vs. the time
+since the previous eruption.
+\end{problem}
+
+If we want to rename a variable, we can do this using \function{names()}.
+For example, perhaps we want to rename \variable{educ} (the second column) to \variable{education}.
+<<>>=
+names(CPS85)[2] <- 'education'
+CPS85[1,1:4]
+@
+
+If we don't know the column number (or generally to make our code clearer), a few more 
+keystrokes produces
+\FoodForThought{See Section \ref{sec:Rvectors} for information that will make 
+it clearer what is going on here.}
+<<>>=
+names(CPS85)[names(CPS85) == 'education'] <- 'educ'
+CPS85[1,1:4]
+@
+
+\subsection{Creating subsets}
+\label{sec:subsets}
+We can also use \function{subset()} to reduce the size of a data set by selecting 
+only certain rows.
+\begin{center}
+<<faithful-long-xy>>=
+data(faithful)
+names(faithful) <- c('duration', 'time.til.next')
+# any logical can be used to create subsets
+faithfulLong <- subset(faithful, duration > 3)        
+xyplot( time.til.next ~ duration, faithfulLong )
+@
+\end{center}
+
+Of course, if all we want to do is produce a graph, there is no reason to create 
+a new data frame.  The plot above could also be made with
+<<eval=FALSE>>=
+xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
+@
+
+
+\authNote{NH: need to flesh out}
+\subsection{Creating variables}
+
+<<>>=
+HELPrct$newsex <- factor(HELPrct$female, labels=c('M','F'))
+@
+\subsubsection{character variables}
+\subsubsection{coercing variables}
+\subsubsection{recoding variables}
+\subsection{Accounting for missing data}
+
+\subsection{Merging datasets}
+
+The \dfn{fusion1} data frame in the \pkg{fastR} package contains 
+genotype information for a SNP (single nucleotide polymorphism) in the gene
+\emph{TCF7L2}.  
+The \dfn{pheno} data frame contains phenotypes
+(including type 2 diabetes case/control status) for an intersecting set of individuals.
+We can merge these together to explore the association between
+genotypes and phenotypes using \verb!merge()!.
+
+%\Rindex{merge()}%
+<<>>=
+require(fastR)
+head(fusion1,3)
+head(pheno,3)
+@
+
+<<>>=
+# merge fusion1 and pheno keeping only id's that are in both
+fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id', all.x=FALSE, all.y=FALSE)
+head(fusion1m, 3)
+@
+In this case, since the values are the same for each data frame, we could collapse
+\option{by.x} and \option{by.y} to \option{by} and collapse
+\option{all.x} and \option{all.y} to \option{all}.
+The first of these specifies which column(s) to use to identify matching cases.
+The second indicates whether cases in one data frame that do not appear in the other 
+should be kept (\code{TRUE}) or dropped 
+(filling in \code{NA} as needed) or dropped from the merged data frame.
+
+Now we are ready to begin our analysis.
+<<fusion1-xtabs>>=
+xtabs(~t2d + genotype + marker, fusion1m)
+@
+
+\begin{problem}
+The \dfn{fusion2} data set in the \pkg{fastR} package contains genotypes for 
+another SNP.  Merge \dfn{fusion1}, \dfn{fusion2}, and \dfn{pheno} into a single data
+frame.
+
+Note that \dfn{fusion1} and \dfn{fusion2} have the same columns.
+<<>>=
+names(fusion1)
+names(fusion2)
+@
+You may want to use the \option{suffixes} argument to \function{merge()} or rename the variables
+after you are done merging to make the resulting data frame easier to navigate.
+
+Tidy up your data frame by dropping any columns that are redundant or that you just don't want to
+have in your final data frame.
+\end{problem}
+
+\subsection{Slicing and dicing}
+\authNote{NH to expand}
+
+
+\function{reshape()} provides a flexible way to change the arrangement of data.  
+\Rindex{reshape()}%
+It was designed for converting between long and wide versions of 
+time series data and its arguments are named with that in mind.
+
+A common situation is when we want to convert from a wide form to a 
+long form because of a change in perspective about what a unit of 
+observation is.  For example, in the \dfn{traffic} data frame, each 
+row is a year, and data for multiple states are provided.
+
+<<traffic-reshape>>=
+traffic
+@
+We can reformat this so that each row contains a measurement for a 
+single state in one year.
+
+<<>>=
+longTraffic <-
+	reshape(traffic[,-2], idvar="year", ids=row.names(traffic),
+        times=names(traffic)[3:6], timevar="state",
+        varying=list(names(traffic)[3:6]),
+        v.names="deathRate",
+        direction="long") 
+head(longTraffic)
+@
+And now we can reformat the other way, this time having all data for a given state 
+form a row in the data frame.
+<<>>=
+stateTraffic <- reshape(longTraffic, direction='wide', 
+                           v.names="deathRate", idvar="state", timevar="year")
+stateTraffic
+@
+
+In simpler cases, \function{stack()} or \function{unstack()} may suffice.
+\verb!Hmisc! also provides \verb!reShape()! as an alternative 
+to \verb!reshape()!.
+\Rindex{stack()}%
+\Rindex{unstack()}%
+
+%\subsection{Simple Relational Database Operations}
+%
+%\subsubsection*{Example: Grades/Courses}
+%
+%Using the grade/courses database, show how to combine data from
+%different data frames. [DTK]
+
+%\subsubsection{Example: Merging Genotype and Phenotype Data}
+%\label{example:fusion1-glm1}%
+%\myindex{FUSION|exampleidx}%
+%\myindex{logistic regression}%
+
+\section{Functions in \R} %{An introduction to writing functions}
+\label{sec:writingFunctions}
+\myindex{functions in {\sf R}}%
+
+%To really customize a &lattice& plot -- and for many other applications in \R\ -- 
+%you need to learn how to use the &panel& argument,
+%which means you need to learn how to write functions.
+Functions in \R\ have several components:
+\begin{itemize}
+  \item a \rterm{name} (like \code{histogram})\footnote{Actually, it is possible to define 
+	functions without naming them; and for short functions that are only needed once,
+	this can actually be useful.}
+  \item
+	an ordered list of named \rterm{arguments} that serve as inputs to the function
+	\myindex{argument of an R function@argument of an {\sf R} function}%
+
+	These are matched first by name and then by order to the values supplied by
+	the call to the function.  This is why we don't always include the argument name
+	in our function calls.  On the other hand, the availability of names means that
+	we don't have to remember the order in which arguments are listed.
+
+	Arguments often have \rterm{default values} which are used if no value is 
+	supplied in the function call.
+  \item
+	a \rterm{return value}
+
+	This is the output of the function.  It can be assigned to a variable
+	using the assignment operator (\code{=}, \code{<-}, or \code{->}).
+	\Rindex{->}%
+	\Rindex{<-}%
+	\Rindex{=}%
+
+  \item
+	\rterm{side effects}
+	
+	A function may do other things (like make a graph or set some preferences) 
+	that are not necessarily part of the return value.
+
+\end{itemize}
+When you read the help pages for an \R\ function, you will see that they are organized
+in sections related to these components.  
+The list of arguments appears in the \rterm{Usage} section along 
+with any default values.  Details about how the arguments are used appear in the 
+\rterm{Arguments} section.  The return value is listed in the \rterm{Value} section.
+Any side effects are typically mentioned in the \rterm{Details} section.  
+
+Now let's try writing our own function.  Suppose you frequently wanted to compute
+the mean, median, and standard deviation of a distribution.  You could make 
+a function to do all three to save some typing.  
+Let's name our function  \function{mystats()}.  
+The \function{mystats()} will have one argument, which we are assuming will be a vector of
+numeric values.%
+\Rindex{mystats()}%
+\Rindex{function()}%
+\footnote{There are ways to check the \rterm{class} of an argument
+to see if it is a data frame, a vector, numeric, etc.  A really robust function
+should check to make sure that the values supplied to the arguments are of appropriate
+types.}
+Here is how we could define it:
+\Rindex{mystats()}%
+
+<<defFun01>>=
+mystats <- function(x) {
+    mean(x)
+    median(x)
+    sd(x)
+}
+mystats((1:20)^2)
+@
+
+The first line says that we are defining a function called \function{mystats()} with one
+argument, named \variable{x}.  The lines surrounded by curly braces give the code
+to be executed when the function is called.  So our function computes 
+the mean, then the median, then the standard deviation of its argument.
+
+But as you see, this doesn't do exactly what we wanted.  So what's going on?  
+The value returned by the last line of a function is (by default) returned
+by the function to its calling environment, where it is (by default) printed
+to the screen so you can see it.  In our case, we computed the mean, median,
+and standard deviation, but only the standard deviation is being returned 
+by the function and hence displayed.  So this function is just an inefficient
+version of \function{sd()}.  That isn't really what we wanted.
+
+We can use \function{print()} to print out things along the way if we like.
+
+<<defFun02>>=
+mystats <- function(x) {
+    print(mean(x))
+    print(median(x))
+    print(sd(x))
+}
+
+mystats((1:20)^2)
+@
+
+Alternatively, we could use a combination of \verb!cat()! and \verb!paste()!, which
+would give us more control over how the output is displayed.
+\Rindex{cat()}%
+\Rindex{paste()}%
+
+<<defFun02-cat>>=
+altmystats <- function(x) {
+    cat(paste("  mean:", format(mean(x),4),"\n"))
+    cat(paste(" edian:", format(median(x),4),"\n"))
+    cat(paste("    sd:", format(sd(x),4),"\n"))
+}
+altmystats((1:20)^2)
+@
+Either of these methods will allow us to see all three values, 
+but if we try to store them \dots
+\authNote{Talk about \function{paste()} some more somewhere?}%
+
+<<defFun02a>>=
+temp <- mystats((1:20)^2)
+temp
+@
+A function in \R\ can only have one return value, and by default it is the 
+value of the last line in the function.  
+In the preceding example we only get the standard deviation since 
+that is the value we calculated last.
+
+We would really like the function to return all three summary statistics.  
+Our solution will be to
+store all three in a vector and return the vector.%
+\footnote{If the values had not all been of the same mode, we 
+could have used a list instead.}
+
+<<defFun03>>=
+mystats <- function(x) {
+	c(mean(x), median(x), sd(x))
+}
+favstats((1:20)^2)
+@
+Now the only problem is that we have to remember which number is which.
+We can fix this by giving names to the slots in our vector.
+While we're at it, let's add a few more favorites to the list.
+We'll also add an explicit \function{return()}.
+\Rindex{return()}%
+
+<<defFun04>>=
+mystats <- function(x) {
+    result <- c(min(x), max(x), mean(x), median(x), sd(x))
+    names(result) <- c("min","max","mean","median","sd")
+    return(result)
+}
+mystats((1:20)^2)
+summary(Sepal.Length~Species, data=iris, fun=mystats)
+aggregate(Sepal.Length~Species, data=iris, FUN=mystats)
+@
+
+Notice how nicely this works with \function{aggregate()} and with the \function{summary()} 
+function from the \pkg{Hmisc} package.
+You can, of course, define your own favorite function to use with \function{summary()}.
+\Rindex{favstats()}%
+The \function{favstats()} function in the \pkg{mosaic} package includes the 
+quartiles, mean, standard, deviation, sample size and number of missing observations.
+<<>>=
+favstats(Sepal.Length ~ Species, data=iris)
+@
+
+
+\section{A Few Graphical Bells and Whistles}
+There are lots of arguments that control how lattice plots look.  Here are just a few examples.
+
+\subsubsection{auto.key}
+It would be useful to have a legend for the previous plot.   \verb!auto.key=TRUE! 
+turns on a simple legend.  (There are ways to have more control, if you need it.)
+<<iris-xyplot-key,cache=TRUE>>=
+xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
+	auto.key=TRUE)   
+@
+
+\subsubsection{alpha, cex}
+Sometimes it is nice to have elements of a plot be partly transparent.  When such
+elements overlap, they get darker, showing us where data are ``piling up."
+Setting the \verb!alpha! argument to a value between 0 and 1 controls the degree 
+of transparency: 1 is completely opaque, 0 is invisible.
+The \verb!cex! argument controls ``character expansion" and can be used to make the 
+plotting ``characters" larger or smaller by specifying the scaling ratio.
+<<iris-xyplot-alpha,cache=TRUE>>=
+xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
+	auto.key=list(columns=3),
+	alpha=.5,
+	cex=1.3)   
+@
+
+\vspace{-8mm}
+\subsubsection*{main, sub, xlab, ylab}
+
+You can add a title or subtitle, or change the default labels of the axes.
+<<iris-xyplot-text,cache=TRUE>>=
+xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
+	main="Some Iris Data",
+	sub="(R. A. Fisher analysed these data in 1936)",
+	xlab="sepal width (cm)",
+	ylab="sepal length (cm)",
+	alpha=.5,        
+	auto.key=list(columns=3))   
+@
+
+\subsubsection{trellis.par.set()}
+Default settings for lattice graphics are set using 
+\verb!trellis.par.set()!.
+Don't like the default font sizes?  You can change to a 7 point (base) font using
+
+<<fontsize,eval=TRUE>>=
+trellis.par.set(fontsize=list(text=7))    # base size for text is 7 point 
+@
+
+
+Nearly every feature of a lattice plot can be controlled: fonts, colors,
+symbols, line thicknesses, colors, etc.
+Rather than describe them all here, we'll mention only that groups of these settings 
+can be collected into a theme.  \verb!show.settings()! will show you what the theme looks like.
+
+<<themes-whitbg,cache=TRUE,fig.height=4.0,fig.width=6>>=
+trellis.par.set(theme=col.whitebg())      # a theme in the lattice package
+show.settings()
+@
+
+<<themes-mosaic,cache=TRUE,fig.height=4,fig.width=6>>=
+trellis.par.set(theme=col.mosaic())        # a theme in the mosaic package
+show.settings()
+@
+\SuggestionBox{Do you have a great eye for colors?  Help us design other 
+lattice themes.}%
+
+\DiggingDeeper{The \pkg{RColorBrewer} package provides several
+palettes of colors that are highly distinguishable and aesthetically pleasing.}%
+<<themes-mosaicbw,cache=TRUE,fig.height=4,fig.width=6>>=
+trellis.par.set(theme=col.mosaic(bw=TRUE)) # black and white version of previous theme
+show.settings()
+@
+
+<<themes-mosaic-redo>>=
+trellis.par.set(theme=col.mosaic())       # back to the mosaic theme
+trellis.par.set(fontsize=list(text=9))    # and back to a larger font 
+@
+
+\begin{problem}
+The \verb!Jordan8687! data set (in the \verb!fastR! package) contains the number 
+of points Michael Jordan scored in each game of the 1986--87 season.  
+\begin{enumerate}
+\item
+Make a histogram of this data.  Add an appropriate title.
+\item
+How would you describe the shape of the distribution?
+\item
+In approximately what percentage of his games, did Michael Jordan score less than 20 points?
+More than 50?
+(You may want to add \verb!breaks=seq(0,70,by=5)! to your command to neaten up
+the bins.)
+\end{enumerate}
+\end{problem}
+
+\begin{problem}
+Cuckoos lay their eggs in the nests of other birds.  Is the size of cuckoo eggs different
+in different host species nests?  The \verb!cuckoo! data set (in \verb!fastR!)
+contains data from a study attempting to answer this question.
+\begin{enumerate}
+\item
+When were these data collected?  (Use \verb!?cuckoo! to get information about the data set.)
+\item
+What are the units on the length measurements?
+\item
+Make side-by-side boxplots of the length of the eggs by species.
+\item
+Calculate the mean length of the eggs for each host species.
+\item
+What do you think?  Does it look like the size is differs among the different host
+species?  Refer to your \R\ output as you answer this question.
+(We'll learn formal methods to investigate this later in the semester.)
+\end{enumerate}
+\vspace{-5mm}
+\end{problem}
+
+
+
+\section{Additional Notes on R Syntax}
+
+
+\subsection{Text and Quotation Marks}
+
+For the most part, text in \R\ must be enclosed in either single or double quotations.  
+It usually doesn't matter which you use, unless you want one or the other type of 
+quotation mark \emph{inside} your text.  Then you should use the other type of 
+quotation mark to mark the beginning and the end.
+
+<<quotes>>=
+text1 <- "Mary didn't come"            # apostrophe inside requires double quotes around text
+text2 <- 'Do you use "scare quotes"?'  # this time we flip things around
+@
+
+If you omit quotes, you will often see error messages telling you that \R\ can't find 
+an object because \R\
+will look for a function, data set or other object with that name instead of treating
+your text as text.
+<<noquotes-error,error=TRUE>>=
+text3 <- blah
+@
+
+\subsection{Functions}
+
+Functions in \R\ use the following syntax:
+
+<<"function-syntax",eval=FALSE>>=
+functionname( argument1, argument2, ... )
+@
+\vspace{-5mm}
+\begin{itemize}
+\item The arguments are \underline{always} \emph{surrounded by (round) parentheses} and 
+\emph{separated by commas}.
+\begin{itemize}
+\item
+Some functions (like \verb!col.whitebg()!) 
+have no arguments, but you still need the parentheses.
+\end{itemize}
+\item
+Most arguments have names, but you don't need to use the names \emph{if you 
+give the arguments in the correct order}.  
+
+If you use names, you can give the arguments out of order.  
+The following do the same thing,
+%\end{itemize}
+
+<<"argument-order-good",eval=FALSE>>=
+xyplot(Sepal.Length ~ Sepal.Width, data=iris, groups=Species)
+xyplot(Sepal.Length ~ Sepal.Width, iris, groups=Species)
+xyplot(Sepal.Length ~ Sepal.Width, groups=Species, iris)
+@
+%\begin{itemize}
+%\item[]
+But these do not work
+%\end{itemize}
+
+<<"argument-order-bad",eval=FALSE>>=
+xyplot(Sepal.Length ~ Sepal.Width, Species, iris)
+xyplot(Sepal.Length ~ Sepal.Width, iris, Species)
+@
+%\begin{itemize}
+%\item[]
+The first fails because the second argument is \verb!data!, so \verb!iris!
+needs to be in the second position if it is not named.
+The second fails because \verb!groups! is not the third argument.
+(There are many other arguments between \verb!data! and \verb!groups! .)
+The documentation for functions shows the correct order of arguments.
+\item
+Typically, we will not use names for the first argument or two (these tend to be 
+very important arguments that have to be there) but will use names for the rest (these 
+are often optional arguments that can be present or not, depending on whether we want 
+the default behavior or something special).
+\end{itemize}
+
+\section{Common Error Messages and What Causes Them}
+
+\subsubsection{Object not found}
+
+\subsubsection{Other error messages here}
+
+
+\newpage
+
+\section{\R\ Examples}
+\vspace{-3mm}
+The commands below are illustrated with the data sets \verb!iris! and 
+\verb!CPS85!.  To apply these in other situations, you will need to 
+substitute the name of your data frame and the variables in it.
+
+\vspace{-3mm}
+\begin{center}
+\begin{longtable}{p{2.45in}p{3.30in}}
+\verb!answer <- 42! & Store the value 42 in a variable named \verb!answer!.
+\\[3mm]
+%\verb!sl <- iris$Sepal.Length! & Store the \verb!Sepal.Length! variable from the 
+%\verb!iris! data frame into a variable called \verb!sl! (to save typing, for example).
+%\\[3mm]
+\verb!log(123); log10(123); sqrt(123)! & Take natural logarithm, base 10 logarithm, or square 
+root of 123.
+\\[3mm]
+\verb!x <- c(1,2,3)! & Make a variable containing values 1, 2, and 3 (in that order).
+\\[3mm]
+\verb!data(iris)! & (Re)load the data set \verb!iris!.
+\\[3mm]
+%\verb!findData(2)! & Find \verb!abd! data in chapter 2.
+%\\[3mm]
+\verb!summary(iris$Sepal.Length)! & 
+Summarize the distribution of the \verb!Sepal.Length! variable in the \verb!iris! data
+frame.
+\\[3mm]
+\verb!summary(iris)! & 
+Summarize each variable in the \verb!iris! data frame.
+\\[3mm]
+\verb!str(iris)! & A different way to summarize the \verb!iris! data frame.
+\\[3mm]
+\verb!head(iris)! & First few rows of the data frame \verb!iris!.
+\\[3mm]
+\verb!require(Hmisc)!
+
+\verb!require(abd)!
+
+\ 
+& Load packages.  
+(This can also be done by checking boxes in the \tab{Packages} tab.)
+\\[3mm]
+\multicolumn{2}{l}{
+\texttt{summary(Sepal.Length\~{}Species,data=iris,fun=favstats) } 
+}
+\\[1mm]
+& 
+Compute favorite statistics of \verb!Sepal.Length! for each \verb!Species!.
+[requires \verb!Hmisc!]
+\\[3mm]
+%\verb!cut(x,breaks,right=TRUE)! & Divide up the range of \verb!x! into 
+%	intervals and code the values in \verb!x! according to which interval 
+%	they fall into. 
+%\\[3mm]
+\multicolumn{2}{l}{\texttt{histogram(\~{}Sepal.Length|Species, iris)}}
+\\[1mm]
+& 
+Histogram of \verb!Sepal.Length! conditioned on \verb!Species!.
+\\[3mm]
+\verb!bwplot(Sepal.Length~Species, iris)! & 
+Boxplot of \verb!Sepal.Length! conditioned on \verb!Species!.
+\\[3mm]
+\multicolumn{2}{l}{\texttt{xyplot(Sepal.Length\~{}Sepal.Width|Species, iris)}} 
+\\[1mm]
+& 
+Scatterplot of \verb!Sepal.Length! by \verb!Sepal.Width! 
+with separate panels for each  \verb!Species!.
+\\[3mm]
+\verb!xtabs(~ sector, CPS85)! & Frequency table of the variable \verb!sector!.
+\\[3mm]
+\multicolumn{2}{l}{\texttt{barchart(xtabs(\~{}sector, CPS85))}}
+\\[1mm]
+& Make a barchart from the table.
+\\[3mm]
+\multicolumn{2}{l}{\texttt{xtabs(\~{}sector + race, CPS85)}}
+\\[1mm]
+& Cross tabulation of \verb!sector!  and \verb!race!.
+\\[3mm]
+\multicolumn{2}{l}{
+\texttt{mosaic(\~{}sector + race, CPS85)} }
+\\[1mm]
+& Make a mosaic plot.
+\\[3mm]
+\multicolumn{2}{l}{
+\texttt{xtData <- as.data.frame( xtabs(\~{}sector + race, Trematodes) )}}
+\\[1mm]
+  & Save cross table information as \verb!xtData!. 
+\\[3mm]
+\multicolumn{2}{l}{
+\texttt{barchart(Freq\~{}sector, data=xtData, groups=race)}
+}
+\\[1mm]
+& Use \verb!xtData! to make a segmented bar chart.
+\\[3mm]
+\verb!sum(x)!; 
+\verb!mean(x)!; 
+\verb!median(x)!;
+
+\verb!var(x)!; 
+\verb!sd(x)!; 
+\verb!quantile(x)!
+& Sum, mean, 
+median,
+variance,
+standard deviation,
+quantiles of \verb!x!.
+\\
+\end{longtable}
+%\rule{4in}{1pt}
+\end{center}
+
+\vspace*{-.5in}
+\section{Exercises}
+
+%For these problems, create a single Word document containing all of your work.
+
+\shipoutProblems
+
+

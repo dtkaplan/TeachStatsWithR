@@ -8,7 +8,7 @@ Transferring Files from the `mosaic-web.org` repository
 * ./Chap-Core.Rnw
 * ./Chap-ForAuthors.Rnw
 * ./Chap-FrontMatter.Rnw
-* ./Chap-GettingStarted.Rnw
+* ./Chap-GettingStarted.Rnw --- moved.
 * ./Chap-GettingStartedshort.Rnw
 * ./Chap-Handouts.Rnw
 * ./Chap-Internet.Rnw
@@ -17,12 +17,12 @@ Transferring Files from the `mosaic-web.org` repository
 * ./Chap-MoreExamples.Rnw
 * ./Chap-MoreR.Rnw
 * ./Chap-Multivariable.Rnw
-* ./Chap-RForInstructors.Rnw
-* ./Chap-RForStudents.Rnw
+* ./Chap-RForInstructors.Rnw --- moved
+* ./Chap-RForStudents.Rnw --- moved
 * ./Chap-RIntro.Rnw
-* ./Chap-SimulationBased.Rnw
+* ./Chap-SimulationBased.Rnw --- moved
 * ./Dierker.Rnw
-* ./Master-TeachingStatsWithR.Rnw
+* ./Master-TeachingStatsWithR.Rnw --- not needed
 * ./Scraps.Rnw
 * ./Testing.Rnw
 

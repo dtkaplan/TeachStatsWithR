@@ -4,3 +4,6 @@ Master-Starting-concordance.tex
 *.synctex.gz
 *.tex
 *.toc
+*.aux
+*.bbl
+*.blg

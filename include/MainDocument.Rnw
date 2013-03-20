@@ -2,6 +2,103 @@
 \usepackage{import}
 \usepackage{graphicx}
 
+\usepackage{alltt}
+\usepackage{mparhack}
+\usepackage{xstring}
+
+\usepackage{etoolbox}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage{framed}
+\usepackage{hyperref}
+
+\newdimen\Rwidth
+\Rwidth=\textwidth
+
+
+\usepackage[margin=.5in,outer=1.5in,inner=.9in,includehead,includefoot,paperwidth=7.25in,paperheight=9.5in]{geometry}
+\usepackage{/Users/kaplan/texmf/tex/latex/probstat}
+\usepackage[shownotes]{/Users/kaplan/texmf/tex/latex/authNote}
+% \usepackage[hidenotes]{authNote}
+\usepackage[answerdelayed,exercisedelayed,lastexercise,chapter]{/Users/kaplan/texmf/tex/latex/problems}
+\usepackage{longtable}
+
+\def\R{{\sf R}}
+\def\Rstudio{{\sf RStudio}}
+
+\usepackage{tikz}
+\usetikzlibrary{shadows}
+\usetikzlibrary{decorations}
+\usetikzlibrary{shapes.multipart}
+\usetikzlibrary{shapes.symbols}
+\usetikzlibrary{shapes.misc}
+\usetikzlibrary{shapes.geometric}
+
+\newcommand{\mymarginpar}[1]{%
+\vadjust{\smash{\llap{\parbox[t]{\marginparwidth}{#1}\kern\marginparsep}}}}
+
+\newcommand{\tikzNote}[3]{%
+\marginpar[%
+\hspace*{0.5in}
+\parbox{1.2in}{\begin{tikzpicture}
+\node at (0,0) [#3]
+{\parbox{1.05in}{\footnotesize {\sc #1 }{\raggedright #2}}};
+\end{tikzpicture}}
+]{%
+\parbox{1.2in}{\begin{tikzpicture}
+\node at (0,0) [#3]
+{\parbox{1.05in}{\footnotesize {\sc #1 }{\raggedright #2}}};
+\end{tikzpicture}}}
+}
+
+\newcommand{\InstructorNote}[2][\relax]{%
+\tikzNote{#1}{#2}{double copy shadow={opacity=.5},tape,fill=blue!10,draw=blue,thick}
+}
+
+\renewcommand{\InstructorNote}[2][\relax]{%
+\tikzNote{#1}{#2}{tape,fill=blue!10,draw=blue,thick}
+}
+
+\newcommand{\DiggingDeeper}[2][\centerline{Digging Deeper}]{%
+\tikzNote{#1}{#2}{tape,fill=blue!10,draw=blue,thick}
+}
+
+
+\newcommand{\TeachingTip}[2][\centerline{Teaching Tip}]{%
+\tikzNote{#1}{#2}{tape,fill=blue!10,draw=blue,thick}
+}
+
+
+\newcommand{\FoodForThought}[2][\relax]{%
+\tikzNote{#1}{#2}{rectangle,fill=green!10,draw=green,thick}
+}
+
+\newcommand{\SuggestionBox}[2][\centerline{Suggestion Box}]{%
+\tikzNote{#1}{#2}{rectangle,fill=green!10,draw=green,thick}
+}
+
+\newcommand{\Caution}[2][\centerline{Caution!}]{%
+\tikzNote{#1}{#2}{chamfered rectangle,fill=red!10,draw=red,thick}
+}
+
+\newcounter{examplenum}[chapter]
+\newenvironment{example}[1][\relax]{
+\refstepcounter{examplenum}
+\textbf{Example \thechapter.\arabic{examplenum}.{#1}}
+}{%
+\hfill {\Large $\diamond$}
+%\centerline{\rule{5in}{.5pt}}
+}
+
+\usepackage[utf8]{inputenc}
+
+\newcounter{myenumi}
+\newcommand{\saveenumi}{\setcounter{myenumi}{\value{enumi}}}
+\newcommand{\reuseenumi}{\setcounter{enumi}{\value{myenumi}}}
+
+\pagestyle{fancy}
+
+
 \begin{document}
 
 \end{document}

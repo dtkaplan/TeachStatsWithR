@@ -1,0 +1,12 @@
+*.log
+*-concordance.tex
+cache
+*.notes
+ddd.*
+*.tex
+*.bbl
+figure
+figures
+Births.rda
+GettingStarted.bbl
+example-file.pdf
