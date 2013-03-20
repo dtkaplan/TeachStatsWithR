@@ -10,6 +10,8 @@
 
 \newpage
 
+\import{../}{FrontMatter}
+
 \import{../}{GettingStarted}
 
 \import{../}{RForStudents}
@@ -22,7 +24,11 @@
 
 \import{../}{MoreR}
 
+\import{../}{Manipulate}
+
 \import{../}{RIntro}
+
+\import{../}{Handouts}
 
 
 % \chapter{The second chapter}

@@ -1,0 +1,153 @@
+
+% All pre-amble stuff should go into ../include/MainDocument.Rnw
+\title{Document: Manipulate}
+\author{Randall Pruim and Nicholas Horton and Daniel Kaplan}
+\date{DRAFT: \today}
+% Uncomment the next to be able to compile this separately
+% Then comment it back and recompile to set things up for the all-together
+<<echo=FALSE,include=FALSE>>=
+source('../include/setup.R')
+opts_chunk$set( fig.path="figure/Manipulate-fig-" ) 
+standalone=TRUE
+if (standalone) set_parent('../include/MainDocument.Rnw')
+set.seed(123)
+@ 
+
+\chapter{Getting Interactive with \texttt{manipulate} and \texttt{mosaicManip}}
+
+One very attractive feature of \RStudio\ is the \verb!manipulate()! function, which
+can allow the creation of a set of controls (such as \verb!slider()!, \verb!picker()!
+or \verb!checkbox()!) that can be used to dynamically change values within the 
+expression.  When a value is changed using these controls, the expression is automatically
+re-executed and redrawn.  This can be used to quickly prototype a number of activities and
+demos as part of a statistics lecture.
+
+We've created a number of useful examples in the \pkg{mosaicManip} package, but encourage
+you to craft more of your own.
+
+\section{Simple Things}
+
+\subsection{Sliders}
+
+\authNote{need to remove \emph{if(require)}}
+
+<<manipulate-histogram1, echo=TRUE, tidy=FALSE, eval=FALSE>>=
+if(require(manipulate)) {
+  manipulate(
+    xhistogram( ~ eruptions, data=faithful, n=n),
+    n = slider(5,40)
+  )
+}
+@
+This generates a plot along with a slider ranging from 5 bins to 40.
+
+\begin{center}
+\includegraphics[width=3.8in]{images/manip-hist1.png}
+\end{center}
+
+When the slider is changed, we see a clearer view of the eruptions of Old Faithful.
+
+\centerline{\includegraphics[width=3.8in]{images/manip-hist2.png}}
+
+
+
+\subsection{Check Boxes}
+
+<<manipulate-histogram2>>=
+if(require(manipulate)) {
+  manipulate(
+	xhistogram( ~ age, data=HELPrct, n=n, density=density),
+	n = slider(5,40),
+	density = checkbox()
+  )
+}
+@
+
+\centerline{\includegraphics[width=3.8in]{images/manipulate-checkbox}}
+
+\subsection{Drop-down Menus}
+
+<<manipulate-histogram3>>=
+if(require(manipulate)) {
+  manipulate(
+	xhistogram( ~ age, data=HELPrct, n=n, fit=distribution, dlwd=4),
+	n = slider(5,40),
+	distribution = 
+		picker('normal', 'gamma', 'exponential', 'lognormal',
+			   label="distribution")
+  )
+}
+@
+
+\centerline{\includegraphics[width=3.8in]{images/manipulate-picker}}
+
+\subsection{Visualizing Normal Distributions}
+<<manipulate-xpnorm>>=
+if(require(manipulate)) {
+  manipulate( xpnorm( x, 500, 100 ), x = slider(200,800) )
+}
+@
+\centerline{\includegraphics[width=3.8in]{images/manipulate-xpnorm}}
+
+\section{Using the \pkg{mosaicManip} package}
+
+The \pkg{mosaicManip} package includes a number of pre-built routines that 
+take advantage of the \pkg{manipulate} package for teaching purposes.  
+
+\subsection{Visualizing Linear Regression}
+The \function{mLineFit()} function allows students to explore sums of squares, 
+residuals in the context of simple linear regression.
+<<manipulate-mlinefit>>=
+if(require(mosaicManip)) {
+  kids = fetchData("kidsfeet.csv")
+  mLineFit(length ~ width, data=kids)
+}
+@
+\centerline{\includegraphics[width=3.8in]{images/manipulate-mLineFit}}
+
+\subsection{Visualizing the Power of a Test}
+The \function{mHypTest()} function allows students to explore questions of
+power and sample size in the context of a 2 sample test.
+<<manipulate-mHypTest>>=
+if(require(mosaicManip)) {
+  mHypTest()
+}
+@
+\centerline{\includegraphics[width=3.8in]{images/manipulate-mHypTest}}
+
+\subsection{Visualizing the Coverage Properties of Confidence Intervals}
+The \function{mCIprop()} function runs a simulation where the true proportion 
+is known, but a series of samples are generated from that distribution to assess the
+coverage properties of the intervals.
+<<manipulate-mCIprop>>=
+if(require(mosaicManip)) {
+  mCIprop()
+}
+@
+\centerline{\includegraphics[width=3.8in]{images/manipulate-mCIprop}}
+
+\begin{problem}
+The following code makes a scatterplot with separate symbols for each sex.
+<<eval=FALSE>>=
+xyplot(cesd ~ age, data=HELPrct, groups=sex)
+@
+Build a \pkg{manipulate} example that allows you to turn the grouping on and off with a 
+checkbox.
+\end{problem}
+
+\begin{problem}
+Build a \pkg{manipulate} example that uses a picker to select from a number of 
+variables to make a plot for.  Here's an example with a histogram:
+
+\medskip
+\centerline{\includegraphics[width=3.8in]{images/manipulate-multihist}}
+\end{problem}
+
+\begin{problem}
+Design your own  interactive demonstration idea and implement it using 
+\RStudio\ \pkg{manipulate} tools.
+\end{problem}
+
+\section*{Exercises}
+\shipoutProblems
+

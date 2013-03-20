@@ -7,13 +7,13 @@ Transferring Files from the `mosaic-web.org` repository
 * ./Chap-CalculusForStats.Rnw --- moved
 * ./Chap-Core.Rnw --- moved
 * ./Chap-ForAuthors.Rnw --- included in outline
-* ./Chap-FrontMatter.Rnw
+* ./Chap-FrontMatter.Rnw --- moved 
 * ./Chap-GettingStarted.Rnw --- moved.
-* ./Chap-GettingStartedshort.Rnw
-* ./Chap-Handouts.Rnw
+* ./Chap-GettingStartedshort.Rnw --- seems to be the same thing as Chap-GettingStarted
+* ./Chap-Handouts.Rnw --- moved
 * ./Chap-Internet.Rnw --- moved
-* ./Chap-Manipulate.Rnw
-* ./Chap-Misc.Rnw
+* ./Chap-Manipulate.Rnw --- moved
+* ./Chap-Misc.Rnw --- included in outline
 * ./Chap-MoreExamples.Rnw --- moved
 * ./Chap-MoreR.Rnw --- moved
 * ./Chap-Multivariable.Rnw --- moved 
