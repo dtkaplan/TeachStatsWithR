@@ -3,23 +3,23 @@ Transferring Files from the `mosaic-web.org` repository
 
 ### March 19, 2013
 
-* ./Chap-ByHand.Rnw
-* ./Chap-CalculusForStats.Rnw
-* ./Chap-Core.Rnw
-* ./Chap-ForAuthors.Rnw
+* ./Chap-ByHand.Rnw --- moved
+* ./Chap-CalculusForStats.Rnw --- moved
+* ./Chap-Core.Rnw --- moved
+* ./Chap-ForAuthors.Rnw --- included in outline
 * ./Chap-FrontMatter.Rnw
 * ./Chap-GettingStarted.Rnw --- moved.
 * ./Chap-GettingStartedshort.Rnw
 * ./Chap-Handouts.Rnw
-* ./Chap-Internet.Rnw
+* ./Chap-Internet.Rnw --- moved
 * ./Chap-Manipulate.Rnw
 * ./Chap-Misc.Rnw
-* ./Chap-MoreExamples.Rnw
-* ./Chap-MoreR.Rnw
-* ./Chap-Multivariable.Rnw
+* ./Chap-MoreExamples.Rnw --- moved
+* ./Chap-MoreR.Rnw --- moved
+* ./Chap-Multivariable.Rnw --- moved 
 * ./Chap-RForInstructors.Rnw --- moved
 * ./Chap-RForStudents.Rnw --- moved
-* ./Chap-RIntro.Rnw
+* ./Chap-RIntro.Rnw --- moved
 * ./Chap-SimulationBased.Rnw --- moved
 * ./Dierker.Rnw
 * ./Master-TeachingStatsWithR.Rnw --- not needed

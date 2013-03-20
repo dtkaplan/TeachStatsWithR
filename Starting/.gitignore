@@ -1,4 +1,7 @@
 *.log
+*.aux
+*.blg
+*.pdf
 *-concordance.tex
 cache
 *.notes
@@ -10,3 +13,6 @@ figures
 Births.rda
 GettingStarted.bbl
 example-file.pdf
+*.synctex.gz
+ByHand.pdf
+MoreExamples.aux
