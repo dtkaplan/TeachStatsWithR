@@ -105,6 +105,24 @@
 \def\term#1{\textbf{#1}}
 \def\tab#1{{\sf #1}}
 
+
+\newlength{\tempfmlength}
+\newsavebox{\fmbox}
+\newenvironment{fmpage}[1]
+{
+\medskip
+\setlength{\tempfmlength}{#1}
+\begin{lrbox}{\fmbox}
+\begin{minipage}{#1}
+\vspace*{.02\tempfmlength}
+\hfill
+\begin{minipage}{.95 \tempfmlength}}
+{\end{minipage}\hfill
+\vspace*{.015\tempfmlength}
+\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}
+\medskip
+}
+
 \newenvironment{boxedText}[1][.98\textwidth]%
 {%
 \begin{center}

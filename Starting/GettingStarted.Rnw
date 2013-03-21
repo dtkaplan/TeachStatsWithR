@@ -50,19 +50,34 @@ Teach \R\ as a programming language. (But don't overdo it.)
 There is a bit of syntax to learn -- so teach it explicitly.
 \begin{itemize}
 \item
-Emphasize that capitalization (and spelling) matter
+Emphasize that capitalization (and spelling) matter.
 \item
 Explain carefully (and repeatedly) the syntax of functions.
+
+Fortunately, the syntax is very straightforward.  It consists of a 
+function name followed by an opening parenthesis, followed by a 
+comma-separated list of arguments (which may be named), followed 
+by a closed parenthesis.
+<<eval=FALSE>>=
+functionname ( name1=arg1, name2=arg2, ... )
+@
+Get students to think about what a function does and what it needs to know
+to do its job.  Generally, the function name indicates what the function does.
+The arguments provide the function with the necessary information to
+do the task at hand.
 \item
 Every object in \R\ has a type (class).  Ask frequently: \emph{What type of thing is this?}
-\item
-Get students to think about what arguments are needed for functions by asking
-\emph{What does this function need to know to do its job?}
+
+Students need to understand the difference between a variable and a data set and also that 
+there are different kinds of variables (\code{factors} for categorical data and \code{numerics}
+for numerical data, for example).
+
 \end{itemize}
 Give more language details in higher level courses.
 
 Upper level students should learn more about user-defined functions and 
-language control structures such as loops and conditionals.
+language control structures such as loops and conditionals.  Students
+in introductory courses don't need to know as much about the language.
 
 \item ``Less volume, more creativity."  [Mike McCarthy, head coach, Green Bay Packers]
 
@@ -507,7 +522,7 @@ that the lady correctly identified all 10 cups!
 \cite{salsburg}
 
 
-\subsubsection{A different design}
+\newthought{A different design}
 
 Suppose instead that we prepare five cups each way (and that the woman tasting
 knows this).  We give her five cards labeled ``milk first'', and she must place 
