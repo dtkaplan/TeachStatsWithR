@@ -18,7 +18,7 @@ To create the whole book, you need to recompile each `.Rnw` after setting a vari
 require(knitr)
 # Change to the directory, e.g. "Starting"
 setwd("Starting") # go to your own directory
-notAsStandAlong=TRUE
+standAlone=TRUE
 fnames <- list.files(pattern="*.Rnw") # files to recompile
 for (k in fnames) knit(k)
 ```
