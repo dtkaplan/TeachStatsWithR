@@ -2,6 +2,10 @@
 *.aux
 *.blg
 *.pdf
+*.tex
+*.bk
+*~
+*swp
 *-concordance.tex
 cache
 *.notes
