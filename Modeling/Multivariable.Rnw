@@ -1,16 +1,45 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
 opts_chunk$set( fig.path="figure/Multivariable-fig-" ) 
-<<<<<<< HEAD
-if (!exists("notAsStandAlone")) set_parent('../include/TufteDocument.Rnw')
-=======
-if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
->>>>>>> 48fda8a533cd8231a21776a478a61023c7eb614e
+if (!exists("standAlone")) set_parent('../include/TufteDocument.Rnw')
 set.seed(123)
 @
 
 \chapter{Multivariable Statistics -- Early?} 
 \label{chap:multivariate-early}
+
+A news story (Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk,
+by Allison Aubrey, NPR - March 15, 2013) headlines that a daily habit of coffee or tea drinking cuts the risk of stroke by 20\%, according to a report in the American Heart Association journal {\em Stroke}.  The story, on National Public Radio, goes on to state:
+\begin{quotation}
+% ... recent studies have linked a regular coffee habit to a range of benefits — from a reduced risk of Type 2 diabetes to a protective effect against Parkinson's disease.
+
+It's interesting to note how much the thinking about caffeine and coffee has changed.
+
+In the 1980s, surveys found that many Americans were trying to avoid it; caffeine was thought to be harmful, even at moderate doses.
+
+One reason? Meir Stampfer of the Harvard School of Public Health says back then, coffee drinkers also tended to be heavy smokers. And in early studies, it was very tough to disentangle the two habits.
+
+``So it made coffee look bad in terms of health outcomes," says Stampfer.
+
+But as newer studies began to separate out the effects of coffee and tea, a new picture emerged suggesting benefits, not risks.
+
+Researchers say there's still a lot to learn here --- they haven't nailed down all the mechanisms by which coffee and tea influence our health. Nor have they ruled out that it may be other lifestyle habits among coffee and tea drinkers that's leading to the reduced risk of disease.
+\end{quotation}
+
+What do statistics students learn that equips them to understand this story?  Successful graduates of a mainstream introductory course would be able to identify smoking as a confounder and to ... p-value means something 82000 participants.
+
+* confounding
+* p-values on the study
+* separate out the confounding variables
+* but what to do about the "other lifestyle habits"?  How would they discover these? How would they assess them.
+
+SAT
+
+Saratoga Houses
+
+Eventually we want to get to multivariable, but when?  The answer to this question is changing, as the primary and secondary curriculum changes.  Whereas there used to be little or no statistics beyond ``mean-median-mode," the Common Core introduces a substantial statistical component to the quantitative/mathematical curriculum.
+
+
 
 Readers of a certain age may remember the 1960s television show {\em
   Lost in Space}.  One of the characters, Robot, was often
