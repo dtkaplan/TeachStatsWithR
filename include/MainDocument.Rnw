@@ -1,4 +1,4 @@
-\documentclass{book}
+\documentclass[open-any,12pt]{tufte-book}
 \usepackage{import}
 \usepackage{graphicx}
 
@@ -18,17 +18,13 @@
 %\Rwidth=\textwidth
 
 
-\usepackage[margin=.5in,outer=1.5in,inner=.9in,includehead,includefoot,paperwidth=7.25in,paperheight=9.5in]{geometry}
+%\usepackage[margin=.5in,outer=1.5in,inner=.9in,includehead,includefoot,paperwidth=7.25in,paperheight=9.5in]{geometry}
 \usepackage{probstat}
 \usepackage[shownotes]{authNote}
 % \usepackage[hidenotes]{authNote}
 \usepackage[answerdelayed,exercisedelayed,lastexercise,chapter]{problems}
 \usepackage{longtable}
 \usepackage{language}
-
-%\def\R{{\sf R}}
-%\def\Rstudio{{\sf RStudio}}
-\def\myindex#1{\index{#1}}
 
 \usepackage{tikz}
 \usetikzlibrary{shadows}
@@ -99,6 +95,75 @@
 \newcounter{myenumi}
 \newcommand{\saveenumi}{\setcounter{myenumi}{\value{enumi}}}
 \newcommand{\reuseenumi}{\setcounter{enumi}{\value{myenumi}}}
+
+\newcommand{\cran}{\href{http://www.R-project.org/}{CRAN}}
+%%%%%%%% Some R Stuff %%%%%%%%%%%%%%%
+\newcommand{\rterm}[1]{\textbf{#1}}
+\def\R{{\sf R}}
+\def\Rstudio{{\sf RStudio}}
+\def\RStudio{{\sf RStudio}}
+\def\term#1{\textbf{#1}}
+\def\tab#1{{\sf #1}}
+
+
+\newlength{\tempfmlength}
+\newsavebox{\fmbox}
+\newenvironment{fmpage}[1]
+{
+\medskip
+\setlength{\tempfmlength}{#1}
+\begin{lrbox}{\fmbox}
+\begin{minipage}{#1}
+\vspace*{.02\tempfmlength}
+\hfill
+\begin{minipage}{.95 \tempfmlength}}
+{\end{minipage}\hfill
+\vspace*{.015\tempfmlength}
+\end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}
+\medskip
+}
+
+\newenvironment{boxedText}[1][.98\textwidth]%
+{%
+\begin{center}
+\begin{fmpage}{#1}
+}%
+{%
+\end{fmpage}
+\end{center}
+}
+
+\newenvironment{boxedTable}[2][tbp]%
+{%
+\begin{table}[#1]
+  \refstepcounter{table}
+  \begin{center}
+\begin{fmpage}{.98\textwidth}
+  \begin{center}
+	\sf \large Box~\expandafter\thetable. #2
+\end{center}
+\medskip
+}%
+{%
+\end{fmpage}
+\end{center}
+\end{table}		% need to do something about exercises that follow boxedTable
+}
+
+% indexing
+\newcommand{\printindex}[1]{\relax}
+\newcommand{\indexchap}[1]{\relax}
+\usepackage{amsmidx}
+\newcommand{\exampleidx}[1]{{\it #1}}
+\newcommand{\defidx}[1]{{\bf #1}}
+\newcommand{\mainidx}[1]{{\bf #1}}
+\newcommand{\probidx}[1]{{{\underline{#1}}}}
+\makeindex{Rindex}
+\makeindex{mainIndex}
+\newcommand{\Rindex}[1]{\index{Rindex}{#1@\texttt{#1}}}
+\newcommand{\myindex}[1]{\index{mainIndex}{#1}}
+\newcommand{\mathindex}[1]{\index{mainIndex}{$#1$}}
+
 
 \pagestyle{fancy}
 
