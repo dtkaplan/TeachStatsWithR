@@ -1,12 +1,93 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
 opts_chunk$set( fig.path="figure/Multivariable-fig-" ) 
-if (!exists("standAlone")) set_parent('../include/TufteDocument.Rnw')
+if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
 set.seed(123)
 @
 
+Goals:
+\begin{itemize}
+\item Can be used as the comprehensive guide to the modeling language.
+\item Introduce some graphics: \function{bwplot}, \function{xyplot}
+\item Descriptive statistics done with the same language
+\item Tallying with the same language
+\item Generalize it to the building of models --- one variable
+\item \function{confint} and how to use it to explore what confidence intervals mean.
+\item Models with a continuous covariate
+\item \function{makeFun} and \function{plotFun}
+\end{itemize}
+
 \chapter{Multivariable Statistics -- Early?} 
 \label{chap:multivariate-early}
+
+<<include=FALSE>>=
+require(mosaic)
+@
+
+\section{From Graphics \& Formulas to Models}
+
+\InstructorNote{The statement \texttt{require(mosaic)} loads in the \pkg{mosaic} package, which itself includes the graphics package \pkg{lattice}.  The \pkg{mosaic} provides many of the commands that are used in this book.}
+
+Mainstream statistics courses often include statistical graphics: scatterplots, box-and-whisker plots, histograms, etc.  In R, these basic graphics can be made with \function{xyplot} and \function{bwplot}, for instance:
+<<fig.keep='all'>>=
+require(mosaic)
+xyplot(width ~ length,data=KidsFeet)
+bwplot(width ~ sex,data=KidsFeet)
+@
+
+These things involving \verb+~+ are called \newword{formulas} in R. The word "formula" is used a somewhat different way than in algebra: the formula lays out how you want to relate variables: y versus x, what to break down by what.  
+
+It may seem that this is just another way, among many, to invoke plotting software.  But  there's more going on here: R provides a {\em modeling language} an an easy path from basic graphics and basic statistics to multivariable modeling.  
+
+The path is easy enough that it makes sense to start in that direction early: using the concepts, terminology, and techniques of modeling as a way of introducing statistics.  Here is what such a journey might look like.
+
+\subsection{Formulas and Basic Statistics}
+
+It's worthwhile to start a statistics course with graphics.  In addition to conveying well ideas of variation, graphics are close to the data themselves, compelling, and motivating.  Students see the advantage of using software; they couldn't make such graphics by hand.
+
+\InstructorNote{It's tempting to show students shortcuts for looking at a data set, such as \function{summary}.
+<<eval=FALSE>>=
+summary(KidsFeet)
+@
+This unfortunately encourages students to think that there is such a thing  as a mean or median of a dataset.  It's important to distinguish between variables and the datasets in which variables are contained.}
+
+The move to quantitative statistics is straightforward, since the syntax is very much the same as with plots.  For instance
+<<>>=
+mean(width,data=KidsFeet)
+sd(width,data=KidsFeet)
+@
+In each case, the variable of interest is named along with the data set in which that variable is included.  
+
+Using \pkg{mosaic}, the formula interface works with these basic statistics in much the same way as for graphics, e.g:
+<<>>=
+mean(width~sex,data=KidsFeet)
+@
+
+This idea of breaking down one variable by another is natural.  For instance, to find out left- or right-handedness is distributed by sex, use:
+<<>>=
+tally(domhand~sex,data=KidsFeet)
+@
+This is a different question than asking how sex is broken down by handedness:
+<<>>=
+tally(sex~domhand,data=KidsFeet)
+@
+The formula notation makes it clear which variable is being broken down by which.
+
+\InstructorNote{To avoid having to say things like \model{sex}{1}, some functions such as \function{mean} let you use just the bare variable name without the \model{}{}.  In the functions that have not been configured this way, you can say \model{}{sex}, leaving the right-hand side blank, to accomplish the same thing.  It's debatable whether \model{sex}{1} is better than \model{}{sex}.  Unfortunately, R does not allow \model{sex}{}, which would be a natural way to say, ``broken down by nothing.''}
+
+Sometimes you don't want to break down one variable by another.  In such situations, you can use \texttt{1} to stand for ``the same for every case.''  For example:
+<<>>=
+mean(length ~ 1,data=KidsFeet)
+tally(sex ~ 1,data=KidsFeet)
+@
+These formulas still mean, break down the variable on the left side of the formula according to the ``variable'' on the right side, but since the variable on the right side is always 1, there's only one group. This is admittedly a little unnatural, but drawing attention to \texttt{1} early pays off later one.
+
+
+If you can master this notation, then you have much of what you need to construct models.
+
+MM and confidence intervals.
+
+LM and the change in meaning of coefficients: Intercept and change from reference.
 
 A news story (Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk,
 by Allison Aubrey, NPR - March 15, 2013) headlines that a daily habit of coffee or tea drinking cuts the risk of stroke by 20\%, according to a report in the American Heart Association journal {\em Stroke}.  The story, on National Public Radio, goes on to state:
