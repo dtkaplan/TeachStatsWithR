@@ -11,20 +11,24 @@
 \usepackage{xcolor}
 \usepackage{framed}
 \usepackage{hyperref}
+%%%%%%%%%%%% Things Danny omitted %%%%%%%%%%%%%%%%%%%%%
+\usepackage{fancyhdr}
 
-\newdimen\Rwidth
-\Rwidth=\textwidth
+%\newdimen\Rwidth
+%\Rwidth=\textwidth
 
 
 \usepackage[margin=.5in,outer=1.5in,inner=.9in,includehead,includefoot,paperwidth=7.25in,paperheight=9.5in]{geometry}
-\usepackage{/Users/kaplan/texmf/tex/latex/probstat}
-\usepackage[shownotes]{/Users/kaplan/texmf/tex/latex/authNote}
+\usepackage{probstat}
+\usepackage[shownotes]{authNote}
 % \usepackage[hidenotes]{authNote}
-\usepackage[answerdelayed,exercisedelayed,lastexercise,chapter]{/Users/kaplan/texmf/tex/latex/problems}
+\usepackage[answerdelayed,exercisedelayed,lastexercise,chapter]{problems}
 \usepackage{longtable}
+\usepackage{language}
 
-\def\R{{\sf R}}
-\def\Rstudio{{\sf RStudio}}
+%\def\R{{\sf R}}
+%\def\Rstudio{{\sf RStudio}}
+\def\myindex#1{\index{#1}}
 
 \usepackage{tikz}
 \usetikzlibrary{shadows}
