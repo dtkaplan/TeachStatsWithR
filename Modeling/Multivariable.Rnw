@@ -1,7 +1,7 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
 opts_chunk$set( fig.path="figure/Multivariable-fig-" ) 
-if (!exists("notAsStandAlone")) set_parent('../include/MainDocument.Rnw')
+if (!exists("notAsStandAlone")) set_parent('../include/TufteDocument.Rnw')
 set.seed(123)
 @
 
