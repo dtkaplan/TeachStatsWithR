@@ -417,7 +417,7 @@ button in the \tab{Workspace} tab.  You can load data from text files, from the 
 google spreadsheets.   
 
 
-%\subsubsection*{From Google Spreadsheets}
+%\newthought{From Google Spreadsheets}
 
 \authNote{does this work with the non-RStudio run RStudio servers?}
 
@@ -425,7 +425,7 @@ google spreadsheets.
 The easiest of these is the Google spreadsheets option: Just click, select
 your spreadsheet, choose a name, and you're done.
 
-%\subsubsection*{From Excel}
+%\newthought{From Excel}
 \textbf{From Excel},
 you need to follow a 3-step process:
 \begin{enumerate}
@@ -725,7 +725,7 @@ occupational status, region of residence and union membership.
 head(CPS85, 3)
 @
 
-\subsubsection{Calculating Frequency and Contingency Tables from Data}
+\newthought{Calculating Frequency and Contingency Tables from Data}
 Categorical variables are  often summarized in a table.  
 \R\ can make a table for a categorical variable using \function{tally()}.
 
@@ -746,7 +746,7 @@ Alternatively, we can use \verb!table()!, \verb!proptable()!, and
 respectively.
 
 
-%\subsubsection{Cross-Tabulation with \texttt{xtabs()}}
+%\newthought{Cross-Tabulation with \texttt{xtabs()}}
 We can make a \term{cross-table} 
 (also called a \term{contingency table} or a \term{two-way table}) 
 summarizing this data with \function{tally()}.  
@@ -764,7 +764,7 @@ tally(~ race | sector, CPS85)   # conditional on sector
 tally(~ sector | race, CPS85)   # conditional on race
 @
 
-\subsubsection*{Entering Tables by Hand}
+\newthought{Entering Tables by Hand}
 
 Because categorical data is so easy to summarize in a table, 
 often the frequency or contingency tables are given instead.
@@ -790,7 +790,7 @@ column-wise instead.
 
 \subsection{Graphing Categorical Data}
 
-%\subsubsection{Bar charts and pie charts}
+%\newthought{Bar charts and pie charts}
 %We won't use these plots often, in part because summary tables are already a good
 %way to understand the data.  
 The \pkg{mosaic} function \function{bargraph()} can 

@@ -173,7 +173,6 @@ One frequent use of this is to save and print a value all in one go:
 
 \subsection*{Four Things to Know About \R\ and \RStudio}
 \begin{enumerate}
-\Rwidth=6.25in
 \item \R\ is case-sensitive
 
 If you mis-capitalize something in \R\ it won't do what you want.
@@ -469,13 +468,13 @@ variables using the \verb!$! syntax or to use the \function{with()} function.
 button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
 google spreadsheets.   
 
-%\subsubsection*{From Google Spreadsheets}
+%\newthought{From Google Spreadsheets}
 
 \textbf{From Google.}
 The easiest of these is the Google spreadsheets option: Just click, select
 your spreadsheet, choose a name, and you're done.
 
-%\subsubsection*{From Excel}
+%\newthought{From Excel}
 \textbf{From Excel},
 you need to follow a 3-step process:
 \begin{enumerate}
@@ -765,7 +764,7 @@ Resize or reposition your image in Word as needed.
 \subsection{A Few Bells and Whistles}
 There are lots of arguments that control how these plots look.  Here are just a few examples.
 
-\subsubsection{auto.key}
+\newthought{auto.key}
 It would be useful to have a legend for the previous plot.   \verb!auto.key=TRUE! 
 turns on a simple legend.  (There are ways to have more control, if you need it.)
 <<iris-xyplot-key,cache=TRUE>>=
@@ -773,7 +772,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 	auto.key=TRUE)   
 @
 
-\subsubsection{alpha, cex}
+\newthought{alpha, cex}
 Sometimes it is nice to have elements of a plot be partly transparent.  When such
 elements overlap, they get darker, showing us where data are ``piling up."
 Setting the \verb!alpha! argument to a value between 0 and 1 controls the degree 
@@ -788,7 +787,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 @
 
 \vspace{-8mm}
-\subsubsection*{main, sub, xlab, ylab}
+\newthought{main, sub, xlab, ylab}
 
 You can add a title or subtitle, or change the default labels of the axes.
 <<iris-xyplot-text,cache=TRUE>>=
@@ -801,7 +800,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 	auto.key=list(columns=3))   
 @
 
-\subsubsection{trellis.par.set()}
+\newthought{trellis.par.set()}
 Default settings for lattice graphics are set using 
 \verb!trellis.par.set()!.
 Don't like the default font sizes?  You can change to a 7 point (base) font using
@@ -890,7 +889,7 @@ occupational status, region of residence and union membership.
 head(CPS85, 3)
 @
 
-\subsubsection{Calculating Frequency and Contingency Tables from Data}
+\newthought{Calculating Frequency and Contingency Tables from Data}
 Categorical variables are  often summarized in a table.  
 \R\ can make a table for a categorical variable using \function{tally()}.
 
@@ -910,7 +909,7 @@ Alternatively, we can use \verb!table()!, \verb!proptable()!, and
 \verb!perctable()!  to make tables of counts, proportions, or percentages.
 
 
-%\subsubsection{Cross-Tabulation with \texttt{xtabs()}}
+%\newthought{Cross-Tabulation with \texttt{xtabs()}}
 We can make a \term{cross-table} 
 (also called a \term{contingency table} or a \term{two-way table}) 
 summarizing this data with \function{tally()}.  
@@ -928,7 +927,7 @@ tally(~ race | sector, CPS85)   # conditional on sector
 tally(~ sector | race, CPS85)   # conditional on race
 @
 
-\subsubsection*{Entering Tables by Hand}
+\newthought{Entering Tables by Hand}
 
 Because categorical data is so easy to summarize in a table, 
 often the frequency or contingency tables are given instead.
@@ -954,7 +953,7 @@ column-wise instead.
 
 \subsection{Graphing Categorical Data}
 
-%\subsubsection{Bar charts and pie charts}
+%\newthought{Bar charts and pie charts}
 %We won't use these plots often, in part because summary tables are already a good
 %way to understand the data.  
 The \pkg{mosaic} function \function{bargraph()} can 

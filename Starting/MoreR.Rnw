@@ -132,9 +132,9 @@ we won't cover this here).
 %section we present a few ``\R\ extras'' related to the material we have 
 %covered so far.  The material is organized by the packages involved.
 
-%\subsubsection*{\texttt{mosaic}}
+%\newthought{\texttt{mosaic}}
 
-%\subsubsection*{\texttt{Hmisc}}
+%\newthought{\texttt{Hmisc}}
 
 \section{Some Workflow Suggestions}
 \label{sec:scripts}
@@ -966,10 +966,22 @@ xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
 \authNote{NH: need to flesh out}
 \subsection{Creating variables}
 
+<<>>=
 HELP$newsex <- factor(HELP$female, labels=c('M','F'))
-\subsubsection{character variables}
-\subsubsection{coercing variables}
-\subsubsection{recoding variables}
+@
+
+\newthought{character variables}
+
+spacer 
+
+\newthought{coercing variables}
+
+spacer
+
+\newthought{recoding variables}
+
+spacer
+
 \subsection{Accounting for missing data}
 
 \subsection{Merging datasets}
@@ -1069,12 +1081,12 @@ to \verb!reshape()!.
 
 %\subsection{Simple Relational Database Operations}
 %
-%\subsubsection*{Example: Grades/Courses}
+%\newthought{Example: Grades/Courses}
 %
 %Using the grade/courses database, show how to combine data from
 %different data frames. [DTK]
 
-%\subsubsection{Example: Merging Genotype and Phenotype Data}
+%\newthought{Example: Merging Genotype and Phenotype Data}
 %\label{example:fusion1-glm1}%
 %\myindex{FUSION|exampleidx}%
 %\myindex{logistic regression}%

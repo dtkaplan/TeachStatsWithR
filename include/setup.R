@@ -11,7 +11,7 @@ require(mosaic)
 trellis.par.set(theme=col.mosaic(bw=FALSE))
 trellis.par.set(fontsize=list(text=9))
 options(keep.blank.line=FALSE) 
-options(width=70)
+options(width=55)
 require(vcd)
 require(knitr)
 opts_chunk$set(  tidy=TRUE,

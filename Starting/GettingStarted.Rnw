@@ -139,7 +139,7 @@ Large data sets
 \item
 Beautiful plots
 \item
-Simulation/randomization/resampling based methods
+Simulations and methods based on randomization and resampling
 \item
 Quick computations
 \item
@@ -198,19 +198,20 @@ it feels like play!) with fancying things up.
 Keep in mind that just because the graphs are easy to make on the computer doesn't 
 mean your students understand how to read the graphs.  
 Use examples that will
-help students develop good habits for visualizing data.  Remember:
+help students develop good habits for visualizing data.  %Remember:
 
-\begin{center}
-\emph{
-Students must learn to see before they can see to learn.} % -- R. Pruim
-\end{center}
+%\begin{center}
+\sidenote{
+\emph{Students must learn to see before they can see to learn.} % -- R. Pruim
+}
+%\end{center}
 
 \item Introduce Sampling and Randomization Early.
 
-Since sampling drives much of the logic of statistics, introduce the idea of a random sample very
-early, and have students construct their own random samples.  The
-phenomenon of a sampling distribution can be introduced in an
-intuitive way, setting it up as a topic for later discussion and analysis.
+Since sampling drives much of the logic of statistics, introduce the idea of a
+random sample very early, and have students construct their own random samples.
+The phenomenon of a sampling distribution can be introduced in an intuitive
+way, setting it up as a topic for later discussion and analysis.
 
 
 \end{enumerate}
@@ -489,13 +490,14 @@ tally(~heads, random.ladies, format='prop')  # display table using percentages
 @
 
 We can display this table graphically using a plot called a \term{histogram}
-with bins of width~1.
-%\vspace{-8mm}
-\begin{center}
+with bins of width~1.\marginnote{\function{xhistogram()} add some additional
+features to \pkg{lattice} \function{histogram()}.  In particular, the 
+\option{width} and \option{center} arguments make it easier to control
+the bins.}
+
 <<lady-hist,fig.width=3,fig.height=1.6>>=
-xhistogram(~ heads, random.ladies, width=1)  # width = 1 centers bins on integers
+xhistogram(~ heads, random.ladies, width=1)  
 @
-\end{center}
 
 You might be surprised to see that the number of correct guesses
 is exactly 5 (half of the 10 tries) only 

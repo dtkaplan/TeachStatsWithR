@@ -1211,9 +1211,16 @@ xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
 <<>>=
 HELPrct$newsex <- factor(HELPrct$female, labels=c('M','F'))
 @
-\subsubsection{character variables}
-\subsubsection{coercing variables}
-\subsubsection{recoding variables}
+
+%\newthought{character variables}
+%stuff here 
+%
+%\newthought{coercing variables}
+%stuff here 
+%
+%\newthought{recoding variables}
+%stuff here 
+
 \subsection{Accounting for missing data}
 
 \subsection{Merging datasets}
@@ -1313,12 +1320,12 @@ to \verb!reshape()!.
 
 %\subsection{Simple Relational Database Operations}
 %
-%\subsubsection*{Example: Grades/Courses}
+%\newthought{Example: Grades/Courses}
 %
 %Using the grade/courses database, show how to combine data from
 %different data frames. [DTK]
 
-%\subsubsection{Example: Merging Genotype and Phenotype Data}
+%\newthought{Example: Merging Genotype and Phenotype Data}
 %\label{example:fusion1-glm1}%
 %\myindex{FUSION|exampleidx}%
 %\myindex{logistic regression}%
@@ -1487,7 +1494,7 @@ favstats(Sepal.Length ~ Species, data=iris)
 \section{A Few Graphical Bells and Whistles}
 There are lots of arguments that control how lattice plots look.  Here are just a few examples.
 
-\subsubsection{auto.key}
+\newthought{auto.key}
 It would be useful to have a legend for the previous plot.   \verb!auto.key=TRUE! 
 turns on a simple legend.  (There are ways to have more control, if you need it.)
 <<iris-xyplot-key,cache=TRUE>>=
@@ -1495,7 +1502,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 	auto.key=TRUE)   
 @
 
-\subsubsection{alpha, cex}
+\newthought{alpha, cex}
 Sometimes it is nice to have elements of a plot be partly transparent.  When such
 elements overlap, they get darker, showing us where data are ``piling up."
 Setting the \verb!alpha! argument to a value between 0 and 1 controls the degree 
@@ -1510,7 +1517,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 @
 
 \vspace{-8mm}
-\subsubsection*{main, sub, xlab, ylab}
+\newthought{main, sub, xlab, ylab}
 
 You can add a title or subtitle, or change the default labels of the axes.
 <<iris-xyplot-text,cache=TRUE>>=
@@ -1523,7 +1530,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 	auto.key=list(columns=3))   
 @
 
-\subsubsection{trellis.par.set()}
+\newthought{trellis.par.set()}
 Default settings for lattice graphics are set using 
 \verb!trellis.par.set()!.
 Don't like the default font sizes?  You can change to a 7 point (base) font using
@@ -1678,9 +1685,9 @@ the default behavior or something special).
 
 \section{Common Error Messages and What Causes Them}
 
-\subsubsection{Object not found}
+\newthought{Object not found}
 
-\subsubsection{Other error messages here}
+\newthought{Other error messages here}
 
 
 \newpage

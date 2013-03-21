@@ -17,7 +17,6 @@
 %\newdimen\Rwidth
 %\Rwidth=\textwidth
 
-
 %\usepackage[margin=.5in,outer=1.5in,inner=.9in,includehead,includefoot,paperwidth=7.25in,paperheight=9.5in]{geometry}
 \usepackage{probstat}
 \usepackage[shownotes]{authNote}
@@ -49,6 +48,14 @@
 \node at (0,0) [#3]
 {\parbox{1.05in}{\footnotesize {\sc #1 }{\raggedright #2}}};
 \end{tikzpicture}}}
+}
+
+\renewcommand{\tikzNote}[3]{
+\marginnote{
+\textsc{#1}
+
+#2
+}
 }
 
 \newcommand{\InstructorNote}[2][\relax]{%
@@ -105,6 +112,7 @@
 \def\term#1{\textbf{#1}}
 \def\tab#1{{\sf #1}}
 
+%%%%%%%%%%%%% some boxed elements %%%%%%%%%%%%%%%%
 
 \newlength{\tempfmlength}
 \newsavebox{\fmbox}
@@ -150,7 +158,8 @@
 \end{table}		% need to do something about exercises that follow boxedTable
 }
 
-% indexing
+%%% indexing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
 \newcommand{\printindex}[1]{\relax}
 \newcommand{\indexchap}[1]{\relax}
 \usepackage{amsmidx}

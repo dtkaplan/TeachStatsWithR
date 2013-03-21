@@ -111,7 +111,7 @@ will be used throughout.  Other packages appear from time to time, including
 
 %\subsection*{Notation}
 %
-%%\subsubsection*{Exercises}
+%%\newthought{Exercises}
 %Exercises marked with 1 star are intended for students in courses beyond the
 %introductory level.  Exercises marked with 2 stars are intended primarily for
 %instructors (but may also be appropriate for students in higher level courses).
