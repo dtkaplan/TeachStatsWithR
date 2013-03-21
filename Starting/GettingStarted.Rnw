@@ -1,7 +1,7 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
 opts_chunk$set( fig.path="figure/RIntro-fig-" ) 
-if (!exists("notAsStandAlone")) set_parent('../include/MainDocument.Rnw')
+if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
 set.seed(123)
 @
 
