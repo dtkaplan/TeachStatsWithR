@@ -5,7 +5,7 @@ if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
 set.seed(123)
 @
 
-\chapter{Getting Started With R}
+\chapter{Some Advice on Getting Started With R}
 
 
 <<setup,include=FALSE>>=
@@ -15,18 +15,18 @@ opts_chunk$set( fig.path="figures/GettingStarted-" )
 
 Learning \R\ is a gradual process, and getting off to a good start goes a long way toward 
 ensuring success.
-In this chapter we discuss some strategies and tactics for getting started and provide
-some of our favorite examples that can be used very early in the course.
-
-The next two chapters provide more details about the (relatively few) \R\ commands that students need 
-to know and some additional information about \R\ that is useful for instructors to know.
+In this chapter we discuss some strategies and tactics for getting started teaching
+statistics with \R.  
+In subsequent chapters we provide more details about the (relatively few) \R\ 
+\marginnote{The \pkg{mosaic} package includes a vignette outlining a possible
+minimalistic set of \R\ commands for teaching and introductory course.}
+commands that students need to know and some additional information about \R\ 
+that is useful for instructors to know.  Along the way we present some of our favorite 
+examples that highlight the use of \R, including some that can be used very early
+in a course.
 
 \authNote{add a pointer to the 1 page handout somewhere?}
 
-\authNote{add some video lecture/2 minute intros?}
-
-
-%\section{Getting Students Familiar with R}
 
 \section{Strategies}
 Each instructor will choose to start his or her course differently, but we offer the following
@@ -216,22 +216,18 @@ way, setting it up as a topic for later discussion and analysis.
 
 \end{enumerate}
 
-\section{Examples for Early in the Course}
-The remainder of this chapter includes some of our favorite activities for early 
-in the course.  
-\authNote{need to augment}
+\chapter{Using R Early in the Course}
+This chapter includes some of our favorite activities for early 
+in the course.  These activities simultaneously provide the 
+students with an introduction to \R\ and to major themes of the course.
 
 
-\subsection{Coins and Cups: The Lady Tasting Tea}
+\section{Coins and Cups: The Lady Tasting Tea}
 \label{sec:lady-tasting-tea}
 
-\begin{quote}
-\emph{This section is a slightly modified version of a handout R. Pruim
+\marginnote{This section is a slightly modified version of a handout R. Pruim
 has given Intro Stats students on Day 1 \underline{after} going through
-the activity as a class discussion.  
-}
-\end{quote}
-
+the activity as a class discussion.}
 
 There is a famous story about a lady who claimed that
 tea with milk tasted different depending on whether the milk was 
@@ -420,12 +416,17 @@ Then we present the ten cups to the lady and have her state which ones she
 thinks were prepared each way.  
 
 It is easy to give her a score (9 out of 10, or 7 out of 10, or whatever
-it happens to be).  It is trickier to figure out what to do with her score.
+it happens to be).  
+\marginnote{The score is setting up the idea of a test statistic for later.}
+It is trickier to figure out what to do with her score.
 Even if she is just guessing and has no idea, she could get lucky and 
 get quite a few correct -- maybe even all 10.  But how likely is that?
 
 Let's try an experiment.  I'll flip 10 coins.  You guess which are heads and
 which are tails, and we'll see how you do.  
+\marginnote{Have each student make a guess by writing down a sequence
+of 10 H's or T's while you flip the coin behind a barrier so that the students
+cannot see the results.  }
 
 $\vdots$
 
@@ -448,7 +449,12 @@ flip a bunch of coins and keep track.  If the lady is just guessing, she
 might as well be flipping a coin.
 
 So here's the plan.  We'll flip 10 coins.  We'll call the heads correct 
-guesses and the tails incorrect guesses.  Then we'll flip 10 more coins,
+guesses and the tails incorrect guesses.  
+\marginnote{There is a subtle switch here.  Before we were asking how 
+many of the students H's and T's matched the flipped coin.  Now we are 
+using H to simulate a correct guess and T to simulate an incorrect guess.
+This makes simulating easier.}
+Then we'll flip 10 more coins,
 and 10 more, and 10 more, and \dots.  That would get pretty tedious.
 Fortunately, computers are good at tedious things, so we'll let the computer 
 do the flipping for us.
@@ -460,11 +466,11 @@ The \function{rflip()} function can flip one coin
 require(mosaic)
 rflip()
 @
+\noindent
 or a number of coins
 <<flip10coins,cache=FALSE>>=
 rflip(10)
 @
-%and show us the results.
 
 Typing \code{rflip(10)} a bunch of times is almost as tedious as 
 flipping all those coins.   But it is not too hard to 
@@ -472,7 +478,7 @@ tell \R\ to \function{do()} this a bunch of times.
 <<flip2,cache=TRUE>>=
 do(3) * rflip(10)
 @
-
+\noindent
 Let's get \R\ to \function{do()} it for us 10,000 times and make 
 a table of the results.
 
@@ -484,13 +490,15 @@ set.seed(123)
 random.ladies <- do(10000) * rflip(10)
 @
 
-<<lady-table>>=
+<<lady-table, tidy=FALSE>>=
 tally(~heads, random.ladies)
-tally(~heads, random.ladies, format='prop')  # display table using percentages
+# We can also display table using percentages
+tally(~heads, random.ladies, format='prop')  
 @
 
 We can display this table graphically using a plot called a \term{histogram}
-with bins of width~1.\marginnote{\function{xhistogram()} add some additional
+with bins of width~1.
+\marginnote{\function{xhistogram()} add some additional
 features to \pkg{lattice} \function{histogram()}.  In particular, the 
 \option{width} and \option{center} arguments make it easier to control
 the bins.}
@@ -546,18 +554,29 @@ tally(results$M, format='perc')
 \subsection{Births by Day}
 
 The \dataframe{Births78} data set contains the number of births in the United States for 
-each day of 1978.  A scatter plot of births by day of year reveals some interesting patterns.
+each day of 1978.  A scatter plot of births by day of year reveals some interesting 
+patterns.
+Let's see how the number of births depends on the day of the year.
+\marginnote{The use of the phrase ``depends on'' is intentional.  
+Later we will emphasize how \texttt{\~} can often be interpreted as ``depends on''.}
 
 <<births1,out.width=".8\\textwidth",fig.width=5>>=
 xyplot(births ~ dayofyear, Births78)
 @
 
-Have students first describe the patterns (they should notice both the cyclic rise and fall and 
-the two ``parallel waves" and then make conjectures about possible causes).
+When shown this image, students should readily be able to 
+describe two patterns in the data; they should notice both the rise and 
+fall over the course of the year and the two ``parallel waves". 
+\marginnote{This can make a good ``think-pair-share'' activity.}
+Many students will be able to come up with conjectures about the peaks and valleys,
+but they often struggle to correctly interpret the parallel waves.  Having them
+make conjectures about this will quickly reveal whether they are correctly 
+interpreting the plot.
 
-One conjecture about the parallel waves can be checked using the data at hand.  If we display each 
-day of the week with a different symbol or color, we see that there are fewer births on weekends -- likely 
-because scheduled births are less likely on weekends.  There are a handful of exceptions which are 
+One conjecture about the parallel waves can be checked using the data at hand.
+If we display each day of the week with a different symbol or color, we see
+that there are fewer births on weekends -- likely because scheduled births are
+less likely on weekends.  There are a handful of exceptions which are 
 readily seen to be holidays.
 <<births2,echo=FALSE,results="hide">>=
 trellis.par.set(superpose.symbol=list(pch=16, alpha=.6, cex=.6))
@@ -571,14 +590,23 @@ A discussion of this or some other data set that can be explored through graphic
 is a good way to demonstrate ``statistical curiosity", to illustrate the power of \R\ 
 for creating graphs, and to introduce the importance of covariates in statistical analysis.
 
-We'll return to this data set later to see ways it can be used for more formal analyses.
-\authNote{rjp: Make sure we come back to this later.}
+%We'll return to this data set later to see ways it can be used for more formal analyses.
+\authNote{rjp: Restore comment about returning to this data only if we do return to it.}
 
-\subsection{SAT and Confounding}
+\section{SAT and Confounding}
 \label{sec:secconfound}
-\authNote{NH to add}
+\authNote{NH (or others) to finish this example.}
 
-\subsection{Mites and Wilt Disease}
+The \dataframe{SAT} data set contains information about 
+the link between SAT scores and measures of educational expenditures.
+Students are often surprised to see that states that spend more on education
+do worse on the SAT.
+<<SAT1>>=
+xyplot(sat ~ expend, data=SAT)
+@
+
+
+\section{Mites and Wilt Disease}
 \label{sec:mites}
 \authNote{NH to add}
 

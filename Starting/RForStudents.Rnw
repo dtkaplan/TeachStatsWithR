@@ -6,7 +6,8 @@ set.seed(123)
 @
 
 
-\chapter{What Students Need to Know About R \& How to Teach It}
+\chapter{What Students Need to Know About R 
+\& How to Teach It}
 \label{chap:RForStudents}
 
 
@@ -16,84 +17,13 @@ opts_chunk$set( fig.path="figures/RForStudents-" )
 @ 
 
 
-\section{Welcome to \R\ and \Rstudio}
-
-\R\ is a system for statistical computation and graphics, and
-\RStudio\ is an integrated development environment that facilitates use of \R.  
-Both (especially together) are powerful statistical tools that you and your students
-are unlikely to outgrow.  It is used widely in research and industry.  It is supported
-by hundreds of authors of thousands of add-on packages that can provide specialized 
-tools for all sorts of analyses.  In short, \R\ is a comprehensive statistical 
-computing platform.
-
-\authNote{ref to 1 page handout?}
-
-Most beginning users need only a very small fraction of \R.
-Part of using \R\ successfully with students is guiding them to a subset that
-is small enough to make them comfortable and creative users and comprehensive enough to
-handle the tasks they are likely to encounter.
-
-
-We use these systems for several reasons:
-\begin{enumerate}
-\item \R\ and \RStudio\ are open-source tools that are freely available for Mac, PC, and Linux machines.
-This means that there is no restriction on having to license a particular
-software program, or have
-students work in a specific lab that has been outfitted with the technology of choice.
-\item \R\ is user-extensible and user extensions can easily be made available to others.
-\item \R\ is high quality, rivaling commercial systems.  It is the package of choice for many statisticians and those
-who use statistics frequently.  
-\item \R\ is becoming very popular with statisticians and scientists, especially in certain
-sub-disciplines, like genetics.  Articles in research journals such as \textit{Science} often
-include links to the \R\ code used for the analysis and graphics presented.
-\item
-\R\ is very powerful.  Furthermore, it is gaining new features every day.  New statistical 
-methods are often available first in \R.
-\end{enumerate}
-
-\RStudio\ is an open source tool that extends \R\ and helps both
-novice and expert users.
-We have adopted \RStudio\ because it simplifies the interface and
-speeds the learning code for this environment.
-
-\authNote{add marginal note about RStudio in the cloud?}
-
-There are several things (mainly those using \function{manipulate()}) that require
-the \RStudio\ interface to \R.  
-
-\subsection*{Setting up R and RStudio} 
-
-\R\ can be obtained from \url{http://cran.r-project.org/}.  
-Download and installation are pretty straightforward for Mac, PC, or linux machines.
-
-\RStudio\ is available from 
-\url{http://www.rstudio.org/}.
-\RStudio\ can be installed as a desktop (laptop) application or as a server application
-that is accessible to others via the Internet.
 
 \section{Using R as a Calculator}
-Once you have launched a desktop/laptop version of \RStudio\ or logged in to an 
-\RStudio\ server, you will see something like Figure~\ref{fig:Rstudio-bigview}.
-\authNote{rjp: Get new screen shot.}
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=1.0\textwidth]{images/RStudio-bigview}
-\end{center}
-\caption{Welcome to \Rstudio.}
-\label{fig:Rstudio-bigview}%
-\end{figure}
-
-Notice that \Rstudio\ divides its world into four panels.  Several of the panels
-are further subdivided into multiple tabs.
-The console panel is where we type commands that \R\ will execute. 
-
 Most students are familiar and comfortable with their hand-held calculators, so it
 is natural to begin an introduction to \R\ by showing them how \R\ can be used
 to perform typical calculator operations.
 
 Try typing the following commands in the console panel.
-
 <<arithmetic>>=
 5 + 3
 15.3 * 23.4
@@ -108,17 +38,13 @@ Comments are prefaced with the \verb!#! character.
 You can save values to named variables for later reuse.
 \TeachingTip{It's probably best to settle on using 
 one or the other of the right-to-left assignment operators rather than to switch
-back and forth.  The authors of this document have different preferences:
+back and forth.  The authors have different preferences:
 two of us find the equal sign to be simpler for students and more 
-intuitive, while the other prefers the right to left operator because
+intuitive, while the other prefers the arrow operator because
 it can also be used in a left to right manner.}%
 
-<<variables1>>=
+<<variables1a,tidy=FALSE>>=
 product = 15.3 * 23.4       # save result
-@
-
-
-<<variables1b,tidy=FALSE>>=
 product                     # display the result
 product <- 15.3 * 23.4      # <- can be used instead of =
 product                     
@@ -133,15 +59,6 @@ log10(product)              # base 10 log of the product
 log(product,base=2)         # base 2 log of the product
 @
 \authNote{can we come up with a better (e.g. less mathematical) example?}
-
-\begin{problem}
-Calculate the natural logarithm (log base $e$) and base 10 logarithm of 12,345.
-
-What happens if you leave the comma in this number?
-<<>>=
-log(12,345)
-@
-\end{problem}
 
 
 The semi-colon can be used to place multiple commands on one line.  
@@ -164,10 +81,9 @@ your students about) a few key features of the \R\ language.
 If you mis-capitalize something in \R\ it won't do what you want.
 Unfortunately, there is not a strong convention about how capitalization 
 should be used, so you just have to pay attention when encountering new
-functions and data sets.  Be aware that some students will be slow
-to catch on to the importance of capitalization. 
-
-\authNote{introduce 1 page cheat sheet pointer}
+functions and data sets.  
+\TeachingTip{Some students will be slow
+to catch on to the importance of capitalization.} 
 
 \item 
 Functions in \R\ use the following syntax:
@@ -175,8 +91,12 @@ Functions in \R\ use the following syntax:
 functionname( argument1, argument2, ... )
 @
 \vspace{-5mm}
-\TeachingTip{To help students get the hang of function arguments,
-ask them \emph{What information does the computer need to compute this?}
+\TeachingTip{Introduce functions by emphasizing the questions
+\emph{What do we want the computer to do?} and 
+\emph{What information does the computer need to compute this?}
+The answer to the first question determines the function to use.
+The answer to the second question determines what the
+arguments must be.
 }%
 \begin{itemize}
 \item The arguments are \underline{always} \emph{surrounded by (round) parentheses} and 
@@ -193,9 +113,10 @@ something is implemented).
 \item
 TAB completion and arrows can improve typing speed and accuracy.
 
-If you begin a command and hit the TAB key, \R\ and \RStudio\ will show you a list of possible ways to 
-complete the command.  If you hit TAB after the opening parenthesis of a function, \RStudio\ will display
-the list of arguments it expects.  The up and down arrows can be used to retrieve past commands.
+If you begin a command and hit the TAB key, \R\ and \RStudio\ will show you a
+list of possible ways to complete the command.  If you hit TAB after the
+opening parenthesis of a function, \RStudio\ will display the list of arguments
+it expects.  The up and down arrows can be used to retrieve past commands.
 \item
 If you see a \verb!+! prompt, it means \R\ is waiting for more input.
 
@@ -219,7 +140,7 @@ To get help on a specific function or data set, simply precede its name with a \
 
 \authNote{This isn't working properly}
 <<help1,eval=FALSE,tidy=FALSE>>=
-?col.whitebg()
+?log      # help for the log function
 @
 <<help2,eval=FALSE,tidy=FALSE>>=
 ?HELPrct  # help on a data set
@@ -231,20 +152,13 @@ If you don't know the exact name of a function, you can give part of the name an
 \R\ will find all functions that match.  Quotation marks are mandatory here.
 
 <<apropos>>=
-apropos('histogram')            # must include quotes.  single or double.
+apropos('table')            # must include quotes.  single or double.
 @
 
 \subsection{\texttt{??} and \texttt{help.search()}}
 If that fails, you can do a broader search using \verb!??! or \verb!help.search()!, 
 which will find matches not only in the names of functions and data sets, 
 but also in the documentation for them.  Quotation marks are optional here.
-
-% <<help2,eval=FALSE,results=hide>>=
-% ??tally                  # any of these will work
-% ??"tally"  
-% ??'tally'  
-% help.search('tally')
-% @
 
 
 \subsection{Examples and Demos}
@@ -254,26 +168,26 @@ For example,
 <<example-histogram,eval=FALSE,results="hide">>=
 example(xhistogram)
 @
+\noindent
 will generate a number of example plots (and provide you with the commands used to create them).
 Examples such as this are intended to help you learn how specific \R\ functions work.
-\FoodForThought{Not all package authors are equally skilled at creating examples.  
+\Caution{Not all package authors are equally skilled at creating examples.  
 Some of the examples are next to useless, others are excellent.}
 These examples also appear at the end of the documentation for functions and data sets.
 
 The \verb!mosaic! package (and some other packages as well) also includes demos.  
 Demos are bits of \R\ code that can be executed using the \verb!demo()! command
 with the name of the demo.
-
 To see how demos work, give this a try:
 <<demo,eval=FALSE,results="hide">>=
 demo(lattice)
 @
 
+\noindent
 Demos are intended to illustrate a concept, a method, or some such thing, and are 
 independent of any particular function or data set.
 
 You can get a list of available demos using
-
 <<demo-list,eval=FALSE,results="hide">>=
 demo()                     # all demos
 demo(package='mosaic')     # just demos from mosaic package
@@ -315,6 +229,10 @@ may have previously stored in a variable with this same name is no longer availa
 \subsection{Data Frames}
 
 Data sets are usually stored in a special structure called a \term{data frame}.
+
+\TeachingTip{Students who collect their own data, especially if they 
+store it in Excel, are unlikely to put data into the correct format
+unless explicitly taught to do so.}
 
 \begin{boxedText}
 Data frames have a 2-dimensional structure.  
@@ -403,15 +321,24 @@ The \verb!attach()! function in R can be used to make objects within dataframes
 accessible in R with fewer keystrokes, but we strongly discourage its use, as
 it often leads to name conflicts and other complications.  
 \Caution{Avoid the use of \function{attach()}.}
-The Google R Style Guide
-(\url{http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html})
-echoes this advice, stating that \emph{The possibilities for creating errors
+The Google R Style Guide\footnote{
+\url{http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html}}
+echoes this advice, stating that 
+
+\begin{quotation}
+\emph{The possibilities for creating errors
 when using attach are numerous. Avoid it.} 
+\end{quotation}
 It is far better to directly access
 variables using the \verb!$! syntax or to use the \function{with()} function.
 
 \subsection{Using Your Own Data}
 \label{sec:usingdata}
+\TeachingTip{Start out using data from packages and focusing on what \R\ can
+do with the data.  Later, once students are familiar 
+with \R\ and understand the format required for data,
+teach students how to import their own data.}
+
 \Rstudio\ will help you import your own data.  To do so use the ``Import Dataset" 
 button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
 google spreadsheets.   
@@ -517,6 +444,129 @@ abdData(2)               # all data sets in chapter 2
 %
 %For information on how to create such packages, consult the \textit{Writing R Extensions} manual
 %on CRAN.
+
+\section{Installing and Using Packages}
+
+\marginnote{If you set up an \RStudio\ server, you can install all
+of the packages you want to use.  You can even configure the server to 
+autoload packages you use frequently.  Students who use \R\ on their 
+desktop machines will need to know how to install and load packages, however.}
+
+\R\ is open source software.  Its development is supported by
+a team of core developers and a large community of users.
+One way that users support
+\R\ is by providing \term{packages} that contain data and functions
+for a wide variety of tasks.  
+
+\subsection{Installing packages from \cran}
+If you need to install a package, most likely it will be on \cran, 
+the Comprehensive R Archive Network.\footnote{R-forge and Bioconductor 
+are two other repositories of \R\ packages.}
+\authNote{need to simplify this: is it really needed?}
+Before a package can be used, it must be \term{installed} 
+(once per computer)
+and
+\term{loaded} (once per \R\ session).  
+Installing downloads the package software and prepares it for use
+by compiling (if necessary) and putting its components in the proper
+location for future use.
+Loading makes a previously installed package available for use 
+in an \R\ session.
+
+For example, to use the \pkg{mosaic} package:
+\Rindex{install.packages()}%
+\Rindex{require()}%
+
+<<eval=FALSE,tidy=FALSE>>=
+install.packages("mosaic") # fetch package from CRAN to local machine.
+require(mosaic)            # load the package so it can be used.
+@
+
+If you are running on a machine where you don't have privileges to
+write to the default library location, you can install a personal 
+copy of a package.  If the location of your personal library is 
+first in \verb!R_LIBS!, this will probably happen automatically.  If not,
+you can specify the location manually:
+
+<<eval=FALSE>>=
+install.packages("mosaic", lib="~/R/library")
+@
+On a networked machine, be sure to use a different local directory for 
+each platform since packages must match the platform.
+
+Installing  packages on a Mac or PC is something you might like to do 
+from the GUI since it will provide you with a list of packages from 
+which you can select the ones of interest.
+Binary packages have been precompiled for a 
+particular platform and are generally faster and easier to set up, if they 
+are available.  Source packages need to be compiled and built on your local
+machine.  Usually this happens automatically -- provided you have all the 
+necessary tools installed on your machine -- so the only disadvantage is the
+extra time it takes to do the compiling and building.
+
+\subsection{Installing other packages}
+
+Occasionally you might find a package of interest that is not available via
+a repository like \cran.  
+Typically, if you find such a package, you will also find instructions
+on how to install it.  If not, you can usually install directly from the 
+zipped up package file.
+
+<<eval=FALSE,echo=TRUE>>=
+# repos = NULL indicates to use a file, not a repository
+install.packages('some-package.tar.gz', repos=NULL)           
+@
+
+
+\subsection{Finding packages}
+There are several ways to find packages
+\begin{itemize}
+  \item Ask your friends.
+  \item Google:  Put `cran' in the search.
+  \item Rseek:  \url{http://rseek.org} provides a search engine specifically
+  designed to find information about \R.
+  \item CRAN task views.
+
+  A number of folks have put together task views that annotate a large
+  number of packages and summarize they are good for.  They are 
+  organized according to themes.  Here are a few examples
+  of available task views:
+\authNote{NJH to update}
+
+  \begin{center}
+    \begin{tabular}{lp{0.7\textwidth}}
+    Bayesian &    Bayesian Inference \\
+%    Cluster &   Cluster Analysis \& Finite Mixture Models \\
+    Econometrics &   Computational Econometrics \\
+%    Environmetrics &   Analysis of ecological and environmental data \\
+    Finance &   Empirical Finance \\
+    Genetics &   Statistical Genetics \\
+    Graphics &   Graphic Displays,  Dynamic Graphics,
+          Graphic Devices, and Visualization \\
+%    gR &   gRaphical models in R \\
+%    MachineLearning &   Machine Learning \& Statistical Learning \\
+    Multivariate &   Multivariate Statistics \\
+%    Psychometrics &   Psychometric Models and Methods \\
+    SocialSciences &   Statistics for the Social Sciences \\
+%    Spatial &   Analysis of Spatial Data \\
+    \end{tabular}
+  \end{center}
+
+  \item Bioconductor (\url{http://www.bioconductor.org/}) 
+  and Omegahat (\url{http://www.omegahat.org/R}) 
+are another
+  sources of packages (specify the \verb!repos=! option to use these).
+
+  \item 
+  \textit{R Journal}  (formerly \textit{R News})
+  is available via \cran\ and 
+  often has articles about new packages and their capabilities.
+
+  \item Write your own.
+
+  You can write your own packages, and it isn't that hard to do (but 
+we won't cover this here).
+\end{itemize}
 
 \section{Summarizing Data}
 
@@ -668,13 +718,11 @@ bwplot(Sepal.Length ~ Species, data=iris)
 <<label="iris-bwplot-2dmore">>=
 bwplot(Species ~ Sepal.Length, data=iris)
 @
-@
-\vspace{-12mm}
+%\vspace{-12mm}
 
 \InstructorNote{This assumes that the variable on the right hand side of the tilde
 is categorical}
 
-%\pagebreak
 
 \subsection{Scatterplots: \texttt{xyplot()}}
 
