@@ -11,7 +11,7 @@ require(mosaic)
 trellis.par.set(theme=col.mosaic(bw=FALSE))
 trellis.par.set(fontsize=list(text=9))
 options(keep.blank.line=FALSE) 
-options(width=55)
+options(width=60)
 require(vcd)
 require(knitr)
 opts_chunk$set(  tidy=TRUE,
@@ -22,24 +22,29 @@ opts_chunk$set(  tidy=TRUE,
                  fig.show="hold",
                  comment=NA)
 knit_hooks$set(chunk=function(x,options){
+	vshift <- options$vshift
+    if (is.null(vshift)) vshift <- "0ex"
 	return(paste("%% Using custom chunk hook function", 
-		  "\\begin{knitrout}",
-	      "\\definecolor{shadecolor}{rgb}{0.9, 0.9, 0.9}\\color{fgcolor}",
-		  "\\begin{kframe}",
-		  x,
-         "\\end{kframe}",
-		 "\\end{knitrout}",
+		  paste("\\vspace*{",vshift,"}%", sep=""),
+		  "\\begin{knitrout}%",
+	      "\\definecolor{shadecolor}{rgb}{0.9, 0.9, 0.9}\\color{fgcolor}%",
+		  "\\begin{kframe}%",
+          sub("\\n$","",x), 
+         "\\end{kframe}%",
+		 "\\end{knitrout}%",
+		  paste("\\vspace*{",vshift,"}", sep=""),
 		 sep="\n"
 		 ))
 })
 
 knit_hooks$set(output=function(x,options) {
-			   vshift <- options$vshift
-               if (is.null(vshift)) vshift <- "0ex"
-			   return(paste("%% Using custom output hook function", 
-					 paste("\\vspace*{",vshift,"}", sep=""),
-					 "\\begin{verbatim}",
-                      x, 
-					 "\\end{verbatim}",
-					  sep="\n" ))
+	   vshift <- options$vshift
+	   if (is.null(vshift)) vshift <- "0ex"
+	   return(paste("%% Using custom output hook function", 
+			 paste("\\vspace*{",vshift,"}", sep=""),
+			 "\\begin{verbatim}",
+			  sub("\\n$","",x), 
+			 "\\end{verbatim}%",
+			 paste("\\vspace*{",vshift,"}", sep=""),
+			  sep="\n" ))
 })
