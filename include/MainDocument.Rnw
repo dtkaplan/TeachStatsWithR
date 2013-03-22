@@ -1,4 +1,5 @@
 \documentclass[open-any,12pt]{tufte-book}
+\setcounter{secnumdepth}{3}
 \usepackage{import}
 \usepackage{graphicx}
 
@@ -176,6 +177,10 @@
 
 \pagestyle{fancy}
 
+% <<results='asis',echo=FALSE>>=
+% if (exists(title)) cat(paste("\\title{",title,"}",sep=""))
+% if (exists(author)) cat(paste("\\author{",author,"}",sep=""))
+% @
 
 \begin{document}
 
