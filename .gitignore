@@ -9,3 +9,7 @@ TeachStatsWithR.Rproj
 *.toc
 *.ilg
 *.ind
+framed.sty
+*.out
+*.fls
+*_latexmk
