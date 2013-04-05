@@ -2,3 +2,10 @@
 .Rhistory
 .RData
 TeachStatsWithR.Rproj
+*~
+*.bk
+*.notes
+*.idx
+*.toc
+*.ilg
+*.ind
