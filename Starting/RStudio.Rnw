@@ -12,7 +12,7 @@ set.seed(123)
 
 \label{chap:RStudio}
 
-\RStudio\ is an integrated development environment (IDE) for \R that provides an alternative
+\RStudio\ is an integrated development environment (IDE) for \R\ that provides an alternative
 interface to \R\ that has several advantages over other the defautl \R\ interfaces:
 \begin{itemize}
 	\item \RStudio\ runs on Mac, PC, and linux machines \emph{and looks and feels
@@ -59,7 +59,7 @@ interface to \R\ that has several advantages over other the defautl \R\ interfac
 		 from RMarkdown if they are interested.
 
 	 \item
-		 \RStudio\ provides an integrated support for editing and compiling \R\
+		 \RStudio\ provides an integrated support for editing and executing \R\
 		 code and documents.
 
 	 \item
@@ -67,7 +67,7 @@ interface to \R\ that has several advantages over other the defautl \R\ interfac
 
 		 \RStudio\ is not a GUI for \R, but it does provide a GUI that simplifies things
 		 like installing and updating packages; monitoring, saving and loading workspaces;
-		 importing and exporting data; exporting graphics; and browsing files and 
+		 importing and exporting data; browsing and exporting graphics; and browsing files and 
 		 documentation.
 
 
@@ -76,9 +76,11 @@ interface to \R\ that has several advantages over other the defautl \R\ interfac
 
 		 The \pkg{manipulate} package provides a way to create simple interactive
 		 graphical applications quickly and easily.
+
 \end{itemize}
 While one can certainly use \R\ without using \RStudio, \RStudio\ makes a number 
-of things easier and we highly recommend using \RStudio.
+of things easier and we highly recommend using \RStudio.  Furthermore, since \RStudio\
+is in active development, we fully expect more useful features in the future.
 
 %\begin{quote}
 %\emph{This is a lightly modified version of a handout RJP used with his 
@@ -87,15 +89,46 @@ of things easier and we highly recommend using \RStudio.
 %\end{quote}
 
 
-\section*{Setting up R and RStudio} 
+\section{Setting up R and RStudio} 
 
 \R\ can be obtained from \url{http://cran.r-project.org/}.  
 Download and installation are pretty straightforward for Mac, PC, or linux machines.
-
-\RStudio\ is available from 
-\url{http://www.rstudio.org/}.
+\RStudio\ is available from \url{http://www.rstudio.org/}.
 \RStudio\ can be installed as a desktop (laptop) application or as a server application
 that is accessible to others via the Internet.
+
+\subsection{RStudio in the cloud}
+We primarily use an online version of \Rstudio.  \Rstudio\ is a innovative and
+powerful interface to \R\ that runs in a web browser or on your local machine.
+Running in the browser has the advantage that you don't have to install or
+configure anything.  Just login and you are good to go.  Futhermore, \Rstudio\
+will ``remember'' what you were doing so that each time you login (even on a
+different machine) you can pick up right where you left off.  This is ``\R\ in
+the cloud" and works a bit like GoogleDocs for \R.
+
+Your systems administrator will likely need to set up your own version of
+\RStudio\ for your institution, but we can attest that the process is
+straightforward and greatly facilitates student and faculty use.
+
+\subsection{\RStudio\ on your computer}
+There is also a stand-alone version of the \Rstudio\ environment that you can install on
+your desktop or laptop machine.  
+This can be downloaded from \url{http://www.rstudio.org/}.  This assumes that you 
+have a version of R installed on your computer (see below for instructions to download
+this from CRAN).  Even if your students are primarily or exclusively using the server
+version of \RStudio\ in a browser, instructors may like to have the security blanket 
+of a version that does not require access to the internet.  But be warned, the two version
+look so similar that you may occasionally find yourself working in one of them when you
+intend to be in the other.
+
+\subsection{Getting R from CRAN}
+\label{sec:CRAN}
+
+CRAN is the Comprehensive \R\ Archive Network (\url{http://cran.r-project.org/}).  
+You can download free versions of \R\ for PC, Mac, and Linux from CRAN.  (If you use
+the \Rstudio\ stand-alone version, you also need to install \R\ this way first.)
+All the instructions for downloading and installing are on CRAN.  Just 
+follow the appropriate instructions for your platform.
 
 Once you have launched the desktop version of \RStudio\ or logged in to an \RStudio\ server, 
 you will see something like Figure~\ref{fig:Rstudio-bigview}.
@@ -114,7 +147,12 @@ are further subdivided into multiple tabs.  Which tabs appear in which panels
 can be customized by the user.
 
 \section{Using R as a Calculator}
-The \tab{console} tab is where we type commands that \R\ will execute. 
+\R\ can do much more than a simple calculator, and we will introduce 
+additional features in due time.  But performing simple calculations in \R\ is a
+good way to begin learning the features of \RStudio.
+\RStudio.
+\subsection{Calculating in the Console Tab}
+Commands entered in the \tab{Console} tab are immediately executed by \R\.
 A good way to familiarize yourself with the console is to do some simple 
 calculator-like computations.  Most of this will work just like you would 
 expect from your calculator.
@@ -123,82 +161,103 @@ Try typing the following commands in the console panel.
 <<arithmetic>>=
 5 + 3
 15.3 * 23.4
-sqrt(16)
-log(10)           # log base e
-log10(10)         # log base 10 
-log(10, base=10)  # log base 10 
-log(10, 10)       # log base 10 
+sqrt(16)                  # square root
 @
-Several of these examples demonstrate how functions are called within \R.
 
+\subsection{Working with \R\ Script Files}
+As an alternative, \R\ commands can be stored in a file.  \RStudio\ provides
+an integrated editor for editing these files and facilitates executing some or all of 
+the commands.  To create a file, select \tab{File}, then \tab{New File}, then \tab{R Script}
+from the \RStudio\ menu.  A file editor tab will open.  \R\ code can be entered here, and 
+buttons and menu items are provided to run all the code (called sourcing the file) or 
+to run the code on a single line or in a selected section of the file.
 
-\begin{problem}
-Calculate the natural logarithm (log base $e$) and base 10 logarithm of 12,345.
+\subsection{Working with RMarkdown Files}
+A third alternative is to take advantage of \RStudio's support for reproducible research.
+If you already know \LaTeX, you will want to investigate the knitr/Sweave capabilities.
+For those who do not alrady know \LaTeX, the simpler RMarkdown system provides an easy
+entry into the world of reproducible research methods.  It also provides a good facility
+for students to create homework and reports that include text, \R\ code, and graphics.
 
-What happens if you leave the comma in this number?
-<<>>=
-log(12,345)
-@
-%Copy-and-paste your \R\ code into your Word document.  
-%Be sure to use a fixed-width font (like Courier) when you display \R\ code.  This will
-%(1) make it clear that you are displaying \R\ input or output, and (2) keep things aligned 
-%properly.
-\end{problem}
+To create a new RMardown file, select \tab{File}, then \tab{New File}, then \tab{RMarkdown}.
+The file will be opened with a short template document that illustrates the mark up language 
+used.  Click on \tab{Compile HTML} to convert this to an HTML file.  There is a button the 
+provides a brief index of the mark up provided, and the \RStudio\ web site includes more
+extensive tutorials on using RMarkdown.
 
-Of course, \R\ can do much more than a simple calculator, and we will introduce some 
-of those additional features in due time.  For now we will continue our tour of 
-\RStudio.
+\marginnote{RMarkdown files do not have access to the console workspace, so
+the code in them must be self-contained.}%
+It is important remember that unlike \R\ scripts, which are executed in the
+console and so do have access to the console workspace,  RMarkdown files do not
+have access to the console workspace.  This is a good feature because it forces
+the files to be self-contained, which makes them transferable and respects good
+reproducible research practices.  But beginners, especially if they adopt a
+strategy of trying things out in the console and copying and pasting successful
+code from the console to their file, will often create files that are
+incomplete and therefore do not compile correctly.
+
+One good strategy for getting student to use RMarkdown is to provide them with a template
+that includes the boiler plate you want them to use, loads any \R\ packages that they will
+need, sets any knitr or \R\ settings they way you prefer them, and has placeholders for the 
+work you want them to do.
+
 
 \section{The Other Panels and Tabs}
 
 \subsection{The History Tab}
 
-\subsection{The Files Tab}
+As commands are entered in the console, they appear in the \tab{History} tab.
+These histories can be saved an loaded, there is a search feature to locate
+previous commands, and individual lines or sections can be transfered back to
+the console.  Keeping the \tab{History} tab open will allow students to look
+back and see the previous several commands.  This can be especially useful when
+commands produce a fair amount of output and so scroll of the screen rapidly.
+History files can be saved and distributed to students so that they can rerun the 
+code illustrated in class.  (Before saving the history, you can remove any lines 
+that you don't want saved to spare your students repeating all of your typing errors.)
 
-\subsection{The Files Panel}
+An alternative is to produce RMarkdown files in class and make those available.  This provides
+a better mechanism for adding additional comments or instructions.
+
+\subsection{The Files Tab}
+The \tab{Files} tab provides a simple file manager.  It can be navigated in familiar ways
+and used to open, move, rename, and delete files.  In the browser version of \RStudio, 
+the \tab{Files} tab also provides a file upload utility for moving files from the local
+machine to the server.
 
 \subsection{The Help Tab}
+The \tab{Help} tab is where \RStudio\ displays \R\ help files.  These can be searched and navigated
+in the \tab{Help} tab.  You can also open a help file using the \texttt{?} operator in the console.
+For example
+<<eval=FALSE, tidy=FALSE>>=
+?log
+@
+Will provide the help file for the logarithm function.
 
 \subsection{The Workspace Tab}
+The \tab{Workspace} tab shows the opjects available to the console.  These are
+subdivided into data, values (non-data frame, non-function objects) and
+functions.  Clicking on a data frame will open it a data viewer.  Clicking on
+other objects will open them in a small editor so you can ``fix'' them.
 
 \subsection{The Plots Tab}
+Plots created in the console are displayed in the \tab{Plots} tab.  For example,
+<<>>=
+require(lattice)
+xyplot( births ~ dayofyear, data=Births78)
+@
+\noindent
+will display the number of births in the United States for each day in 1978.
+From the \tab{Plots} tab, you can navigate to previous plots and also export plots 
+in various formats after interactively resizing them.
+
 
 \subsection{The Packages Tab}
 
-
-\section{Installing \RStudio}
-
-\subsection{RStudio in the cloud}
-We primarily use an online version of 
-\Rstudio.  
-\Rstudio\ is a innovative and powerful interface to \R\ that runs in a web browser 
-or on your local machine.
-Running in the browser has the advantage that you don't have to install or configure anything.  Just login
-and you are good to go.  Futhermore, \Rstudio\ will ``remember'' what you were doing so that
-each time you login (even on a different machine) you can pick up right where you left off.
-This is ``\R\ in the cloud" and works a bit like GoogleDocs for \R.
-
-Your systems administrator will likely need to set up your own version of \RStudio\ for your institution, but we can attest that the process is straightforward and
-greatly facilitates student and faculty use.
-
-\subsection{\RStudio\ on your computer}
-There is also a stand-alone version of the \Rstudio\ environment that you can install on
-your desktop or laptop machine.  
-This can be downloaded from \url{http://www.rstudio.org/}.  This assumes that you 
-have a version of R installed on your computer (see below for instructions to download
-this from CRAN).
-
-
-\subsection{Getting R from CRAN}
-\label{sec:CRAN}
-
-CRAN is the Comprehensive \R\ Archive Network (\url{http://cran.r-project.org/}).  
-You can download free versions of \R\ for PC, Mac, and Linux from CRAN.  (If you use
-the \Rstudio\ stand-alone version, you also need to install \R\ this way first.)
-All the instructions for downloading and installing are on CRAN.  Just 
-follow the appropriate instructions for your platform.
-
-
+Much of the functionality of \R\ is located in packages, many of which can be obtained
+from a central clearing house called CRAN (Comprehensive R Archive Network).  The \tab{Packages}
+tab facilitates installing and loading packages.  It will also allow you to search for
+packages that have been updated since you installed them.
 
 
 \section{Exercises}

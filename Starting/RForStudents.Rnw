@@ -12,9 +12,6 @@ set.seed(123)
 \& How to Teach It}
 \label{chap:RForStudents}
 
-<<>>=
-exists("..makingMaster..")
-@
 
 \section{Using R as a Calculator}
 Most students are familiar and comfortable with their hand-held calculators, so it

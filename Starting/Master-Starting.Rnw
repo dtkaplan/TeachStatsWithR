@@ -23,11 +23,15 @@
 <<child='FrontMatter.Rnw', eval=TRUE>>=
 @
 
-<<child='GettingStarted.Rnw', eval=TRUE>>=
+<<child='StartingAdvice.Rnw', eval=TRUE>>=
 @
 
 <<child='RStudio.Rnw', eval=TRUE>>=
 @
+
+<<child='EarlyRExamples.Rnw', eval=TRUE>>=
+@
+
 
 <<child='RForStudents.Rnw', eval=TRUE>>=
 @
