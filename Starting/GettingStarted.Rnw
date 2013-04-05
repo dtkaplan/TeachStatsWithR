@@ -59,7 +59,7 @@ Explain carefully (and repeatedly) the syntax of functions.
 Fortunately, the syntax is very straightforward.  It consists of a 
 function name followed by an opening parenthesis, followed by a 
 comma-separated list of arguments (which may be named), followed 
-by a closed parenthesis.
+by a closing parenthesis.
 <<eval=FALSE>>=
 functionname ( name1=arg1, name2=arg2, ... )
 @
@@ -70,9 +70,10 @@ do the task at hand.
 \item
 Every object in \R\ has a type (class).  Ask frequently: \emph{What type of thing is this?}
 
-Students need to understand the difference between a variable and a data set and also that 
-there are different kinds of variables (\code{factors} for categorical data and \code{numerics}
-for numerical data, for example).
+Students need to understand the difference between a variable and a data frame and also that 
+there are different kinds of variables (\code{factor} for categorical data and \code{numeric}
+for numerical data, for example).  Instructors and more advanced students will want to 
+know about \code{vector} and \code{list} objects.
 
 \end{itemize}
 Give more language details in higher level courses.
@@ -187,7 +188,6 @@ See Chapter~\ref{chap:RForInstructors} for some of the common error messages and
 \item
 Introduce Graphics Early.
 
-
 Introduce graphics very early, so that students see that they can get
 impressive output from simple commands.  Try to break away from their
 prior expectation that there is a ``steep learning curve."
@@ -200,10 +200,10 @@ it feels like play!) with fancying things up.
 Keep in mind that just because the graphs are easy to make on the computer doesn't 
 mean your students understand how to read the graphs.  
 Use examples that will
-help students develop good habits for visualizing data.  %Remember:
-
+help students develop good habits for visualizing data.%
+%Remember:
 %\begin{center}
-\sidenote{
+\marginnote{
 \emph{Students must learn to see before they can see to learn.} % -- R. Pruim
 }
 %\end{center}
