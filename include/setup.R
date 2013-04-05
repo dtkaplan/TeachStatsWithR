@@ -15,6 +15,7 @@ options(width=60)
 require(vcd)
 require(knitr)
 opts_chunk$set(  tidy=TRUE,
+			     size='small',
                  dev="pdf",
                  fig.path="figures/fig-",  
                  fig.width=3, fig.height=2,

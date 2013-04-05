@@ -1,7 +1,9 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
 opts_chunk$set( fig.path="figures/RForStudents-" ) 
-if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
+if (!exists("..makingMaster..")) {
+	set_parent('Master-Starting.Rnw')
+}
 set.seed(123)
 @
 
@@ -10,13 +12,9 @@ set.seed(123)
 \& How to Teach It}
 \label{chap:RForStudents}
 
-
-<<setup,include=FALSE>>=
-source('../include/setup.R')
-opts_chunk$set( fig.path="figures/RForStudents-" )  
-@ 
-
-
+<<>>=
+exists("..makingMaster..")
+@
 
 \section{Using R as a Calculator}
 Most students are familiar and comfortable with their hand-held calculators, so it
@@ -24,7 +22,7 @@ is natural to begin an introduction to \R\ by showing them how \R\ can be used
 to perform typical calculator operations.
 
 Try typing the following commands in the console panel.
-<<arithmetic>>=
+<<rs-arithmetic>>=
 5 + 3
 15.3 * 23.4
 sqrt(16)  # square root function
@@ -43,7 +41,7 @@ two of us find the equal sign to be simpler for students and more
 intuitive, while the other prefers the arrow operator because
 it can also be used in a left to right manner.}%
 
-<<variables1a,tidy=FALSE>>=
+<<rs-variables1a,tidy=FALSE>>=
 product = 15.3 * 23.4       # save result
 product                     # display the result
 product <- 15.3 * 23.4      # <- can be used instead of =
@@ -52,7 +50,7 @@ product
 Once variables are defined, they can be referenced with other operators
 and functions.
 
-<<variables2,tidy=FALSE>>=
+<<rs-variables2,tidy=FALSE>>=
 0.5 * product               # half of the product
 log(product)                # (natural) log of the product
 log10(product)              # base 10 log of the product
@@ -64,7 +62,7 @@ log(product,base=2)         # base 2 log of the product
 The semi-colon can be used to place multiple commands on one line.  
 One frequent use of this is to save and print a value all in one go:
 
-<<variables-semi,tidy=FALSE>>=
+<<rs-variables-semi,tidy=FALSE>>=
 15.3 * 23.4 -> product; product    # save result and show it
 @
 
@@ -87,7 +85,7 @@ to catch on to the importance of capitalization.}
 
 \item 
 Functions in \R\ use the following syntax:
-<<label="function-syntax",eval=FALSE>>=
+<<label="rs-function-syntax",eval=FALSE>>=
 functionname( argument1, argument2, ... )
 @
 \vspace{-5mm}
@@ -139,10 +137,10 @@ the \R\ help system.
 To get help on a specific function or data set, simply precede its name with a \verb!?!:
 
 \authNote{This isn't working properly}
-<<help1,eval=FALSE,tidy=FALSE>>=
+<<rs-help1,eval=FALSE,tidy=FALSE>>=
 ?log      # help for the log function
 @
-<<help2,eval=FALSE,tidy=FALSE>>=
+<<rs-help2,eval=FALSE,tidy=FALSE>>=
 ?HELPrct  # help on a data set
 @
 This will give you the documentation for the object you are interested in.
@@ -151,7 +149,7 @@ This will give you the documentation for the object you are interested in.
 If you don't know the exact name of a function, you can give part of the name and 
 \R\ will find all functions that match.  Quotation marks are mandatory here.
 
-<<apropos>>=
+<<rs-apropos>>=
 apropos('table')            # must include quotes.  single or double.
 @
 
@@ -165,7 +163,7 @@ but also in the documentation for them.  Quotation marks are optional here.
 
 Many functions and data sets in \R\ include example code demonstrating typical uses.
 For example,
-<<example-histogram,eval=FALSE,results="hide">>=
+<<rs-example-histogram,eval=FALSE,results="hide">>=
 example(xhistogram)
 @
 \noindent
@@ -179,7 +177,7 @@ The \verb!mosaic! package (and some other packages as well) also includes demos.
 Demos are bits of \R\ code that can be executed using the \verb!demo()! command
 with the name of the demo.
 To see how demos work, give this a try:
-<<demo,eval=FALSE,results="hide">>=
+<<rs-demo,eval=FALSE,results="hide">>=
 demo(lattice)
 @
 
@@ -188,7 +186,7 @@ Demos are intended to illustrate a concept, a method, or some such thing, and ar
 independent of any particular function or data set.
 
 You can get a list of available demos using
-<<demo-list,eval=FALSE,results="hide">>=
+<<rs-demo-list,eval=FALSE,results="hide">>=
 demo()                     # all demos
 demo(package='mosaic')     # just demos from mosaic package
 @
@@ -204,11 +202,11 @@ Many packages contain data sets.
 You can see a list of all data sets in all loaded packages
 using 
 
-<<data-list,eval=FALSE,results="hide">>=
+<<rs-data-list,eval=FALSE,results="hide">>=
 data()
 @
 You can optionally choose to restrict the list to a single package:
-<<data-package-list,eval=FALSE,results="hide">>=
+<<rs-data-package-list,eval=FALSE,results="hide">>=
 data(package="mosaic")
 @
 
@@ -218,7 +216,7 @@ used that name for something or need to refresh the data after making some chang
 want, you can explicitly load the data using the \verb!data()! function with the name of the 
 data set you want.
 
-<<data-load>>=
+<<rs-data-load>>=
 data(Births78)
 @
 
@@ -258,24 +256,29 @@ The \verb!iris! data set is included with the default \R\ installation.
 
 There are several ways we can get some idea about what is in the \verb!iris! data frame.
 
-<<iris-str>>=
+<<rs-iris-str>>=
 str(iris)
 @
 
-<<iris-summary>>=
+<<rs-iris-summary>>=
 summary(iris)
 @
 
-<<iris-head>>=
+<<rs-iris-head>>=
 head(iris)
 @
+\noindent
 In interactive mode, you can also try
-<<view1,eval=FALSE>>=
-View(iris)
-@
-to see the data or 
-<<view2,eval=FALSE>>=
+<<rs-view2,eval=FALSE,tidy=FALSE>>=
 ?iris
+@
+\noindent
+to access the documentation for the data set.  This is also available in the \tab{Help} tab.
+
+Finally, the \tab{Workspace} tab provides a list of data in the workspace.  Clicking on
+one of the data sets brings up the same data viewer as 
+<<rs-view1,eval=FALSE>>=
+View(iris)
 @
 \authNote{need to fix pecularities in how this displays}
 to get the documentation about for the data set.
@@ -288,37 +291,40 @@ access to an individual variable in a data frame in a number of
 different ways.  Historically, this would use the \verb!$! operator in
 the following syntax:
 
-<<dollar-sign,eval=FALSE>>=
+<<rs-dollar-sign,eval=FALSE>>=
 dataframe$variable
 @
+\noindent
 or 
 <<eval=FALSE>>=
 with(dataframe, variable)
 @
-
+\noindent
 For example, either of 
 
-<<iris-Sepal-Length,eval=FALSE>>=
+<<rs-iris-Sepal-Length,eval=FALSE>>=
 iris$Sepal.Length
 @
+\noindent
 or 
 <<eval=FALSE>>=
 with(iris, Sepal.Length)
 @
+\noindent
 shows the contents of the \verb!Sepal.Length! variable in the following format.
 <<echo=FALSE>>=
 with(iris, Sepal.Length)
 @
 
-A simpler and more elegant approach is to specify the data frame
-and variable directly, as we demonstrate below.
+%A simpler and more elegant approach is to specify the data frame
+%and variable directly, as we demonstrate below.
 
 Listing the entire set of values for a particular variable
 isn't very useful for a large data set.  
 We would prefer to compute numerical or graphical summaries.  We'll do that shortly.
 
-The \verb!attach()! function in R can be used to make objects within dataframes
-accessible in R with fewer keystrokes, but we strongly discourage its use, as
+The \verb!attach()! function in R can be used to make objects within data frames
+accessible in \R\ with fewer keystrokes, but we strongly discourage its use, as
 it often leads to name conflicts and other complications.  
 \Caution{Avoid the use of \function{attach()}.}
 The Google R Style Guide\footnote{
@@ -334,43 +340,53 @@ variables using the \verb!$! syntax or to use the \function{with()} function.
 
 \subsection{Using Your Own Data}
 \label{sec:usingdata}
+\R\ provides \function{read.csv()} (for comma separated values files),
+\function{read.table()} (for white space delimited files) and \function{load()}
+(for loading data in \R's native format).
+The \function{mosaic} package includes a function called \function{read.file()} that uses 
+slightly different default settings and infers whether it should use \function{read.csv()},
+\function{read.table()}, or \function{load()} based on the file name.  
+Since most software packages can export to csv format, this has become a 
+sort of \emph{lingua fraca} for moving data between packages.  Data in excel, for example,
+can be exported as a csv file for subsequent reading in \R.  If you have python
+installed on your system, you can also use \function{read.xls()} from the 
+\pkg{gdata} package to read read directly from Excel files without this extra step.
 \TeachingTip{Start out using data from packages and focusing on what \R\ can
 do with the data.  Later, once students are familiar 
 with \R\ and understand the format required for data,
 teach students how to import their own data.}
 
+Each of these functions accepts a URL as well as a file name, which provides an
+easy way to distribute data via the Internet:
+<<>>=
+births <- read.table('http://www.calvin.edu/~rpruim/data/births.txt', header=TRUE)
+head(births)        # number of live births in the US each day of 1978.
+@
+\noindent
+We can omit the \option{header=TRUE} if we use \function{read.file()}
+<<>>=
+births <- read.file('http://www.calvin.edu/~rpruim/data/births.txt')
+@
 \Rstudio\ will help you import your own data.  To do so use the ``Import Dataset" 
 button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
 google spreadsheets.   
 
+\newthought{The RStudio interface} provides some GUI tools for loading data.
+If you are using the \RStudio\ server, you will first need to upload the data
+to the server (in the \tab{Files} tab), and then import the data into your \R\ 
+session (in the \tab{Workspace} tab).  
+\TeachingTip{Remind students that the 2-step process (upload, then import)
+works much like images in Facebook.  First you upload them to Facebook, and once 
+they are there you can include them in posts, etc.}
+If you are running the desktop version, the upload step is not needed.
 
-%\newthought{From Google Spreadsheets}
 
-\authNote{does this work with the non-RStudio run RStudio servers?}
 
-\textbf{From Google.}
-The easiest of these is the Google spreadsheets option: Just click, select
-your spreadsheet, choose a name, and you're done.
-
-%\newthought{From Excel}
-\textbf{From Excel},
-you need to follow a 3-step process:
-\begin{enumerate}
-\item
-Save your Excel worksheet as a csv (comma separated value) file.
-\item
-Upload (in the \tab{Files} tab) your csv file to the server, where you can create folders and store
-files in your personal account.  
-(To share things with others: Put the files in your Public folder.  
-Read the \texttt{AboutPublic.txt} file in that folder for directions.)
-\item
-Now import ``from a text file'' in the \tab{Workspace} tab.
-\end{enumerate}
-
-In either case, be sure to do the following:
+In any case, students need to be trained to follow good data organization
+practices:
 \begin{itemize}
 \item Choose good variables names.
-\item Put your variables names in the first row.
+\item Put variables names in the first row.
 \item Use each subsequent row for one observational unit.
 \item Give the resulting data frame a good name.
 \end{itemize}
@@ -384,28 +400,6 @@ In any case, I agree that we should have a section on this somewhere.
 [RJP]
 }%
 
-If you are not using \RStudio, you can read files using
-\function{read.csv()} or \function{read.table()} (for white space delimited files).
-The \function{mosaic} package includes a function called \function{read.file()} that uses 
-slightly different default settings and infers whether it should use \function{read.csv()},
-\function{read.table()}, or \function{load()} based on the file name.  
-\DiggingDeeper[\centerline{\function{load()}}]{\function{load()} is used
-for opening files that store \R\ objects in `native' format.}
-
-Each of these functions 
-also accepts a URL in place of a file name, which provides an easy way to distribute data
-via the Internet:
-<<>>=
-births <- read.table('http://www.calvin.edu/~rpruim/data/births.txt', header=TRUE)
-head(births)        # number of live births in the US each day of 1978.
-@
-The \pkg{mosaic} package provides \function{read.file()} which attempts to infer
-the file type from its extension and then applies 
-\function{read.csv()}, \function{read.table()}, or \function{load()}.
-<<>>=
-births <- read.file('http://www.calvin.edu/~rpruim/data/births.txt')
-@
-It also sets a number of defaults, including \option{header=TRUE}.
 
 \begin{problem}
 Enter the following small data set in an Excel or Google spreadsheet and import the 
@@ -434,11 +428,11 @@ JunkData = read.csv("myfile.csv")
 %The \verb!abdData()! function in \verb!abd! makes it easy to map examples and exercises in that book to 
 %data frame names in the \verb!abd! package.
 %
-<<findData-human,eval=FALSE,echo=FALSE>>=
+<<rs-findData-human,eval=FALSE,echo=FALSE>>=
 abdData('human')         # all data sets with 'human' in the name
 @
 %
-<<findData-2,eval=FALSE,echo=FALSE>>=
+<<rs-findData-2,eval=FALSE,echo=FALSE>>=
 abdData(2)               # all data sets in chapter 2
 @
 %
@@ -464,7 +458,7 @@ the Comprehensive R Archive Network.\footnote{R-forge and Bioconductor
 are two other repositories of \R\ packages.}
 \authNote{need to simplify this: is it really needed?}
 Before a package can be used, it must be \term{installed} 
-(once per computer)
+(once per computer or account)
 and
 \term{loaded} (once per \R\ session).  
 Installing downloads the package software and prepares it for use
@@ -478,8 +472,8 @@ For example, to use the \pkg{mosaic} package:
 \Rindex{require()}%
 
 <<eval=FALSE,tidy=FALSE>>=
-install.packages("mosaic") # fetch package from CRAN to local machine.
-require(mosaic)            # load the package so it can be used.
+install.packages("mosaic") # fetch package from CRAN 
+require(mosaic)            # load the package before use.
 @
 
 If you are running on a machine where you don't have privileges to
@@ -577,7 +571,7 @@ Here are a few examples.
 %(If you don't know what some of these -- like IQR -- are, don't worry;
 %we'll be discussing them soon.)
 
-<<numerical-summaries>>=
+<<rs-numerical-summaries>>=
 mean(Sepal.Length, data=iris)     # or with(iris, mean(Sepal.length))
 median(Sepal.Length, data=iris)
 sd(Sepal.Length, data=iris)
@@ -621,7 +615,7 @@ One of the attractive aspects of
 \verb!lattice! plots is that they make use of a \term{formula interface} 
 similar to that used for summary statistics and modeling.
 
-<<formula-interface, eval=FALSE, echo=TRUE>>=
+<<rs-formula-interface, eval=FALSE, echo=TRUE>>=
 plotname( y ~ x | z, groups=grouping_variable, data=dataframe, ...)
 @
 \begin{itemize}
@@ -665,12 +659,12 @@ towers when the data values cluster near each other.
 For a dot plot, the \verb!y! component of the formula is empty since we let \R\
 calculate that for us.
 
-<<iris-dotPlot,cache=TRUE,fig.width=5,fig.height=3.0>>=
+<<rs-iris-dotPlot,cache=FALSE,fig.width=5,fig.height=3.0>>=
 dotPlot(~ Sepal.Length, data=iris, n=30)    # n = 30 gives approx 30 columns
 @
 We can use a conditional variable to give us separate dot plots for each
 species, and shrink the dots.
-<<iris-dotPlot-condB,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
+<<rs-iris-dotPlot-condB,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
 dotPlot(~ Sepal.Length | Species, data=iris, n=20, cex=.6, 
 		layout=c(3,1)) # cex used to shrink the dots a bit
 @
@@ -681,12 +675,12 @@ Histograms are a lot like dot plots, but the towers of dots are replaced by a
 vertical bar.
 Again the \verb!y! component of the formula is empty since we let \R\
 compute the heights of the bars for us.
-<<iris-histogram,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
+<<rs-iris-histogram,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
 xhistogram(~ Sepal.Length, data=iris, n=20)       # n= 20 gives approx. 20 bars
 @
 We can use a conditional variable to give us separate histograms for each species.
 
-<<iris-histogram-cond,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
+<<rs-iris-histogram-cond,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
 xhistogram(~ Sepal.Length | Species, data=iris, n=20, layout=c(3,1))
 @
 
@@ -698,24 +692,24 @@ top are called strips.  (Strips can be placed on the left side if you prefer.)
 \subsection{Boxplots:  \texttt{bwplot()}}
 
 Boxplots are constructed in much the same manner as histograms:
-<<iris-bwplot>>=
+<<rs-iris-bwplot>>=
 bwplot(~ Sepal.Length, data=iris)
 @
 
 As we did for histograms, we can use conditioning to 
 show boxplots for multiple groups within the data set:
 
-<<iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".7\\textwidth">>=
+<<rs-iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".7\\textwidth">>=
 bwplot(~ Sepal.Length | Species, data=iris, layout=c(3,1))
 @
 
 \vspace{-8mm}
 
 But there are better ways to do this.
-<<label="iris-bwplot-2d">>=
+<<label="rs-iris-bwplot-2d">>=
 bwplot(Sepal.Length ~ Species, data=iris)
 @
-<<label="iris-bwplot-2dmore">>=
+<<label="rs-iris-bwplot-2dmore">>=
 bwplot(Species ~ Sepal.Length, data=iris)
 @
 %\vspace{-12mm}
@@ -729,12 +723,12 @@ is categorical}
 Scatterplots are made with \verb!xyplot()!.  The formula and modeling interface is used in the same manner as before.
 Just remember that the ``$y$ variable'' comes first.  (Its label is also farther left on 
 the plot, if that helps you remember.)
-<<iris-xyplot,cache=TRUE>>=
+<<rs-iris-xyplot,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, data=iris)
 @
 
 Again, we can use conditioning to make a panel for each species.
-<<iris-xyplot-cond,cache=TRUE,fig.width=7,out.width=".7\\textwidth">>=
+<<rs-iris-xyplot-cond,cache=TRUE,fig.width=7,out.width=".7\\textwidth">>=
 xyplot(Sepal.Length ~ Sepal.Width | Species, data=iris,
   layout=c(3,1))
 @
@@ -742,7 +736,7 @@ xyplot(Sepal.Length ~ Sepal.Width | Species, data=iris,
 
 Even better (for this example), we can use the \verb!groups! argument to indicate the different species using
 different symbols on the same panel.
-<<iris-xyplot-groups,cache=TRUE>>=
+<<rs-iris-xyplot-groups,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, auto.key=TRUE,
   data=iris)
 @
@@ -777,14 +771,14 @@ head(CPS85, 3)
 Categorical variables are  often summarized in a table.  
 \R\ can make a table for a categorical variable using \function{tally()}.
 
-<<table1>>=
+<<rs-table1>>=
 tally(~ race, CPS85)
 tally(~ sector, CPS85)
 @
 
 If we prefer to have the results presented as proportions or percents, we 
 just have to ask.
-<<table2>>=
+<<rs-table2>>=
 tally( ~ sector, CPS85, format='perc')
 tally( ~ sector, CPS85, format='prop')
 @
@@ -802,7 +796,7 @@ This often provides a useful display of the relationship between
 two categorical variables.
 
 
-<<xtabs>>=
+<<rs-xtabs>>=
 tally(~ race & sector, CPS85)   # 2-way cross-table
 @
 Alternatively, we can select one of our categorical variables to be 
@@ -819,13 +813,13 @@ often the frequency or contingency tables are given instead.
 You can enter these tables manually as follows:
 
 
-<<make-table>>=
+<<rs-make-table>>=
 myrace <- c( NW=67, W=467 )       # c for combine or concatenate
 myrace
 @
 
 \label{R:make-xtabs}%
-<<make-xtabs>>=
+<<rs-make-xtabs>>=
 mycrosstable <- rbind(               
   NW = c(clerical=15, const=3, manag=6,  manuf=11, other=5,  prof=7, sales=3, service=17),
   W  = c(82,17,49,57,63,98,35,66)    
@@ -843,19 +837,19 @@ column-wise instead.
 %way to understand the data.  
 The \pkg{mosaic} function \function{bargraph()} can 
 display these tables as bar graphs.
-<<bargraph1a>>=
+<<rs-bargraph1a>>=
 bargraph(~ sector, CPS85, scales=list(x=list(rot=45)))
 @
-<<bargraph2a>>=
+<<rs-bargraph2a>>=
 bargraph(~ sector, CPS85, horizontal=TRUE)  # horizontal bars
 @
 
 As with the other lattice plots, we can add grouping or conditioning to 
 our plot.
-<<bargraph3a>>=
+<<rs-bargraph3a>>=
 bargraph(~ sector, CPS85, groups=race, scales=list(x=list(rot=45)))
 @
-<<bargraph3amore>>=
+<<rs-bargraph3amore>>=
 bargraph(~ sector | race, CPS85, scales=list(x=list(rot=45)))
 @
 
@@ -865,7 +859,7 @@ The
 \function{mosaic()} function (from the \pkg{vcd} package) is not a \pkg{lattice} plot, 
 but it does use a similar formula interface.  
 
-<<mosaic1,fig.width=4,fig.height=2>>=
+<<rs-mosaic1,fig.width=4,fig.height=2>>=
 require(vcd)                         # load the visualizing categorical data package
 mosaic(~ sex + union, CPS85)
 @
@@ -876,7 +870,7 @@ the marginal distribution of union status and gender.
 the \pkg{mosaic} package, they just happen to share the same name.}%
 
 Alternatively, we can send \function{mosaic()} the output of \function{xtabs()}:
-<<mosaic2,fig.keep="none">>=
+<<rs-mosaic2,fig.keep="none">>=
 mosaic(xtabs(~ sex + union, CPS85))  # non-whites are more likely to be unionized
 @
 \FoodForThought{Neither \function{mosaic()} nor the similar \function{mosaicplot()}
@@ -888,7 +882,7 @@ both tend to look bad if the levels of the variables have long names.
 Alternatively,
 we can send our own hand-made table (although the output isn't quite as nice without some
 extra effort we won't discuss just now):
-<<mosaic3,fig.width=6,fig.height=2.5>>=
+<<rs-mosaic3,fig.width=6,fig.height=2.5>>=
 mosaic(mycrosstable)
 @
 
@@ -904,7 +898,7 @@ divided by the number of days in the billing cycle.
 \item Use the documentation to determine what the \vn{kwh} variables contains.
 \item
 Make a scatter plot of \dfn{gasbillpday} vs. \dfn{monthsSinceY2K} using the command
-<<gasbill,fig.keep="none">>=
+<<rs-gasbill,fig.keep="none">>=
 xyplot(gasbillpday ~ monthsSinceY2K, data=Utilities2, type='l')   # the letter l
 @
 \item[]
@@ -973,7 +967,7 @@ Make a mosaic plot for this data.  What does this plot reveal?
 
 Bar graphs can also be used to display two-way tables.  
 
-<<barchart3aa>>=
+<<rs-barchart3aa>>=
 bargraph( ~ sector, groups=race, data=CPS85)
 @
 
