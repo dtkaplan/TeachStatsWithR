@@ -5,6 +5,19 @@ if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
 set.seed(123)
 @
 
+
+\chapter*{Preface}
+
+These notes are about a strategy for teaching statistical modeling.  The strategy involves treating modeling with multiple variables as a notation extension of relatively simple concepts such as groupwise means.  In order to prepare students for the extension, it helps to present groupwise means as a sort of model, even though the traditional way is algorithmically: an average for the members in each group.  The motivation for the strategy can be understood metaphorically: by not leading students into a conceptual dead end, there is no need to retrace the path to get to the actual destination.
+
+The notes are part of a series on teaching with the R computer environment, but they are not primarily about R.  Other notes in the series introduce R, discuss how to teach with R, and show how to carry out basic processes of statistical inference using conceptually simple operations implemented transparently in R.
+
+If you don't already know R, we hope that you will think the commands are simple enough that you can use them yourself; that you can learn R by observation.  Our students appear to be able to do that.  
+
+It would be possible to implement the strategy presented here using other software.  Indeed, it would be possible to present it without using software at all.  But the R computer notation is simple and concise, a rival for traditional mathematical notation.  The software is freely available.  So even if you don't use R, we hope you can learn the strategy by presenting it in R notation.
+
+
+
 Goals:
 \begin{itemize}
 \item Can be used as the comprehensive guide to the modeling language.
@@ -24,28 +37,30 @@ Goals:
 require(mosaic)
 @
 
-\section{From Graphics \& Formulas to Models}
+\chapter{Graphics, Formulas, \& Statistics}
 
-\InstructorNote{The statement \texttt{require(mosaic)} loads in the \pkg{mosaic} package, which itself includes the graphics package \pkg{lattice}.  The \pkg{mosaic} provides many of the commands that are used in this book.}
+\marginnote{The statement \texttt{require(mosaic)} loads in the \pkg{mosaic} package, which itself includes the graphics package \pkg{lattice}.  The \pkg{mosaic} provides many of the commands that are used in this book.}
 
 Mainstream statistics courses often include statistical graphics: scatterplots, box-and-whisker plots, histograms, etc.  In R, these basic graphics can be made with \function{xyplot} and \function{bwplot}, for instance:
-<<fig.keep='all'>>=
+<<ex1,fig.width=2,fig.keep='all'>>=
 require(mosaic)
 xyplot(width ~ length,data=KidsFeet)
 bwplot(width ~ sex,data=KidsFeet)
 @
 
-These things involving \verb+~+ are called \newword{formulas} in R. The word "formula" is used a somewhat different way than in algebra: the formula lays out how you want to relate variables: y versus x, what to break down by what.  
+These things involving the \verb+~+ squiggle character --- ``tilde" --- are called \newword{formulas} in R. The word "formula" is used a somewhat different way than in algebra: the formula lays out how you want to relate variables: y versus x, what to break down by what.  
 
 It may seem that this is just another way, among many, to invoke plotting software.  But  there's more going on here: R provides a {\em modeling language} an an easy path from basic graphics and basic statistics to multivariable modeling.  
 
 The path is easy enough that it makes sense to start in that direction early: using the concepts, terminology, and techniques of modeling as a way of introducing statistics.  Here is what such a journey might look like.
 
-\subsection{Formulas and Basic Statistics}
+\section{Formulas and Basic Statistics}
 
 It's worthwhile to start a statistics course with graphics.  In addition to conveying well ideas of variation, graphics are close to the data themselves, compelling, and motivating.  Students see the advantage of using software; they couldn't make such graphics by hand.
 
-\InstructorNote{It's tempting to show students shortcuts for looking at a data set, such as \function{summary}.
+\marginnote{Explanation of the \texttt{KidsFeet} dataset.  Why, what, where it is found.}
+
+\marginnote{It's tempting to show students shortcuts for looking at a data set, such as \function{summary}.
 <<eval=FALSE>>=
 summary(KidsFeet)
 @
@@ -73,7 +88,7 @@ tally(sex~domhand,data=KidsFeet)
 @
 The formula notation makes it clear which variable is being broken down by which.
 
-\InstructorNote{To avoid having to say things like \model{sex}{1}, some functions such as \function{mean} let you use just the bare variable name without the \model{}{}.  In the functions that have not been configured this way, you can say \model{}{sex}, leaving the right-hand side blank, to accomplish the same thing.  It's debatable whether \model{sex}{1} is better than \model{}{sex}.  Unfortunately, R does not allow \model{sex}{}, which would be a natural way to say, ``broken down by nothing.''}
+\marginnote{To avoid having to say things like \model{sex}{1}, some functions such as \function{mean} let you use just the bare variable name without the \model{}{}.  In the functions that have not been configured this way, you can say \model{}{sex}, leaving the right-hand side blank, to accomplish the same thing.  It's debatable whether \model{sex}{1} is better than \model{}{sex}.  Unfortunately, R does not allow \model{sex}{}, which would be a natural way to say, ``broken down by nothing.''}
 
 Sometimes you don't want to break down one variable by another.  In such situations, you can use \texttt{1} to stand for ``the same for every case.''  For example:
 <<>>=
@@ -82,7 +97,141 @@ tally(sex ~ 1,data=KidsFeet)
 @
 These formulas still mean, break down the variable on the left side of the formula according to the ``variable'' on the right side, but since the variable on the right side is always 1, there's only one group. This is admittedly a little unnatural, but drawing attention to \texttt{1} early pays off later one.
 
+\chapter{From Formulas to Models}
 
+You've already seen how the formula notation can be used in the calculation of statistics, for example, this calculation of grand means and groupwise means:
+<<>>=
+mean(width~1,data=KidsFeet) # Grand mean
+mean(width~sex,data=KidsFeet) # Groupwise by sex
+@
+
+Means are considered basic.  But contrast them with a more advanced methodology: regression.  Here's a model of foot width against sex:
+<<>>=
+mod1 = lm(width~sex,data=KidsFeet)
+@
+The syntax for constructing the model is very much the same as for \function{mean}.  But what is the output, what is the model itself?
+
+It helps to have some vocabulary:
+\begin{itemize}
+\item A model of this sort links inputs, called ``explanatory variables," to an output, or ``response variable". \sidenote{Depending on the field, these may be called dependent and independent variables respectively.} In the example above, \VN{width} is the response variable while \VN{sex} an the explanatory variable.
+\item The model corresponds to a function, a mathematical representation of a relationship between an input and an output. 
+\item The purpose of \function{lm} is to construct a function that is as close to the data as possible.  That is, \function{lm} ``fits'' the model to the data.
+\end{itemize}
+
+To make sense of this, it can be useful to construct the function explicitly and apply the inputs to it.
+\marginnote{In this example, the input to the function is a category.  The possible values of a categorical variable --- the levels --- are often denoted in R as quoted character strings, \texttt{"G"} and \texttt{"B"} in the \texttt{KidsFeet} data, standing for girls and boys.}
+<<>>=
+f1 = makeFun(mod1)
+@
+This use of \function{makeFun} reformats the information that's already in \texttt{mod1}  as a mathematical function in R. Once that's done, the function can be evaluated in the ordinary way, by specifying the inputs.  For instance, you can ask what is the model function's value for each level of the explanatory variable \VN{sex}.
+<<>>=
+f1(sex="G")
+f1(sex="B")
+@
+
+The function \texttt{f1} attempts to describe the relationship between the explanatory and response variables: between \VN{sex} and \VN{width}.
+
+As it happens, the values produced by \texttt{f1} coincide directly with the values produced by \function{mean}.  This suggests another way to think about means is as a way of describing relationships, not just a way to summarize a variable.
+
+
+There are, \marginnote{There's nothing fundamental about \function{listFun}.  It's just a program that makes it easy to construct a mathematical function with categorical inputs.}
+of course, other possible functions that could be used to describe the relationship between \VN{sex} and \VN{width}.  For example, here's a function that says the model value for boys is 10 cm, while that for girls is 9 cm:\authNote{Add listFun to mosaic package?}
+<<>>=
+fetchData("m155development.R")
+f2 = listFun("B"=10,"G"=9)
+@
+
+Two model functions, \texttt{f1} and \texttt{f2}.  Which is better?
+
+One way to define ``better'' is to say that the better model is closer to the data, where closer refers to the difference between the function output and the observed value for each case.  First, find the function output for each of the candidate model functions:
+<<>>=
+KidsFeet = transform(KidsFeet, f1val=f1(sex), f2val=f2(sex))
+@
+
+Now, compute the typical difference between the model value and the observed value.  In order that positive differences not cancel out negative differences, you can find the mean square difference:
+<<>>=
+mean((width-f1val)^2,data=KidsFeet)
+mean((width-f2val)^2,data=KidsFeet)
+@
+
+Evidently, \texttt{f1} is closer than \texttt{f2}.  It's worthwhile to construct new candidate functions, like \texttt{f2} to show that they {\bf never} have a smaller mean square difference than \texttt{f1}.
+
+Why square instead of taking the absolute value?  That's another subject.  But to play with it, construct the model function where the value is the median of each group.  That function will have a mean absolute value of differences that is as small as any other possible function.
+<<>>=
+median(width~sex,data=KidsFeet)
+f3 = listFun("B"=9.15,"G"=8.80)
+KidsFeet = transform(KidsFeet,f3val=f3(sex))
+mean(abs(width-f1val),data=KidsFeet)
+mean(abs(width-f2val),data=KidsFeet)
+mean(abs(width-f3val),data=KidsFeet)
+@
+Notice that \texttt{f3} is best according to the absolute-value criterion, but only by a little bit.  Using the mean-square criterion, \texttt{f3} is not as good as \texttt{f1}, again, only by a little bit.
+
+<<>>=
+mean((width-f1val)^2,data=KidsFeet)
+mean((width-f3val)^2,data=KidsFeet)
+@
+
+
+
+ASIDE: Do the grand mean.  It's not so easy to think about what the input is.  There is no input.  In this sense, groupwise means are easier to conceive of than grand means.
+
+\section{Accounting for Variance}
+
+There's case-to-case variation in the response variable, in this example, that being the kids' foot widths.  By modeling foot width with explanatory variariables, you're accounting for some of the variation in the response with variation in the explanatory variables.  This can be quantified in useful ways.
+
+One way to measure the variation in the response is with the variance statistic:
+<<>>=
+var(~width,data=KidsFeet)
+@
+The model accounts for some of this variance.  The amount that's accounted for is given by the variance of the model values:
+<<>>=
+var(~f1(sex),data=KidsFeet)
+@
+Notice that this isn't the variance of the explanatory variables here; it's the variance in the output of the model function when case-by-case values of the explanatory variables are used as the inputs.
+
+Of course a model doesn't typically account for all the variance in the response.  The difference between the model values and the observed response is what the model has not accounted for, the residual.
+<<>>=
+var(~width-f1(sex),data=KidsFeet)
+@
+
+The reason to use the variance to measure variation is that the variance \newword{partitions} variation.  Note that the variance of the observation is the sum of the variance of the model values and the variance of the residuals.  Think of this as splitting a whole into parts --- the observed variation breaks down into two parts: model values and residuals.
+
+A ratio provides a nice way to summarize how much of the variation in the response variable is accounted for by the model: the amount of variation in the model values divided by the amount in the observations.  This is called $R^2$.
+<<>>=
+var(~f1(sex),data=KidsFeet)/var(width,data=KidsFeet)
+@
+This is such a common description of the fit of a model that \pkg{mosaic} provides a convenience function to calculate it directly from the model.
+<<>>=
+r.squared(mod1)
+@
+
+\chapter{Covariates}
+
+
+
+
+\section{Main Effects and Interaction Terms}
+
+
+\section{}
+GRAPHICS WITH THE SAT DATA: lattice plot of SAT versus expenditure with facets for different levels of fraction.  Then put up the whole model as SAT versus expenditure with separate lines for each level for fraction.
+
+OUTLINE:
+\begin{enumerate}
+\item Group proportions: Use boolean variables.
+\item Confidence intervals.  Activity: verify that confidence intervals of a sample cover the true value.  In classroom, do this at a level of 50\%.  Show how to get the confidence intervals by resampling.
+\item ANOVA and sets of groups.
+\item Continuous explanatory variables.
+\item Confounders.
+\end{enumerate}
+
+
+
+
+One way to think of a regression model is as a mathematical function: it takes as inputs the value of  explanatory variable
+
+Transition to residuals, fitted model values, fitting.
 If you can master this notation, then you have much of what you need to construct models.
 
 MM and confidence intervals.
