@@ -8,7 +8,9 @@
 \author{Randall Pruim and Nicholas Horton and Daniel Kaplan}
 \date{DRAFT: \today}
 
+\renewenvironment{knitrout}{\relax}{\noindent}
 \begin{document}
+
 
 \maketitle
 

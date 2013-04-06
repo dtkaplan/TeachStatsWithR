@@ -175,6 +175,13 @@
 \newcommand{\myindex}[1]{\index{mainIndex}{#1}}
 \newcommand{\mathindex}[1]{\index{mainIndex}{$#1$}}
 
+%%%% probably don't need this --rjp
+\makeatletter
+\newcommand\gobblepar{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepar\@gobble}%
+        {}}
+\makeatother
 
 \pagestyle{fancy}
 

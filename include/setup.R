@@ -32,10 +32,15 @@ knit_hooks$set(chunk=function(x,options){
 		  "\\begin{kframe}%",
           sub("\\n$","",x), 
          "\\end{kframe}%",
-		 "\\end{knitrout}%",
-		  paste("\\vspace*{",vshift,"}", sep=""),
+		  paste("\\vspace*{",vshift,"}%", sep=""),
+		 "\\end{knitrout}",
 		 sep="\n"
 		 ))
+})
+
+knit_hooks$set(document = function(x) {
+  gsub('\\\\end\\{knitrout\\}%\n', '\\\\end\\{knitrout\\}%', paste(x, collapse = '\n'))
+  gsub('\\\\end\\{knitrout\\}\n', '\\\\end\\{knitrout\\}%', paste(x, collapse = '\n'))
 })
 
 knit_hooks$set(output=function(x,options) {
@@ -49,3 +54,4 @@ knit_hooks$set(output=function(x,options) {
 			 paste("\\vspace*{",vshift,"}", sep=""),
 			  sep="\n" ))
 })
+
