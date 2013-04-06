@@ -8,6 +8,8 @@ set.seed(123)
 @
 
 
+
+
 \chapter[What Students Need]{What Students Need to Know About R\\ 
 \& How to Teach It}
 \label{chap:RForStudents}
@@ -171,7 +173,7 @@ Examples such as this are intended to help you learn how specific \R\ functions 
 Some of the examples are next to useless, others are excellent.}%
 These examples also appear at the end of the documentation for functions and data sets.
 
-The \verb!mosaic! package (and some other packages as well) also includes demos.  
+The \pkg{mosaic} package (and some other packages as well) also includes demos.  
 Demos are bits of \R\ code that can be executed using the \verb!demo()! command
 with the name of the demo.
 To see how demos work, give this a try:
@@ -413,7 +415,7 @@ plotname( y ~ x | z, data=dataframe,
 Here are the names of several \verb!lattice! plots:
 \begin{itemize}
 \item \verb!dotPlot! (notice the capital P)
-\footnote{\texttt{dotPlot()} is in the \texttt{mosaic} package and 
+\footnote{\texttt{dotPlot()} is in the \pkg{mosaic} package and 
 was created because \texttt{dotplot()} in
 the \texttt{lattice} package makes something different from what we call a dot plot.}
 \item \verb!histogram! or \verb!xhistogram!  (for histograms)
@@ -538,6 +540,8 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, auto.key=TRUE,
 \subsection{Saving Your Plots}
 
 There are several ways to save plots in \RStudio, but the easiest is probably the following:
+\marginnote{You can save all of this exporting and copying and pasting if you use RMardown or 
+knitr/Sweave to prepare your documents.}
 \begin{enumerate}
 \item
 In the \tab{Plots} tab, click the ``Export'' button.
@@ -553,6 +557,10 @@ Resize or reposition your image as needed.
 Most of the numerical summaries already familiar to you have obvious names.  
 Here are a few examples.  
 \authNote{add iqr() once an aggregating version is in the package}%
+\marginnote{In the current version of the \pkg{mosaic} package,
+the \tilde can be omited in the one-variable numerical summary functions.  This is 
+not true for the \pkg{lattice} plots, so we recommend that you use the \tilde\ and
+be consistent across multiple functions.}
 
 <<rs-numerical-summaries>>=
 mean(~ births, data=Births78)
@@ -561,7 +569,7 @@ sd(~ births, data=Births78)
 max(~ births, data=Births78)
 min(~ births, data=Births78)
 @
-The \verb!favstats()! function in the \verb!mosaic! package computes several numerical 
+The \verb!favstats()! function in the \pkg{mosaic} package computes several numerical 
 summaries all at once.
 <<>>=
 favstats(~ births, data=Births78)
@@ -582,7 +590,7 @@ mean( length ~ sex, data=KidsFeet )
 
 	\item
 		Makes computing numerical summaries syntactically identical to creating 
-		graphcial summaries or fitting linear models.
+		graphical summaries with \pkg{lattice} or fitting linear models.
 \end{itemize}
 
 \begin{problem}
@@ -703,7 +711,7 @@ bargraph(~ sector | race, CPS85, scales=list(x=list(rot=45)))
 @
 
 Just as bar charts are used to display the distribution
-of one categorical variable,  mosaic plots can do the same for cross tables.
+of one categorical variable,  \pkg{mosaic} plots can do the same for cross tables.
 The
 \function{mosaic()} function (from the \pkg{vcd} package) is not a \pkg{lattice} plot, 
 but it does use a similar formula interface.  
@@ -738,7 +746,7 @@ mosaic(mycrosstable)
 
 
 \begin{problem}
-The \dfn{Utilities2} data set in the \verb!mosaic! package contains information
+The \dfn{Utilities2} data set in the \pkg{mosaic} package contains information
 about the bills for various utilities at a residence in Minnesota collected over a number of years.
 Since the number of days in a billing cycle varies from month to month, variables 
 like \vn{gasbillpday} (\dfn{elecbillpday}, etc.) contain the gas bill (electric bill, etc.) 
@@ -827,7 +835,7 @@ bargraph( ~ sector, groups=race, data=CPS85)
 \R\ provides \function{read.csv()} (for comma separated values files),
 \function{read.table()} (for white space delimited files) and \function{load()}
 (for loading data in \R's native format).
-The \function{mosaic} package includes a function called \function{read.file()} that uses 
+The \function{mosaic()} package includes a function called \function{read.file()} that uses 
 slightly different default settings and infers whether it should use \function{read.csv()},
 \function{read.table()}, or \function{load()} based on the file name.  
 Since most software packages can export to csv format, this has become a 

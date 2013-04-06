@@ -3,6 +3,7 @@
 \documentclass[open-any,12pt]{tufte-book}
 
 \usepackage{../include/RBook}
+\def\tilde{\texttt{\~}}
 
 \title{Start Teaching with R}
 \author{Randall Pruim and Nicholas Horton and Daniel Kaplan}
