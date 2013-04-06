@@ -395,7 +395,14 @@ avoid the \verb!$! operator.
 
 
 
-\section{Summarizing Data}
+\section{Graphical Summaries of Data}
+
+After introducing students to the calculator functions of the \R\ console and
+teaching them how to inspect a data frame, we like to get them making graphical
+summaries of data.  This gives the students access to functionality where \R\
+really shines (and is certainly much better than a hand-held calculator) and
+begins to develop both their ability to interpret graphical representations of
+data and their ability to pose statistical questions.
 
 \subsection{Lattice Graphics}
 
@@ -403,9 +410,12 @@ There are several ways to make graphs in \R.  One approach is a system called
 \verb!lattice! graphics.   Whenever the \pkg{mosaic} package is loaded, the \pkg{lattice}
 package is also loaded.  One of the attractive aspects of 
 \verb!lattice! plots is that they make use of a \term{formula interface} 
-similar to that used for summary statistics and modeling.
+similar to that used for numerical summaries (using \pkg{mosaic}) and modeling.
 
+All the plots we need can be created with essentially the same syntactic structure:
 
+\TeachingTip{Emphasize repeatedly the commonalities between the various commands that
+use this formula interface.}
 <<rs-formula-interface, eval=FALSE, echo=TRUE, tidy=FALSE>>=
 plotname( y ~ x | z, data=dataframe, 
                      groups=grouping_variable, ...)
@@ -456,23 +466,25 @@ For a dot plot, the \verb!y! component of the formula is empty since we let \R\
 calculate that for us.
 
 <<rs-iris-dotPlot,cache=FALSE,fig.width=5,fig.height=3.0>>=
-dotPlot(~ Sepal.Length, data=iris, n=30)    # n = 30 gives approx 30 columns
+# n = 30 gives approx 30 columns
+dotPlot(~ Sepal.Length, data=iris, n=30)    
 @
 We can use a conditional variable to give us separate dot plots for each
 species, and shrink the dots.
-<<rs-iris-dotPlot-condB,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
-dotPlot(~ Sepal.Length | Species, data=iris, n=20, cex=.6, 
-		layout=c(3,1)) # cex used to shrink the dots a bit
+<<rs-iris-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
+dotPlot(~ Sepal.Length | Species, data=iris, n=20, 
+		cex=.6,        # cex used to shrink the dots a bit
+		layout=c(3,1)) 
 @
 
 \subsection{Histograms: \texttt{xhistogram()}}
 
-Histograms are a lot like dot plots, but the towers of dots are replaced by a
-vertical bar.
+Histograms are a lot like dot plots, but the towers of dots are replaced by vertical bars.
 Again the \verb!y! component of the formula is empty since we let \R\
 compute the heights of the bars for us.
 <<rs-iris-histogram,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
-xhistogram(~ Sepal.Length, data=iris, n=20)       # n= 20 gives approx. 20 bars
+# n= 20 gives approx. 20 bars
+xhistogram(~ Sepal.Length, data=iris, n=20)       
 @
 We can use a conditional variable to give us separate histograms for each species.
 
@@ -482,10 +494,11 @@ xhistogram(~ Sepal.Length | Species, data=iris, n=20, layout=c(3,1))
 
 
 In lattice lingo, the three subplots are called panels and the labels at the
-top are called strips.  (Strips can be placed on the left side if you prefer.)
+top are called strips.  
+%(Strips can be placed on the left side if you prefer.)
 
 
-\subsection{Boxplots:  \texttt{bwplot()}}
+\subsection{Boxplots: \texttt{bwplot()}}
 
 Boxplots are constructed in much the same manner as histograms:
 <<rs-iris-bwplot>>=
@@ -498,10 +511,9 @@ show boxplots for multiple groups within the data set:
 <<rs-iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".7\\textwidth">>=
 bwplot(~ Sepal.Length | Species, data=iris, layout=c(3,1))
 @
-
-\vspace{-8mm}
-
 But there are better ways to do this.
+\InstructorNote{This assumes that the variable on the right hand side of the \tilde\
+is categorical}%
 <<label="rs-iris-bwplot-2d">>=
 bwplot(Sepal.Length ~ Species, data=iris)
 @
@@ -509,9 +521,6 @@ bwplot(Sepal.Length ~ Species, data=iris)
 bwplot(Species ~ Sepal.Length, data=iris)
 @
 %\vspace{-12mm}
-
-\InstructorNote{This assumes that the variable on the right hand side of the tilde
-is categorical}
 
 
 \subsection{Scatterplots: \texttt{xyplot()}}
@@ -522,19 +531,16 @@ the plot, if that helps you remember.)
 <<rs-iris-xyplot,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, data=iris)
 @
-
 Again, we can use conditioning to make a panel for each species.
-<<rs-iris-xyplot-cond,cache=TRUE,fig.width=7,out.width=".7\\textwidth">>=
+<<rs-iris-xyplot-cond,tidy=FALSE,cache=TRUE,fig.width=7,out.width=".7\\textwidth">>=
 xyplot(Sepal.Length ~ Sepal.Width | Species, data=iris,
-  layout=c(3,1))
+  layout=c(3,1)) # layout controls number of columns and rows
 @
-
-
-Even better (for this example), we can use the \verb!groups! argument to indicate the different species using
-different symbols on the same panel.
-<<rs-iris-xyplot-groups,cache=TRUE>>=
-xyplot(Sepal.Length ~ Sepal.Width, groups=Species, auto.key=TRUE,
-  data=iris)
+Even better (for this example), we can use the \option{groups} argument to indicate the 
+different species using different symbols on the same panel.
+<<rs-iris-xyplot-groups,cache=TRUE,tidy=FALSE>>=
+xyplot(Sepal.Length ~ Sepal.Width, groups=Species, 
+  auto.key=TRUE, data=iris)
 @
 
 \subsection{Saving Your Plots}
@@ -552,8 +558,11 @@ Go to your document (e.g. Microsoft Word) and paste in the image.
 \item
 Resize or reposition your image as needed.
 \end{enumerate}
+
+
 \section{Numerical Summaries}
-\R\ includes functions that compute a wide range of numerical and graphical summaries.  
+Numerical summaries are computed using a syntax that matches the 
+\pkg{lattice} graphics syntax.
 Most of the numerical summaries already familiar to you have obvious names.  
 Here are a few examples.  
 \authNote{add iqr() once an aggregating version is in the package}%
@@ -575,8 +584,7 @@ summaries all at once.
 favstats(~ births, data=Births78)
 @
 
-The \pkg{mosaic} package provides a \term{formula interface} for each of these summaries.
-The formula interface
+The formula interface for these functions provided by the \pkg{mosaic} package
 \begin{itemize}
 	\item
 		Removes the need for the \verb!$! operator.
@@ -585,7 +593,9 @@ The formula interface
 		Simplifies computing summary statistics separately in each of several groups.  For
 		example,
 <<>>=
+# these are equivalent
 mean( length ~ sex, data=KidsFeet )
+mean( ~ length | sex, data=KidsFeet )
 @
 
 	\item
@@ -614,17 +624,17 @@ mean(Sepal.Width ~ Species, data=iris)
 
 \subsection{Tabulating Categorical Data}
 The Current Population Survey (CPS) is used to supplement census information
-between census years. The \dfn{CPS85} data set consists of a random sample of persons from the
-CPS, with information on wages and other characteristics of the workers,
-including sex, number of years of education, years of work experience,
-occupational status, region of residence and union membership.
-
+between census years. The \dataframe{CPS85} data set consists of a random
+sample of persons from the CPS, with information on wages and other
+characteristics of the workers, including sex, number of years of education,
+years of work experience, occupational status, region of residence and union
+membership.
 
 <<>>=
 head(CPS85, 3)
 @
 
-\newthought{Calculating Frequency and Contingency Tables from Data}
+%\newthought{Calculating Frequency and Contingency Tables from Data}
 Categorical variables are  often summarized in a table.  
 \R\ can make a table for a categorical variable using \function{tally()}.
 
@@ -639,11 +649,9 @@ just have to ask.
 tally( ~ sector, CPS85, format='perc')
 tally( ~ sector, CPS85, format='prop')
 @
-
-Alternatively, we can use \verb!table()!, \verb!proptable()!, and
-\verb!perctable()!  to make tables of counts, proportions, or percentages,
-respectively.
-
+%Alternatively, we can use \verb!table()!, \verb!proptable()!, and
+%\verb!perctable()!  to make tables of counts, proportions, or percentages,
+%respectively.
 
 %\newthought{Cross-Tabulation with \texttt{xtabs()}}
 We can make a \term{cross-table} 
@@ -654,7 +662,7 @@ two categorical variables.
 
 
 <<rs-xtabs>>=
-tally(~ race & sector, CPS85)   # 2-way cross-table
+tally(~ race + sector, CPS85)   # 2-way cross-table
 @
 Alternatively, we can select one of our categorical variables to be 
 a conditional variable.  The report is then done using proportions by default.
@@ -663,35 +671,9 @@ tally(~ race | sector, CPS85)   # conditional on sector
 tally(~ sector | race, CPS85)   # conditional on race
 @
 
-\newthought{Entering Tables by Hand}
-
-Because categorical data is so easy to summarize in a table, 
-often the frequency or contingency tables are given instead.
-You can enter these tables manually as follows:
-
-
-<<rs-make-table>>=
-myrace <- c( NW=67, W=467 )       # c for combine or concatenate
-myrace
-@
-
-\label{R:make-xtabs}%
-<<rs-make-xtabs>>=
-mycrosstable <- rbind(               
-  NW = c(clerical=15, const=3, manag=6,  manuf=11, other=5,  prof=7, sales=3, service=17),
-  W  = c(82,17,49,57,63,98,35,66)    
-			  )
-mycrosstable
-@
-
-Replacing \verb!rbind()! with \verb!cbind()! will allow you to give the data
-column-wise instead.
 
 \subsection{Graphing Categorical Data}
 
-%\newthought{Bar charts and pie charts}
-%We won't use these plots often, in part because summary tables are already a good
-%way to understand the data.  
 The \pkg{mosaic} function \function{bargraph()} can 
 display these tables as bar graphs.
 <<rs-bargraph1a>>=
@@ -710,10 +692,19 @@ bargraph(~ sector, CPS85, groups=race, scales=list(x=list(rot=45)))
 bargraph(~ sector | race, CPS85, scales=list(x=list(rot=45)))
 @
 
-Just as bar charts are used to display the distribution
-of one categorical variable,  \pkg{mosaic} plots can do the same for cross tables.
-The
-\function{mosaic()} function (from the \pkg{vcd} package) is not a \pkg{lattice} plot, 
+
+Bar graphs can also be used to display two-way tables.  
+
+<<rs-barchart3aa>>=
+bargraph( ~ sector, groups=race, data=CPS85)
+@
+
+
+
+\iffalse
+Just as bar charts are used to display the distribution of one categorical
+variable,  \pkg{mosaic} plots can do the same for cross tables.
+The \function{mosaic()} function (from the \pkg{vcd} package) is not a \pkg{lattice} plot, 
 but it does use a similar formula interface.  
 
 <<rs-mosaic1,fig.width=4,fig.height=2>>=
@@ -742,19 +733,20 @@ extra effort we won't discuss just now):
 <<rs-mosaic3,fig.width=6,fig.height=2.5>>=
 mosaic(mycrosstable)
 @
+\fi
 
 
 
 \begin{problem}
-The \dfn{Utilities2} data set in the \pkg{mosaic} package contains information
+The \dataframe{Utilities2} data set in the \pkg{mosaic} package contains information
 about the bills for various utilities at a residence in Minnesota collected over a number of years.
 Since the number of days in a billing cycle varies from month to month, variables 
-like \vn{gasbillpday} (\dfn{elecbillpday}, etc.) contain the gas bill (electric bill, etc.) 
+like \vn{gasbillpday} (\dataframe{elecbillpday}, etc.) contain the gas bill (electric bill, etc.) 
 divided by the number of days in the billing cycle.
 \begin{enumerate}
 \item Use the documentation to determine what the \vn{kwh} variables contains.
 \item
-Make a scatter plot of \dfn{gasbillpday} vs. \dfn{monthsSinceY2K} using the command
+Make a scatter plot of \dataframe{gasbillpday} vs. \dataframe{monthsSinceY2K} using the command
 <<rs-gasbill,fig.keep="none">>=
 xyplot(gasbillpday ~ monthsSinceY2K, data=Utilities2, type='l')   # the letter l
 @
@@ -772,13 +764,13 @@ Make a scatter plot of \vn{gasbillpday} by \vn{month}.
 What do you notice?
 
 \item
-Make side-by-side boxplots of \vn{gasbillpday} by \vn{month} using the \dfn{Utilities2}
+Make side-by-side boxplots of \vn{gasbillpday} by \vn{month} using the \dataframe{Utilities2}
 data frame.   
 What do you notice?
 
 Your first try probably won't give you what you expect.  The reason is that month is coded
 using numbers, so \R\ treats it as numerical data.  We want to treat it as categorical data.
-To do this in \R\, use \verb!factor(month)! in place of \dfn{month}.  
+To do this in \R\, use \verb!factor(month)! in place of \dataframe{month}.  
 \R\ calls categorical data a \term{factor}.
 
 \item
@@ -808,45 +800,79 @@ darkness & 155 & 15 & 2 \\
 %\item
 %Do you think this was an experiment or an observational study?  Why?
 \item
-Recreate the table in \Rstudio.  %Copy and paste the results into your Word document.
+Recreate the table in \R. %Copy and paste the results into your Word document.
 \item
 What percent of the subjects slept with a nightlight as infants?
 
 There are several ways to do this.  You could use \R\ as a calculator to do the arithmetic.
 You can save some typing if you use the function \verb!tally()!.  See
 \verb!?tally! for documentation.
-If you just want row and column totals added to the table, see \verb!mar_table()!
-in the \verb!vcd! package.
-\item
-Make a mosaic plot for this data.  What does this plot reveal?
+%If you just want row and column totals added to the table, see \verb!mar_table()!
+%in the \verb!vcd! package.
+\item Create a graphical representation of the data.  What does this plot reveal?
 \end{enumerate}
 \end{problem}
 
-Bar graphs can also be used to display two-way tables.  
+\iffalse
+\subsection{Working with Pretabulated Data}
 
-<<rs-barchart3aa>>=
-bargraph( ~ sector, groups=race, data=CPS85)
+Because categorical data is so easy to summarize in a table, 
+often the frequency or contingency tables are given instead.
+You can enter these tables manually as follows using a combination
+of \function{c()}, \function{rbind()} and \function{cbind()}:
+\TeachingTip{This is an important technique if you use a text book
+that presents categorical data in tables.}
+
+<<rs-make-table>>=
+myrace <- c( NW=67, W=467 )       # c for combine or concatenate
+myrace
 @
 
+\label{R:make-xtabs}%
+<<rs-make-xtabs, tidy=FALSE>>=
+mycrosstable <- rbind(               
+  NW = c(clerical=15, const=3, manag=6,  manuf=11, 
+		 other=5,  prof=7, sales=3, service=17),
+  W  = c(82,17,49,57,63,98,35,66)    
+			  )
+mycrosstable
+@
+Replacing \verb!rbind()! with \verb!cbind()! will allow you to give the data
+column-wise instead.
 
+We can use \function{barchart()} instead of \function{bargraph()} to plot data 
+already tabulated in this way.
+<<>>=
+barchart( mycrosstable )
+@
+\fi
 
 \section{Using Your Own Data}
 \label{sec:usingdata}
-\R\ provides \function{read.csv()} (for comma separated values files),
-\function{read.table()} (for white space delimited files) and \function{load()}
-(for loading data in \R's native format).
-The \function{mosaic()} package includes a function called \function{read.file()} that uses 
-slightly different default settings and infers whether it should use \function{read.csv()},
-\function{read.table()}, or \function{load()} based on the file name.  
-Since most software packages can export to csv format, this has become a 
-sort of \emph{lingua fraca} for moving data between packages.  Data in excel, for example,
-can be exported as a csv file for subsequent reading in \R.  If you have python
-installed on your system, you can also use \function{read.xls()} from the 
-\pkg{gdata} package to read read directly from Excel files without this extra step.
 \TeachingTip{Start out using data from packages and focusing on what \R\ can
 do with the data.  Later, once students are familiar 
 with \R\ and understand the format required for data,
 teach students how to import their own data.}
+Eventually, students will want to move from using example data sets in \R\ packages
+to using data they find or collect themselves.  When this happens will depend on 
+the type of students you have and the type of course you are teaching.
+
+\R\ provides the functions \function{read.csv()} (for comma separated values files),
+\function{read.table()} (for white space delimited files) and \function{load()}
+(for loading data in \R's native format).
+The \pkg{mosaic} package includes a function called \function{read.file()} that uses 
+slightly different default settings and infers whether it should use \function{read.csv()},
+\function{read.table()}, or \function{load()} based on the file name.  
+
+Since most software packages can export to csv format, this has become a 
+sort of \emph{lingua fraca} for moving data between packages.  Data in excel, for example,
+can be exported as a csv file for subsequent reading in \R.  
+\Caution{There is a conflict between the \function{resample()} functions in
+\pkg{gdata} and \pkg{mosaic}.  If you want to use \pkg{mosaic}'s \function{resample()},
+be sure to load \pkg{mosaic} \emph{after} you load \pkg{gdata}.}
+If you have python installed on your system, you can also use
+\function{read.xls()} from the \pkg{gdata} package to read read directly from
+Excel files without this extra step.
 
 Each of these functions accepts a URL as well as a file name, which provides an
 easy way to distribute data via the Internet:
@@ -855,17 +881,21 @@ easy way to distribute data via the Internet:
 births <- 
   read.table('http://www.calvin.edu/~rpruim/data/births.txt', 
               header=TRUE)
-head(births) # number of live births in the US each day of 1978.
+head(births) # live births in the US each day of 1978.
 @
 We can omit the \option{header=TRUE} if we use \function{read.file()}
 <<tidy=FALSE>>=
 births <- 
   read.file('http://www.calvin.edu/~rpruim/data/births.txt')
 @
-\Rstudio\ will help you import your own data.  To do so use the ``Import Dataset" 
-button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
-google spreadsheets.   
+%\Rstudio\ will help you import your own data.  To do so use the ``Import Dataset" 
+%button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
+%google spreadsheets.   
 
+\subsection{Importing Data in \RStudio}
+\InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
+will want to know how to use functions like \function{read.csv()} for working
+in RMarkdown or knitr files.}
 The \RStudio\ interface provides some GUI tools for loading data.
 If you are using the \RStudio\ server, you will first need to upload the data
 to the server (in the \tab{Files} tab), and then import the data into your \R\ 
@@ -877,23 +907,21 @@ If you are running the desktop version, the upload step is not needed.
 
 
 
-In any case, students need to be trained to follow good data organization
-practices:
+\subsection{Developing Good Data Habits}
+However you teach students to collect and import their data, students will need to 
+be trained to follow good data organization practices:
 \begin{itemize}
 \item Choose good variables names.
 \item Put variables names in the first row.
 \item Use each subsequent row for one observational unit.
 \item Give the resulting data frame a good name.
 \end{itemize}
-\authNoted{I moved Danny's Simple Relational Database suggestion
-to \ref{sec:manipulatingData}.
-I don't think I would use a grade/courses example for students nor that
-I would introduce \function{merge()} \emph{et al} to newbies right away.
-My goal was to have this appendix look like something that I would give
-to students as is in the first week.
-In any case, I agree that we should have a section on this somewhere.
-[RJP]
-}%
+Scientists may be disappointed that \R\ data frames dont' keep track of additional information, 
+like the units in which the observations are recorded.  This sort of information should be 
+recorded, along with a description of the protocols used to collect the data, observations
+made during the data recording process, etc.  This information should be maintained in a 
+lab notebook or a \term{codebook}.
+
 
 
 \begin{problem}
@@ -901,15 +929,8 @@ Enter the following small data set in an Excel or Google spreadsheet and import 
 data into \Rstudio.
 
 \begin{center}
-\includegraphics[width=.5\textwidth]{images/GoogleSpreadsheet}
+\includegraphics[width=.75\textwidth]{images/GoogleSpreadsheet}
 \end{center}
-
-From Excel, save the file as a csv and
-upload that into \Rstudio under the Files tab, then 
-load it using the command:
-<<eval=FALSE>>=
-JunkData = read.csv("myfile.csv")
-@
 \end{problem}
 
 %\subsection{Putting Data Into a Package}
@@ -953,7 +974,7 @@ substitute the name of your data frame and the variables in it.
 \verb!log(123); log10(123); sqrt(123)! & Take natural logarithm, base 10 logarithm, or square 
 root of 123.
 \\[3mm]
-\verb!x <- c(1,2,3)! & Make a variable containing values 1, 2, and 3 (in that order).
+\verb!x <- c(1,2,3)! & Make a vector containing values 1, 2, and 3 (in that order).
 \\[3mm]
 \verb!data(iris)! & (Re)load the data set \verb!iris!.
 \\[3mm]
@@ -972,62 +993,38 @@ Summarize each variable in the \verb!iris! data frame.
 \\[3mm]
 \verb!head(iris)! & First few rows of the data frame \verb!iris!.
 \\[3mm]
-\verb!require(Hmisc)!
+\verb!require(mosaic)!
 
-& Load packages.  
+& Load the \pkg{mosaic} package.  
 (This can also be done by checking boxes in the \tab{Packages} tab.)
-\\[3mm]
-\multicolumn{2}{l}{
-\texttt{summary(Sepal.Length\~{}Species,data=iris,fun=favstats) } 
-}
-\\[1mm]
-& 
-Compute favorite statistics of \verb!Sepal.Length! for each \verb!Species!.
-[requires \verb!Hmisc!]
 \\[3mm]
 %\verb!cut(x,breaks,right=TRUE)! & Divide up the range of \verb!x! into 
 %	intervals and code the values in \verb!x! according to which interval 
 %	they fall into. 
 %\\[3mm]
-\multicolumn{2}{l}{\texttt{xhistogram(\~{}Sepal.Length|Species, iris)}}
-\\[1mm]
-& 
+\texttt{xhistogram(\~{}Sepal.Length|Species, }
+
+\hspace{.5in} \texttt{data=iris)}
+&
 Histogram of \verb!Sepal.Length! conditioned on \verb!Species!.
 \\[3mm]
 \verb!bwplot(Sepal.Length~Species, iris)! & 
 Boxplot of \verb!Sepal.Length! conditioned on \verb!Species!.
 \\[3mm]
-\multicolumn{2}{l}{\texttt{xyplot(Sepal.Length\~{}Sepal.Width|Species, iris)}} 
-\\[1mm]
+\texttt{xyplot(Sepal.Length\~{}Sepal.Width | }
+
+\hspace*{.5in}\texttt{Species, data=iris)} 
 & 
 Scatterplot of \verb!Sepal.Length! by \verb!Sepal.Width! 
 with separate panels for each  \verb!Species!.
 \\[3mm]
-\verb!xtabs(~ sector, CPS85)! & Frequency table of the variable \verb!sector!.
+\texttt{tally(\~{} sector, CPS85)} & Frequency table of the variable \verb!sector!.
 \\[3mm]
-\multicolumn{2}{l}{\texttt{barchart(xtabs(\~{}sector, CPS85))}}
-\\[1mm]
+\texttt{bargraph(\~{}sector, CPS85))}
 & Make a barchart from the table.
 \\[3mm]
-\multicolumn{2}{l}{\texttt{xtabs(\~{}sector + race, CPS85)}}
-\\[1mm]
+\texttt{tally(\~{}sector + race, CPS85)}
 & Cross tabulation of \verb!sector!  and \verb!race!.
-\\[3mm]
-\multicolumn{2}{l}{
-\texttt{mosaic(\~{}sector + race, CPS85)} }
-\\[1mm]
-& Make a mosaic plot.
-\\[3mm]
-\multicolumn{2}{l}{
-\texttt{xtData <- as.data.frame( xtabs(\~{}sector + race, Trematodes) )}}
-\\[1mm]
-  & Save cross table information as \verb!xtData!. 
-\\[3mm]
-\multicolumn{2}{l}{
-\texttt{barchart(Freq\~{}sector, data=xtData, groups=race)}
-}
-\\[1mm]
-& Use \verb!xtData! to make a segmented bar chart.
 \\[3mm]
 \verb!sum(x)!; 
 \verb!mean(x)!; 
