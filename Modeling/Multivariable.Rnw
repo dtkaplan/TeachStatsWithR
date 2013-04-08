@@ -8,7 +8,9 @@ set.seed(123)
 
 \chapter*{Preface}
 
-These notes are about a strategy for teaching statistical modeling.  The strategy involves treating modeling with multiple variables as a notation extension of relatively simple concepts such as groupwise means.  In order to prepare students for the extension, it helps to present groupwise means as a sort of model, even though the traditional way is algorithmically: an average for the members in each group.  The motivation for the strategy can be understood metaphorically: by not leading students into a conceptual dead end, there is no need to retrace the path to get to the actual destination.
+These notes present a strategy for teaching statistical modeling. The strategy is based around notation: a way of writing down forms of relationships among variables.  Coupled with modern computing, the notation comes to life.  The form of a relationship is translated by the computer into a fit that describes the data at hand.
+
+The same notation that can describe simple relationships --- for example, groupwise means, in which a quantitative response variable is averaged separately in groups defined by a categorical explanatory variable --- can be extended to much richer relationships involving multiple explanatory variables.  What's key is to have a notation in which phrases like ``response variable'' and ``explanatory variable'' have a discernible identity.  Starting with that notation puts students in a good place on the road to learning about modeling.
 
 The notes are part of a series on teaching with the R computer environment, but they are not primarily about R.  Other notes in the series introduce R, discuss how to teach with R, and show how to carry out basic processes of statistical inference using conceptually simple operations implemented transparently in R.
 
@@ -30,16 +32,23 @@ Goals:
 \item \function{makeFun} and \function{plotFun}
 \end{itemize}
 
+
+
 \chapter{Multivariable Statistics -- Early?} 
 \label{chap:multivariate-early}
 
 <<include=FALSE>>=
 require(mosaic)
+options(na.rm=TRUE)
 @
 
 \chapter{Graphics, Formulas, \& Statistics}
 
-\marginnote{The statement \texttt{require(mosaic)} loads in the \pkg{mosaic} package, which itself includes the graphics package \pkg{lattice}.  The \pkg{mosaic} provides many of the commands that are used in this book.}
+\marginnote{\texttt{require(mosaic)}\\
+The R system provides a way for the software development community to add new functionality.  "Packages" are the standard way to deliver such software.  
+The statement \texttt{require(mosaic)} loads in the \pkg{mosaic} package, which itself includes several other packages.  
+
+The \pkg{mosaic} package provides many of the commands that are used in this book.}
 
 Mainstream statistics courses often include statistical graphics: scatterplots, box-and-whisker plots, histograms, etc.  In R, these basic graphics can be made with \function{xyplot} and \function{bwplot}, for instance:
 <<ex1,fig.width=2,fig.keep='all'>>=
