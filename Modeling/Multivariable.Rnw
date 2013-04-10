@@ -34,11 +34,25 @@ Goals:
 
 
 
+\chapter{In DRAFT: Datasets}
+
+`trebuchet` from \pkg{fastR}
+
+`galton`
+
+`Saratoga-Houses`
+
+`Swim100m`
+
+`SAT`
+
+
 \chapter{Multivariable Statistics -- Early?} 
 \label{chap:multivariate-early}
 
 <<include=FALSE>>=
 require(mosaic)
+require(fastR)
 options(na.rm=TRUE)
 @
 
@@ -48,13 +62,31 @@ options(na.rm=TRUE)
 The R system provides a way for the software development community to add new functionality.  "Packages" are the standard way to deliver such software.  
 The statement \texttt{require(mosaic)} loads in the \pkg{mosaic} package, which itself includes several other packages.  
 
-The \pkg{mosaic} package provides many of the commands that are used in this book.}
+The \pkg{mosaic} package provides many of the commands that are used in this book.
+
+To load the \pkg{mosaic} package,
+```{r}
+require(mosaic)
+```
+
+Once the package is loaded, it remains loaded for the rest of the R session.  
+
+As you teach, you may find other packages, such as \pkg{fastR}, that give useful data sets or other capabilities.  These can be loaded in the same way, for example:
+```{r}
+require(fastR)
+```
+}
+
+\marginnote{We're starting with a data set, \texttt{trebuchet} collected by a student, Andrew Pruim, as part of a Science Olympiad competition.  These data are included in the \pkg{fastR} package.  
+
+A trebuchet is a device used for throwing projectiles.  Introduced in medieval times, it was used as a siege weapon, throwing projectiles of several hundred pounds to destroy fortifications. 
+
+\includegraphics[width=1.5in]{images/Trebuchet2.png}}
 
 Mainstream statistics courses often include statistical graphics: scatterplots, box-and-whisker plots, histograms, etc.  In R, these basic graphics can be made with \function{xyplot} and \function{bwplot}, for instance:
-<<ex1,fig.width=2,fig.keep='all'>>=
-require(mosaic)
-xyplot(width ~ length,data=KidsFeet)
-bwplot(width ~ sex,data=KidsFeet)
+<<ex1,fig.width=4,fig.height=2,fig.keep='all'>>=
+xyplot(distance ~ projectileWt,data=trebuchet)
+bwplot(distance ~ object,data=trebuchet)
 @
 
 These things involving the \verb+~+ squiggle character --- ``tilde" --- are called \newword{formulas} in R. The word "formula" is used a somewhat different way than in algebra: the formula lays out how you want to relate variables: y versus x, what to break down by what.  
@@ -67,75 +99,57 @@ The path is easy enough that it makes sense to start in that direction early: us
 
 It's worthwhile to start a statistics course with graphics.  In addition to conveying well ideas of variation, graphics are close to the data themselves, compelling, and motivating.  Students see the advantage of using software; they couldn't make such graphics by hand.
 
-\marginnote{Explanation of the \texttt{KidsFeet} dataset.  Why, what, where it is found.}
+
 
 \marginnote{It's tempting to show students shortcuts for looking at a data set, such as \function{summary}.
 <<eval=FALSE>>=
-summary(KidsFeet)
+summary(trebuchet)
 @
 This unfortunately encourages students to think that there is such a thing  as a mean or median of a dataset.  It's important to distinguish between variables and the datasets in which variables are contained.}
 
 The move to quantitative statistics is straightforward, since the syntax is very much the same as with plots.  For instance
 <<>>=
-mean(width,data=KidsFeet)
-sd(width,data=KidsFeet)
+mean(distance,data=trebuchet)
+sd(distance,data=trebuchet)
 @
 In each case, the variable of interest is named along with the data set in which that variable is included.  
 
 Using \pkg{mosaic}, the formula interface works with these basic statistics in much the same way as for graphics, e.g:
 <<>>=
-mean(width~sex,data=KidsFeet)
+mean(distance~object,data=trebuchet)
 @
 
-This idea of breaking down one variable by another is natural.  For instance, to find out left- or right-handedness is distributed by sex, use:
-<<>>=
-tally(domhand~sex,data=KidsFeet)
-@
-This is a different question than asking how sex is broken down by handedness:
-<<>>=
-tally(sex~domhand,data=KidsFeet)
-@
-The formula notation makes it clear which variable is being broken down by which.
-
-\marginnote{To avoid having to say things like \model{sex}{1}, some functions such as \function{mean} let you use just the bare variable name without the \model{}{}.  In the functions that have not been configured this way, you can say \model{}{sex}, leaving the right-hand side blank, to accomplish the same thing.  It's debatable whether \model{sex}{1} is better than \model{}{sex}.  Unfortunately, R does not allow \model{sex}{}, which would be a natural way to say, ``broken down by nothing.''}
-
-Sometimes you don't want to break down one variable by another.  In such situations, you can use \texttt{1} to stand for ``the same for every case.''  For example:
-<<>>=
-mean(length ~ 1,data=KidsFeet)
-tally(sex ~ 1,data=KidsFeet)
-@
-These formulas still mean, break down the variable on the left side of the formula according to the ``variable'' on the right side, but since the variable on the right side is always 1, there's only one group. This is admittedly a little unnatural, but drawing attention to \texttt{1} early pays off later one.
 
 \chapter{From Formulas to Models}
 
 You've already seen how the formula notation can be used in the calculation of statistics, for example, this calculation of grand means and groupwise means:
 <<>>=
-mean(width~1,data=KidsFeet) # Grand mean
-mean(width~sex,data=KidsFeet) # Groupwise by sex
+mean(distance~1,data=trebuchet) # Grand mean
+mean(distance~object,data=trebuchet) # Groupwise by sex
 @
 
 Means are considered basic.  But contrast them with a more advanced methodology: regression.  Here's a model of foot width against sex:
 <<>>=
-mod1 = lm(width~sex,data=KidsFeet)
+mod1 = lm(distance~projectileWt,data=trebuchet)
 @
 The syntax for constructing the model is very much the same as for \function{mean}.  But what is the output, what is the model itself?
 
 It helps to have some vocabulary:
 \begin{itemize}
-\item A model of this sort links inputs, called ``explanatory variables," to an output, or ``response variable". \sidenote{Depending on the field, these may be called dependent and independent variables respectively.} In the example above, \VN{width} is the response variable while \VN{sex} an the explanatory variable.
+\item A model of this sort links inputs, called ``explanatory variables," to an output, or ``response variable". \sidenote{Depending on the field, these may be called dependent and independent variables respectively.} In the example above, \VN{distance} is the response variable while \VN{projectileWt} an the explanatory variable.
 \item The model corresponds to a function, a mathematical representation of a relationship between an input and an output. 
 \item The purpose of \function{lm} is to construct a function that is as close to the data as possible.  That is, \function{lm} ``fits'' the model to the data.
 \end{itemize}
 
 To make sense of this, it can be useful to construct the function explicitly and apply the inputs to it.
-\marginnote{In this example, the input to the function is a category.  The possible values of a categorical variable --- the levels --- are often denoted in R as quoted character strings, \texttt{"G"} and \texttt{"B"} in the \texttt{KidsFeet} data, standing for girls and boys.}
+\marginnote{In this example, the input to the function is a category.  The possible values of a categorical variable --- the levels --- are often denoted in R as quoted character strings, \texttt{"foose"} and \texttt{"golf"} in the \texttt{trebuchet} data, standing for a fooseball and a golf ball.}
 <<>>=
 f1 = makeFun(mod1)
 @
-This use of \function{makeFun} reformats the information that's already in \texttt{mod1}  as a mathematical function in R. Once that's done, the function can be evaluated in the ordinary way, by specifying the inputs.  For instance, you can ask what is the model function's value for each level of the explanatory variable \VN{sex}.
+This use of \function{makeFun} reformats the information that's already in \texttt{mod1}  as a mathematical function in R. Once that's done, the function can be evaluated in the ordinary way, by specifying the inputs.  For instance, you can ask what is the model function's value for each level of the explanatory variable \VN{object}.
 <<>>=
-f1(sex="G")
-f1(sex="B")
+f1(object="foose")
+f1(object="golf")
 @
 
 The function \texttt{f1} attempts to describe the relationship between the explanatory and response variables: between \VN{sex} and \VN{width}.
@@ -146,6 +160,7 @@ As it happens, the values produced by \texttt{f1} coincide directly with the val
 There are, \marginnote{There's nothing fundamental about \function{listFun}.  It's just a program that makes it easy to construct a mathematical function with categorical inputs.}
 of course, other possible functions that could be used to describe the relationship between \VN{sex} and \VN{width}.  For example, here's a function that says the model value for boys is 10 cm, while that for girls is 9 cm:\authNote{Add listFun to mosaic package?}
 <<>>=
+# replace with makeFun(switch())
 fetchData("m155development.R")
 f2 = listFun("B"=10,"G"=9)
 @
@@ -222,6 +237,12 @@ r.squared(mod1)
 
 \section{Main Effects and Interaction Terms}
 
+\section{Models of Counts and Probabilities}
+
+Just using \function{lm} and it's equivalence to the Wald interval.
+
+Logistic regression versus $\chi^2$
+Odds ratios
 
 \section{}
 GRAPHICS WITH THE SAT DATA: lattice plot of SAT versus expenditure with facets for different levels of fraction.  Then put up the whole model as SAT versus expenditure with separate lines for each level for fraction.
@@ -1120,4 +1141,23 @@ Consider the \texttt{CPS85} data that measured per-hour wages and
 
 \shipoutProblems
 
+\section{Tallying}
+This idea of breaking down one variable by another is natural.  For instance, to find out left- or right-handedness is distributed by sex, use:
+<<>>=
+tally(domhand~sex,data=KidsFeet)
+@
+This is a different question than asking how sex is broken down by handedness:
+<<>>=
+tally(sex~domhand,data=KidsFeet)
+@
+The formula notation makes it clear which variable is being broken down by which.
+
+\marginnote{To avoid having to say things like \model{sex}{1}, some functions such as \function{mean} let you use just the bare variable name without the \model{}{}.  In the functions that have not been configured this way, you can say \model{}{sex}, leaving the right-hand side blank, to accomplish the same thing.  It's debatable whether \model{sex}{1} is better than \model{}{sex}.  Unfortunately, R does not allow \model{sex}{}, which would be a natural way to say, ``broken down by nothing.''}
+
+Sometimes you don't want to break down one variable by another.  In such situations, you can use \texttt{1} to stand for ``the same for every case.''  For example:
+<<>>=
+mean(length ~ 1,data=KidsFeet)
+tally(sex ~ 1,data=KidsFeet)
+@
+These formulas still mean, break down the variable on the left side of the formula according to the ``variable'' on the right side, but since the variable on the right side is always 1, there's only one group. This is admittedly a little unnatural, but drawing attention to \texttt{1} early pays off later one.
 
