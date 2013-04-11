@@ -1,5 +1,6 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
+inRStudio <- FALSE    # only try manipulate things if in RStudio
 opts_chunk$set( fig.path="figures/Manipulate-" ) 
 if (!exists("..makingMaster..")) {
 	set_parent('Master-Starting.Rnw')
@@ -8,32 +9,50 @@ set.seed(123)
 @
 
 
-\chapter{Getting Interactive with \texttt{manipulate} and \texttt{mosaicManip}}
+\chapter{Getting Interactive with \texttt{manipulate} and \texttt{shiny}}
 
-One very attractive feature of \RStudio\ is the \verb!manipulate()! function, which
-can allow the creation of a set of controls (such as \verb!slider()!, \verb!picker()!
-or \verb!checkbox()!) that can be used to dynamically change values within the 
-expression.  When a value is changed using these controls, the expression is automatically
-re-executed and redrawn.  This can be used to quickly prototype a number of activities and
+One very attractive feature of \RStudio\ is the \function{manipulate()} function (in the 
+\pkg{manipulate} package, which is only available within \RStudio).  This function
+makes it easy to create a set of controls (such as sliders, checkboxes, drop down selections, etc.)
+that can be used to dynamically change values within an expression.  
+When a value is changed using these controls, the expression is automatically
+re-executed and any plots created as a result are redrawn.  
+This can be used to quickly prototype a number of activities and
 demos as part of a statistics lecture.
 
-We've created a number of useful examples in the \pkg{mosaicManip} package, but encourage
-you to craft more of your own.
+\pkg{shiny} is a new web development system for \R\ being designed by the \RStudio\ team.
+\pkg{shiny} uses a reactive programming model to make it relatively easy for an \R\ programmer
+to create highly interactive, well designed web applications using \R\ without needing to know
+much about web programming.  Programming in \pkg{shiny} is more involved than using
+\pkg{manipulate}, but it offers the designer more flexibility.  One of the goals in creating
+\pkg{shiny} was to support corporate environments, where a small number of statisticians and 
+programmers can create web applications that can be used by others within the company without 
+requiring them to know any \R.  This same framework offers many possibilities for educational
+purposes as well.  Some have even suggested implementing fairly extensive GUI interfaces to 
+commonly used \R\ functionality using \pkg{shiny}.  
 
-\section{Simple Things}
+\section{Getting Started with \texttt{manipulate}}
+
+The \function{manipulate()} function and the various control functions that are used with it
+are only available after loading the \pkg{manipulate} package, which is only available in 
+\RStudio.
+
+<<eval=inRStudio>>=
+require(manipulate)
+@
+
 
 \subsection{Sliders}
 
-\authNote{need to remove \emph{if(require)}}
-
-<<manipulate-histogram1, echo=TRUE, tidy=FALSE, eval=FALSE>>=
-if(require(manipulate)) {
-  manipulate(
-    xhistogram( ~ eruptions, data=faithful, n=n),
-    n = slider(5,40)
-  )
-}
+<<manipulate-histogram1, echo=TRUE, tidy=FALSE, eval=inRStudio>>=
+manipulate(
+  xhistogram( ~ eruptions, data=faithful, n=N),
+  N = slider(5,40)
+)
 @
+\marginnote{We find it useful to capitalize the inputs to the manipulated expression
+that are hooked up to \pkg{manipulate} controls.  This helps avoid naming collisions 
+and signals how the main manipulated expression is being used.}
 This generates a plot along with a slider ranging from 5 bins to 40.
 
 \begin{center}
@@ -48,78 +67,66 @@ When the slider is changed, we see a clearer view of the eruptions of Old Faithf
 
 \subsection{Check Boxes}
 
-<<manipulate-histogram2>>=
-if(require(manipulate)) {
-  manipulate(
-	xhistogram( ~ age, data=HELPrct, n=n, density=density),
-	n = slider(5,40),
-	density = checkbox()
-  )
-}
+<<manipulate-histogram2, tidy=FALSE, eval=inRStudio>>=
+manipulate(
+  xhistogram( ~ age, data=HELPrct, n=N, density=DENSITY),
+  N = slider(5,40),
+  DENSITY = checkbox()
+)
 @
 
 \centerline{\includegraphics[width=3.8in]{images/manipulate-checkbox}}
 
 \subsection{Drop-down Menus}
 
-<<manipulate-histogram3>>=
-if(require(manipulate)) {
-  manipulate(
-	xhistogram( ~ age, data=HELPrct, n=n, fit=distribution, dlwd=4),
-	n = slider(5,40),
-	distribution = 
+Drop-down menus can be added using the \function{picker()} function.
+
+<<manipulate-histogram3, eval=inRStudio>>=
+manipulate(
+	xhistogram( ~ age, data=HELPrct, n=N, fit=DISTRIBUTION, dlwd=4),
+	N = slider(5,40),
+	DISTRIBUTION = 
 		picker('normal', 'gamma', 'exponential', 'lognormal',
 			   label="distribution")
-  )
-}
+)
 @
 
 \centerline{\includegraphics[width=3.8in]{images/manipulate-picker}}
 
 \subsection{Visualizing Normal Distributions}
-<<manipulate-xpnorm>>=
-if(require(manipulate)) {
-  manipulate( xpnorm( x, 500, 100 ), x = slider(200,800) )
-}
+\label{sec:vis-normal-dist}
+In this section we will gradually build up a small \pkg{manipulate} example
+that shows the added flexibility that comes from writing a function that 
+returns a \pkg{manipulate} object.  Such functions can be distributed to students
+to allow them to explore interactively in a more flexible way.
+
+We begin by creating an illustration of tail probabilities in a normal distribution.
+<<manipulate-xpnorm, tidy=FALSE, eval=inRStudio>>=
+  manipulate( xpnorm( X, 500, 100, verbose=FALSE, invisible=TRUE ), 
+              X = slider(200,800) )
 @
 \centerline{\includegraphics[width=3.8in]{images/manipulate-xpnorm}}
-
-\section{Using the \pkg{mosaicManip} package}
-
-The \pkg{mosaicManip} package includes a number of pre-built routines that 
-take advantage of the \pkg{manipulate} package for teaching purposes.  
-
-\subsection{Visualizing Linear Regression}
-The \function{mLineFit()} function allows students to explore sums of squares, 
-residuals in the context of simple linear regression.
-<<manipulate-mlinefit>>=
-if(require(mosaicManip)) {
-  kids = fetchData("kidsfeet.csv")
-  mLineFit(length ~ width, data=kids)
-}
+%
+The version below can be used to investigate central probabilities and tail probabilities.
+<<manipulate-xpnorm2, eval=inRStudio>>=
+  manipulate( xpnorm( c(-X,X), 500, 100, verbose=FALSE, invisible=TRUE ), 
+              X = slider(200,800) )
 @
-\centerline{\includegraphics[width=3.8in]{images/manipulate-mLineFit}}
 
-\subsection{Visualizing the Power of a Test}
-The \function{mHypTest()} function allows students to explore questions of
-power and sample size in the context of a 2 sample test.
-<<manipulate-mHypTest>>=
-if(require(mosaicManip)) {
-  mHypTest()
+These examples work with a fixed distribution.  Here is a fancier version in which 
+a function returns a manipulate object.  This allows us to easily create illustrations
+like the ones above for any normal distribution.
+<<eval=inRStudio>>=
+mNorm <- function( mean=0, sd=1 ) {
+  lo <- mean - 5*sd 
+  hi <- mean + 5*sd
+  manipulate( xpnorm( c(A,B), mean, sd, verbose=FALSE, invisible=TRUE ), 
+			 A = slider(lo, hi, initial=mean-sd), 
+			 B = slider(lo, hi, initial=mean+sd))
 }
+mNorm( mean=100, sd=10 )
 @
-\centerline{\includegraphics[width=3.8in]{images/manipulate-mHypTest}}
 
-\subsection{Visualizing the Coverage Properties of Confidence Intervals}
-The \function{mCIprop()} function runs a simulation where the true proportion 
-is known, but a series of samples are generated from that distribution to assess the
-coverage properties of the intervals.
-<<manipulate-mCIprop>>=
-if(require(mosaicManip)) {
-  mCIprop()
-}
-@
-\centerline{\includegraphics[width=3.8in]{images/manipulate-mCIprop}}
 
 \begin{problem}
 The following code makes a scatterplot with separate symbols for each sex.

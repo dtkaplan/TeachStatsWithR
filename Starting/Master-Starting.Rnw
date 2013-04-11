@@ -45,10 +45,12 @@
 <<child='ByHand.Rnw', eval=TRUE>>=
 @
 
-<<child='MoreExamples.Rnw', eval=TRUE>>=
+% Unless we create more examples, this is begin deleted.
+<<child='MoreExamples.Rnw', eval=FALSE>>=
 @
 
-<<child='MoreR.Rnw', eval=TRUE>>=
+% Most of this should be in RForInstructors now (there was a lot of duplication between them)
+<<child='MoreR.Rnw', eval=FALSE>>=
 @
 
 <<child='Manipulate.Rnw', eval=TRUE>>=

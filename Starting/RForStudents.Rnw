@@ -266,6 +266,7 @@ install.packages('some-package.tar.gz', repos=NULL)
 @
 
 \section{Data}
+\label{sec:studentdata}%
 %To be able to undertake analyses, you will need to
 %load data sets into \R\ and \RStudio\ for analysis.
 
@@ -400,9 +401,9 @@ avoid the \verb!$! operator.
 After introducing students to the calculator functions of the \R\ console and
 teaching them how to inspect a data frame, we like to get them making graphical
 summaries of data.  This gives the students access to functionality where \R\
-really shines (and is certainly much better than a hand-held calculator) and
-begins to develop both their ability to interpret graphical representations of
-data and their ability to pose statistical questions.
+really shines (and is certainly much better than a hand-held calculator). It also 
+begins to develop their ability to interpret graphical representations of
+data, to think about distributions, and to pose statistical questions.
 
 \subsection{Lattice Graphics}
 
@@ -465,13 +466,13 @@ towers when the data values cluster near each other.
 For a dot plot, the \verb!y! component of the formula is empty since we let \R\
 calculate that for us.
 
-<<rs-iris-dotPlot,cache=FALSE,fig.width=5,fig.height=3.0>>=
+<<rs-dotPlot,cache=FALSE,fig.width=5,fig.height=3.0>>=
 # n = 30 gives approx 30 columns
-dotPlot(~ Sepal.Length, data=iris, n=30)    
+dotPlot(~ births, data=Births78, n=30)    
 @
 We can use a conditional variable to give us separate dot plots for each
 species, and shrink the dots.
-<<rs-iris-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
+<<rs-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
 dotPlot(~ Sepal.Length | Species, data=iris, n=20, 
 		cex=.6,        # cex used to shrink the dots a bit
 		layout=c(3,1)) 

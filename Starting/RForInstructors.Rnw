@@ -17,543 +17,108 @@ opts_chunk$set( fig.path="figures/RForInstructors-" )
 @ 
 
 
+\marginnote{You may find that some of these things are useful for your 
+students to know as well. That will depend on the goals for your course
+and the abilities of your students.  In higher level courses, much
+of the material in this chapter is also appropriate for students.}
 We recommend keeping the amount of \R\ that students need to learn
 to a minimum, and choosing functions that support a formula interface whenever
 possible to keep the required functions syntactically similar.
 But there are some additional things that instructors should know about
-\R\.  We outline some of these things in this chapter.
+\R.  We outline some of these things in this chapter.
 
 
+\section{Some Workflow Suggestions}
+\label{sec:scripts}
 
-\section{Working with Data}
-\label{sec:MoreR-Data}%
+Our workflow advice can be summarized in one short sentence: 
 
-\subsection{Data in {\sf R} packages}
-
-Data sets in the \verb!datasets! package or any other loaded package
-are available via the \verb!data()! function.  Usually, the use
-of \verb!data()! is unnecessary, however, since \R\ will search
-most loaded packages (they must have been created with the 
-lazy-load option) for data sets without the explicit use of 
-\verb!data()!.  The \verb!data()! function can be used to 
-restore data after it has been modified or to control which package
-is used when data sets with the same name appear in multiple packages.
-
-\subsection{Loading data from flat files}
-\R\ can read data from a number of file formats.  
-The two most useful formats are csv 
-(comma separated values) and white space delimited.  
-Excel and most statistical packages can read and write data in these 
-formats, so these formats  make it easy to transfer data
-between different software.  
-\R\ provides \function{read.csv()} and \function{read.table()} to
-\Rindex{read.csv()}%
-\Rindex{read.table()}%
-\Rindex{read.file()}%
-handle these two situations.  They work nearly identically except for their 
-default settings:
-\function{read.csv()} assumes that the first line of the file contains
-the variable names but \function{read.table()} assumes that the data begins on the first
-line with no names for the variables,
-and \function{read.table()} will ignore lines that begin with `\verb!#!' 
-but \function{read.csv()} will not.
-
-The default behavior can be overridden for each function, 
-and there are a number of options that make it possible to 
-read other file formats,
-to omit a specified number of lines at the top of the file, etc.
-If you are making the file yourself,
-always include meaningful names in either file format. 
-
-
-It is also possible to read data from a file located on the Internet.  
-Simply replace the file name with a URL.
-The data read below come from \cite{Tufte:2001:Visual}.
-\authNoted{Check citation for Tufte.}%
-
-<<read-table>>=
-# need header=TRUE because there is a header line.
-# could also use read.file() without header=TRUE
-traffic <- 
-    read.table("http://www.calvin.edu/~rpruim/fastR/trafficTufte.txt", 
-    header=TRUE)
-traffic
-@
-
-Notice the use of \code{<-} in the example above.  
-This is the \rterm{assignment operator}
-%\myindex{<-@\texttt{<-}|seeonly{assignment operator}}%
-%\myindex{assignment operator}%
-in \R.  
-It can be used in either direction (\code{<-} or \code{->}).  In the first line of the 
-example above, the results of \function{read.table()} are stored in a variable called 
-\dfn{traffic}.  \dfn{traffic} is a \rterm{data frame}, \R's preferred container for
-data.  (More about data types in \R\ as we go along.)
-
-
-
-The \option{na.strings} argument can be used to specify
-codes for missing values.  
-The following can be useful for SAS output, for example:
-<<eval=FALSE>>=
-read.csv('file.csv', na.strings=c('NA','','.','na')) -> someData
-@
-because SAS uses a period (\verb!.!) to code missing data, but \R\ by default
-reads that as string data, which forces the entire variable to be of character 
-type instead of numeric.
-
-\subsection{Saving Data}
-\function{write.table()} and \function{write.csv()} can be used to save data from \R\ into
-delimited flat files.
-
-<<writingData>>=
-ddd <- data.frame(number=1:5, letter=letters[1:5])
-args(write.table)
-write.table(ddd, "ddd.txt")
-write.csv(ddd, "ddd.csv")
-# this system call should work on a Mac or Linux machine
-system("head -20 ddd.txt ddd.csv")
-@
-
-
-Data can also be saved in native \R\ format.  Saving data sets 
-(and other \R\ objects) using \function{save()} has some advantages over other file formats:
-\begin{itemize}
-  \item 
-  Complete information about the objects is saved, including attributes.
-  \item
-  Data saved this way takes less space and loads much more quickly.
-  \item
-  Multiple objects can be saved to and loaded from a single file.
-\end{itemize}
-The downside is that these files are only readable in \R.
-
-<<savingData,exec=FALSE,echo=TRUE>>=
-abc <- "abc"
-ddd <- data.frame(number=1:5, letter=letters[1:5])
-save(ddd, abc, file="ddd.rda")   # saves both objects in a single file
-load("ddd.rda")                  # loads them both
-@
-
-Here we show how to modify the \dataframe{Births78} data frame so 
-that it contains a new variable \variable{day} that is an ordered factor.
-(Details about some of the functions involved will be presented later 
-in this chapter).
-<<>>=
-trellis.par.set(superpose.symbol=list(pch=16))
-@
-<<Births-make,fig.width=6,out.width=".8\\textwidth">>=
-data(Births78)
-weekdays <- c("Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat") 
-Births <- Births78
-Births$day <- with( Births, factor(weekdays[1 + (dayofyear - 1) %% 7], 
-					 ordered=TRUE,
-					 levels = weekdays) )
-xyplot( births ~ dayofyear, Births, groups=day, auto.key=list(space='right') )
-@
-If we save \dataframe{Births} using \function{write.csv()}, we will lose the ordering 
-of the days.  (The default order when reading the csv file is alphabetical.)
-If we use \function{save()} instead, the natural order of the days is preserved.
-<<Births-save>>=
-save(Births, file="Births.rda")
-load("Births.rda")
-tally(~day, Births)  # note order of days
-@
-
-For more on importing and exporting data, especially from other
-formats, see the 
-%\href{http://cran.r-project.org/manuals.html}%
-\textit{R Data Import/Export} manual available on \cran.
-
-
-\subsection{\texttt{read.file()}}
-For convenience the \verb!mosaic! package provides \function{read.file()} which
-uses the file name to determine which of \function{read.csv()},
-\function{read.table()}, and \function{load()} to use and sets the defaults
-to 
-\begin{itemize}
-\item
-\verb!header=TRUE!, 
-\item
-\verb!comment.char="#"!, and 
-\item
-\verb!na.strings=c('NA','','.','na')! 
-\end{itemize}
-for \function{read.csv()} and \function{read.table()}.
-
-<<tuffte-trafic>>=
-traffic <- read.file("http://www.calvin.edu/~rpruim/fastR/trafficTufte.txt")
-@
-
-\subsection{Manually typing in data}
-
-The \function{c()} function combines elements into a single list or vector.
-<<label="c-function",tidy=FALSE>>=
-x <- c(1,1,2,3,5,8,13); x
-@
-
-The \function{scan()} function can speed up data entry by allowing you to
-avoid the commas
-\Rindex{scan()}%
-Individual values are separated by white space or new lines.  
-A blank line is used to signal the end of the data.
-By default, \function{scan()} is expecting decimal data (which it calls \rterm{double}, 
-for double precision), but it is possible to tell \function{scan()} to expect something else,
-like \rterm{character} data (i.e., text). 
-There are other options for data types, but numerical and text data handle the most
-important cases.  See \code{?scan} for more information and examples.
-
-\begin{Rcode}
-myData1 <- scan()
-15 18
-12
-21 23 50 15
-
-myData1
-
-myData2 <- scan(what="character")
-"red" "red" "orange" "green" "blue" "blue" "red"
-
-myData2
-\end{Rcode}
-
-<<scan-prep,echo=FALSE>>=
-myData1 <- c(15, 18, 12, 21, 23, 50, 15)
-myData2 <- c("red","red","orange","green","blue","blue","red")
-@
-%
-Be sure when using \function{scan()} that you remember to save your data somewhere.
-Otherwise you will have to type it again.
-
-\subsection{Creating data frames from vectors}
-
-\Rindex{data.frame()}%
-The \function{scan()} function puts data into a \rterm{vector}, not a \rterm{data frame}.  We can
-build a \rterm{data frame} for our data as follows.
-
-<<dataframe>>=
-myDataFrame <- data.frame(color=myData2, number=myData1)
-myDataFrame
-@
-
-\subsection{Getting data from mySQL data bases}
-
-The \pkg{RMySQL} package allows direct access to data in MySQL data bases.
-This can be convenient when dealing with subsets of very large data sets.
-A great example of this is the 12 gigabytes of data from the Airline on-time
-performance dataset included in the 2009 Data Expo (\url{http://stat-computing.org/dataexpo/2009}).
-\Rindex{RMySQL}%
-\myindex{SQL}%
-There is an \href{http://csg.sph.umich.edu/docs/R/rsql.html}{online document}
-describing this type of manipulation. 
-
-
-\subsection{Generating data}
-\label{sec:generatingData}
-\Rindex{rep()}%
-\Rindex{seq()}%
-\Rindex{c()}%
-\Rindex{rnorm()}%
-\Rindex{sample()}%
-
-The following code shows a number of ways to generate data systematically.
-This can be useful for designing experiments, for creating illustrations,
-or for performing simulations.
-
-<<generatingData01,tidy=FALSE>>=
-x <- 5:20; x                 # all integers in a range
-# structured sequences
-seq(0, 50, by=5)               
-seq(0, 50, length=7)               
-rep(1:5, each=3)
-rep(1:5, times=3)
-c(1:5, 10, 3:5)              # c() concatenates vectors
-@
-
-\R\ can also sample from several different distributions.
-
-<<generatingData02>>=
-rnorm(10, mean=10, sd=2)  # random draws from normal distribution
-x <- 5:20                 # all integers in a range
-sample(x, size=5)         # random sample of size 5 from x (no replacement)
-@
-
-Functions for sampling from other distributions include
-\function{rbinom()},
-\function{rchisq()},
-\function{rt()},
-\function{rf()},
-\function{rhyper()},
-etc.
-See Section~\ref{sec:DiscreteDistributions} for more information.
-
-
-
-
-
-\section{Sharing With and Among Your Students}
-\label{sec:distributing-data}
-
-Instructors often have their own data sets to illustrate 
-points of statistical interest or to make a particular connection with
-a class.  Sometimes you may want your class as a whole to construct a
-data set, perhaps by filling in a survey or by contributing
-their own small bit of data to a class collection.  Students may be
-working on projects in small groups; it's nice to have tools to
-support such work so that all members of the group have access to the
-data and can contribute to a written report.
-
-There are now many technologies for supporting such sharing.  For the
-sake of simplicity, we will emphasize three that we have found
-particularly useful both in teaching statistics and in our
-professional collaborative work.  These are:
-\begin{itemize}
-\item Within \RStudio\ server.
-\item A web site with minimal overhead, such as provided by Dropbox.
-\item The services of Google Docs.
-\item A web-based \RStudio\ server for \R.
-\end{itemize}
-The first two are already widely used in university environments and
-are readily accessible simply by setting up accounts.  Setting up an
-\RStudio\ web server requires some IT support, but is well within the
-range of skills found in IT offices and even among some individual faculty.
-
-\subsection{Using \RStudio\ server to share files}
-
-\subsection{Your own web site}
-
-You may already have a web site.  We have in mind a place where you
-can place files and have them accessed directly from the Internet.
-For sharing data, it's best if this site is public, that is, it does not require a login.
-That rules out most ``course support'' systems such as Moodle or
-Blackboard.  
-\FoodForThought{Our discussion of Dropbox is primarily for those who do
-not already know how to do this other ways.}%
-
-The Dropbox service for storing files in the ``cloud'' provides a very
-convenient way to distribute files over the web.  (Go to
-\texttt{dropbox.com} for information and to sign up for a free account.)
-Dropbox is routinely used to provide automated backup and coordinated
-file access on multiple computers.  But the Dropbox service also
-provides a \code{Public} directory.  Any files that you place in that
-directory can be accessed directly by a URL.  
-
-To illustrate, suppose you wish to share some data set with your
-students.  You've constructed this data set in a spreadsheet and
-stored it as a csv file, let's call it \code{example-A.csv}.  Move this
-file into the \code{Public} directory under Dropbox --- on most
-computers Dropbox arranges things so that its directories appear
-exactly like ordinary directories and you'll use the ordinary, familiar
-file management techniques as in Figure \ref{fig:dropbox1}.
-\begin{figure}
 \begin{center}
-\includegraphics[width=3.5in]{images/dropbox1.png}
+\emph{Think like a programmer.}  
 \end{center}
-\caption{\label{fig:dropbox1} Dragging a csv file to a Dropbox Public directory}
-\end{figure}
 
-Dropbox also makes it straightforward to construct the web-location
-identifying URL for any file by using mouse-based menu commands to
-place the URL into the clipboard, whence it can be copied to your
-course-support software system or any other place for distribution to
-students.  For a csv file, reading the contents of the file into \R\
-can be done with the \function{read.csv} function, by giving it the
-quoted URL:
-<<read-quoted-URL>>=
-a <- read.csv("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
-@ 
-\InstructorNote{The history feature in \RStudio\ can be used to 
-re-run this command in future sessions.}
+It doesn't take sophisticated programming skills to be good at using \R.  In fact,
+most uses of \R\ for teaching statistics can be done working one step at a time,
+where each line of code does one complete and useful task.  After inspecting the output
+(and perhaps saving it for further computation later), one can proceed to the next 
+operation.
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=4.5in]{images/dropbox2.png}
-\end{center}
-\caption{\label{fig:dropbox2}Getting the URL of a file in a Dropbox Public directory}
-\end{figure}
+Nevertheless, we can borrow from the collective wisdom of the programming community and
+adopt some practices that will make our experience more pleasurable, more efficient, and 
+less error prone.
 
-This technique makes it easy to distribute data with little
-advance preparation.  It's fast enough to do in the middle of a
-class: the csv file is available to your students (after a brief lag
-while Dropbox synchronizes).  
-It can even be edited by you (but not by your students).
-
-The same technique can be applied to all sorts of files like 
-\R\ workspaces or \R\ scripts (files containing code).  
-Of course, your students need to
-use the appropriate \R\ command: \function{load()} for a workspace or
-\function{source()} for a script.
-
-The example below will source a file that will print a welcoming message for you.
-<<source-example>>=
-source('http://mosaic-web.org/go/R/hello.R')
-@
-But you can put any \R\ code you like in the files you have your students source.
-You can install and load packages, retrieve or modify data sets, define new functions,
-or anything else \R\ allows.
-
-Many instructors will find it useful to 
-create a file with your course-specific \R\
-scripts, adding on to it and modifying it as the course progresses.
-This allows you to distribute all sorts of special-purpose functions,
-letting you distribute new \R\ material to your students.  
-That brilliant new idea you had at 2 am can be
-programmed up and put in place for your students to use the next
-morning in class.  Then as you identify bugs and refine the program,
-you can make the updated software immediately available to your students.
-
-If privacy is a concern, for instance if you want the data available
-only to your students, you can effectively accomplish this 
-by giving files names known only to your students, e.g.,
-\code{Example-A78r423.csv}.  
-
-\Caution{\emph{Security through Obscurity} of this sort will 
-not generally satisfy institutional data protection regulations nor
-professional ethical requirements, so nothing truly
-sensitive or
-confidential should be ``protected" in this manner.}
-
-
-\subsection{GoogleDocs}
-
-The Dropbox technique (or any other system of posting files to the Internet)
-is excellent for broadcasting: taking files you
-create and distributing them in a read-only fashion to your students.
-But when you want two-way or multi-way
-sharing of files, other techniques are called for, such as provided by
-the GoogleDocs service.
-
-GoogleDocs allows students and instructors to create various forms of
-documents, including reports, presentations, and spreadsheets. (In
-addition to creating documents {\em de novo}, Google will also convert
-existing documents in a variety of formats.)
-
-Once on the GoogleDocs system, the documents can be edited 
-{\em  simultaneously} by multiple users in different locations.  They
-can be shared with individuals or groups and published for
-unrestricted viewing and even editing.
-
-For teaching, this has a variety of uses:
 \begin{itemize}
-  \item Students working on group projects can all simultaneously have
-    access to the report as it is being written and to data that is
-    being assembled by the group.
-  \item The entire class can be given access to a data set, both for
-    reading and for writing.
-  \item The Google Forms system can be used to construct surveys, the
-    responses to which can populate a spreadsheet that can
-    be read back into \RStudio\ by the survey creators.
-  \item Students can ``hand in'' reports and data sets by copying a link
-    into a course support system such as Moodle or Blackboard, or
-    emailing the link.
-  \item The instructor can insert comments and/or corrections directly
-    into the document.
+  \item Store your code in a file.  %# rather than entering it at the prompt.
+
+  It can be tempting to do everything in the console. But the console is ephemeral. 
+  It is better to get into the habit of storing code in files.
+  Get in the habit (and get your students in the habit) of working with \R\
+  scripts, RMardown files, and Rnw files.
+
+You can execute all the code in an \R\ script file using 
+\marginnote{\R\ can be used to create executable scripts.  Option parsing and 
+handling is supported with the \pkg{optparse} package.}
+
+<<mr-source,eval=FALSE>>=
+source("file.R") 
+@
+\Rstudio\ has additional options for executing some or all lines in a file. 
+See the buttons in the panel for any \R\ script, RMardown or Rnw file.  
+(You can create a new file in the main \tab{File} menu.)
+
+If you work at the console's interactive prompt and later wish you had 
+been putting your commands into a file, you can save your past commands with
+
+<<eval=FALSE,echo=TRUE>>=
+savehistory("someRCommandsIalmostLost.R")
+@
+In \RStudio,
+you can selectively copy portions of your history to a script file
+(or the console) using the History panel.
+
+  \item Use meaningful names.
+
+	  Rarely should objects be named with a single letter.  
+	  
+	  Adopt a personal convention regarding case of letters to you have one
+	  less thing to remember when trying to recall the name of an object.  For
+	  example, in the \pkg{mosaic} package, all data frames begin with a
+	  capital letter.  Most variables begin with a lower case letter (a few
+	  exceptions are made for some variables with names that are well-known in
+	  their capitalized form).
+
+  \item
+	  Adopt reusable idioms.
+
+	  Computer programmers refer to the little patterns that recur throughout
+	  their code as idioms.   For example, here is a ``compute, save, display'' 
+	  idiom.
+<<idiom, tidy=FALSE>>=
+# compute, save, display idiom
+footModel <- lm( length ~ width, data=KidsFeet ); footModel
+@
+	  Often there are multiple ways to do the same thing in \R,
+	  but if you adopt good programming idioms, it will be clearer to both you and
+	  your students what you are doing.
+
+  \item Write reusable functions.
+
+	  Learning to write your own functions (see Section~\ref{sec:functions})
+	  will greatly increase your efficiency and also help you understand better 
+	  how \R\ works.  This, in turn, will help you debug your students error messages. 
+	  (More on error messages in \ref{sec:error-messages}.) It also makes it
+  possible for you to simplify tasks you want your students to be able to do in
+  \R.  That is how the \pkg{mosaic} package originated -- as a collection of tools
+  we had assembled over time to make teaching and learning easier.
+
+  \item Comment your code.
+
+\Rindex{\#}%
+\myindex{comment character in R@comment character in {\sf R} (\texttt{\#})}%
+It's amazing what you can forget.  The comment character in \R\ is \texttt{\#}.
+If you are working in RMardown or Rnw files, you can also include nicely
+formatted text to describe what you are doing and why.
 \end{itemize}
-
-An effective technique for organizing student work and ensuring
-that the instructor (and other graders) have access to it, is to
-create a separate Google directory for each student in your class
-(Dropbox can also be used in this manner).
-Set the permission on this directory to share it with the
-student.  Anything she or he drops into the directory is automatically
-available to the instructor.  The student can also share with specific
-other students (e.g., members of a project group).
-
-We will illustrate the entire process in the context of the following 
-example.
-
-\begin{example}
-One exercise for students starting out in a statistics course is to
-collect data to find out whether the ``close door'' button on an
-elevator has any effect.  This is an opportunity to introduce simple
-ideas of experimental design.  But it's also a chance to teach about
-the organization of data.
-
-Have your students, as individuals or small groups, study a particular
-elevator, organize their data into a spreadsheet, and hand in their
-individual spreadsheet.  Then review the spreadsheets in class.  You
-will likely find that many groups did not understand clearly the
-distinction between cases and variables, or coded their data in
-ambiguous or inconsistent ways.
-
-Work with the class to establish a consistent scheme for the variables
-and their coding, e.g.,  a variable \VN{ButtonPress} with levels
-``Yes'' and ``No'',  a variable \VN{Time} with the time in seconds
-from a fiducial time (e.g. when the button was pressed or would have
-been pressed) with time measured in seconds, and variables \VN{ElevatorLocation}
-and \VN{GroupName}.  Create a spreadsheet
-with these variables and a few cases filled in.  Share it with the class.
-
-Have each of your students add their own data to the class data
-set.  Although this is a trivial task, having to translate their
-individual data into a common format strongly reinforces the
-importance of a consistent measurement and coding system for recording
-data. 
-
-Once you have a spreadsheet file in GoogleDocs, you will want to open
-it in \R.  This can be exported as a csv file, then
-open it using the csv tools in \R, such as \function{read.csv}.
-%But there are easier ways that let you work with the data ``live.''
-
-%\paragraph{In the web-server version of \RStudio,} described below, you can
-%  use a menu item to locate and load your spreadsheet.
-%
-%\begin{center}
-%  \includegraphics[width=3in]{images/google-spreadsheet1.png}
-%\end{center}
-
-%\paragraph{If you are using other \R\ interfaces,} you must first use the Google
-%  facilities for publishing documents.
-
-%\begin{enumerate}
-  %\item From within the document, use the ``Share'' dropdown menu and
-    %choose ``Publish as a Web Page.''
-   %\item Press the ``Start Publishing'' button in the ``Publish to the
-     %web'' dialog box. (See figure \ref{fig:publish-google}.)
-   %\item In that dialog box, go to ``Get a link to the published
-     %data.''  Choose the csv format and copy out the link that's
-     %provided.  You can then publish that link on your web site, or via
-     %course-support software.  Only people with the link can see the
-     %document, so it remains effectively private to outsiders.
-%\end{enumerate}
-
-
-%\begin{figure}
-%\begin{center}
-  %\includegraphics[width=4.5in]{images/publishing-google1.png}
-%\end{center}
-%\caption{\label{fig:publish-google}Publishing a Google Spreadsheet so that it can be read
-    %directly into \R.}
-%\end{figure}
-
-%\iffalse
-Direct communication with
-GoogleDocs requires facilities
-that are not present in the base version of \R, but are available
-through the \texttt{RCurl} package.  
-
-%\fi
-
-In order to make these readily
-available to students, the \pkg{mosaic} package contains a function that takes the quoted (and cumbersome)
-string with the Google-published URL and reads the corresponding file
-into a data frame:
-<<"read-from-google1",echo=FALSE,results="hide">>=
-elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
-@
-<<"read-from-google2",eval=FALSE,tidy=FALSE>>=
-elev <- fetchGoogle(
-"https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=
-0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
-@
-<<"read-from-google3">>=
-head(elev)
-@ 
-
-Of course, you'd never want your students to type that URL by hand;
-you should provide it in a copy-able form on a web site or within a
-course support system.
-\end{example}
 
 
 \section{Primary \R\ Data Structures}
@@ -833,11 +398,11 @@ to make sure you get the intended behavior.
 
 Some additional useful functions are included in Table~\ref{table:useful-functions}.
 
-\begin{table}
+\begin{table*}
 \caption{Some useful \R\ functions.}
 \label{table:useful-functions}%
 \begin{center}
-  \begin{longtable}{|p{1.2in}|p{3.5in}|}
+  \begin{longtable}{|p{1.2in}|p{4.0in}|}
   \hline
   \verb!cumsum()!
 
@@ -885,7 +450,7 @@ Some additional useful functions are included in Table~\ref{table:useful-functio
   \\ \hline
   \end{longtable}
 \end{center}
-\end{table}
+\end{table*}
 
 
 \subsection{Recycling}
@@ -955,30 +520,536 @@ table(a+b > 50)
 
 %\includepdf[pages=36-37,landscape,rotateoversize,turn=false,nup=1x2,frame]{Paradis-rdebuts_en.pdf}
 
+\section{Working with Data}
+\label{sec:MoreR-Data}%
+
+In Section~\ref{sec:studentdata} we discussed using data in \R\ packages,
+and in Section~\ref{sec:usingdata} we discussed methods for bringing your
+own data into \R.   In both of these scenarios, we have assumed that the data
+had been entered and cleaned in some other software and focussed primarily on
+data import.
+In this section we primarily discuss ways to create and manipulate 
+data within \R.   But first discuss a few more details regarding importing data.
+
+
+\subsection{Finer control over data import}
+
+\marginnote{Even if you primarily use the \RStudio\ 
+interface to import data, it is good to know about the 
+command line methods since these are required to import
+data into scripts, RMarkdown, and Rnw files.}
+The \option{na.strings} argument can be used to specify
+codes for missing values.  
+The following can be useful, for example:
+<<tidy=FALSE>>=
+someData <- read.file('file.csv', 
+  na.strings=c('NA','','.','-','na'))
+@
+because SAS uses a period (\verb!.!) to code missing data, and some csv 
+exporters use `\texttt{-}'.  By default \R\ reads these as string data, 
+which forces the entire variable to be of character type instead of numeric.
+
+By default, \R\ will recode character data as a factor.  If you prefer to leave
+such variables in character format, you can use
+<<tidy=FALSE>>=
+somData <- read.file('file.csv', 
+  na.strings=c('NA','','.','-','na'), 
+  stringsAsFactors=FALSE) 
+@
+
+Even finer control can be obtained by manually setting the class (type) used 
+for each column in the file.  In addition, this speeds up the reading of the file.
+For a csv file with four columns, we can declare them to be of class integer,
+numeric, character, and factor with the following command.
+<<tidy=FALSE>>=
+someData <- read.file('file.csv', 
+  na.strings=c('NA','','.','-','na'), 
+  colClasses=c('integer','numeric','character','factor')) 
+@
+
+\subsection{Manually typing in data}
+
+The \function{c()} function combines elements into a single list or vector.
+<<label="c-function",tidy=FALSE>>=
+x <- c(1,1,2,3,5,8,13); x
+@
+
+The \function{scan()} function can speed up data entry in the console 
+by allowing you to avoid the commas
+\Rindex{scan()}%
+Individual values are separated by white space or new lines.  
+A blank line is used to signal the end of the data.
+By default, \function{scan()} is expecting decimal data (which it calls \rterm{double}, 
+for double precision), but it is possible to tell \function{scan()} to expect something else,
+like \rterm{character} data (i.e., text). 
+\marginnote{
+Be sure when using \function{scan()} that you remember to save your data somewhere.
+Otherwise you will have to type it again.
+}
+There are other options for data types, but numerical and text data handle the most
+important cases.  See \code{?scan} for more information and examples.
+
+\subsection{Creating data frames from vectors}
+
+\Rindex{data.frame()}%
+The \function{c()} and \function{scan()} functions put data into a 
+\rterm{vector}, not a \rterm{data frame}.  We can
+build a data frame for our data as follows.
+
+<<dataframe>>=
+color <- c("red", "green", "blue")
+number <- c(3, 5, 4)
+myDataFrame <- data.frame(color=color, letters=number)
+myDataFrame
+@
+
+\subsection{Getting data from mySQL data bases}
+
+\Rindex{RMySQL}%
+\myindex{SQL}%
+The \pkg{RMySQL} package allows direct access to data in MySQL data bases.
+This can be convenient when dealing with subsets of very large data sets.
+The example below queries a the UCSC genome browser to find the first
+5000 genes on chromosome~1.
+
+\begin{table*}
+<<ucsc-sql,tidy=FALSE>>=
+require(RMySQL)
+ 
+# Set up a connection to the public MySQL server for the UCSC genome browser (no password)
+ucscData <- dbConnect(MySQL(), 
+                      user="genome", 
+                      host="genome-mysql.cse.ucsc.edu")
+ 
+# Function to make it easier to query 
+query <- function(...) dbGetQuery(ucscData, ...)
+ 
+# Get the UCSC gene name, start and end sites for the first 5000 genes on Chromosome 1
+results <- 
+  query("SELECT name, chrom, txStart, txEnd FROM mm9.knownGene WHERE chrom='chr1' LIMIT 5000;")
+dim(results)
+head(results,2)
+@
+\end{table*}
+
+%A great example of this is the 12 gigabytes of data from the Airline on-time
+%performance dataset included in the 2009 Data Expo (\url{http://stat-computing.org/dataexpo/2009}).
+%There is an \href{http://csg.sph.umich.edu/docs/R/rsql.html}{online document}
+%describing this type of manipulation. 
+
+\subsection{Generating data}
+\label{sec:generatingData}
+\Rindex{rep()}%
+\Rindex{seq()}%
+\Rindex{c()}%
+\Rindex{rnorm()}%
+\Rindex{sample()}%
+
+The following code shows a number of ways to generate data systematically.
+This can be useful for designing experiments, for creating illustrations,
+or for performing simulations.
+
+<<generatingData01,tidy=FALSE>>=
+# all integers in a range
+x <- 5:20; x                 
+# structured sequences
+seq(0, 50, by=5)               
+seq(0, 50, length=7)               
+rep(1:5, each=3)
+rep(1:5, times=3)
+# c() concatenates vectors
+c(1:5, 10, 3:5)              
+@
+
+\R\ can also sample from several different distributions.
+
+<<generatingData02>>=
+# random draws from normal distribution
+rnorm(10, mean=10, sd=2)  
+x <- 5:20                 # all integers in a range
+# random sample of size 5 from x (no replacement)
+sample(x, size=5)         
+# random sample of size 5 from x (with replacement)
+resample(x, size=5)         
+@
+Functions for sampling from other distributions include
+\function{rbinom()},
+\function{rchisq()},
+\function{rt()},
+\function{rf()},
+\function{rhyper()},
+etc.
+
+\begin{example}
+For teaching purposes it is sometimes nice to create a histogram that has the 
+approximate shape of some distribution.  One way to do that was illustrated above.
+<<>>=
+x1 <- rnorm(500, mean=10, sd=2)
+xhistogram(~x1, width=.5)
+@
+This works, but the resulting plot has a fair amount of noise.
+
+The \function{ppoints()} function returns evenly spaced probabilities and 
+allows us to obtain theoretical quantiles of the normal distribution instead. 
+The resulting plot now illustrates the idealized sample from a normal distribution.
+<<>>=
+x2 <- qnorm( ppoints(500), mean=10, sd=2 )
+xhistogram(~x2, width=.5)
+@
+This is not what real data will look like (even if it comes from a normal population),
+but it can be better for illustrative purposes to remove the noise.
+\end{example}
+
+\medskip
+
+\subsection{Summarizing and Aggregating with \pkg{plyr}}
+
+\subsection{Saving Data}
+\function{write.table()} and \function{write.csv()} can be used to save data from \R\ into
+delimited flat files.
+
+<<writingData>>=
+ddd <- data.frame(number=1:5, letter=letters[1:5])
+write.table(ddd, "ddd.txt")
+write.csv(ddd, "ddd.csv")
+# this system call should work on a Mac or Linux machine
+system("head ddd.txt ddd.csv")
+@
+
+
+Data can also be saved in native \R\ format.  Saving data sets 
+(and other \R\ objects) using \function{save()} has some advantages over other file formats:
+\begin{itemize}
+  \item 
+  Complete information about the objects is saved, including attributes.
+  \item
+  Data saved this way takes less space and loads much more quickly.
+  \item
+  Multiple objects can be saved to and loaded from a single file.
+\end{itemize}
+The downside is that these files are only readable in \R.
+
+<<savingData,exec=FALSE,echo=TRUE>>=
+abc <- "abc"
+ddd <- data.frame(number=1:5, letter=letters[1:5])
+save(ddd, abc, file="ddd.rda")   # saves both objects in a single file
+load("ddd.rda")                  # loads them both
+@
+
+
+For more on importing and exporting data, especially from other
+formats, see the 
+%\href{http://cran.r-project.org/manuals.html}%
+\textit{R Data Import/Export} manual available on \cran.
+
+
+\section{Sharing With and Among Your Students}
+\label{sec:distributing-data}
+
+Instructors often have their own data sets to illustrate 
+points of statistical interest or to make a particular connection with
+a class.  Sometimes you may want your class as a whole to construct a
+data set, perhaps by filling in a survey or by contributing
+their own small bit of data to a class collection.  Students may be
+working on projects in small groups; it's nice to have tools to
+support such work so that all members of the group have access to the
+data and can contribute to a written report.
+
+There are now many technologies for supporting such sharing.  For the
+sake of simplicity, we will emphasize three that we have found
+particularly useful both in teaching statistics and in our
+professional collaborative work.  These are:
+\begin{itemize}
+\item Within \RStudio\ server.
+\item A web site with minimal overhead, such as provided by Dropbox.
+\item The services of Google Docs.
+\item A web-based \RStudio\ server for \R.
+\end{itemize}
+The first two are already widely used in university environments and
+are readily accessible simply by setting up accounts.  Setting up an
+\RStudio\ web server requires some IT support, but is well within the
+range of skills found in IT offices and even among some individual faculty.
+
+\subsection{Using \RStudio\ server to share files}
+
+\subsection{Your own web site}
+
+You may already have a web site.  We have in mind a place where you
+can place files and have them accessed directly from the Internet.
+For sharing data, it's best if this site is public, that is, it does not require a login.
+That rules out most ``course support'' systems such as Moodle or
+Blackboard.  
+\FoodForThought{Our discussion of Dropbox is primarily for those who do
+not already know how to do this other ways.}%
+
+The Dropbox service for storing files in the ``cloud'' provides a very
+convenient way to distribute files over the web.  (Go to
+\texttt{dropbox.com} for information and to sign up for a free account.)
+Dropbox is routinely used to provide automated backup and coordinated
+file access on multiple computers.  But the Dropbox service also
+provides a \code{Public} directory.  Any files that you place in that
+directory can be accessed directly by a URL.  
+
+To illustrate, suppose you wish to share some data set with your
+students.  You've constructed this data set in a spreadsheet and
+stored it as a csv file, let's call it \code{example-A.csv}.  Move this
+file into the \code{Public} directory under Dropbox --- on most
+computers Dropbox arranges things so that its directories appear
+exactly like ordinary directories and you'll use the ordinary, familiar
+file management techniques as in Figure \ref{fig:dropbox1}.
+\begin{figure}
+\begin{center}
+\includegraphics[width=3.5in]{images/dropbox1.png}
+\end{center}
+\caption{\label{fig:dropbox1} Dragging a csv file to a Dropbox Public directory}
+\end{figure}
+
+Dropbox also makes it straightforward to construct the web-location
+identifying URL for any file by using mouse-based menu commands to
+place the URL into the clipboard, whence it can be copied to your
+course-support software system or any other place for distribution to
+students.  For a csv file, reading the contents of the file into \R\
+can be done with the \function{read.csv} function, by giving it the
+quoted URL:
+<<read-quoted-URL>>=
+a <- read.csv("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
+@ 
+\InstructorNote{The history feature in \RStudio\ can be used to 
+re-run this command in future sessions.}
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=4.5in]{images/dropbox2.png}
+\end{center}
+\caption{\label{fig:dropbox2}Getting the URL of a file in a Dropbox Public directory}
+\end{figure}
+
+This technique makes it easy to distribute data with little
+advance preparation.  It's fast enough to do in the middle of a
+class: the csv file is available to your students (after a brief lag
+while Dropbox synchronizes).  
+It can even be edited by you (but not by your students).
+
+The same technique can be applied to all sorts of files like 
+\R\ workspaces or \R\ scripts (files containing code).  
+Of course, your students need to
+use the appropriate \R\ command: \function{load()} for a workspace or
+\function{source()} for a script.
+
+The example below will source a file that will print a welcoming message for you.
+<<source-example>>=
+source('http://mosaic-web.org/go/R/hello.R')
+@
+But you can put any \R\ code you like in the files you have your students source.
+You can install and load packages, retrieve or modify data sets, define new functions,
+or anything else \R\ allows.
+
+Many instructors will find it useful to 
+create a file with your course-specific \R\
+scripts, adding on to it and modifying it as the course progresses.
+This allows you to distribute all sorts of special-purpose functions,
+letting you distribute new \R\ material to your students.  
+That brilliant new idea you had at 2 am can be
+programmed up and put in place for your students to use the next
+morning in class.  Then as you identify bugs and refine the program,
+you can make the updated software immediately available to your students.
+
+If privacy is a concern, for instance if you want the data available
+only to your students, you can effectively accomplish this 
+by giving files names known only to your students, e.g.,
+\code{Example-A78r423.csv}.  
+
+\Caution{\emph{Security through Obscurity} of this sort will 
+not generally satisfy institutional data protection regulations nor
+professional ethical requirements, so nothing truly
+sensitive or
+confidential should be ``protected" in this manner.}
+
+
+\subsection{GoogleDocs}
+
+The Dropbox technique (or any other system of posting files to the Internet)
+is excellent for broadcasting: taking files you
+create and distributing them in a read-only fashion to your students.
+But when you want two-way or multi-way
+sharing of files, other techniques are called for, such as provided by
+the GoogleDocs service.
+
+GoogleDocs allows students and instructors to create various forms of
+documents, including reports, presentations, and spreadsheets. (In
+addition to creating documents {\em de novo}, Google will also convert
+existing documents in a variety of formats.)
+
+Once on the GoogleDocs system, the documents can be edited 
+{\em  simultaneously} by multiple users in different locations.  They
+can be shared with individuals or groups and published for
+unrestricted viewing and even editing.
+
+For teaching, this has a variety of uses:
+\begin{itemize}
+  \item Students working on group projects can all simultaneously have
+    access to the report as it is being written and to data that is
+    being assembled by the group.
+  \item The entire class can be given access to a data set, both for
+    reading and for writing.
+  \item The Google Forms system can be used to construct surveys, the
+    responses to which can populate a spreadsheet that can
+    be read back into \RStudio\ by the survey creators.
+  \item Students can ``hand in'' reports and data sets by copying a link
+    into a course support system such as Moodle or Blackboard, or
+    emailing the link.
+  \item The instructor can insert comments and/or corrections directly
+    into the document.
+\end{itemize}
+
+An effective technique for organizing student work and ensuring
+that the instructor (and other graders) have access to it, is to
+create a separate Google directory for each student in your class
+(Dropbox can also be used in this manner).
+Set the permission on this directory to share it with the
+student.  Anything she or he drops into the directory is automatically
+available to the instructor.  The student can also share with specific
+other students (e.g., members of a project group).
+
+We will illustrate the entire process in the context of the following 
+example.
+
+\begin{example}
+One exercise for students starting out in a statistics course is to
+collect data to find out whether the ``close door'' button on an
+elevator has any effect.  This is an opportunity to introduce simple
+ideas of experimental design.  But it's also a chance to teach about
+the organization of data.
+
+Have your students, as individuals or small groups, study a particular
+elevator, organize their data into a spreadsheet, and hand in their
+individual spreadsheet.  Then review the spreadsheets in class.  You
+will likely find that many groups did not understand clearly the
+distinction between cases and variables, or coded their data in
+ambiguous or inconsistent ways.
+
+Work with the class to establish a consistent scheme for the variables
+and their coding, e.g.,  a variable \VN{ButtonPress} with levels
+``Yes'' and ``No'',  a variable \VN{Time} with the time in seconds
+from a fiducial time (e.g. when the button was pressed or would have
+been pressed) with time measured in seconds, and variables \VN{ElevatorLocation}
+and \VN{GroupName}.  Create a spreadsheet
+with these variables and a few cases filled in.  Share it with the class.
+
+Have each of your students add their own data to the class data
+set.  Although this is a trivial task, having to translate their
+individual data into a common format strongly reinforces the
+importance of a consistent measurement and coding system for recording
+data. 
+
+Once you have a spreadsheet file in GoogleDocs, you will want to open
+it in \R.  This can be exported as a csv file, then
+open it using the csv tools in \R, such as \function{read.csv}.
+%But there are easier ways that let you work with the data ``live.''
+
+%\paragraph{In the web-server version of \RStudio,} described below, you can
+%  use a menu item to locate and load your spreadsheet.
+%
+%\begin{center}
+%  \includegraphics[width=3in]{images/google-spreadsheet1.png}
+%\end{center}
+
+%\paragraph{If you are using other \R\ interfaces,} you must first use the Google
+%  facilities for publishing documents.
+
+%\begin{enumerate}
+  %\item From within the document, use the ``Share'' dropdown menu and
+    %choose ``Publish as a Web Page.''
+   %\item Press the ``Start Publishing'' button in the ``Publish to the
+     %web'' dialog box. (See figure \ref{fig:publish-google}.)
+   %\item In that dialog box, go to ``Get a link to the published
+     %data.''  Choose the csv format and copy out the link that's
+     %provided.  You can then publish that link on your web site, or via
+     %course-support software.  Only people with the link can see the
+     %document, so it remains effectively private to outsiders.
+%\end{enumerate}
+
+
+%\begin{figure}
+%\begin{center}
+  %\includegraphics[width=4.5in]{images/publishing-google1.png}
+%\end{center}
+%\caption{\label{fig:publish-google}Publishing a Google Spreadsheet so that it can be read
+    %directly into \R.}
+%\end{figure}
+
+%\iffalse
+Direct communication with
+GoogleDocs requires facilities
+that are not present in the base version of \R, but are available
+through the \texttt{RCurl} package.  
+
+%\fi
+
+In order to make these readily
+available to students, the \pkg{mosaic} package contains a function that takes the quoted (and cumbersome)
+string with the Google-published URL and reads the corresponding file
+into a data frame:
+<<"read-from-google1",echo=FALSE,results="hide">>=
+elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
+@
+<<"read-from-google2",eval=FALSE,tidy=FALSE>>=
+elev <- fetchGoogle(
+"https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=
+0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
+@
+<<"read-from-google3">>=
+head(elev)
+@ 
+
+Of course, you'd never want your students to type that URL by hand;
+you should provide it in a copy-able form on a web site or within a
+course support system.
+\end{example}
+
+
 \section{Manipulating Data Frames}
 \label{sec:manipulatingData}%
 
-%\subsection{Cross Tabulation with \texttt{xtabs()}}
-%\subsection{\texttt{aggregate()} and \texttt{Hmisc::summary()}}
 \subsection{Adding new variables to a data frame}
-We can add additional variables to an existing data frame by simple assignment.
 
-<<"adding-variable2">>=
-head(iris)
+The \function{transform()} function can be used to add or modify variables in a data frame.
+<<>>=
+results <- transform(results, length=(txEnd - txStart)/1000)
+head(results, 2)
+xhistogram( ~length, data=results, xlab="gene length (kb)" )
 @
 
-<<"adding-variable">>=
-iris$SLength <- cut(iris$Sepal.Length, 4:8)    # cut places data into bins
+Here we show how to modify the \dataframe{Births78} data frame so 
+that it contains a new variable \variable{day} that is an ordered factor.
+(Details about some of the functions involved will be presented later 
+in this chapter).
+<<Births-make,fig.width=6,out.width=".8\\textwidth", tidy=FALSE>>=
+data(Births78)
+weekdays <- c("Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat") 
+Births <- transform( Births78, 
+             day = factor(weekdays[1 + (dayofyear - 1) %% 7], 
+                          ordered=TRUE, levels = weekdays) )
 @
-
-<<"adding-variable2again">>=
-head(iris)
+\begin{figure*}
+<<Births-plot,fig.width=6,out.width="\\textwidth", tidy=FALSE>>=
+xyplot( births ~ dayofyear, Births, groups=day, auto.key=list(space='right') )
 @
-\Rindex{summary()}
+\caption{Number of US births in 1978 colored by day of week.}
+\end{figure*}
+%If we save \dataframe{Births} using \function{write.csv()}, we will lose the ordering 
+%of the days.  (The default order when reading the csv file is alphabetical.)
+%If we use \function{save()} instead, the natural order of the days is preserved.
+%<<Births-save>>=
+%save(Births, file="Births.rda")
+%load("Births.rda")
+%tally(~day, Births)  # note order of days
+%@
 
-It is an error to add a vector of the wrong length.
 
-The \dfn{CPS85} data frame contains data from a Current Population Survey (current in 1985, that is).
+
+The \dataframe{CPS85} data frame contains data from a Current Population Survey
+(current in 1985, that is).
 Two of the variables in this data frame are \variable{age} and \variable{educ}.  We can estimate
 the number of years a worker has been in the workforce if we assume they have been in the workforce
 since completing their education and that their age at graduation is 6 more than the number
@@ -986,13 +1057,35 @@ of years of education obtained.  We can this as a new variable in the data frame
 by assigning to it:
 <<>>=
 CPS85$workforce.years <- with(CPS85, age - 6 - educ)
-favstats(~workforce.yeas, data=CPS85)
+favstats(~workforce.years, data=CPS85)
 @
 In fact this is what was done for all but one of the cases to create the \variable{exper} 
-variable that is already in the \dfn{CPS85} data.
+variable that is already in the \dataframe{CPS85} data.
 <<>>=
-with(CPS85, table(exper - workforce.years))
+tally(exper - workforce.years, data=CPS85)
 @
+
+\subsection{Creating subsets}
+\label{sec:subsets}
+We can also use \function{subset()} to reduce the size of a data set by selecting 
+only certain rows.
+\begin{center}
+<<faithful-long-xy>>=
+data(faithful)
+names(faithful) <- c('duration', 'time.til.next')
+# any logical can be used to create subsets
+faithfulLong <- subset(faithful, duration > 3)        
+xyplot( time.til.next ~ duration, faithfulLong )
+@
+\end{center}
+
+Of course, if all we want to do is produce a graph, there is no reason to create 
+a new data frame.  The plot above could also be made with
+<<eval=FALSE>>=
+xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
+@
+
+\authNote{NH: need to flesh out}
 
 \subsection{Dropping variables}
 Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
@@ -1073,34 +1166,12 @@ names(CPS85)[names(CPS85) == 'education'] <- 'educ'
 CPS85[1,1:4]
 @
 
-\subsection{Creating subsets}
-\label{sec:subsets}
-We can also use \function{subset()} to reduce the size of a data set by selecting 
-only certain rows.
-\begin{center}
-<<faithful-long-xy>>=
-data(faithful)
-names(faithful) <- c('duration', 'time.til.next')
-# any logical can be used to create subsets
-faithfulLong <- subset(faithful, duration > 3)        
-xyplot( time.til.next ~ duration, faithfulLong )
-@
-\end{center}
-
-Of course, if all we want to do is produce a graph, there is no reason to create 
-a new data frame.  The plot above could also be made with
-<<eval=FALSE>>=
-xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
-@
-
-
-\authNote{NH: need to flesh out}
-\subsection{Creating variables}
-
-<<>>=
-HELPrct$newsex <- factor(HELPrct$female, labels=c('M','F'))
-@
-
+%\subsection{Creating variables}
+%
+%<<>>=
+%HELPrct$newsex <- factor(HELPrct$female, labels=c('M','F'))
+%@
+%
 %\newthought{character variables}
 %stuff here 
 %
@@ -1350,7 +1421,7 @@ could have used a list instead.}
 mystats <- function(x) {
 	c(mean(x), median(x), sd(x))
 }
-favstats((1:20)^2)
+mystats((1:20)^2)
 @
 Now the only problem is that we have to remember which number is which.
 We can fix this by giving names to the slots in our vector.
@@ -1520,63 +1591,12 @@ your text as text.
 text3 <- blah
 @
 
-\subsection{Functions}
-
-Functions in \R\ use the following syntax:
-
-<<"function-syntax",eval=FALSE>>=
-functionname( argument1, argument2, ... )
-@
-\vspace{-5mm}
-\begin{itemize}
-\item The arguments are \underline{always} \emph{surrounded by (round) parentheses} and 
-\emph{separated by commas}.
-\begin{itemize}
-\item
-Some functions (like \verb!col.whitebg()!) 
-have no arguments, but you still need the parentheses.
-\end{itemize}
-\item
-Most arguments have names, but you don't need to use the names \emph{if you 
-give the arguments in the correct order}.  
-
-If you use names, you can give the arguments out of order.  
-The following do the same thing,
-%\end{itemize}
-
-<<"argument-order-good",eval=FALSE>>=
-xyplot(Sepal.Length ~ Sepal.Width, data=iris, groups=Species)
-xyplot(Sepal.Length ~ Sepal.Width, iris, groups=Species)
-xyplot(Sepal.Length ~ Sepal.Width, groups=Species, iris)
-@
-%\begin{itemize}
-%\item[]
-But these do not work
-%\end{itemize}
-
-<<"argument-order-bad",eval=FALSE>>=
-xyplot(Sepal.Length ~ Sepal.Width, Species, iris)
-xyplot(Sepal.Length ~ Sepal.Width, iris, Species)
-@
-%\begin{itemize}
-%\item[]
-The first fails because the second argument is \verb!data!, so \verb!iris!
-needs to be in the second position if it is not named.
-The second fails because \verb!groups! is not the third argument.
-(There are many other arguments between \verb!data! and \verb!groups! .)
-The documentation for functions shows the correct order of arguments.
-\item
-Typically, we will not use names for the first argument or two (these tend to be 
-very important arguments that have to be there) but will use names for the rest (these 
-are often optional arguments that can be present or not, depending on whether we want 
-the default behavior or something special).
-\end{itemize}
 
 \section{Common Error Messages and What Causes Them}
 
-\newthought{Object not found}
+\subsection{Object not found}
 
-\newthought{Other error messages here}
+\subsection{Other error messages here}
 
 
 \newpage
