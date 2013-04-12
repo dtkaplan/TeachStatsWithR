@@ -16,45 +16,18 @@ The notes are part of a series on teaching with the R computer environment, but 
 
 If you don't already know R, we hope that you will think the commands are simple enough that you can use them yourself; that you can learn R by observation.  Our students appear to be able to do that.  
 
-It would be possible to implement the strategy presented here using other software.  Indeed, it would be possible to present it without using software at all.  But the R computer notation is simple and concise, a rival for traditional mathematical notation.  The software is freely available.  So even if you don't use R, we hope you can learn the strategy by presenting it in R notation.
+It would be possible to implement the strategy presented here using other software.  It might even be possible to present it without using software at all.  But you always need some notation to communicate. The R computer notation is simple and concise, a rival for traditional mathematical notation, even as it extends to include operations not in the algebric repertoire: sampling, randomization, iteration, etc. 
+
+These notes are meant for teachers; this isn't a textbook for students.  Examples of materials for students, including a textbook \cite{stat-modeling-fresh-approach}, are available at \url{www.mosaic-web.org/StatisticalModeling}.
 
 
-
-Goals:
-\begin{itemize}
-\item Can be used as the comprehensive guide to the modeling language.
-\item Introduce some graphics: \function{bwplot}, \function{xyplot}
-\item Descriptive statistics done with the same language
-\item Tallying with the same language
-\item Generalize it to the building of models --- one variable
-\item \function{confint} and how to use it to explore what confidence intervals mean.
-\item Models with a continuous covariate
-\item \function{makeFun} and \function{plotFun}
-\end{itemize}
-
-
-
-\chapter{In DRAFT: Datasets}
-
-`trebuchet` from \pkg{fastR}
-
-`galton`
-
-`Saratoga-Houses`
-
-`Swim100m`
-
-`SAT`
-
-
-\chapter{Multivariable Statistics -- Early?} 
-\label{chap:multivariate-early}
 
 <<include=FALSE>>=
 require(mosaic)
 require(fastR)
 options(na.rm=TRUE)
 @
+
 
 \chapter{Graphics, Formulas, \& Statistics}
 
@@ -64,40 +37,45 @@ The statement \texttt{require(mosaic)} loads in the \pkg{mosaic} package, which 
 
 The \pkg{mosaic} package provides many of the commands that are used in this book.
 
-To load the \pkg{mosaic} package,
-```{r}
-require(mosaic)
-```
-
 Once the package is loaded, it remains loaded for the rest of the R session.  
 
 As you teach, you may find other packages, such as \pkg{fastR}, that give useful data sets or other capabilities.  These can be loaded in the same way, for example:
-```{r}
+<<>>=
 require(fastR)
-```
+@
 }
 
-\marginnote{We're starting with a data set, \texttt{trebuchet} collected by a student, Andrew Pruim, as part of a Science Olympiad competition.  These data are included in the \pkg{fastR} package.  
 
-A trebuchet is a device used for throwing projectiles.  Introduced in medieval times, it was used as a siege weapon, throwing projectiles of several hundred pounds to destroy fortifications. 
 
-\includegraphics[width=1.5in]{images/Trebuchet2.png}}
+\marginnote{The \texttt{trebuchet} data set was collected by a high-school student, Andrew Pruim, as part of a Science Olympiad competition.  These data are included in the \pkg{fastR} package.  
 
-Mainstream statistics courses often include statistical graphics: scatterplots, box-and-whisker plots, histograms, etc.  In R, these basic graphics can be made with \function{xyplot} and \function{bwplot}, for instance:
+A trebuchet is a device used for throwing projectiles. A heavy counter-weight pulls down the short end of the arm, rapidly accelerating a projectile hanging in a sack at the long end of the arm.  Introduced in medieval times, trebuchets were used as a siege weapons to destroy fortifications. 
+
+\includegraphics[width=2in]{images/Trebuchet2.png}}
+
+It's worthwhile to start a statistics course with graphics:  scatterplots, box-and-whisker plots, histograms, etc.  In addition to conveying well ideas of variation, graphics are close to the data themselves, compelling, and motivating.  Students see the advantage of using software; they couldn't make such graphics by hand.
+
+\authNote{I'm simplifying the trebuchet data a bit, considering only \texttt{form=='a'}.
+<<>>=
+trebuchet = droplevels(subset(trebuchet, form=="a", drop=TRUE))
+@
+}
+ 
+
+In R, these basic graphics can be made with \function{xyplot} and \function{bwplot}, for instance:
 <<ex1,fig.width=4,fig.height=2,fig.keep='all'>>=
 xyplot(distance ~ projectileWt,data=trebuchet)
 bwplot(distance ~ object,data=trebuchet)
 @
 
-These things involving the \verb+~+ squiggle character --- ``tilde" --- are called \newword{formulas} in R. The word "formula" is used a somewhat different way than in algebra: the formula lays out how you want to relate variables: y versus x, what to break down by what.  
+Each of these examples involves two variables.  They are often called $y$ and $x$ by students.  Alternative names frequently encountered are ``vertical axis" and ``horizontal axis,'', ``dependent'' and ``independent'' variables, ``input'' and ``output.''  Among math teachers, ``ordinate'' and ``abscissa'' are sometimes the preferred terms.  Whatever you choose to call them --- we'll use \newword{explanatory} and \newword{response} variables when describing models, and \newword{input} and \newword{output} for functions --- the notation must make clear which variable is in which role.  
 
-It may seem that this is just another way, among many, to invoke plotting software.  But  there's more going on here: R provides a {\em modeling language} an an easy path from basic graphics and basic statistics to multivariable modeling.  
+In R notation, a \newword{formula} is an expression involving the \verb+~+ squiggle character --- ``tilde'' --- that provides slots for laying out how you want to relate variables: y versus x, what to break down by what.  
 
-The path is easy enough that it makes sense to start in that direction early: using the concepts, terminology, and techniques of modeling as a way of introducing statistics.  Here is what such a journey might look like.
+There's more going on here than just identifying which variable gets plotted on each axis: the formula in R provides a {\em modeling language} that gives an easy path from basic graphics and basic statistics to multivariable modeling.  The path is easy enough that it makes sense to start in that direction early: using the concepts, terminology, and techniques of modeling as a way of introducing statistics.  Here is what such a journey might look like.
 
 \section{Formulas and Basic Statistics}
 
-It's worthwhile to start a statistics course with graphics.  In addition to conveying well ideas of variation, graphics are close to the data themselves, compelling, and motivating.  Students see the advantage of using software; they couldn't make such graphics by hand.
 
 
 
@@ -119,16 +97,13 @@ Using \pkg{mosaic}, the formula interface works with these basic statistics in m
 mean(distance~object,data=trebuchet)
 @
 
+Eventually, the formula will be used to guide students to thinking about using explanatory variables to account for a response variable, in this example, explaining distance by object.  At this point, it works well to present this to students as ``breaking down'' the distance variable by the object variable, or just ``dividing up into groups.''  
 
-\chapter{From Formulas to Models}
+\chapter{From Means to Models}
 
-You've already seen how the formula notation can be used in the calculation of statistics, for example, this calculation of grand means and groupwise means:
-<<>>=
-mean(distance~1,data=trebuchet) # Grand mean
-mean(distance~object,data=trebuchet) # Groupwise by sex
-@
+Students often understand means algorithmically in a way that can be expressed in plain English: ``add them up and divide by $n$.''  Such arithmetic is considered basic.
 
-Means are considered basic.  But contrast them with a more advanced methodology: regression.  Here's a model of foot width against sex:
+Techniques such as regression involve more complicated algorithms, ones that require algebraic notation.  But strip away the algorithm used to compute the parameters of the regression and consider just the statement of the regression operation itself.  Here is such a statement in R, modeling distance flown by the projectile as a function of the projectile's weight:
 <<>>=
 mod1 = lm(distance~projectileWt,data=trebuchet)
 @
@@ -141,35 +116,189 @@ It helps to have some vocabulary:
 \item The purpose of \function{lm} is to construct a function that is as close to the data as possible.  That is, \function{lm} ``fits'' the model to the data.
 \end{itemize}
 
-To make sense of this, it can be useful to construct the function explicitly and apply the inputs to it.
-\marginnote{In this example, the input to the function is a category.  The possible values of a categorical variable --- the levels --- are often denoted in R as quoted character strings, \texttt{"foose"} and \texttt{"golf"} in the \texttt{trebuchet} data, standing for a fooseball and a golf ball.}
+Students typically study functions using a traditional algebraic notation, e.g. 
+$$ y = 4 x + 2 .$$
+Such notation doesn't emphasize the idea that $y$ is a function of $x$, that $x$ is the input and $y$ is the output. Indeed, there's nothing explicit to say that $y$ is a function at all; usually it's understood to be a variable.
+
+To introduce students to a notation that makes such relationships explicit, \pkg{mosaic} provides \function{makeFun}:
+<<>>=
+y = makeFun(4*x + 2 ~ x)
+@
+
+You can evaluate the function by specifying the inputs, for instance:
+<<>>=
+y(3)
+@
+
+Of course, functions such as this can be plotted in the ordinary way:
+<<>>=
+plotFun( y(x)~x, x.lim=range(-2,2))
+@
+
+The model, \texttt{mod1}, created earlier, is not exactly a function.\marginnote{You can see what's in \texttt{mod1} by giving it as a command, 
+<<eval=FALSE>>=
+mod1
+@
+This displays the model coefficients.  In addition to \function{makeFun}, you can use such operations as \function{r.squared}, \function{fitted}, and \function{resid}.} It's set up this way because there are several different types of information one might want to get from a model, not just the model function.  You can use \function{makeFun} to extract the model function from \texttt{mod1}: 
 <<>>=
 f1 = makeFun(mod1)
 @
-This use of \function{makeFun} reformats the information that's already in \texttt{mod1}  as a mathematical function in R. Once that's done, the function can be evaluated in the ordinary way, by specifying the inputs.  For instance, you can ask what is the model function's value for each level of the explanatory variable \VN{object}.
+This use of \function{makeFun} reformats the information that's already in \texttt{mod1}  as a mathematical function in R. Once that's done, the function can be evaluated in the ordinary way, by specifying the inputs.
+
+The function \texttt{f1} attempts to describe the relationship between the explanatory and response variables: between \VN{distance} and \VN{projectileWt}.
+
+
+There are, of course, other possible functions that could be used to describe the relationship between \VN{distance} and \VN{projectileWt}.  Taking some measurements off the scatter plot, one might reasonably try a simple function, perhaps $y = 1900 - 30*x$.  No reason to use the names $y$ and $x$, however.  You can define the proposed function using the names in the data set:
+<<>>=
+f2 = makeFun( 1900 - 30*weight ~ weight)
+@
+
+Given these two functions, \function{f1} and \function{f2}, it's natural to ask, ``Which is which is better?''  Graphically, the answer is not so clear.  In the following plot, \function{f2} is drawn as the thicker line:
+<<>>=
+xyplot( distance ~ projectileWt, data=trebuchet)
+plotFun(f1(projectileWt)~projectileWt, add=TRUE)
+plotFun(f2(projectileWt)~projectileWt, add=TRUE, lwd=3)
+@
+
+The usual way to quantify how close each function comes to the data involves the residuals: the difference between the value as given by the model function and the actual data value.  For instance, for a \VN{projectileWt} of 60, the function values are:\marginnote{For models created fitted with \function{lm}, you can access the fitted values or residuals directly from the model structure, without needing to construct the function and evaluate it.  Use
+<<eval=FALSE>>=
+fitted(mod1)
+resid(mod1)
+@
+}
+<<>>=
+f1(60)
+f2(60)
+@
+You can be more systematic and evaluate the functions at every one of the data points:
+<<>>=
+trebuchet = transform(trebuchet,
+                      f1resid=f1(projectileWt)-distance,
+                      f2resid=f2(projectileWt)-distance)
+@
+
+
+\marginnote{NOTE IN DRAFT: Include \function{sum} in the aggregating statistics.}
+
+There is one residual for each row in the dataset.  There are several good ways to describe the size of the residuals, e.g. the standard deviation, variance, or the sum of squares.  Here is the standard deviation.
+<<>>
+sd(f1resid,data=trebuchet)
+sd(f2resid,data=trebuchet)
+@
+It appears that the residuals from \function{f1} are smaller.
+
+It's a good exercise to try out many different alternatives.  You won't be able to find any whose residuals are smaller than \function{f1}.  In this sense, \function{f1}, from the model constructed by \function{lm}, is the best of all possible straight-line models of the data.
+
+
+
+There are several ways to see the effect of \VN{projectileWt} on \VN{distance}.  The coefficients carry this information, but students need to be taught how to interpret them:
+<<>>=
+coef(mod1)
+@
+This says that for every 1 gm increase in the weight of the projectile, the distance flown decreases by 14.3 cm.  (The units of the variables are given in the help file for the data, `help(trebuchet)`.)
+
+Another way to see this same thing, perhaps a bit more obvious to the introductory student, is to evaluate the model function at two different weights, for instance:
+<<>>=
+f1(51) - f1(50) 
+@
+
+It's perfectly reasonable at this point to consider the extent to which the data dictate the best fit, and whether other possible straight-line functions, \marginnote{Resampling provides an accessible way to explore the sampling variation of a model.  See \cite{resampling-book}.}even if their residuals are not as small as those from \function{f1}, are reasonable fits.  
+
+For models created by \function{lm}, access to confidence intervals is provided by the model function.  Just ask for the interval, specifying whether you want an interval on the model value itself or on the predicted output for a given input.
+<<>>=
+f1(50,interval="confidence",level=0.95)
+f1(50,interval="prediction",level=0.95)
+@
+
+Notice the absurdly wide prediction interval, which includes a non-physical negative distance, even though no backward-going launches are seen in the data itself.  This suggests that there's something wrong with the model for the purpose of making a prediction.  Let's go there.
+
+\section{Multiple Inputs}
+
+Consider why one might build a model of a trebuchet.  A practical application, if you are a medieval warrior, is to predict the distance travelled by a projectile: What weight is needed to reach the castle walls?
+
+A competent trebuchet technician will tell you that there's another issue: How heavy is the counter-weight on the trebuchet?  You have the option of adding or taking away weight from the counter-weight in order to get your projectile on target.  
+
+Fitting a relevant model is a matter of including the counter-weight (\VN{counterWt}) in the set of explanatory variables.  (It's also important that student Andrew Pruim collected the experimental data over a range of counter-weights.)  Here's a simple model:
+<<>>=
+mod2 = lm( distance ~ projectileWt + counterWt, data=trebuchet)
+@
+
+To extract the corresponding function, which will be a function of both \VN{projectileWt} and \VN{counterWt}, use \function{makeFun}.  We'll call the function \function{ballistic}:
+<<>>=
+ballistic = makeFun(mod2)
+@
+
+There are two input variables here, so an appropriate graphical display is a contour plot
+<<fig.height=4,fig.width=4,tidy=FALSE>>=
+plotFun(ballistic(projectileWt=x,counterWt=y)~x&y, 
+        x.lim=range(10,70),y.lim=range(.5,3),
+        xlab="Projectile (gms)",
+        ylab="Counter Weight (kg)",
+        main="Distance Thrown")
+@
+
+The first two lines of this do all the work, the remaining lines are just for setting labels.  Note that $x$ and $y$ are being used as the plotting variables.  $x$ is assigned to be the value of the projectile weight while $y$ is the value of the counter-weight.  It's helpful to use such explicit names for the input variables just to avoid accidentally reversing the meaning of the variables. With functions of more than one input it's easy to get things wrong.
+
+
+It takes a bit of practice to learn to interpret such graphs, but it's worth the time.  Each contour shows the set of projectile weights and counter weights that can reach a given distance.  For instance, to reach 600 cm distance, the model suggests that one could use a projectile weight of 20 gm and a counterweight of about 1.25 kg, or one could up the projectile weight to 60 gm and increase the counterweight to a bit more than 2 kg.
+
+Adding in the counter-weight as an explanatory variable puts creates a model that might be more useful to a trebuchet operator, but it also has an important meaning in terms of statistics.  The new variable can help account for some of the distance data, and in so doing can make the model a better fit.  
+
+INTERPRETATION OF THE COEFFICIENTS.  How much does added weight hurt distance?  PUT THIS HERE.
+
+A simple way to see that the two-variable model is a better fit than the one-variable model is to look at the size of the residuals.\marginnote{It's worthwhile to ask your students why the mean of the residuals of a fitted model is not a useful way to characterize their size.  Have them look at the mean residual from different models and figure out what's going on.}  As always, the way to quantify residuals is with their standard deviation, or variance, or sum of squares.
+<<>>=
+sd(resid(mod1))
+sd(resid(mod2))
+@
+
+
+This phenomenon, \marginnote{Use \function{rand} to generate random variables to add into a model, e.g. to add two random variables, use
+<<>>=
+lm(distance ~ projectileWt + rand(2),data=trebuchet)
+@
+Shuffling is applied to variables one at a time to randomize them:
+<<>>=
+lm(distance ~ projectileWt + shuffle(counterWt),data=trebuchet)
+@
+With these operations, one can implement the null hypothesis rather than just stating it.}
+that adding an explanatory variable to a model will reduce the size of the residuals, provides a powerful seque to statistical inference.  For example, you can have your students add a random quantity as a explanatory variable or randomize the explanatory variable by shuffling.  
+
+The two-variable model also provides a more reliable prediction:
+<<>>=
+f1( projectileWt=50, interval="prediction")
+g2( projectileWt=50,counterWt=2, interval="prediction")
+@
+Notice how much narrower the prediction interval is for the two variable model.  
+
+
+\subsection{Functions of categorical variables (rename this)}
+
+As it happens, the values produced by \texttt{f1} coincide directly with the values produced by \function{mean}.  This suggests another way to think about means is as a way of describing relationships, not just a way to summarize a variable.
+
+ \marginnote{In this example, the input to the function is a category.  The possible values of a categorical variable --- the levels --- are often denoted in R as quoted character strings, \texttt{"foose"} and \texttt{"golf"} in the \texttt{trebuchet} data, standing for a fooseball and a golf ball.} For instance, you can ask what is the model function's value for each level of the explanatory variable \VN{object}.
 <<>>=
 f1(object="foose")
 f1(object="golf")
 @
 
-The function \texttt{f1} attempts to describe the relationship between the explanatory and response variables: between \VN{sex} and \VN{width}.
-
-As it happens, the values produced by \texttt{f1} coincide directly with the values produced by \function{mean}.  This suggests another way to think about means is as a way of describing relationships, not just a way to summarize a variable.
-
-
-There are, \marginnote{There's nothing fundamental about \function{listFun}.  It's just a program that makes it easy to construct a mathematical function with categorical inputs.}
-of course, other possible functions that could be used to describe the relationship between \VN{sex} and \VN{width}.  For example, here's a function that says the model value for boys is 10 cm, while that for girls is 9 cm:\authNote{Add listFun to mosaic package?}
+For example, here's a function that says the golf balls go 300 cm, foose balls 500, tennis balls 100 and washers 300.
 <<>>=
-# replace with makeFun(switch())
-fetchData("m155development.R")
-f2 = listFun("B"=10,"G"=9)
+f2 = makeFun( switch(object,"golf"=300,"foose"=500,
+                     "tennis ball"=100,"big washerb"=300, NA) ~ object)
+@
+This is not the traditional form for a function.  The function \texttt{f2} takes an input \texttt{object} and compares it to the names of the different kinds of balls.  It returns the associated value (or \texttt{NA} if there is no associated value), for instance:
+<<>>=
+f2("tennis ball")
+f2("golf")
+f2("football") 
 @
 
-Two model functions, \texttt{f1} and \texttt{f2}.  Which is better?
+With two model functions, \texttt{f1} and \texttt{f2}, a natural question is: Which is better?
 
 One way to define ``better'' is to say that the better model is closer to the data, where closer refers to the difference between the function output and the observed value for each case.  First, find the function output for each of the candidate model functions:
 <<>>=
-KidsFeet = transform(KidsFeet, f1val=f1(sex), f2val=f2(sex))
+trebuchet = transform(trebuchet, f1val=f1(object), f2val=f2(object))
 @
 
 Now, compute the typical difference between the model value and the observed value.  In order that positive differences not cancel out negative differences, you can find the mean square difference:
@@ -243,6 +372,33 @@ Just using \function{lm} and it's equivalence to the Wald interval.
 
 Logistic regression versus $\chi^2$
 Odds ratios
+
+\section{Outline}
+
+Goals:
+\begin{itemize}
+\item Can be used as the comprehensive guide to the modeling language.
+\item Introduce some graphics: \function{bwplot}, \function{xyplot}
+\item Descriptive statistics done with the same language
+\item Tallying with the same language
+\item Generalize it to the building of models --- one variable
+\item \function{confint} and how to use it to explore what confidence intervals mean.
+\item Models with a continuous covariate
+\item \function{makeFun} and \function{plotFun}
+\end{itemize}
+
+\chapter{In DRAFT: Datasets}
+
+`trebuchet` from \pkg{fastR}
+
+`galton`
+
+`Saratoga-Houses`
+
+`Swim100m`
+
+`SAT`
+
 
 \section{}
 GRAPHICS WITH THE SAT DATA: lattice plot of SAT versus expenditure with facets for different levels of fraction.  Then put up the whole model as SAT versus expenditure with separate lines for each level for fraction.
