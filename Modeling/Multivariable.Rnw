@@ -171,7 +171,7 @@ f1(60)
 f2(60)
 @
 You can be more systematic and evaluate the functions at every one of the data points:
-<<>>=
+<<tidy=FALSE>>=
 trebuchet = transform(trebuchet,
                       f1resid=f1(projectileWt)-distance,
                       f2resid=f2(projectileWt)-distance)
@@ -187,9 +187,7 @@ sd(f2resid,data=trebuchet)
 @
 It appears that the residuals from \function{f1} are smaller.
 
-It's a good exercise to try out many different alternatives.  You won't be able to find any whose residuals are smaller than \function{f1}.  In this sense, \function{f1}, from the model constructed by \function{lm}, is the best of all possible straight-line models of the data.
-
-
+It's a good exercise to try out many different alternatives.  You won't be able to find any whose sum of square residuals are smaller than those produced by \function{f1}.  In this sense, \function{f1}, from the model constructed by \function{lm}, is the best of all possible straight-line models of the data.
 
 There are several ways to see the effect of \VN{projectileWt} on \VN{distance}.  The coefficients carry this information, but students need to be taught how to interpret them:
 <<>>=
@@ -219,8 +217,8 @@ Consider why one might build a model of a trebuchet.  A practical application, i
 A competent trebuchet technician will tell you that there's another issue: How heavy is the counter-weight on the trebuchet?  You have the option of adding or taking away weight from the counter-weight in order to get your projectile on target.  
 
 Fitting a relevant model is a matter of including the counter-weight (\VN{counterWt}) in the set of explanatory variables.  (It's also important that student Andrew Pruim collected the experimental data over a range of counter-weights.)  Here's a simple model:
-<<>>=
-mod2 = lm( distance ~ projectileWt + counterWt, data=trebuchet)
+<<tidy=FALSE>>=
+mod2 = lm(distance~projectileWt+counterWt,data=trebuchet)
 @
 
 To extract the corresponding function, which will be a function of both \VN{projectileWt} and \VN{counterWt}, use \function{makeFun}.  We'll call the function \function{ballistic}:
@@ -244,9 +242,50 @@ It takes a bit of practice to learn to interpret such graphs, but it's worth the
 
 Adding in the counter-weight as an explanatory variable puts creates a model that might be more useful to a trebuchet operator, but it also has an important meaning in terms of statistics.  The new variable can help account for some of the distance data, and in so doing can make the model a better fit.  
 
-INTERPRETATION OF THE COEFFICIENTS.  How much does added weight hurt distance?  PUT THIS HERE.
+Many students will be unfamiliar with functions of two variables, simply because they don't encounter them in their mathematics classes.  It's a mistake to think that the standard mathematics curriculum has been designed to teach easy subjects first, and that subjects not encountered in the standard curriculum are somehow more difficult.  But you do have to orient your students to some of the basics of functions of two (or more) variables.
 
-A simple way to see that the two-variable model is a better fit than the one-variable model is to look at the size of the residuals.\marginnote{It's worthwhile to ask your students why the mean of the residuals of a fitted model is not a useful way to characterize their size.  Have them look at the mean residual from different models and figure out what's going on.}  As always, the way to quantify residuals is with their standard deviation, or variance, or sum of squares.
+A good place to start is to ask your students to imagine themselves standing on a hillside.  Is the slope the same in all directions?  Many students will respond, "yes."  They have an intuitive notion of the gradient and are thinking that, at each point on the hillside, there is just one slope.  But, as skiers know, the hill is steep in some directions and not at all steep in others.  (Indeed, for every point on every hill, there is a direction where the landscape is flat.)  Looking back at the countour plot, ask the students whether the hill is steeper in the East-West direction (that is, along the $x$-axis), or in the North-South diretion (along the $y$ axis).  It's easy to find the slope in each direction, by taking a small step in that direction and finding the change in altitude.
+
+For the trebuchet distance function, you can take such steps by varying one variable while holding the other constant.  For instance, what's the change in distance (according to the model) when changing the projectile weight by one gram while holding the counter-weight constant.  Pick a value for each variable and tweak projectile weight:
+<<tidy=FALSE>>=
+ballistic(projectileWt=51,counterWt=1) - 
+  ballistic(projectileWt=50,counterWt=1)
+@
+This indicates that a 1 gm increase in projectile weight is associated with a decrease of 8.5 cm in the distance flown.  
+
+On the other hand, increasing the counter weight is associated with an increase in distance:
+<<tidy=FALSE>>=
+ballistic(projectileWt=50,counterWt=2) - 
+  ballistic(projectileWt=50,counterWt=1)
+@
+A 1 kg increase in the counter-weight is associated with an increase of 365 cm in the distance.
+
+Show your students the points on the contour plot corresponding to these finite differences.  This helps to understand why each input variable can be associated with a different connection to the output.  Once students understand this, it's easier for them to generalize to functions of more than two variables.  The key thing is to move away from functions of a single variable.
+
+It's well worth observing that the two models, \texttt{mod1} and \texttt{mod2}, give different answers to the question of how the distance changes with a change in the projectile weight.  For \text{mod1} (translated into function \function{f1}) the answer is 
+<<>>=
+f1(projectileWt=51)-f1(projectileWt=50)
+@
+But for \texttt{mod2} (translated into function \function{ballistic}) the change in distance is much less, as already seen:
+<<tidy=FALSE>>=
+ballistic(projectileWt=50,counterWt=2) - ballistic(projectileWt=50,counterWt=1)
+@
+
+That the two functions give different answers can be confusing to students.  The difference comes about because the \function{ballistic} function allows you to hold the counter-weight constant while changing the projectile weight.  This is, of course, completely natural --- you can change the projectile weight without changing the counter-weight.  But the experiment happened to be done in such a way that only the lightest projectiles were used with the heaviest counterweights.  
+<<>>=
+tally( ~ projectileWt + counterWt, data=trebuchet)
+@
+The result is that the light-weight projectiles flew, on average, much further than the heavier projectiles: partly because the projectiles were lighter and partly because the counter-weight was heavier.
+
+If you're thinking, "Well, the experiment should have been done in a balanced way, with the same range of counter-weights used for each projectile," true enough.  But there experiment wasn't done this way and, as a result, counter-weight and projectile weight have been connected to one another.  To disconnect them, given the data, requires that both counter-weight and projectile weight be used to account for distance flown.
+
+\section{More variables give a better fit}
+
+Remember that your students have been raised mathematically in an environment where there is always a correct answer, sometimes easy to find and sometimes hard.  Many students conflate the difficulty of finding the answer with the quality of the fit --- data that show a clear pattern are easier to deal with than data that don't, and of course the fit is better for the data that show a clear pattern.
+
+Your students will naturally think that fitting a function of two inputs is harder to fit than a function of a single input.  That's fair enough.  For a straight-line function of one variable, it's pretty easy to draw a plausible candidate and to use the techniques of high-school algebra to find the parameters: a slope and intercept.   But it's hard to draw a graph of a function of two variables, let alone use the eye to relate data to the parameters of the fitted function.
+
+Given this focus on the difficulty of the problem, it becomes confusing to see that the function of two explanatory variables must fit the response variable better than a function of one variable.  So, take the time to demonstrate this.  A simple way to see that the two-variable model is a better fit than the one-variable model is to look at the size of the residuals.\marginnote{It's worthwhile to ask your students why the mean of the residuals of a fitted model is not a useful way to characterize their size.  Have them look at the mean residual from different models and figure out what's going on.}  As always, the way to quantify residuals is with their standard deviation, or variance, or sum of squares.
 <<>>=
 sd(resid(mod1))
 sd(resid(mod2))
@@ -262,17 +301,25 @@ Shuffling is applied to variables one at a time to randomize them:
 lm(distance ~ projectileWt + shuffle(counterWt),data=trebuchet)
 @
 With these operations, one can implement the null hypothesis rather than just stating it.}
-that adding an explanatory variable to a model will reduce the size of the residuals, provides a powerful seque to statistical inference.  For example, you can have your students add a random quantity as a explanatory variable or randomize the explanatory variable by shuffling.  
+that adding an explanatory variable to a model will reduce the size of the residuals, provides a powerful segue to statistical inference.  For example, you can have your students add a random quantity as a explanatory variable or randomize the explanatory variable by shuffling.  
 
 The two-variable model also provides a more reliable prediction:
 <<>>=
 f1( projectileWt=50, interval="prediction")
-g2( projectileWt=50,counterWt=2, interval="prediction")
+ballistic( projectileWt=50,counterWt=2, interval="prediction")
 @
 Notice how much narrower the prediction interval is for the two variable model.  
 
 
 \subsection{Functions of categorical variables (rename this)}
+
+HERE, I'm going to go back to the groupwise means and show that you can construct a function that works for a categorical input.
+
+\subsection{Combinations of categorical and quantitative variables}
+
+BASICALLY, the swimming data example.  I'll use the Galton height data.
+
+\section{NOTES for the REST}
 
 As it happens, the values produced by \texttt{f1} coincide directly with the values produced by \function{mean}.  This suggests another way to think about means is as a way of describing relationships, not just a way to summarize a variable.
 
@@ -297,8 +344,10 @@ f2("football")
 With two model functions, \texttt{f1} and \texttt{f2}, a natural question is: Which is better?
 
 One way to define ``better'' is to say that the better model is closer to the data, where closer refers to the difference between the function output and the observed value for each case.  First, find the function output for each of the candidate model functions:
-<<>>=
-trebuchet = transform(trebuchet, f1val=f1(object), f2val=f2(object))
+<<tidy=FALSE>>=
+trebuchet = transform(trebuchet, 
+                      f1val=f1(object), 
+                      f2val=f2(object))
 @
 
 Now, compute the typical difference between the model value and the observed value.  In order that positive differences not cancel out negative differences, you can find the mean square difference:

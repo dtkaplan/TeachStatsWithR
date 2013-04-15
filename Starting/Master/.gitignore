@@ -7,3 +7,6 @@ Master-Starting-concordance.tex
 *.aux
 *.bbl
 *.blg
+Rindex.idx
+framed.sty
+mainIndex.idx
