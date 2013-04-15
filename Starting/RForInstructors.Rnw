@@ -1,7 +1,9 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
-opts_chunk$set( fig.path="figure/RForInstructors-fig-" ) 
-if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
+opts_chunk$set( fig.path="figures/RForInstructors-" ) 
+if (!exists("..makingMaster..")) {
+	set_parent('Master-Starting.Rnw')
+}
 set.seed(123)
 @
 
@@ -9,132 +11,19 @@ set.seed(123)
 \label{chap:RForInstructors}
 
 
-<<setup,include=FALSE>>=
+<<include=FALSE>>=
 source('../include/setup.R')
-opts_chunk$set( fig.path="figures/RForInstructors-fig-" )  
+opts_chunk$set( fig.path="figures/RForInstructors-" )  
 @ 
 
 
-
-\authNote{Need motivation for this chapter}
-
-\section{Installing and Using Packages}
-
-\R\ is open source software.  Its development is supported by
-a team of core developers and a large community of users.
-One way that users support
-\R\ is by providing \term{packages} that contain data and functions
-for a wide variety of tasks.  
-
-\subsection{Installing packages from \cran}
-If you need to install a package, most likely it will be on \cran, 
-the Comprehensive R Archive Network.\footnote{R-forge and Bioconductor 
-are two other repositories of \R\ packages.}
-\authNote{need to simplify this: is it really needed?}
-Before a package can be used, it must be \term{installed} 
-(once per computer)
-and
-\term{loaded} (once per \R\ session).  
-Installing downloads the package software and prepares it for use
-by compiling (if necessary) and putting its components in the proper
-location for future use.
-Loading makes a previously installed package available for use 
-in an \R\ session.
-
-For example, to use the \pkg{mosaic} package:
-\Rindex{install.packages()}%
-\Rindex{require()}%
-
-<<eval=FALSE,tidy=FALSE>>=
-install.packages("mosaic") # fetch package from CRAN to local machine.
-require(mosaic)            # load the package so it can be used.
-@
-
-If you are running on a machine where you don't have privileges to
-write to the default library location, you can install a personal 
-copy of a package.  If the location of your personal library is 
-first in \verb!R_LIBS!, this will probably happen automatically.  If not,
-you can specify the location manually:
-
-<<eval=FALSE>>=
-install.packages("mosaic", lib="~/R/library")
-@
-On a networked machine, be sure to use a different local directory for 
-each platform since packages must match the platform.
-
-Installing  packages on a Mac or PC is something you might like to do 
-from the GUI since it will provide you with a list of packages from 
-which you can select the ones of interest.
-Binary packages have been precompiled for a 
-particular platform and are generally faster and easier to set up, if they 
-are available.  Source packages need to be compiled and built on your local
-machine.  Usually this happens automatically -- provided you have all the 
-necessary tools installed on your machine -- so the only disadvantage is the
-extra time it takes to do the compiling and building.
-
-\subsection{Installing other packages}
-
-Occasionally you might find a package of interest that is not available via
-a repository like \cran.  
-Typically, if you find such a package, you will also find instructions
-on how to install it.  If not, you can usually install directly from the 
-zipped up package file.
-
-<<eval=FALSE,echo=TRUE>>=
-# repos = NULL indicates to use a file, not a repository
-install.packages('some-package.tar.gz', repos=NULL)           
-@
+We recommend keeping the amount of \R\ that students need to learn
+to a minimum, and choosing functions that support a formula interface whenever
+possible to keep the required functions syntactically similar.
+But there are some additional things that instructors should know about
+\R\.  We outline some of these things in this chapter.
 
 
-\subsection{Finding packages}
-There are several ways to find packages
-\begin{itemize}
-  \item Ask your friends.
-  \item Google:  Put `cran' in the search.
-  \item Rseek:  \url{http://rseek.org} provides a search engine specifically
-  designed to find information about \R.
-  \item CRAN task views.
-
-  A number of folks have put together task views that annotate a large
-  number of packages and summarize they are good for.  They are 
-  organized according to themes.  Here are a few examples
-  of available task views:
-\authNote{NJH to update}
-
-  \begin{center}
-    \begin{tabular}{lp{0.7\textwidth}}
-    Bayesian &    Bayesian Inference \\
-%    Cluster &   Cluster Analysis \& Finite Mixture Models \\
-    Econometrics &   Computational Econometrics \\
-%    Environmetrics &   Analysis of ecological and environmental data \\
-    Finance &   Empirical Finance \\
-    Genetics &   Statistical Genetics \\
-    Graphics &   Graphic Displays,  Dynamic Graphics,
-          Graphic Devices, and Visualization \\
-%    gR &   gRaphical models in R \\
-%    MachineLearning &   Machine Learning \& Statistical Learning \\
-    Multivariate &   Multivariate Statistics \\
-%    Psychometrics &   Psychometric Models and Methods \\
-    SocialSciences &   Statistics for the Social Sciences \\
-%    Spatial &   Analysis of Spatial Data \\
-    \end{tabular}
-  \end{center}
-
-  \item Bioconductor (\url{http://www.bioconductor.org/}) 
-  and Omegahat (\url{http://www.omegahat.org/R}) 
-are another
-  sources of packages (specify the \verb!repos=! option to use these).
-
-  \item 
-  \textit{R Journal}  (formerly \textit{R News})
-  is available via \cran\ and 
-  often has articles about new packages and their capabilities.
-
-  \item Write your own.
-
-  You can write your own packages, and it isn't that hard to do (but 
-we won't cover this here).
-\end{itemize}
 
 \section{Working with Data}
 \label{sec:MoreR-Data}%
@@ -1211,9 +1100,16 @@ xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
 <<>>=
 HELPrct$newsex <- factor(HELPrct$female, labels=c('M','F'))
 @
-\subsubsection{character variables}
-\subsubsection{coercing variables}
-\subsubsection{recoding variables}
+
+%\newthought{character variables}
+%stuff here 
+%
+%\newthought{coercing variables}
+%stuff here 
+%
+%\newthought{recoding variables}
+%stuff here 
+
 \subsection{Accounting for missing data}
 
 \subsection{Merging datasets}
@@ -1313,12 +1209,12 @@ to \verb!reshape()!.
 
 %\subsection{Simple Relational Database Operations}
 %
-%\subsubsection*{Example: Grades/Courses}
+%\newthought{Example: Grades/Courses}
 %
 %Using the grade/courses database, show how to combine data from
 %different data frames. [DTK]
 
-%\subsubsection{Example: Merging Genotype and Phenotype Data}
+%\newthought{Example: Merging Genotype and Phenotype Data}
 %\label{example:fusion1-glm1}%
 %\myindex{FUSION|exampleidx}%
 %\myindex{logistic regression}%
@@ -1487,7 +1383,7 @@ favstats(Sepal.Length ~ Species, data=iris)
 \section{A Few Graphical Bells and Whistles}
 There are lots of arguments that control how lattice plots look.  Here are just a few examples.
 
-\subsubsection{auto.key}
+\newthought{auto.key}
 It would be useful to have a legend for the previous plot.   \verb!auto.key=TRUE! 
 turns on a simple legend.  (There are ways to have more control, if you need it.)
 <<iris-xyplot-key,cache=TRUE>>=
@@ -1495,7 +1391,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 	auto.key=TRUE)   
 @
 
-\subsubsection{alpha, cex}
+\newthought{alpha, cex}
 Sometimes it is nice to have elements of a plot be partly transparent.  When such
 elements overlap, they get darker, showing us where data are ``piling up."
 Setting the \verb!alpha! argument to a value between 0 and 1 controls the degree 
@@ -1510,7 +1406,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 @
 
 \vspace{-8mm}
-\subsubsection*{main, sub, xlab, ylab}
+\newthought{main, sub, xlab, ylab}
 
 You can add a title or subtitle, or change the default labels of the axes.
 <<iris-xyplot-text,cache=TRUE>>=
@@ -1523,7 +1419,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 	auto.key=list(columns=3))   
 @
 
-\subsubsection{trellis.par.set()}
+\newthought{trellis.par.set()}
 Default settings for lattice graphics are set using 
 \verb!trellis.par.set()!.
 Don't like the default font sizes?  You can change to a 7 point (base) font using
@@ -1678,9 +1574,9 @@ the default behavior or something special).
 
 \section{Common Error Messages and What Causes Them}
 
-\subsubsection{Object not found}
+\newthought{Object not found}
 
-\subsubsection{Other error messages here}
+\newthought{Other error messages here}
 
 
 \newpage

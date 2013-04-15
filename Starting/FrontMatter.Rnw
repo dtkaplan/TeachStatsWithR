@@ -1,7 +1,9 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
-opts_chunk$set( fig.path="figure/FrontMatter-fig-" ) 
-if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
+opts_chunk$set( fig.path="figures/FrontMatter-" ) 
+if (!exists("..makingMaster..")) {
+	set_parent('Master-Starting.Rnw')
+}
 set.seed(123)
 @
 
@@ -111,7 +113,7 @@ will be used throughout.  Other packages appear from time to time, including
 
 %\subsection*{Notation}
 %
-%%\subsubsection*{Exercises}
+%%\newthought{Exercises}
 %Exercises marked with 1 star are intended for students in courses beyond the
 %introductory level.  Exercises marked with 2 stars are intended primarily for
 %instructors (but may also be appropriate for students in higher level courses).
@@ -132,9 +134,13 @@ notes?}
 
 
 \section*{Document Creation}
-This document was created 
+
+
+
+This document was created on
 \today, using \code{knitr} and 
-\Sexpr{print(version$version.string)} 
+\Sexpr{R.version.string}.
+
 \DiggingDeeper{If you know \LaTeX\ as well as \R, then \code{knitr}
 provide a nice solution for mixing the two. We tend to use these systems
 for reproducible analysis

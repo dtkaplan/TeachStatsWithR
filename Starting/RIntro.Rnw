@@ -1,7 +1,9 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
-opts_chunk$set( fig.path="figure/RIntro-fig-" ) 
-if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
+opts_chunk$set( fig.path="figures/RIntro-" ) 
+if (!exists("..makingMaster..")) {
+	set_parent('Master-Starting.Rnw')
+}
 set.seed(123)
 @
 
@@ -124,7 +126,7 @@ log(12,345)
 \section{Using R as a Calculator}
 \R\ can be used as a calculator.  Try typing the following commands in the console panel.
 
-<<arithmetic>>=
+<<intro-arithmetic>>=
 5 + 3
 15.3 * 23.4
 sqrt(16)
@@ -137,7 +139,7 @@ one or the other of the right-to-left assignment operators rather than to switch
 back and forth.  The authors of this document have different preferences.}%
 
 \authNote{Something funky going on with newproduct}
-<<variables1>>=
+<<intro-variables1>>=
 product = 15.3 * 23.4       # save result
 @
 
@@ -146,7 +148,7 @@ with multiple commands
 (see section \ref{sec:scripts}).
 Comments are prefaced with the \# character.
 
-<<variables1b,eval=FALSE>>=
+<<intro-variables1b,eval=FALSE>>=
 product                     # display the result
 product <- 15.3 * 23.4      # <- is assignment operator, almost always the same as =
 product                     
@@ -156,7 +158,7 @@ newproduct
 Once variables are defined, they can be referenced with other operators
 and functions.
 
-<<variables2>>=
+<<intro-variables2>>=
 .5 * product                # half of the product
 log(product)                # (natural) log of the product
 log10(product)              # base 10 log of the product
@@ -166,21 +168,20 @@ log(product,base=2)         # base 2 log of the product
 The semi-colon can be used to place multiple commands on one line.  
 One frequent use of this is to save and print a value all in one go:
 
-<<variables-semi,tidy=FALSE>>=
+<<intro-variables-semi,tidy=FALSE>>=
 15.3 * 23.4 -> product; product    # save result and show it
 @
 
 
 \subsection*{Four Things to Know About \R\ and \RStudio}
 \begin{enumerate}
-\Rwidth=6.25in
 \item \R\ is case-sensitive
 
 If you mis-capitalize something in \R\ it won't do what you want.
 
 \item 
 Functions in \R\ use the following syntax:
-<<"function-syntax",eval=FALSE>>=
+<<"intro-function-syntax",eval=FALSE>>=
 functionname( argument1, argument2, ... )
 @
 \vspace{-5mm}
@@ -248,7 +249,7 @@ You can install these packages
 by clicking on the ``Install Package" button in \RStudio\ and following the directions
 or by using the following command:
 
-<<install,eval=FALSE>>=
+<<intro-install,eval=FALSE>>=
 install.packages('Hmisc')                # note the quotation marks 
 install.packages('mosaic')               # note the quotation marks 
 @
@@ -257,7 +258,7 @@ Once these are installed, you can load them by checking the box in the
 \tab{Packages} tab or by using \verb!require()! (or \verb!library()!).  This
 needs to be done once per session.
 
-<<require>>=
+<<intro-require>>=
 require(lattice)         # could also use library(lattice)
 require(Hmisc)           # do this one before mosaic
 require(mosaic)          # do this one after Hmisc
@@ -294,7 +295,7 @@ the \R\ help system.
 To get help on a specific function or data set, simply precede its name with a \verb!?!:
 
 \authNote{This isn't working properly}
-<<help1,eval=FALSE>>=
+<<intro-help1,eval=FALSE>>=
 ?col.whitebg()
 @
 %This will give you the documentation for the object you are interested in.
@@ -303,7 +304,7 @@ To get help on a specific function or data set, simply precede its name with a \
 If you don't know the exact name of a function, you can give part of the name and 
 \R\ will find all functions that match.  Quotation marks are mandatory here.
 
-<<apropos>>=
+<<intro-apropos>>=
 apropos('hist')            # must include quotes.  single or double.
 @
 
@@ -312,7 +313,7 @@ If that fails, you can do a broader search using \verb!??! or \verb!help.search(
 which will find matches not only in the names of functions and data sets, 
 but also in the documentation for them.  Quotation marks are optional here.
 
-% <<help2,eval=FALSE,results="hide">>=
+% <<intro-help2,eval=FALSE,results="hide">>=
 % ??tally                  # any of these will work
 % ??"tally"  
 % ??'tally'  
@@ -324,7 +325,7 @@ but also in the documentation for them.  Quotation marks are optional here.
 
 Many functions and data sets in \R\ include example code demonstrating typical uses.
 For example,
-<<"example-histogram",eval=FALSE,results="hide">>=
+<<"intro-example-histogram",eval=FALSE,results="hide">>=
 example(xhistogram)
 @
 will generate a number of example plots (and provide you with the commands used to create them).
@@ -338,7 +339,7 @@ Demos are bits of \R\ code that can be executed using the \verb!demo()! command
 with the name of the demo.
 
 To see how demos work, give this a try:
-<<"demo",eval=FALSE,results="hide">>=
+<<"intro-demo",eval=FALSE,results="hide">>=
 demo(lattice)
 @
 
@@ -347,7 +348,7 @@ independent of any particular function or data set.
 
 You can get a list of available demos using
 
-<<"demo-list",eval=FALSE,results="hide">>=
+<<"intro-demo-list",eval=FALSE,results="hide">>=
 demo()                     # all demos
 demo(package='mosaic')     # just demos from mosaic package
 @
@@ -360,7 +361,7 @@ Many packages contain data sets.
 You can see a list of all data sets in all loaded packages
 using 
 
-<<"data-list",eval=FALSE,results="hide">>=
+<<"intro-data-list",eval=FALSE,results="hide">>=
 data()
 @
 
@@ -370,7 +371,7 @@ used that name for something or need to refresh the data after making some chang
 want, you can explicitly load the data using the \verb!data()! function with the name of the 
 data set you want.
 
-<<"data-load">>=
+<<"intro-data-load">>=
 data(iris)
 @
 
@@ -402,23 +403,23 @@ The \verb!iris! data set is included with the default \R\ installation.
 
 There are several ways we can get some idea about what is in the \verb!iris! data frame.
 
-<<"iris-str">>=
+<<"intro-iris-str">>=
 str(iris)
 @
 
-<<"iris-summary">>=
+<<"intro-iris-summary">>=
 summary(iris)
 @
 
-<<"iris-head">>=
+<<"intro-iris-head">>=
 head(iris)
 @
 In interactive mode, you can also try
-<<"view1",eval=FALSE>>=
+<<"intro-view1",eval=FALSE>>=
 View(iris)
 @
 to see the data or 
-<<"view2",eval=FALSE>>=
+<<"intro-view2",eval=FALSE>>=
 ?iris
 @
 to get the documentation about for the data set.
@@ -427,7 +428,7 @@ to get the documentation about for the data set.
 Access to an individual variable in a data frame uses the \verb!$! operator in
 the following syntax:
 
-<<"dollar-sign",eval=FALSE>>=
+<<"intro-dollar-sign",eval=FALSE>>=
 dataframe$variable
 @
 or 
@@ -437,7 +438,7 @@ with(dataframe, variable)
 
 For example, either of 
 
-<<"iris-Sepal-Length",eval=FALSE>>=
+<<"intro-iris-Sepal-Length",eval=FALSE>>=
 iris$Sepal.Length
 @
 or 
@@ -469,13 +470,13 @@ variables using the \verb!$! syntax or to use the \function{with()} function.
 button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
 google spreadsheets.   
 
-%\subsubsection*{From Google Spreadsheets}
+%\newthought{From Google Spreadsheets}
 
 \textbf{From Google.}
 The easiest of these is the Google spreadsheets option: Just click, select
 your spreadsheet, choose a name, and you're done.
 
-%\subsubsection*{From Excel}
+%\newthought{From Excel}
 \textbf{From Excel},
 you need to follow a 3-step process:
 \begin{enumerate}
@@ -553,11 +554,11 @@ import that (as a text file) into \Rstudio.  Name the data frame \texttt{JunkDat
 %The \verb!abdData()! function in \verb!abd! makes it easy to map examples and exercises in that book to 
 %data frame names in the \verb!abd! package.
 %
-<<findData-human,eval=FALSE,echo=FALSE>>=
+<<intro-findData-human,eval=FALSE,echo=FALSE>>=
 abdData('human')         # all data sets with 'human' in the name
 @
 %
-<<findData-2,eval=FALSE,echo=FALSE>>=
+<<intro-findData-2,eval=FALSE,echo=FALSE>>=
 abdData(2)               # all data sets in chapter 2
 @
 %
@@ -573,7 +574,7 @@ Here are a few examples.
 %(If you don't know what some of these -- like IQR -- are, don't worry;
 %we'll be discussing them soon.)
 
-<<numerical-summaries>>=
+<<intro-numerical-summaries>>=
 with(iris, mean(Sepal.Length))                  # or mean(iris$Sepal.Length)
 with(iris, median(Sepal.Length))                # or median(iris$Sepal.Length)
 with(iris, sd(Sepal.Length))                    # or sd(iris$Sepal.Length)
@@ -585,14 +586,14 @@ IQR(iris$Sepal.Length)
 The \verb!favstats()! function in the \verb!mosaic! package computes several numerical 
 summaries all at once.
 
-<<favstats>>=
+<<intro-favstats>>=
 require(mosaic)               # if you haven't already loaded the mosaic package
 favstats(iris$Sepal.Length)
 @
 
 Here's something a little fancier.
 
-<<summary>>=
+<<intro-summary>>=
 require(Hmisc)
 summary(Sepal.Length ~ Species, data=iris, fun=favstats)
 @
@@ -613,12 +614,12 @@ There are several ways to make graphs in \R.  One approach is a system called
 load the \verb!lattice! package using the check box in the \tab{Packages} tab or using
 the following command:
 
-<<load-lattice>>=
+<<intro-load-lattice>>=
 require(lattice)
 @
 \verb!lattice! plots make use of a \term{formula interface}:
 
-<<formula-interface, eval=FALSE, echo=TRUE>>=
+<<intro-formula-interface, eval=FALSE, echo=TRUE>>=
 plotname( y ~ x | z, data=dataname, groups=grouping_variable, ...)
 @
 \begin{itemize}
@@ -662,17 +663,17 @@ towers when the data values cluster near each other.
 For a dot plot, the \verb!y! component of the formula is empty since we let \R\
 calculate that for us.
 
-<<iris-dotPlot,cache=TRUE,fig.width=5,fig.height=3.0>>=
+<<intro-iris-dotPlot,cache=TRUE,fig.width=5,fig.height=3.0>>=
 dotPlot(~ Sepal.Length, data=iris, n=30)    # n = 30 gives approx 30 columns
 @
 We can use a conditional variable to give us separate dot plots for each
 species.
 
-<<iris-dotPlot-condA,cache=TRUE,fig.width=7.0,fig.height=4,out.width=".7\\textwidth",eval=FALSE>>=
+<<intro-iris-dotPlot-condA,cache=TRUE,fig.width=7.0,fig.height=4,out.width=".7\\textwidth",eval=FALSE>>=
 dotPlot(~ Sepal.Length | Species, data=iris, n=20, layout=c(3,1))
 @
 \authNote{Can these be set up to stack?}
-<<iris-dotPlot-condB,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
+<<intro-iris-dotPlot-condB,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
 dotPlot(~ Sepal.Length | Species, data=iris, n=20, cex=.6, 
 		layout=c(3,1)) # cex used to shrink the dots a bit
 @
@@ -683,14 +684,15 @@ Histograms are a lot like dot plots, but the towers of dots are replaced by a
 vertical bar.
 Again the \verb!y! component of the formula is empty since we let \R\
 compute the heights of the bars for us.
-<<iris-histogram,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
+<<intro-iris-histogram,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
 xhistogram(~ Sepal.Length, data=iris, n=20)       # n= 20 gives approx. 20 bars
 @
 We can use a conditional variable to give us separate histograms for each species.
 
-<<iris-histogram-cond,cache=TRUE,fig.width=8,out.width=".8\textwidth">>=
-xhistogram(~ Sepal.Length | Species, data=iris, n=20, layout=c(3,1))
-@
+\authNote{removed plot that was breaking compilation}
+%<<intro-iris-histogram-cond,cache=TRUE,fig.width=8,out.width=".8\textwidth">>=
+%xhistogram(~ Sepal.Length | Species, data=iris, n=20, layout=c(3,1))
+%@
 
 
 In lattice lingo, the three subplots are called panels and the labels at the
@@ -700,21 +702,21 @@ top are called strips.  (Strips can be placed on the left side if you prefer.)
 \subsection{Boxplots:  \texttt{bwplot()}}
 
 Boxplots are made pretty much the same way as histograms:
-<<iris-bwplot>>=
+<<intro-iris-bwplot>>=
 bwplot(~ Sepal.Length, data=iris)
 @
 
 As we did for histograms, we can use conditioning to 
 show boxplots for multiple groups within the data set:
 
-<<iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".7\\textwidth">>=
+<<intro-iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".7\\textwidth">>=
 bwplot(~ Sepal.Length | Species, data=iris, layout=c(3,1))
 @
 
 \vspace{-8mm}
 
 But there are better ways to do this.
-<<"iris-bwplot-2d",cache=TRUE>>=
+<<"intro-iris-bwplot-2d",cache=TRUE>>=
 bwplot(Sepal.Length ~ Species, data=iris)
 bwplot(Species ~ Sepal.Length, data=iris)
 @
@@ -732,19 +734,19 @@ bwplot(Species ~ Sepal.Length, data=iris)
 Scatterplots are made with \verb!xyplot()!.  The formula interface is very natural for this.  
 Just remember that the ``$y$ variable'' comes first.  (Its label is also farther left on 
 the plot, if that helps you remember.)
-<<iris-xyplot,cache=TRUE>>=
+<<intro-iris-xyplot,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, data=iris)
 @
 
 Again, we can use conditioning to make a panel for each species.
-<<iris-xyplot-cond,cache=TRUE,fig.width=7,out.width=".7\\textwidth">>=
+<<intro-iris-xyplot-cond,cache=TRUE,fig.width=7,out.width=".7\\textwidth">>=
 xyplot(Sepal.Length ~ Sepal.Width | Species, data=iris, layout=c(3,1))
 @
 
 
 Even better (for this example), we can use the \verb!groups! argument to indicate the different species using
 different symbols on the same panel.
-<<iris-xyplot-groups,cache=TRUE>>=
+<<intro-iris-xyplot-groups,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris)
 @
 
@@ -765,22 +767,22 @@ Resize or reposition your image in Word as needed.
 \subsection{A Few Bells and Whistles}
 There are lots of arguments that control how these plots look.  Here are just a few examples.
 
-\subsubsection{auto.key}
+\newthought{auto.key}
 It would be useful to have a legend for the previous plot.   \verb!auto.key=TRUE! 
 turns on a simple legend.  (There are ways to have more control, if you need it.)
-<<iris-xyplot-key,cache=TRUE>>=
+<<intro-iris-xyplot-key,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
 	auto.key=TRUE)   
 @
 
-\subsubsection{alpha, cex}
+\newthought{alpha, cex}
 Sometimes it is nice to have elements of a plot be partly transparent.  When such
 elements overlap, they get darker, showing us where data are ``piling up."
 Setting the \verb!alpha! argument to a value between 0 and 1 controls the degree 
 of transparency: 1 is completely opaque, 0 is invisible.
 The \verb!cex! argument controls ``character expansion" and can be used to make the 
 plotting ``characters" larger or smaller by specifying the scaling ratio.
-<<iris-xyplot-alpha,cache=TRUE>>=
+<<intro-iris-xyplot-alpha,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
 	auto.key=list(columns=3),
 	alpha=.5,
@@ -788,10 +790,10 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 @
 
 \vspace{-8mm}
-\subsubsection*{main, sub, xlab, ylab}
+\newthought{main, sub, xlab, ylab}
 
 You can add a title or subtitle, or change the default labels of the axes.
-<<iris-xyplot-text,cache=TRUE>>=
+<<intro-iris-xyplot-text,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
 	main="Some Iris Data",
 	sub="(R. A. Fisher analysed these data in 1936)",
@@ -801,12 +803,12 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris,
 	auto.key=list(columns=3))   
 @
 
-\subsubsection{trellis.par.set()}
+\newthought{trellis.par.set()}
 Default settings for lattice graphics are set using 
 \verb!trellis.par.set()!.
 Don't like the default font sizes?  You can change to a 7 point (base) font using
 
-<<fontsize,eval=TRUE>>=
+<<intro-fontsize,eval=TRUE>>=
 trellis.par.set(fontsize=list(text=7))    # base size for text is 7 point 
 @
 
@@ -816,12 +818,12 @@ symbols, line thicknesses, colors, etc.
 Rather than describe them all here, we'll mention only that groups of these settings 
 can be collected into a theme.  \verb!show.settings()! will show you what the theme looks like.
 
-<<themes-whitbg,cache=TRUE,fig.height=4.0,fig.width=6>>=
+<<intro-themes-whitbg,cache=TRUE,fig.height=4.0,fig.width=6>>=
 trellis.par.set(theme=col.whitebg())      # a theme in the lattice package
 show.settings()
 @
 
-<<themes-mosaic,cache=TRUE,fig.height=4,fig.width=6>>=
+<<intro-themes-mosaic,cache=TRUE,fig.height=4,fig.width=6>>=
 trellis.par.set(theme=col.mosaic())        # a theme in the mosaic package
 show.settings()
 @
@@ -830,12 +832,12 @@ lattice themes.}%
 
 \DiggingDeeper{The \pkg{RColorBrewer} package provides several
 palettes of colors that are highly distinguishable and aesthetically pleasing.}%
-<<themes-mosaicbw,cache=TRUE,fig.height=4,fig.width=6>>=
+<<intro-themes-mosaicbw,cache=TRUE,fig.height=4,fig.width=6>>=
 trellis.par.set(theme=col.mosaic(bw=TRUE)) # black and white version of previous theme
 show.settings()
 @
 
-<<themes-mosaic-redo>>=
+<<intro-themes-mosaic-redo>>=
 trellis.par.set(theme=col.mosaic())       # back to the mosaic theme
 trellis.par.set(fontsize=list(text=9))    # and back to a larger font 
 @
@@ -890,18 +892,18 @@ occupational status, region of residence and union membership.
 head(CPS85, 3)
 @
 
-\subsubsection{Calculating Frequency and Contingency Tables from Data}
+\newthought{Calculating Frequency and Contingency Tables from Data}
 Categorical variables are  often summarized in a table.  
 \R\ can make a table for a categorical variable using \function{tally()}.
 
-<<table1>>=
+<<intro-table1>>=
 tally(~ race, CPS85)
 tally(~ sector, CPS85)
 @
 
 If we prefer to have the results presented as proportions or percents, we 
 just have to ask.
-<<table2>>=
+<<intro-table2>>=
 tally( ~ sector, CPS85, format='perc')
 tally( ~ sector, CPS85, format='prop')
 @
@@ -910,7 +912,7 @@ Alternatively, we can use \verb!table()!, \verb!proptable()!, and
 \verb!perctable()!  to make tables of counts, proportions, or percentages.
 
 
-%\subsubsection{Cross-Tabulation with \texttt{xtabs()}}
+%\newthought{Cross-Tabulation with \texttt{xtabs()}}
 We can make a \term{cross-table} 
 (also called a \term{contingency table} or a \term{two-way table}) 
 summarizing this data with \function{tally()}.  
@@ -918,7 +920,7 @@ This is often a useful view of
 data with two categorical variables.
 
 
-<<xtabs>>=
+<<intro-xtabs>>=
 tally(~ race & sector, CPS85)   # 2-way cross-table
 @
 Alternatively, we can select one of our categorical variables to be 
@@ -928,20 +930,20 @@ tally(~ race | sector, CPS85)   # conditional on sector
 tally(~ sector | race, CPS85)   # conditional on race
 @
 
-\subsubsection*{Entering Tables by Hand}
+\newthought{Entering Tables by Hand}
 
 Because categorical data is so easy to summarize in a table, 
 often the frequency or contingency tables are given instead.
 You can enter these tables manually as follows:
 
 
-<<make-table>>=
+<<intro-make-table>>=
 myrace <- c( NW=67, W=467 )       # c for combine or concatenate
 myrace
 @
 
 \label{R:make-xtabs}%
-<<make-xtabs>>=
+<<intro-make-xtabs>>=
 mycrosstable <- rbind(               
   NW = c(clerical=15, const=3, manag=6,  manuf=11, other=5,  prof=7, sales=3, service=17),
   W  = c(82,17,49,57,63,98,35,66)    
@@ -954,21 +956,21 @@ column-wise instead.
 
 \subsection{Graphing Categorical Data}
 
-%\subsubsection{Bar charts and pie charts}
+%\newthought{Bar charts and pie charts}
 %We won't use these plots often, in part because summary tables are already a good
 %way to understand the data.  
 The \pkg{mosaic} function \function{bargraph()} can 
 display these tables as bar graphs.
-<<bargraph1a>>=
+<<intro-bargraph1a>>=
 bargraph(~ sector, CPS85, scales=list(x=list(rot=45)))
 @
-<<bargraph2a>>=
+<<intro-bargraph2a>>=
 bargraph(~ sector, CPS85, horizontal=TRUE)  # horizontal bars
 @
 
 As with the other lattice plots, we can add grouping or conditioning to 
 our plot.
-<<bargraph3a>>=
+<<intro-bargraph3a>>=
 bargraph(~ sector, CPS85, groups=race, scales=list(x=list(rot=45)))
 bargraph(~ sector | race, CPS85, scales=list(x=list(rot=45)))
 @
@@ -978,7 +980,7 @@ of one categorical variable,  mosaic plots can do the same for cross tables.
 \function{mosaic()} (from the \pkg{vcd} package) is not a \pkg{lattice} plot, 
 but it does use a similar formula interface.  
 
-<<mosaic1,fig.width=4,fig.height=2>>=
+<<intro-mosaic1,fig.width=4,fig.height=2>>=
 require(vcd)                         # load the visualizing categorical data package
 mosaic(~ sex + union, CPS85)
 @
@@ -991,7 +993,7 @@ the \pkg{mosaic} package, they just happen to share the same name.}%
 
 
 Alternatively, we can send \function{mosaic()} the output of \function{xtabs()}:
-<<mosaic2,fig.keep="none">>=
+<<intro-mosaic2,fig.keep="none">>=
 mosaic(xtabs(~ sex + union, CPS85))  # non-whites are more likely to be unionized
 @
 \FoodForThought{Neither \function{mosaic()} nor the similar \function{mosaicplot()}
@@ -1002,7 +1004,7 @@ both tend to look bad if the levels of the variables have long names.
 
 Or we can send our own hand-made table (although the output isn't quite as nice without some
 extra effort we won't discuss just now):
-<<mosaic3,fig.width=6,fig.height=2.5,eval=FALSE>>=
+<<intro-mosaic3,fig.width=6,fig.height=2.5,eval=FALSE>>=
 mosaic(mycrosstable)
 @
 
@@ -1017,7 +1019,7 @@ divided by the number of days in the billing cycle.
 \begin{enumerate}
 \item
 Make a scatter plot of \dfn{gasbillpday} vs. \dfn{monthsSinceY2K} using the command
-<<gasbill,fig.keep="none">>=
+<<intro-gasbill,fig.keep="none">>=
 xyplot(gasbillpday ~ monthsSinceY2K, data=Utilities2, type='l')   # the letter l
 @
 \item[]
@@ -1089,7 +1091,7 @@ Bar graphs can also be used to display two-way tables.
 %the cross-table to a data frame.
 %Then we can use this data frame for plotting.
 
-<<barchart3aa>>=
+<<intro-barchart3aa>>=
 bargraph(~ sector, groups=race, data=CPS85)
 @
 
@@ -1107,7 +1109,7 @@ It usually doesn't matter which you use, unless you want one or the other type o
 quotation mark \emph{inside} your text.  Then you should use the other type of 
 quotation mark to mark the beginning and the end.
 
-<<quotes>>=
+<<intro-quotes>>=
 text1 <- "Mary didn't come"            # apostrophe inside requires double quotes around text
 text2 <- 'Do you use "scare quotes"?'  # this time we flip things around
 @
@@ -1116,7 +1118,7 @@ If you omit quotes, you will often see error messages telling you that \R\ can't
 an object because \R\
 will look for a function, data set or other object with that name instead of treating
 your text as text.
-<<noquotes-error,error=TRUE>>=
+<<intro-noquotes-error,error=TRUE>>=
 text3 <- blah
 @
 
@@ -1124,7 +1126,7 @@ text3 <- blah
 
 Functions in \R\ use the following syntax:
 
-<<"function-syntax-template",eval=FALSE>>=
+<<"intro-function-syntax-template",eval=FALSE>>=
 functionname( argument1, argument2, ... )
 @
 \vspace{-5mm}
@@ -1144,7 +1146,7 @@ If you use names, you can give the arguments out of order.
 The following do the same thing,
 %\end{itemize}
 
-<<argument-order-good,eval=FALSE>>=
+<<intro-argument-order-good,eval=FALSE>>=
 xyplot(Sepal.Length ~ Sepal.Width, data=iris, groups=Species)
 xyplot(Sepal.Length ~ Sepal.Width, iris, groups=Species)
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, iris)
@@ -1154,7 +1156,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species, iris)
 But these do not work
 %\end{itemize}
 
-<<argument-order-bad,eval=FALSE>>=
+<<intro-argument-order-bad,eval=FALSE>>=
 xyplot(Sepal.Length ~ Sepal.Width, Species, iris)
 xyplot(Sepal.Length ~ Sepal.Width, iris, Species)
 @

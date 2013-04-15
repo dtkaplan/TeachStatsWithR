@@ -19,8 +19,8 @@ require(knitr)
 # Change to the directory, e.g. "Starting"
 setwd("Starting") # go to your own directory
 standAlone=TRUE
-fnames <- list.files(pattern="*.Rnw") # files to recompile
-for (k in fnames) knit(k)
+fnames <- list.files(pattern="*.Rnw$") # files to recompile
+for (fnm in fnames) knit(fnm)
 ```
 
 ### Outline

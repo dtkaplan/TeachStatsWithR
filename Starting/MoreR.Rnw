@@ -1,7 +1,9 @@
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
-opts_chunk$set( fig.path="figure/MoreR-fig-" ) 
-if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
+opts_chunk$set( fig.path="figures/MoreR-" ) 
+if (!exists("..makingMaster..")) {
+	set_parent('Master-Starting.Rnw')
+}
 set.seed(123)
 @
 
@@ -132,9 +134,9 @@ we won't cover this here).
 %section we present a few ``\R\ extras'' related to the material we have 
 %covered so far.  The material is organized by the packages involved.
 
-%\subsubsection*{\texttt{mosaic}}
+%\newthought{\texttt{mosaic}}
 
-%\subsubsection*{\texttt{Hmisc}}
+%\newthought{\texttt{Hmisc}}
 
 \section{Some Workflow Suggestions}
 \label{sec:scripts}
@@ -147,7 +149,7 @@ In short: \emph{Think like a programmer.}
 \smallskip
   You can execute all the code in a file using 
 
-<<source,eval=FALSE>>=
+<<mr-source,eval=FALSE>>=
 source("file.R") 
 @
 \Rstudio\ has options for executing some or all lines in a file, too. 
@@ -233,7 +235,7 @@ Simply replace the file name with a URL.
 The data read below come from \cite{Tufte:2001:Visual}.
 \authNoted{Check citation for Tufte.}%
 
-<<read-table>>=
+<<mr-read-table>>=
 # need header=TRUE because there is a header line.
 # could also use read.file() without header=TRUE
 traffic <- 
@@ -309,7 +311,7 @@ myData2 <- scan(what="character")
 myData2
 \end{Rcode}
 
-<<scan-prep,echo=FALSE>>=
+<<mr-scan-prep,echo=FALSE>>=
 myData1 <- c(15, 18, 12, 21, 23, 50, 15)
 myData2 <- c("red","red","orange","green","blue","blue","red")
 @
@@ -323,7 +325,7 @@ Otherwise you will have to type it again.
 The \function{scan()} function puts data into a \rterm{vector}, not a \rterm{data frame}.  We can
 build a \rterm{data frame} for our data as follows.
 
-<<dataframe>>=
+<<mr-dataframe>>=
 myDataFrame <- data.frame(color=myData2, number=myData1)
 myDataFrame
 @
@@ -350,7 +352,7 @@ describing this type of manipulation.
 
 The following code shows a number of ways to generate data systematically.
 
-<<generatingData01>>=
+<<mr-generatingData01>>=
 x <- 5:20; x                 # all integers in a range
 # structured sequences
 seq(0, 50, by=5)               
@@ -362,7 +364,7 @@ c(1:5, 10, 3:5)              # c() concatenates vectors
 
 \R\ can also sample from several different distributions.
 
-<<generatingData02>>=
+<<mr-generatingData02>>=
 rnorm(10, mean=10, sd=2)  # random draws from normal distribution
 x <- 5:20                 # all integers in a range
 sample(x, size=5)         # random sample of size 5 from x (no replacement)
@@ -383,7 +385,7 @@ See Section~\ref{sec:DiscreteDistributions} for more information.
 \function{write.table()} and \function{write.csv()} can be used to save data from \R\ into
 delimited flat files.
 
-<<writingData>>=
+<<mr-writingData>>=
 ddd <- data.frame(number=1:5, letter=letters[1:5])
 args(write.table)
 write.table(ddd, "ddd.txt")
@@ -406,7 +408,7 @@ Data can also be saved in native \R\ format.  Saving data sets
 \end{itemize}
 The downside is that these files are only readable in \R.
 
-<<savingData,exec=FALSE,echo=TRUE>>=
+<<mr-savingData,exec=FALSE,echo=TRUE>>=
 abc <- "abc"
 ddd <- data.frame(number=1:5, letter=letters[1:5])
 save(ddd, abc, file="ddd.rda")   # saves both objects in a single file
@@ -440,17 +442,17 @@ by all objects are \rterm{mode} and \rterm{length}.
 \Rindex{attr()}%
 \Rindex{[ ]}%
 
-<<mode01-defs>>=
+<<mr-mode01-defs>>=
 w <- 2.5; x <- c(1,2); y <- "foo"; z <- TRUE; abc <- letters[1:3]
 @
 
-<<mode01>>=
+<<mr-mode01>>=
 mode(w); length(w)
 mode(x); length(x)
 mode(y); length(y)
 @
 
-<<mode01a>>=
+<<mr-mode01a>>=
 y[1]; y[2]             # not an error to ask for y[2]
 mode(z); length(z)
 abc
@@ -501,7 +503,7 @@ This has some important consequences:
   These functions also have named arguments, so you can see code like the following
 \end{itemize}
 
-<<"bracket-function">>=
+<<mr-bracket-function>>=
 xm <- matrix(1:16, nrow=4); xm
 xm[5]
 xm[,2]                   # this is 1 dimensional (a vector)
@@ -529,7 +531,7 @@ obtained using \verb!nrow()! and \verb!ncol()!.
 \Rindex{attr()}%
 \Rindex{attributes()}%
 
-<<attributes>>=
+<<mr-attributes>>=
 ddd <- data.frame(number=1:5, letter=letters[1:5])
 attributes(ddd)
 @
@@ -548,7 +550,7 @@ row.names(ddd)
 
 \R\ provides a number of functions for testing the mode or class of an object.
 
-<<whatIsThis>>=
+<<mr-whatIsThis>>=
 mode(xm); class(xm)
 c(is.numeric(xm), is.character(xm), is.integer(xm), is.logical(xm))
 c(is.vector(xm), is.matrix(xm), is.array(xm))
@@ -566,7 +568,7 @@ something else, it will often try to \rterm{coerce} the object to meet
 its expectations.  You
 can also coerce things manually using one of the many &as.???()& functions.
 
-<<asYouLikeIt>>=
+<<mr-asYouLikeIt>>=
 apropos("^as\\.")[1:10]      # just a small sample
 xm
 # convert numbers to strings (this drops attributes, including dimension)
@@ -619,7 +621,7 @@ Most traditional mathematics functions are available and work this way.
 \Rindex{median()}%
 \Rindex{log()}%
 
-<<vectors01>>=
+<<mr-vectors01>>=
 x <- 1:5; y <- seq(10, 60, by=10); z <- rnorm(10); x; y
 y + 1
 x * 10
@@ -636,7 +638,7 @@ This can facilitate side-by-side comparisons.
 \Rindex{round()}%
 \Rindex{signif()}%
 
-<<vectors01a>>=
+<<mr-vectors01a>>=
 # compare round() and signif() by binding rowwise into matrix
 rbind(round(z, digits=2), signif(z, digits=2))   
 @
@@ -649,20 +651,20 @@ are designed to work on the vector as a vector.  Often these
 return a single value (technically a vector of length~1), but
 other return types are used as appropriate.
 
-<<vectors02>>=
+<<mr-vectors02>>=
 x <- 1:10; z <- rnorm(100)
 mean(z); sd(z); var(z); median(z)  # basic statistical functions
 range(z)                           # range returns a vector of length 2
 sum(x); prod(x)                         # sums and products
 @
 
-<<vectors02a>>=
+<<mr-vectors02a>>=
 z <- rnorm(5); z
 sort(z); rank(z); order(z)              # sort, rank, order
 rev(x)                                  # reverse x
 @
 
-<<vectors02b>>=
+<<mr-vectors02b>>=
 diff(x)                                 # pairwise differences
 cumsum(x)                               # cumulative sum
 cumprod(x)                              # cumulative product
@@ -762,7 +764,7 @@ Some additional useful functions are included in Table~\ref{table:useful-functio
 When vectors operate on each other, the operation is done componentwise, 
 recycling the shorter vector to match the length of the longer.
 
-<<vectors03>>=
+<<mr-vectors03>>=
 x <- 1:5; y <- seq(10, 70, by=10)
 x + y
 @
@@ -781,7 +783,7 @@ elements of a vector that combine the ideas above.
 First, recall that the &[ ]& operator is actually a function.
 Furthermore, it is vectorized.
 
-<<vectors04a>>=
+<<mr-vectors04a>>=
 x <- seq(2, 20, by=2)
 x[1:5]; x[c(1, 4, 7)]
 @
@@ -790,7 +792,7 @@ x[1:5]; x[c(1, 4, 7)]
 The boolean values (recycled, if necessary)
 are used to select or deselect elements of the vector.
 
-<<vectors04b>>=
+<<mr-vectors04b>>=
 x <- seq(2, 20, by=2)
 x[c(TRUE, TRUE, FALSE)]      # skips every third element (recycling!)
 x[x > 10]                    # more typical use of boolean in selection
@@ -799,7 +801,7 @@ x[x > 10]                    # more typical use of boolean in selection
 \noindent
 Negative indices are used to omit elements.
 
-<<vectors04c>>=
+<<mr-vectors04c>>=
 x <- seq(2, 20, by=2)
 x[c(TRUE,TRUE,FALSE)]        # skips every third element (recycling!)
 x[x > 10]                    # more typical use of boolean in selection
@@ -810,7 +812,7 @@ Here are some more examples.
 \Rindex{toupper()}%
 \Rindex{tolower()}%
 
-<<vectors04d>>=
+<<mr-vectors04d>>=
 notes <- toupper(letters[1:7]); a <- 1:5; b <- seq(10, 100, by=10)
 toupper(letters[5:10])                
 paste(letters[1:5], 1:3, sep='-')
@@ -832,15 +834,15 @@ table(a+b > 50)
 \subsection{Adding new variables to a data frame}
 We can add additional variables to an existing data frame by simple assignment.
 
-<<"adding-variable2">>=
+<<mr-adding-variable2>>=
 head(iris)
 @
 
-<<"adding-variable">>=
+<<mr-adding-variable>>=
 iris$SLength <- cut(iris$Sepal.Length, 4:8)    # cut places data into bins
 @
 
-<<"adding-variable2-again">>=
+<<"mr-adding-variable2-again">>=
 head(iris)
 @
 \Rindex{summary()}
@@ -910,7 +912,7 @@ names(faithful) <- c('duration', 'time.til.next')
 head(faithful, 3)
 @
 \begin{center}
-<<"faithful-xy">>=
+<<"mr-faithful-xy">>=
 xyplot(time.til.next ~ duration, faithful)
 @
 \end{center}
@@ -947,7 +949,7 @@ CPS85[1,1:4]
 We can also use \function{subset()} to reduce the size of a data set by selecting 
 only certain rows.
 \begin{center}
-<<"faithful-long-xy">>=
+<<"mr-faithful-long-xy">>=
 data(faithful)
 names(faithful) <- c('duration', 'time.til.next')
 # any logical can be used to create subsets
@@ -966,10 +968,22 @@ xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
 \authNote{NH: need to flesh out}
 \subsection{Creating variables}
 
+<<>>=
 HELP$newsex <- factor(HELP$female, labels=c('M','F'))
-\subsubsection{character variables}
-\subsubsection{coercing variables}
-\subsubsection{recoding variables}
+@
+
+\newthought{character variables}
+
+spacer 
+
+\newthought{coercing variables}
+
+spacer
+
+\newthought{recoding variables}
+
+spacer
+
 \subsection{Accounting for missing data}
 
 \subsection{Merging datasets}
@@ -1003,7 +1017,7 @@ should be kept (\code{TRUE}) or dropped
 (filling in \code{NA} as needed) or dropped from the merged data frame.
 
 Now we are ready to begin our analysis.
-<<"fusion1-xtabs">>=
+<<"mr-fusion1-xtabs">>=
 xtabs(~t2d + genotype + marker, fusion1m)
 @
 
@@ -1038,7 +1052,7 @@ long form because of a change in perspective about what a unit of
 observation is.  For example, in the \dfn{traffic} data frame, each 
 row is a year, and data for multiple states are provided.
 
-<<"traffic-reshape">>=
+<<"mr-traffic-reshape">>=
 traffic
 @
 We can reformat this so that each row contains a measurement for a 
@@ -1069,12 +1083,12 @@ to \verb!reshape()!.
 
 %\subsection{Simple Relational Database Operations}
 %
-%\subsubsection*{Example: Grades/Courses}
+%\newthought{Example: Grades/Courses}
 %
 %Using the grade/courses database, show how to combine data from
 %different data frames. [DTK]
 
-%\subsubsection{Example: Merging Genotype and Phenotype Data}
+%\newthought{Example: Merging Genotype and Phenotype Data}
 %\label{example:fusion1-glm1}%
 %\myindex{FUSION|exampleidx}%
 %\myindex{logistic regression}%
@@ -1140,7 +1154,7 @@ types.}
 Here is how we could define it:
 \Rindex{favstats()}%
 
-<<defFun01>>=
+<<mr-defFun01>>=
 favstats <- function(x) {
     mean(x)
     median(x)
@@ -1164,7 +1178,7 @@ version of &sd()&.  That isn't really what we wanted.
 
 We can use &print()& to print out things along the way if we like.
 
-<<defFun02>>=
+<<mr-defFun02>>=
 favstats <- function(x) {
     print(mean(x))
     print(median(x))
@@ -1179,7 +1193,7 @@ would give us more control over how the output is displayed.
 \Rindex{cat()}%
 \Rindex{paste()}%
 
-<<"defFun02-cat">>=
+<<"mr-defFun02-cat">>=
 altfavstats <- function(x) {
     cat(paste("  mean:", format(mean(x),4),"\n"))
     cat(paste(" edian:", format(median(x),4),"\n"))
@@ -1191,7 +1205,7 @@ Either of these methods will allow us to see all three values,
 but if we try to store them \dots
 \authNote{Talk about \function{paste()} some more somewhere?}%
 
-<<defFun02a>>=
+<<mr-defFun02a>>=
 temp <- favstats((1:20)^2)
 temp
 @
@@ -1206,7 +1220,7 @@ store all three in a vector and return the vector.%
 \footnote{If the values had not all been of the same mode, we 
 could have used a list instead.}
 
-<<defFun03>>=
+<<mr-defFun03>>=
 favstats <- function(x) {
 	c(mean(x), median(x), sd(x))
 }
@@ -1218,7 +1232,7 @@ While we're at it, let's add a few more favorites to the list.
 We'll also add an explicit &return()&.
 \Rindex{return()}%
 
-<<defFun04>>=
+<<mr-defFun04>>=
 favstats <- function(x) {
     result <- c(min(x), max(x), mean(x), median(x), sd(x))
     names(result) <- c("min","max","mean","median","sd")

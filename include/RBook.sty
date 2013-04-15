@@ -1,38 +1,40 @@
-\documentclass[open-any,12pt]{tufte-book}
-\setcounter{secnumdepth}{3}
-\usepackage{import}
-\usepackage{graphicx}
 
-\usepackage{alltt}
-\usepackage{mparhack}
-\usepackage{xstring}
+\ProvidesPackage{RBook}[2013/04/04 Mosaic R Books style]
 
-\usepackage{etoolbox}
-\usepackage{multicol}
-\usepackage{xcolor}
-\usepackage{framed}
-\usepackage{hyperref}
-%%%%%%%%%%%% Things Danny omitted %%%%%%%%%%%%%%%%%%%%%
-\usepackage{fancyhdr}
+\makeatletter
+\def\IfClass#1#2#3{\@ifundefined{opt@#1.cls}{#3}{#2}}
+\makeatother
+\IfClass{tufte-book}{\setcounter{secnumdepth}{3}}{\relax}
 
-%\newdimen\Rwidth
-%\Rwidth=\textwidth
+\RequirePackage{import}
+\RequirePackage{graphicx}
+\RequirePackage{alltt}
+\RequirePackage{mparhack}
+\RequirePackage{xstring}
 
-%\usepackage[margin=.5in,outer=1.5in,inner=.9in,includehead,includefoot,paperwidth=7.25in,paperheight=9.5in]{geometry}
-\usepackage{probstat}
-\usepackage[shownotes]{authNote}
-% \usepackage[hidenotes]{authNote}
-\usepackage[answerdelayed,exercisedelayed,lastexercise,chapter]{problems}
-\usepackage{longtable}
-\usepackage{language}
+\RequirePackage{etoolbox}
+\RequirePackage{multicol}
+\RequirePackage{xcolor}
+\RequirePackage{framed}
+\RequirePackage{hyperref}
+\RequirePackage{fancyhdr}
 
-\usepackage{tikz}
+\RequirePackage{probstat}
+\RequirePackage[shownotes]{authNote}
+% \RequirePackage[hidenotes]{authNote}
+\RequirePackage[answerdelayed,exercisedelayed,lastexercise,chapter]{problems}
+\RequirePackage{longtable}
+\RequirePackage{language}
+
+\RequirePackage{tikz}
 \usetikzlibrary{shadows}
 \usetikzlibrary{decorations}
 \usetikzlibrary{shapes.multipart}
 \usetikzlibrary{shapes.symbols}
 \usetikzlibrary{shapes.misc}
 \usetikzlibrary{shapes.geometric}
+
+\RequirePackage[utf8]{inputenc}
 
 \newcommand{\mymarginpar}[1]{%
 \vadjust{\smash{\llap{\parbox[t]{\marginparwidth}{#1}\kern\marginparsep}}}}
@@ -98,7 +100,6 @@
 %\centerline{\rule{5in}{.5pt}}
 }
 
-\usepackage[utf8]{inputenc}
 
 \newcounter{myenumi}
 \newcommand{\saveenumi}{\setcounter{myenumi}{\value{enumi}}}
@@ -163,7 +164,7 @@
 %%%
 \newcommand{\printindex}[1]{\relax}
 \newcommand{\indexchap}[1]{\relax}
-\usepackage{amsmidx}
+\RequirePackage{amsmidx}
 \newcommand{\exampleidx}[1]{{\it #1}}
 \newcommand{\defidx}[1]{{\bf #1}}
 \newcommand{\mainidx}[1]{{\bf #1}}
@@ -174,10 +175,13 @@
 \newcommand{\myindex}[1]{\index{mainIndex}{#1}}
 \newcommand{\mathindex}[1]{\index{mainIndex}{$#1$}}
 
+%%%% probably don't need this --rjp
+\makeatletter
+\newcommand\gobblepar{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepar\@gobble}%
+        {}}
+\makeatother
 
 \pagestyle{fancy}
 
-
-\begin{document}
-
-\end{document}

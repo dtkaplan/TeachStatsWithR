@@ -2,3 +2,14 @@
 .Rhistory
 .RData
 TeachStatsWithR.Rproj
+*~
+*.bk
+*.notes
+*.idx
+*.toc
+*.ilg
+*.ind
+framed.sty
+*.out
+*.fls
+*_latexmk

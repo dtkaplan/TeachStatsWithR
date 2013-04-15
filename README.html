@@ -193,9 +193,9 @@ hljs.initHighlightingOnLoad();
 <pre><code class="r">require(knitr)
 # Change to the directory, e.g. &#39;Starting&#39;
 setwd(&quot;Starting&quot;)  # go to your own directory
-notAsStandAlong = TRUE
-fnames &lt;- list.files(pattern = &quot;*.Rnw&quot;)  # files to recompile
-for (k in fnames) knit(k)
+standAlone = TRUE
+fnames &lt;- list.files(pattern = &quot;*.Rnw$&quot;)  # files to recompile
+for (fnm in fnames) knit(fnm)
 </code></pre>
 
 <h3>Outline</h3>
