@@ -29,7 +29,7 @@ options(na.rm=TRUE)
 @
 
 
-\chapter{Graphics, Formulas, \& Statistics}
+\chapter{Graphics \& Formulas}
 
 \marginnote{\texttt{require(mosaic)}\\
 The R system provides a way for the software development community to add new functionality.  "Packages" are the standard way to deliver such software.  
@@ -74,7 +74,7 @@ In R notation, a \newword{formula} is an expression involving the \verb+~+ squig
 
 There's more going on here than just identifying which variable gets plotted on each axis: the formula in R provides a {\em modeling language} that gives an easy path from basic graphics and basic statistics to multivariable modeling.  The path is easy enough that it makes sense to start in that direction early: using the concepts, terminology, and techniques of modeling as a way of introducing statistics.  Here is what such a journey might look like.
 
-\section{Formulas and Basic Statistics}
+\section{Formulas \& Basic Statistics}
 
 
 
@@ -268,7 +268,8 @@ f1(projectileWt=51)-f1(projectileWt=50)
 @
 But for \texttt{mod2} (translated into function \function{ballistic}) the change in distance is much less, as already seen:
 <<tidy=FALSE>>=
-ballistic(projectileWt=50,counterWt=2) - ballistic(projectileWt=50,counterWt=1)
+ballistic(projectileWt=50,counterWt=2) - 
+  ballistic(projectileWt=50,counterWt=1)
 @
 
 That the two functions give different answers can be confusing to students.  The difference comes about because the \function{ballistic} function allows you to hold the counter-weight constant while changing the projectile weight.  This is, of course, completely natural --- you can change the projectile weight without changing the counter-weight.  But the experiment happened to be done in such a way that only the lightest projectiles were used with the heaviest counterweights.  
@@ -308,1061 +309,249 @@ The two-variable model also provides a more reliable prediction:
 f1( projectileWt=50, interval="prediction")
 ballistic( projectileWt=50,counterWt=2, interval="prediction")
 @
-Notice how much narrower the prediction interval is for the two variable model.  
+Notice how much narrower the prediction interval is for the two-variable model compared to the one-variable model.  
 
+\chapter{Functions with Categorical Variables}
 
-\subsection{Functions of categorical variables (rename this)}
-
-HERE, I'm going to go back to the groupwise means and show that you can construct a function that works for a categorical input.
-
-\subsection{Combinations of categorical and quantitative variables}
-
-BASICALLY, the swimming data example.  I'll use the Galton height data.
-
-\section{NOTES for the REST}
-
-As it happens, the values produced by \texttt{f1} coincide directly with the values produced by \function{mean}.  This suggests another way to think about means is as a way of describing relationships, not just a way to summarize a variable.
-
- \marginnote{In this example, the input to the function is a category.  The possible values of a categorical variable --- the levels --- are often denoted in R as quoted character strings, \texttt{"foose"} and \texttt{"golf"} in the \texttt{trebuchet} data, standing for a fooseball and a golf ball.} For instance, you can ask what is the model function's value for each level of the explanatory variable \VN{object}.
-<<>>=
-f1(object="foose")
-f1(object="golf")
+In terms of notation, there's not much difference between these two statements:
+<<echo=FALSE>>=
+print.lm <- function(x) coef(x) # for nicer printing for lm.
 @
 
-For example, here's a function that says the golf balls go 300 cm, foose balls 500, tennis balls 100 and washers 300.
+<<results="hide",tidy=FALSE>>=
+vals = mean(distance~object,data=trebuchet)
+mod  =   lm(distance~object,data=trebuchet)
+@
+
+The first calculates the groupwise means of \VN{distance}, with the groups defined by \VN{object}.
 <<>>=
-f2 = makeFun( switch(object,"golf"=300,"foose"=500,
+vals = mean(distance~object,data=trebuchet)
+vals
+@
+
+The second statement fits a model that accounts for the variation in \VN{distance} by the variation in \VN{object}:
+<<>>=
+mod3 = lm(distance~object,data=trebuchet)
+mod3
+@
+As it happens, the model values from \texttt{mod} coincide directly with the values produced by \function{mean}. To see this, extract the function from the model:
+<<>>=
+g1 = makeFun(mod3)
+g1("foose")
+g1("golf")
+g1("tennis ball")
+@
+
+It may seem odd to your students that a word (or \newword{character string}) can be used as the input to a function.  Remind them that a function is a machine that takes one or more inputs and produces an output.  There's no requirement that the inputs be numbers.
+
+The function \function{g1} can be used to calculate a model value for each case in the \texttt{trebuchet} data and, from that, the residuals:
+<<>>=
+trebuchet = transform(trebuchet,
+                      g1resids = distance-g1(object))
+@
+The size of the residuals can be described, as always, by their standard deviation:
+<<>>=
+sd(g1resids, data=trebuchet)
+@
+
+To see what's special about the model values here --- that is, why the groupwise mean is special --- construct another function that assigns a specific value to each group.  For example, here's a function that says the golf balls go 300 cm, foose balls 500, tennis balls 100 and washers 300.
+<<>>=
+g2 = makeFun( switch(object,"golf"=300,"foose"=500,
                      "tennis ball"=100,"big washerb"=300, NA) ~ object)
 @
-This is not the traditional form for a function.  The function \texttt{f2} takes an input \texttt{object} and compares it to the names of the different kinds of balls.  It returns the associated value (or \texttt{NA} if there is no associated value), for instance:
+This is not the traditional form for a function.  The function \texttt{g2} takes an input \texttt{object} and compares it to the names of the different kinds of balls.  It returns the associated value (or \texttt{NA} if there is no associated value), for instance:
 <<>>=
-f2("tennis ball")
-f2("golf")
-f2("football") 
+g2("foose")
+g2("golf")
+g2("tennis ball")
 @
 
-With two model functions, \texttt{f1} and \texttt{f2}, a natural question is: Which is better?
+Which gives a better description of the distances flown by the various objects, \function{g1} or \function{g2}?  As previously, you can find the residuals from this model and compare them to the residuals from \function{g1}.
 
-One way to define ``better'' is to say that the better model is closer to the data, where closer refers to the difference between the function output and the observed value for each case.  First, find the function output for each of the candidate model functions:
-<<tidy=FALSE>>=
-trebuchet = transform(trebuchet, 
-                      f1val=f1(object), 
-                      f2val=f2(object))
-@
-
-Now, compute the typical difference between the model value and the observed value.  In order that positive differences not cancel out negative differences, you can find the mean square difference:
+The function \function{g2} takes just a single character string.  To allow it to work on a vector of character strings, you can \newword{vectorize} it:\AuthNote{Any way to avoid this?}
 <<>>=
-mean((width-f1val)^2,data=KidsFeet)
-mean((width-f2val)^2,data=KidsFeet)
+g2 = Vectorize(g2)
 @
 
-Evidently, \texttt{f1} is closer than \texttt{f2}.  It's worthwhile to construct new candidate functions, like \texttt{f2} to show that they {\bf never} have a smaller mean square difference than \texttt{f1}.
-
-Why square instead of taking the absolute value?  That's another subject.  But to play with it, construct the model function where the value is the median of each group.  That function will have a mean absolute value of differences that is as small as any other possible function.
-<<>>=
-median(width~sex,data=KidsFeet)
-f3 = listFun("B"=9.15,"G"=8.80)
-KidsFeet = transform(KidsFeet,f3val=f3(sex))
-mean(abs(width-f1val),data=KidsFeet)
-mean(abs(width-f2val),data=KidsFeet)
-mean(abs(width-f3val),data=KidsFeet)
-@
-Notice that \texttt{f3} is best according to the absolute-value criterion, but only by a little bit.  Using the mean-square criterion, \texttt{f3} is not as good as \texttt{f1}, again, only by a little bit.
 
 <<>>=
-mean((width-f1val)^2,data=KidsFeet)
-mean((width-f3val)^2,data=KidsFeet)
+trebuchet = transform(trebuchet,
+                      g2resids = distance-g2(object))
+sd(g1resids,data=trebuchet)
+sd(g2resids,data=trebuchet)
 @
 
+\chapter{From $r$ to $R^2$}
 
+A traditional introductory statistics course will present the correlation coefficient as a way to describe the relationship between two quantitative variables.  As you know, the correlation coefficient is a number between $-1$ and $1$.  A value of $r=0$ means no correlation, a value of $r=1$ means perfect correlation, as does $r=-1$.
 
-ASIDE: Do the grand mean.  It's not so easy to think about what the input is.  There is no input.  In this sense, groupwise means are easier to conceive of than grand means.
+As a way of describing relationships among variables, $r$ is not as useful as it might be.  It doesn't handle multiple explanatory variables.  It doesn't handle models with categorical variables.  It doesn't handle nonlinear relationships.
 
-\section{Accounting for Variance}
+On the other hand, $R^2$ is much more generally useful.  If you are teaching modeling, it makes  sense to introduce $R^2$ as early as possible.  The way to do this is {\bf not} to treat $R^2$ as the square of $r$.  Such a development inherits all the deficiencies of $r$.  Instead, go back to a basic question: How does the model account for the variation in the response variable.
 
-There's case-to-case variation in the response variable, in this example, that being the kids' foot widths.  By modeling foot width with explanatory variariables, you're accounting for some of the variation in the response with variation in the explanatory variables.  This can be quantified in useful ways.
-
-One way to measure the variation in the response is with the variance statistic:
+Earlier, the standard deviation was used as a way to quantify the size of residuals.  Let's use it now to quantify the size of variation in the response variable.  For the \VN{distance} variable in the \texttt{trebuchet} data, this is:
 <<>>=
-var(~width,data=KidsFeet)
+sd(distance,data=trebuchet)
 @
-The model accounts for some of this variance.  The amount that's accounted for is given by the variance of the model values:
+Now consider the size of the variation in the model values from the various models we have fitted --- \texttt{mod1}, \texttt{mod2}, and \texttt{mod3} from which were extracted the model functions \function{f1}, \function{ballistic}, and \function{g2}:
 <<>>=
-var(~f1(sex),data=KidsFeet)
+sd(f1(projectileWt),data=trebuchet)
+sd(ballistic(projectileWt,counterWt),data=trebuchet)
+sd(g1(object),data=trebuchet)
 @
-Notice that this isn't the variance of the explanatory variables here; it's the variance in the output of the model function when case-by-case values of the explanatory variables are used as the inputs.
+In every case, the size of variation in the fitted model values is {\bf less} than the size of the response variables.  Where's the rest of the variation?  In the residuals.
 
-Of course a model doesn't typically account for all the variance in the response.  The difference between the model values and the observed response is what the model has not accounted for, the residual.
+A fitted model \newword{partitions} variation between that accounted for by the model and that which remains unaccounted for.  Measure the variation accounted for using the variation in the fitted model values; measure the rest of the variation using the residuals.  For instance, for \texttt{mod1}:
 <<>>=
-var(~width-f1(sex),data=KidsFeet)
+sd(fitted(mod1))
+sd(resid(mod2))
 @
-
-The reason to use the variance to measure variation is that the variance \newword{partitions} variation.  Note that the variance of the observation is the sum of the variance of the model values and the variance of the residuals.  Think of this as splitting a whole into parts --- the observed variation breaks down into two parts: model values and residuals.
-
-A ratio provides a nice way to summarize how much of the variation in the response variable is accounted for by the model: the amount of variation in the model values divided by the amount in the observations.  This is called $R^2$.
+It would be nice if the two parts of the variation added up to the whole:
 <<>>=
-var(~f1(sex),data=KidsFeet)/var(width,data=KidsFeet)
+sd(distance,data=trebuchet)
+sd(fitted(mod1))+sd(resid(mod2))
 @
-This is such a common description of the fit of a model that \pkg{mosaic} provides a convenience function to calculate it directly from the model.
+Alas, that's not exactly true.  The reason, however, is that the standard deviation is not the natural statistic for measuring variation, even if it is the one used in introductory statistics.  Instead, use the square of the standard deviation --- the variance:
+<<>>=
+var(fitted(mod1))
+var(resid(mod1))
+var(distance,data=trebuchet)
+@
+Note that the sum of variances of the fitted model values and the residuals add up exactly to the variance of the response variable.  
+<<>>=
+var(fitted(mod1))+var(resid(mod1))
+@
+
+The situation here is analogous to one your students have encountered before: the Pythagorean theorem: $A^2 + B^2 = C^2$.  It's the square-length of the sides of a right triangle that add in a nice way, not the lengths themselves.  Similarly, the variances add in a nice way, not the standard deviations. 
+
+For more about the analogy between geometry and model fitting, see \cite{bock-velleman}, \cite{kaplan-fresh},\cite{saville}.
+
+The $R^2$ statistic on a model describes what fraction of the variance in the response variable is accounted for by a model.  You can calculate it directly:
+<<>>=
+var(fitted(mod1))/var(distance,data=trebuchet)
+@
+For convenience, you can extract the $R^2$ statistic directly from the model, just as you can extract the model function, the fitted values and residuals:
 <<>>=
 r.squared(mod1)
 @
 
-\chapter{Covariates}
+An important question is whether $R^2$ can be used to compare different model designs to decide which is best.  For instance, $R^2$ from the groupwise-mean model \texttt{mod3} is somewhat larger than for \texttt{mod1}:
+<<>>=
+r.squared(mod3)
+@
+Does this mean that \texttt{mod3} is better than \texttt{mod1}?  That will turn out to be a productive route to studying statistical inference.  But before heading in that direction, let's expand the set of models that students can build and interpret.
 
+\chapter{Combinations of categorical and quantitative variables}
 
-
-
-\section{Main Effects and Interaction Terms}
-
-\section{Models of Counts and Probabilities}
-
-Just using \function{lm} and it's equivalence to the Wald interval.
-
-Logistic regression versus $\chi^2$
-Odds ratios
-
-\section{Outline}
-
-Goals:
+So far, we've explored these sorts of models:
 \begin{itemize}
-\item Can be used as the comprehensive guide to the modeling language.
-\item Introduce some graphics: \function{bwplot}, \function{xyplot}
-\item Descriptive statistics done with the same language
-\item Tallying with the same language
-\item Generalize it to the building of models --- one variable
-\item \function{confint} and how to use it to explore what confidence intervals mean.
-\item Models with a continuous covariate
-\item \function{makeFun} and \function{plotFun}
+\item One quantitative explanatory variable.
+\item One categorical explanatory variable.
+\item Two quantitative explanatory variables.
 \end{itemize}
 
-\chapter{In DRAFT: Datasets}
+All of these sorts models were constructed with the same syntax and all of them fit into the same framework: explanatory and response variables, fitted model values, residuals, $R^2$.  The syntax and framework extend to more complicated models.  You can add in more explanatory variables using exactly the same syntax.
 
-`trebuchet` from \pkg{fastR}
+You can also add in \newword{interactions} among explanatory variables.
 
-`galton`
-
-`Saratoga-Houses`
-
-`Swim100m`
-
-`SAT`
-
-
-\section{}
-GRAPHICS WITH THE SAT DATA: lattice plot of SAT versus expenditure with facets for different levels of fraction.  Then put up the whole model as SAT versus expenditure with separate lines for each level for fraction.
-
-OUTLINE:
-\begin{enumerate}
-\item Group proportions: Use boolean variables.
-\item Confidence intervals.  Activity: verify that confidence intervals of a sample cover the true value.  In classroom, do this at a level of 50\%.  Show how to get the confidence intervals by resampling.
-\item ANOVA and sets of groups.
-\item Continuous explanatory variables.
-\item Confounders.
-\end{enumerate}
-
-
-
-
-One way to think of a regression model is as a mathematical function: it takes as inputs the value of  explanatory variable
-
-Transition to residuals, fitted model values, fitting.
-If you can master this notation, then you have much of what you need to construct models.
-
-MM and confidence intervals.
-
-LM and the change in meaning of coefficients: Intercept and change from reference.
-
-A news story (Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk,
-by Allison Aubrey, NPR - March 15, 2013) headlines that a daily habit of coffee or tea drinking cuts the risk of stroke by 20\%, according to a report in the American Heart Association journal {\em Stroke}.  The story, on National Public Radio, goes on to state:
-\begin{quotation}
-% ... recent studies have linked a regular coffee habit to a range of benefits — from a reduced risk of Type 2 diabetes to a protective effect against Parkinson's disease.
-
-It's interesting to note how much the thinking about caffeine and coffee has changed.
-
-In the 1980s, surveys found that many Americans were trying to avoid it; caffeine was thought to be harmful, even at moderate doses.
-
-One reason? Meir Stampfer of the Harvard School of Public Health says back then, coffee drinkers also tended to be heavy smokers. And in early studies, it was very tough to disentangle the two habits.
-
-``So it made coffee look bad in terms of health outcomes," says Stampfer.
-
-But as newer studies began to separate out the effects of coffee and tea, a new picture emerged suggesting benefits, not risks.
-
-Researchers say there's still a lot to learn here --- they haven't nailed down all the mechanisms by which coffee and tea influence our health. Nor have they ruled out that it may be other lifestyle habits among coffee and tea drinkers that's leading to the reduced risk of disease.
-\end{quotation}
-
-What do statistics students learn that equips them to understand this story?  Successful graduates of a mainstream introductory course would be able to identify smoking as a confounder and to ... p-value means something 82000 participants.
-
-* confounding
-* p-values on the study
-* separate out the confounding variables
-* but what to do about the "other lifestyle habits"?  How would they discover these? How would they assess them.
-
-SAT
-
-Saratoga Houses
-
-Eventually we want to get to multivariable, but when?  The answer to this question is changing, as the primary and secondary curriculum changes.  Whereas there used to be little or no statistics beyond ``mean-median-mode," the Common Core introduces a substantial statistical component to the quantitative/mathematical curriculum.
-
-
-
-Readers of a certain age may remember the 1960s television show {\em
-  Lost in Space}.  One of the characters, Robot, was often
-assigned guard duty.  Robot would march back and forth, just like a
-soldier on guard duty.
-
-But why?  Soldiers are ordered to march back and forth so that they
-won't fall asleep; walking forces them to maintain a certain attention
-to their duty.  The Robot has no such need; its sensors and circuits can reliably
-detect intruders without the marching.  Of course, the television
-viewers wouldn't know this about robots.  Using the robot in the
-manner of a soldier was a way to introduce new technology to people
-with old mind-sets.
-
-Now fast forward from the television of the 1960s to the classroom of
-the 21st century.  Students have computers.  They use statistical
-software packages to do calculations.  But what calculations are they
-doing?  Sample means, sample proportions, differences between means.
-
-This is Robot walking back and forth.  A way to use new technology with
-old mind-sets.  But it's the professors, not the students, with the
-old mind-sets.  The students are open to new things.  They don't need
-to know that, once upon a time, it was an impressive feat to get a machine to add
-up a column of numbers.
-\authNote{Add pointer to Conrad Wolfram's TED talk?}
-
-Most professors were educated at a time when the tools for inverting a
-matrix were paper and pencil, when doing least squares problem involved
-a strange thing called a ``pseudo-inverse'' that you might learn in
-your fourth or fifth semester of university-level mathematics.  But, now, least squares
-problems are no more difficult or time consuming to the human than
-square roots or addition.  We just have to learn to use the tools in
-the right way.  
-
-Or, rather, we have to show our students what are the
-basic operations that are important for statistical reasoning in an
-age of modern computation.  Not marching back and forth, like robot
-soldiers, computing sums of columns of numbers, but thinking about how to model the
-potentially rich interplay among multiple variables.
-
-The standard approach to introductory statistics is based on a few
-simple operations: adding, squaring, and square-rooting to finding means 
-and standard deviations; 
-counting to find proportions and medians/quantiles.  These operations are
-(supposed to be) familiar to students from high-school mathematics.
-
-Here we'll examine the consequences of adding in a new basic operation
-that is not in the traditional high-school curriculum, but which is
-actually quite consistent with the ``Common Core'' curriculum being
-introduced by many U.S. states \cite{common-core-2010}.
-\authNote{rjp: Fitting simple linear regression models, even with some transformations,
-using a TI-calculator seems to be a pretty standard component of junior
-and senior high school mathematics these days.}%
-
-
-The operation is fitting multivariable linear models.  Modern software
-makes it no more arduous than finding a mean or standard deviation.
-Our emphasis here will be on how to introduce the conceptual
-foundations --- using just high-school mathematics and simple extensions
-largely specified already in the ``Common Core'' --- that make the concept
-of modeling accessible.
-
-There are three important pedagogical advantages to using multivariable linear models
-as a foundation for statistics:
-\begin{enumerate}
-  \item It provides a logically coherent framework that unifies many
-    of the disparate techniques found in introductory statistics books.
-  \item It allows the very important ideas of confounding and
-    covariates to be introduced in an integrated way, showing students
-    not only the perils of confounding, but what to do about it (and
-    when you can't do anything).
-  \item It allows the examples used in classes to be drawn from a
-    richer set of situations, and provides scope for students to
-    express their creativity and insight.  This can increase student
-    motivation.
-\authNote{reference Gould paper and specific examples?}
-\end{enumerate}
-Of course, it's also important that modern statistical work is already
-and increasingly shaped by multivariable methods.  For an example of
-how over the last few decades statistical methods used in the
-literature have shifted away from the curriculum of the traditional,
-non-multivariable introductory course, see the review of statistics
-practices in the \emph{New England Journal of Medicine}. \cite{switzer-horton-2005}
-
-\section{The Mathematical Foundations}
-
-A standard part of the high-school curriculum is the equation of a
-straight line: $y = m x + b$.  Many students will recognize that $m$
-is a slope and $b$ is the $y$-intercept.  
-
-It's helpful to move them a bit beyond this:
-\authNote{rjp: I've made the list more parallel and separated out the imperative sentences.}%
-\begin{itemize}
-\item Emphasize the ``function'' concept.  
-	
-  A function, of course, is a
-  relationship between an input and an output.  Generalize this, so
-  that students are comfortable with using names other than $X$ as the
-  input and
-  $Y$ as the output.  For example, 
-  $$\mbox{height} = f(\mbox{age}) = 3\ \mbox{age} + 20$$.
-  
-\item Introduce the idea of functions of non-numeric variables. 
-	
-The average height may be different for men and women:
-$$\mbox{height} = g( \mbox{sex} ) = \left\{ \begin{array}{ll}
-      67 & \mbox{for sex $=$ female}\\
-      71 & \mbox{for sex $=$ male}\\
-      \end{array}\right.$$
-   
-\item Generalize the idea of a function to include having more than
-  one input.
-  
-Height may well depend on both age and sex:
-
-$$\mbox{height} = h( \mbox{age}, \mbox{sex} ) = -2 * \mbox{age} + 
-      \left\{ \begin{array}{ll}
-      67 & \mbox{for sex $=$ female}\\
-      71 & \mbox{for sex $=$ male}\\
-      \end{array}\right.$$
-
-\item  De-program your students from thinking that there is one, and
-  only one, correct formula for a relationship.  
-  
-  Introduce the idea of a function as a
-  description of a relationship and that there can be different descriptions of the same
-  relationship, all of which can be right in some ways.  Different
-  descriptions can include some details and exclude others. Such
-  descriptions are called ``models.''  The above models
-  $f(\mbox{age})$, and $g(\mbox{sex})$ and $h(\mbox{age}, \mbox{sex})$
-  give different outputs for the same inputs.  For example, for a male
-  of age 10, according to the models, the height is variously $f(10) =
-  50$ or $g(\mbox{male}) = 71$ or $h(10, \mbox{male}) = 51$.
-  
-\item  Demonstrate the models can be both wrong and useful.
-	
-  Many useful models don't give exactly the right output for
-  every case.  Not every 10-year old male has the same height.  The
-  difference between what a model says, and what the value is for an
-  actual case, will not in general be zero.  The ``residual'' is the difference between
-  the actual value for a given 10-year old male, say Ralph, and what
-  a given model says about 10-year old males in general.  The
-  residuals give important information about how good a model is.
-
-\authNote{rjp: I think this point is a bit muddled.  If the model is supposed to give average
-heights, then no one should expect all people of a given age and sex to have the same height.
-But it is probably not the case that all of the \emph{means} fall on our model fit either,
-and the model can still be useful.}
-\end{itemize}
-
-
-\section{The Language of Models}
-\label{sec:formula}
-
-There is a language for defining models that is different from
-writing down an algebraic formula.  
-
-You have already seen some aspects of this notation in graphics
-commands, e.g. \verb!height ~ sex!.  You can read this in any of several
-ways:
-\begin{itemize}
-  \item Break down \VN{height} by \VN{sex} (as in a boxplot)
-  \item \VN{height} versus \VN{sex}
-  \item Model \VN{height} as a function of \VN{sex}.  
-\end{itemize}
-In this section, you'll see more complicated models, involving
-multiple variables.  This makes it worthwhile to assign more precise
-labels to the different aspects of the modeling language, which
-has just a few components:
-\begin{itemize}
-  \item The response variable.  This is the output of the model function,
-    \VN{height} in the above examples.
-  \item The explanatory variables.  These are the inputs to the
-    model function: \VN{age} and \VN{sex} in the above examples.
-  \item Model terms.  Examples of model terms are explanatory
-    variables themselves and a special term called the ``intercept.''
-    There are a few others, but we'll deal with them as we come to them.
-\end{itemize}
-\authNote{Update edition for Kaplan book?}
-A more comprehensive introduction is given in Chapters 4 and 5 of \cite{kaplan-2009-book}.)
-
-
-As an example, consider this simple formula:
-\[ 
-z = 7 + 3 x + 4.5 y \;.
-\]
-The corresponding model description consists of the response variable
-$z$, and three model terms: the explanatory variables $x$ and
-$y$ and the intercept term.  In the modeling language, it would be written:
-\begin{quotation}
-\centerline{\model{z}{1 + x + y}}
-\end{quotation}
-Notice that instead of the $=$ sign, we are using the $\sim$ sign.
-Also, notice that the specific coefficients $7$, $3$, and $4.5$ are
-missing.  The model description is a kind of skeleton for describing
-the shape of the model.  It's like saying: ``We want a straight line
-model,'' rather than giving the complete specification of the formula.
-%\InstructorNote{We're using capital letters for these variables, 
-%following a common convention.
-%The particular values that these variables take on are generally denoted
-%as lower case letters.}
-\authNote{I don't think this is a conventional use of anything.  We should avoid 
-capitals unless there is a clear random variable involved.  Typically for (basic) regression,
-all of the explanatory variables are considered fixed, not random. I've removed the 
-instructor note.  We can discuss as needed.}
-
-The process of finding a specific formula to make a model match the
-pattern shown by data is called ``fitting the model to the data.''  
-
-To see how different model specifications correspond to different
-``shapes'' of models, consider the history of world-record times in the 100-meter 
-free-style swimming race.
-
-<<read-swim,echo=FALSE,eval=TRUE>>=
-data(SwimRecords)
-levels(SwimRecords$sex) <- c('Women','Men')
+To illustrate, consider world records in the 100 meter freestyle swimming event as they have changed over the years.  Plot these separately for the two sexes.
+<<swim-data,fig.width=5>>=
+xyplot(time ~ year | sex, data=SwimRecords)
 @
 
-<<showSwimModel, echo=FALSE>>=
-showSwimModel <- function(model, plotFormula = time~year, show.legend=FALSE, show.model=TRUE, ...) {
-	xyplot(plotFormula, data=SwimRecords, 
-				 xlim=c(1899,2010), 
-				 xlab='Year',
-				 ylab='Time (secs)',
-				 groups=sex,
-				 auto.key = if (show.legend) list( columns=2 ) else FALSE,
-				 par.settings = list( superpose.symbol=list(pch=c(17,15)) ),
-				 main= if (show.model) deparse(formula(model)) else "",
-				 ...)
-	if (show.model) {
-		mfit <- makeFun(model)
-		plotFun(mfit(year=year, sex='Men') ~ year, add=TRUE)
-		plotFun(mfit(year=year, sex='Women') ~ year, add=TRUE)
-	}
-}
-@ 
+It's evident from the data that, for both sexes the records are improving over time. (How could they not?  That's the nature of a world record.)  The pattern is so clear that one hardly needs a model to interpret it.  But, to display the syntax of models, let's do so anyways.
 
-<<swim-data-raw2,echo=FALSE,eval=TRUE>>=
-showSwimModel(show.model=FALSE, show.legend=TRUE)
-@ 
-
-
-
-You can see the steady improvement in records over the decades from
-1900 to the present.  Men's times are somewhat faster than women's.
-
-Now let's build some models.
-
-\subsection{\model{\VN{time}}{\VN{1} + \VN{year}}}
-
-The model \model{\VN{time}}{1 + \VN{year}} gives the familiar
-straight-line form: the intercept term (written simply as 1) and a term corresponding to the
-linear dependence on \VN{year}.
-
-
-\authNote{You are surrounded by a mass of redundant plots.  Don't panic.}
-\authNote{rjp: I panicked -- and fixed. }
-<<swim-data-1b,echo=FALSE>>=
-showSwimModel( lm(time ~ year, data=SwimRecords) )
-@ 
-
-<<swim-mod-plot3, echo=FALSE>>=
-swim.mod.plot3 = function(form, dots=FALSE, show.model=FALSE, lwd=3, show.legend=FALSE,...){
-  t = as.character(form)
-  t = paste(t[c(2,1,3)],collapse=" ")
-  model = lm(form, dat=SwimRecords)
-  xyplot(time ~ year, data=SwimRecords, groups=sex, 
-	 xlim=c(1899,2010), 
-	 xlab='Year',
-     ylab='Time (secs)',
-	 main=t,
-	 auto.key= if (show.legend) list(columns=2) else FALSE,
-	 par.settings = list(superpose.symbol=list(pch=c(17,15))),
-	 ...)
-  if (show.model) {
-	  mfit <- makeFun(model)
-	  plotFun( mfit(year, sex='Women') ~ year, add=TRUE, col='navy' )
-	  plotFun( mfit(year, sex='Men')   ~ year, add=TRUE, col='navy')
-  }
-}
+The record \VN{time} depends on both \VN{sex} and \VN{year}, but it's your choice what explanatory variables to include in a model.  Here are three plausible models:
+<<>>=
+swim1 = lm(time~sex,data=SwimRecords)
+swim2 = lm(time~year,data=SwimRecords)
+swim3 = lm(time~year + sex, data=SwimRecords)
+@
+To plot out the model function, first extract the function from the model:
+<<>>=
+s1 = makeFun(swim1)
+s2 = makeFun(swim2)
+s3 = makeFun(swim3)
 @
 
-This model captures some of the pattern evident in the data: that
-swimming times are improving (getting shorter) over the years.  And it
-ignores other obvious features, for example the difference between men's
-and women's times, or the curvature reflecting that records are not
-improving as fast as they did in the early days.
-
-
-\subsection{\model{\VN{time}}{\VN{sex}}}
-
-The model \model{\VN{time}}{\VN{sex}} breaks down the swimming times
-according to \VN{sex}:
-
-<<swim-data-2,echo=FALSE>>=
-showSwimModel( lm(time ~ sex, data=SwimRecords) )
-#swim.mod.plot3(time ~ sex)
-mfit <- makeFun(lm(time ~ sex, data=SwimRecords))
-plotFun( mfit(sex='Women') ~ year, add=TRUE)
-plotFun( mfit(sex='Men') ~ year, add=TRUE)
-@ 
-
-This model reflects the typical difference between men's and women's
-times.  It's oblivious to the trend that records improve over the
-years.  Why?  Because the variable \VN{year} was not included in the model.
-
-\subsection{\model{\VN{time}}{\VN{sex} + \VN{year}}}
-
-Neither of the two models shown so far is very satisfactory, but if we allow
-multiple variables, we can include both of these important factors (year and sex) 
-in one model.
-%The record time evidently depends both on \VN{sex} and \VN{year}, so
-%it's sensible to include both variables in the model
-
-<<swim-data-3,echo=FALSE>>=
-showSwimModel( lm(time ~ sex + year, data=SwimRecords) )
-#swim.mod.plot3(time ~ sex + year, dots=FALSE)
-mfit <- makeFun(lm(time ~ sex + year, data=SwimRecords))
-plotFun( mfit(year, sex='Women') ~ year, add=TRUE)
-plotFun( mfit(year, sex='Men') ~ year, add=TRUE)
-@ 
-
-\authNote{DTK: Should these graphics be re-written to display as
-  continuous forms rather than dots?}
-\authNote{rjp: Yes. Done.}
-
-This is a straight-line model with separate lines for the different
-sexes. The intercept is different for the different sexes, but the
-slope is the same.  
-This model is reflects the typical difference between men's and women's
-times.  
-
-Students sometimes observe that the function generated by fitting this
-model doesn't respect the ``vertical line test'' taught in high-school
-algebra.  This is a good time to remind students that this is a
-function of \emph{two} variables.  It is indeed a function and for
-any specific value of the inputs \VN{sex} and \VN{year} gives a single value.
-
-\subsection{\model{\VN{time}}{\VN{sex} + \VN{year} + \VN{sex}:\VN{year}}}
- 
-There are two ways that the previous model, \model{\VN{time}}{\VN{sex} + \VN{year}},  misses obvious features in the
-data: there is no curvature over the years and the slopes are exactly
-the same for men and women.  To construct a model with different
-slopes for men and women requires that we add a term that combines
-both \VN{sex} and \VN{year}.  Such a term is constructed with the syntax
-\VN{sex}:\VN{year} (or, what would amount to the same thing,
-\VN{year}:\VN{sex}).  
-
-<<swim-data-4,echo=FALSE>>=
-showSwimModel(lm(time ~ sex * year, data=SwimRecords) )
-mfit <- makeFun(lm(time ~ sex * year, data=SwimRecords))
-plotFun( mfit(year, sex='Women') ~ year, add=TRUE)
-plotFun( mfit(year, sex='Men') ~ year, add=TRUE)
-@ 
-
-In statistics, such a term is called an \emph{interaction term}.  (In
-mathematics, it's often called a \emph{bi-linear term}.)  It's the
-term that lets you have different slopes for the different sexes.  
-
-The new phrase ``interaction term'' creates a need for a retronym, a way
-to refer to those simple, non-interaction terms that we started with,
-like \VN{sex} and \VN{year}.  (Common retronyms in everyday life are acoustic guitar, snail-mail, 
-World War I, cloth diaper, and whole milk, compound terms that weren't needed
-until electric guitars, e-mail, disposable diapers, and skim milk were
-introduced, and World War II showed that the ``War to End All Wars''
-was mis-named.)
-
-The standard terminology for terms like \VN{sex} and \VN{year} is unfortunate: ``main effect.'' 
-It suggests that interaction terms play a lesser role in modeling.  This is a bad
-attitude, since sometimes the interaction is exactly what you're
-interested in, but the terminology seems enshrined by statistical tradition.
-\authNote{rjp: This discussion is a bit confusing since we are using \variable{year}
-and \variable{sex} as both variables and ``terms".
-Also, when there is interaction, it is hard to say what one means
-by a main effect.}
-
-Very often when you are including an interaction term, you want to
-include the main effects as well.  There is a convenient shorthand for
-this: \model{\VN{time}}{\VN{sex} * \VN{year}}
-
-\subsection{The Intercept Only: \model{\VN{time}}{\VN{1}}}
-
-It's also possible to have models that have no explanatory variables
-whatsoever.  In this case, only the intercept term appears to the right of the
-model formula. 
-
-<<swim-data-5,echo=FALSE>>=
-showSwimModel(lm(time ~ 1, data=SwimRecords))
-mfit <- makeFun(lm(time ~ 1, data=SwimRecords))
-plotFun( mfit(year=year)  ~ year, add=TRUE)
-@ 
-
-As you might expect, by leaving out both \VN{sex} and \VN{year} from
-the model, it doesn't reflect the role of either variable in any way.
-But the model \model{\VN{time}}{1} does get one thing very well: the
-typical record time.% 
-\authNote{rjp:  Is this really true?  It's not clear to me what ``typical record time''
-means, and less that this model captures that ``very well''.
-}
-
-Think of \model{\VN{time}}{1} as saying ``all the cases are the
-same.''%  
-\authNote{rjp:  see my previous comment about interpreting models and 
-residuals.  Seems like we are making the same error here.}
-In some ways, it's analogous to the model
-\model{\VN{time}}{\VN{sex}}.  That model says that ``all men are the
-same, and all women are the same.''  So the difference between 
-\model{\VN{time}}{1} and \model{\VN{time}}{\VN{sex}} is just like the
-difference between a ``grand mean'' and a ``group mean.''
-
-\subsection{Transformation Terms}
-
-You can construct more complicated models by adding in more
-explanatory variables. (Improved swimming gear?  Better training?
-Refinements in technique?).  You can also add in additional terms with
-more structure.  There is a rich variety of ways to do this.
-
-Since many students are familiar (or at least remember vaguely) the
-idea of quadratics and polynomials, they might be interested to see
-that the modeling language can handle this.  Here are three different
-models involving a second degree polynomial dependence on \VN{year}:
-
-<<swim-data-6,echo=FALSE>>=
-showSwimModel(lm(time ~ poly(year,2), data=SwimRecords) )
-mfit <- makeFun(lm(time ~ poly(year, 2), data=SwimRecords))
-plotFun( mfit(year) ~ year, add=TRUE)
-@ 
-
-<<swim-data-7,echo=FALSE>>=
-showSwimModel(lm(time ~ sex + poly(year,2), data=SwimRecords) )
-mfit <- makeFun(lm(time ~ sex + poly(year, 2), data=SwimRecords))
-plotFun( mfit(year, sex="Women") ~ year, add=TRUE)
-plotFun( mfit(year, sex="Men") ~ year, add=TRUE)
-@ 
-
-<<swim-data-8,echo=FALSE>>=
-showSwimModel(lm(time ~ sex * poly(year,2), data=SwimRecords) )
-mfit <- makeFun(lm(time ~ sex * poly(year, 2), data=SwimRecords))
-plotFun( mfit(year, sex="Women") ~ year, add=TRUE)
-plotFun( mfit(year, sex="Men") ~ year, add=TRUE)
-@ 
-
-Although these models reflect more ``detail'' in the data, namely the
-curvature, they do it in a way that ultimately does not make sense in
-terms of the ``physics'' of world records.
-Notice how the upward facing parabolas eventually produce a pattern
-where the record times increase over the years.  
-
-There are other sorts of nonlinear terms that might be more
-appropriate for modeling this sort of data.  Exponentials, square
-roots, etc., even piecewise linear or bent-line forms are all
-possible within the modeling framework.  
-
-\section{Helping Students Choose Transformations}
-
-Students typically have very little idea what sorts of transformations 
-should be considered candidates for a given situation.
-While this sense may develop gradually over time, progress is much quicker if students
-are explicitly taught some guidelines for selecting transformations.
-
-\subsection{Theory Driven Transformations}
-
-When theory suggests a non-linear form of relationship between the explanatory and response
-variables, it is often possible to linearize the relationship via transformations.
-
-It is a useful exercise to have students linearize relationships such as the following:
-
-\begin{center}
-	\renewcommand{\arraystretch}{1.6}
-\begin{tabular}{ccc}
-	& natural form & linearization
-	\\
-	\hline
-	power law & $ y = \alpha x^{\beta} $ & $\log(y) = \log(\alpha) + \beta \log(x)$
-	\\
-	product of powers & $ y = \alpha x^{\beta_1} y^{\beta_2} $
-		& $\log(y) = \log(\alpha) + \beta_1 \log(x_1) + \beta_2 \log(x_2)$
-	\\
-	other laws &
-	\\
-\end{tabular}
-\end{center}
-Provide students with items in either the center or right column and have them
-determine the other.
-
-\subsection{Units}
-
-\subsection{Data-driven Transformations: Tukey's Bulge Rules}
-
-\authNote{rjp: Can grab illustration from FASt and modify exposition.}
-
-
-\begin{problem}
-\authNote{Need to flesh this out}
-{\bf DRAFT Outline} for a swim-data modeling problem: construct a post-war
-variable and add it in.  Several ways to do this: explore which one gives
-models that are most satisfactory to you:
-\begin{itemize}
-  \item postwar = year $>$ 1945
-  \item interaction with postwar and year.
-  \item pmax(year - 1945, 0)
-\end{itemize}
-\end{problem}
-
-
-
-
-
-\section{Fitting Linear Models to Data in \R} 
-
-Behind the graphical depictions of the models shown in the previous
-section is a process for finding specific numerical formulas for the
-models.  The software to do this is packaged into the \function{lm()}
-function and is very easy for students and professionals alike.  The
-human work, and what students need to learn, is not the mechanics of
-fitting models, but the interpretation of them.  A good place to start
-is with the interpretation of model coefficients.
-
-To illustrate, consider the actual swimming records data employed in
-the previous examples.  This data set is available via the internet,
-and can be loaded into R with a command like the following:
-
-\authNote{DTK: Eventually, we have to build into MOSAIC an easy way
-  for instructors to specify a web location for their data.  The
-  \texttt{ISMdata()} function already does this in a limited way.}
-
-<<swim-coeffs1>>=
-data(SwimRecords)
-@ 
-\authNote{rjp:  this data needs to go into the package.}
-
-\authNote{DTK: I couldn't stand the default printing of lm, so I
-  changed it. We might want to do this more generally, but it's not
-  something we need to worry about here.}
-
-<<redefine-print-lm,echo=FALSE>>=
-print.lm <- function (x, digits = max(3, getOption("digits") - 3), ...) 
-{
-#    cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
-#        "\n\n", sep = "")
-    if (length(coef(x))) {
-        cat("Coefficients:\n")
-        print.default(format(coef(x), digits = digits), print.gap = 2, 
-            quote = FALSE)
-    }
-    else cat("No coefficients\n")
-    cat("\n")
-    invisible(x)
-}
-@ 
-As before, we'll model the world-record \VN{time} as a function of \VN{sex}
-and \VN{year}.
-
-Here's the very simplest model: all cases are modeled as being the same.
-<<swim-coeffs2>>=
-lm(time ~ 1, data = SwimRecords)
-@ 
-The fundamental purpose of \texttt{lm()} is to find the coefficients
-that flesh out the skeleton provided by the model description.  For
-this simple model, the coefficient works out to be the mean of the
-record times, which we can calculate a number of different ways.
-<<>>=
-mean( SwimRecords$time )           # $ interface
-mean( ~ time, data=SwimRecords)    # formula interface
-mean( time, data=SwimRecords)      # lazy formula interface
+The first model doesn't include \VN{year}.  Still, to graph the model function on the axes, you need to include \VN{year} in the plotting statement. 
+<<fig.width=5>>=
+<<swim-data>>
+plotFun(s1(sex="F")~year,add=TRUE,col="red",lwd=3)
+plotFun(s1(sex="M")~year,add=TRUE,col="black")
 @
-We can even use a syntax that mirrors the linear model directly:
-<<>>=
-mean( time ~ 1, data=SwimRecords)  # linear model interface
-@ 
+Since the function \function{s1} doesn't depend on \VN{year}, the graphs of the function are flat with respect to \VN{year}.  The function does have \VN{sex} as an input and you can see in the graph how the function values for females (thick line) differ from those for males (thin line).
 
-Models 
-that contain actual explanatory
-variables  
-are more interesting.
-Here's one using the quantitative variable \VN{year}:
-<<swim-coeffs3>>=
-lm(time ~ year, data = SwimRecords)
-@ 
-The coefficients now are the slope and intercept of the straight-line
-relationship: 
-\[
-\variable{time}  = -0.2599 * \variable{year} + 567.242\;.
-\]
-
-There's a similar story with categorical variables, like \VN{sex}:
-<<swim-coeffs4>>=
-lm(time ~ sex, data = SwimRecords)
-@ 
-Based on the result of the simple all-cases-the-same model
-\model{\VN{time}}{1}, you might suspect that the coefficients are the
-group means.  That's close to being right.  Here are the group means:
-<<>>=
-mean(time ~ sex, data = SwimRecords)
-@ 
-\InstructorNote{In the MOSAIC package, the syntax of familiar
-  functions like \function{mean()}, \function{sd()}, etc. has been
-  extended so that the modeling notation can be used to calculate
-  group-by-group values.  Our goal is to make is straightforward to
-  transition from conventional basic stats to modeling, by getting
-  students used to the $\sim$ and \texttt{data =} notation early.  You
-  can even do \texttt{mean(time}$ ~ $ \texttt{1, data = SwimRecords)}. 
-  So you can talk about models in a systematic way even if all you want to cover is means,
-  proportions, medians, etc.}
-
-
-The coefficients of the linear model are organized differently from
-simple group means.
-Notice that there is a \VN{sexM} coefficient, but no similarly named
-coefficient for women.  Instead, there is the intercept coefficient.  
-This corresponds to the mean \VN{time} of one
-of the groups: the reference group.  In this case, the reference group
-is women.  
-
-The other coefficient, \VN{sexM} tells the
-\emph{difference} between the mean of the reference group and the mean
-for the men.  In other words, the coefficients are arranged in
-intercept-slope form, but for categorical variables the coefficient
-isn't a slope but a finite-difference.  
-
-\InstructorNote{The intercept is so important that the \function{lm()}
-  function includes it by default, even if you don't specify it
-  explicitly in the model design.  In those rare cases when you don't
-  want an intercept term, use the notation \variable{-1} or \variable{0} as part of the
-  model design.}
-
-It is possible to fit this model in a different way that does not include
-the intercept term (and hence does not present things in terms of 
-reference and adjustments):
-<<>>=
-lm(time ~ 0 + sex, data=SwimRecords)
+Now consider \function{s2}, which depends on \function{year} but not \function{sex}.
+<<fig.width=5>>=
+<<swim-data>>
+plotFun(s2(year)~year,add=TRUE,col="red",lwd=3)
+plotFun(s2(year)~year,add=TRUE,col="black")
 @
-There are good reasons to prefer the model specification that includes the intercept, however,
-and we will use that specification in the remainder of our examples.
+The functions are the same for males and females, of course, so they overlie one another on the graph.
 
-It's important to keep in mind the intercept-slope/difference format
-when interpreting the coefficients from models with multiple
-explanatory variables:
-<<>>=
-lm(time ~ sex + year, data = SwimRecords)
-@ 
-As usual, there is an intercept coefficient.  It's meaning is a little bit
-subtle: it is the intercept for the reference group (in these data, women).  The coefficient
-on \VN{year} is a slope.  The \VN{sexM} coefficient is a difference:
-it's how the intercept differs for group \VN{M} from the reference
-group.  
-
-In traditional mathematical notation, the model formula corresponding
-to these coefficients is
-$$
-\mbox{time} = - 0.2515 * \mbox{year}  + \ \left\{ \begin{array}{rll}
-  555.7168  &  & \mbox{for women}\\
-555.7168  &  - 9.7980  & \mbox{for men}
-\end{array}\right.
-$$
-
-\authNote{DTK: For problems, pull out some of the exercises from the
-  coefficients chapter, including one on interaction terms. Use Question 1 from the 2011 ISM final
-  exam.}
-
-One of the great strengths of R comes from the ability to carry out
-new computations on the results from other computations.  To
-illustrate, we can save the results from a computation into an object
-(in this case \texttt{mod1}).
-<<>>=
-mod1 <- lm(time ~ year + sex + year:sex, data = SwimRecords)
-@ 
-
-From this model object, you can now compute additional information.  Important
-functions for demonstrating basic properties of models are
-\texttt{resid()},  \texttt{fitted()}, and \texttt{predict()}.  
-
-
-<<>>=
-mean(resid(mod1))
-sd(resid(mod1))
-var(fitted(mod1))/var(SwimRecords$time) # R-squared
-sum(fitted(mod1)^2) # sum of squares of the fitted
-sum(resid(mod1)^2) # sum of squares of the residuals
-@ 
-
-For plotting the fitted model values
-<<>>=
-xyplot(fitted(mod1) ~ year, data = SwimRecords)
-@ 
-
-The \pkg{mosaic} package includes some additional functions for 
-creating a function for computing fitted values of a model and for 
-plotting functions.
-<<>>=
-xyplot(time~year, data=SwimRecords)
-mfit1 <- makeFun(mod1)
-plotFun( mfit1(year, sex='M') ~ year, add=TRUE)
-plotFun( mfit1(year, sex='F') ~ year, add=TRUE)
+Including both \VN{sex} and \VN{year} in the model produces a function that depends on both variables:
+<<swim-data>>
+plotFun(s3(year=year,sex="F")~year,add=TRUE,col="red",lwd=3)
+plotFun(s3(year=year,sex="M")~year,add=TRUE,col="black")
 @
 
+You might be surprised to see that the graph of the function for males is parallel to that for females.  That's because there was nothing in the model design that produces a different slope with respect to \VN{year} for females and males. 
 
-The model suggests that women's times will soon break those of men.
-To evaluate the model for new values of inputs, use \function{predict()}
-or the function used in our plot above.
+Including such a difference in a model is a matter of including an \newword{interaction term} between \VN{sex} and \VN{year}:
 <<>>=
-predict(mod1, newdata = data.frame(year = 2020, sex = "F"))
-predict(mod1, newdata = data.frame(year = 2020, sex = "M"))
-@
-<<>>=
-mfit1(year=2020, sex='F')
-mfit1(year=2020, sex='M')
+swim4 = lm(time~year+sex+year:sex,data=SwimRecords)
+s4 = makeFun(swim4)
 @
 
-
-When you get to the stage where you want to talk about statistical
-inference, you can of course show bootstrapping and permutation
-tests.  For example for bootstrapping standard errors:
-<<>>=
-s <- do(100)* lm(time ~ year + sex + year:sex, data = resample(SwimRecords))
-sd(s)
-@ 
-
-And, of course, you can do the conventional theoretical calculations
-for inference.  
-\begin{itemize}
-\item Confidence intervals, for instance at a 95\% level
-<<>>=
-confint(mod1, level = 0.95)
-@ 
-\item Analysis of variance
-<<>>=
-anova(mod1)
-@ 
-\item The regression report and other statistics on the model
-<<>>=
-summary(mod1)
-@ 
-
-\end{itemize}
-
-
-\section{Example: Genetics before Genes}
-
-To emphasize the flexibility that multivariable models provide to help assess
-questions of statistical interest, let's consider a problem of
-historical significance: Francis Galton's attempt to quantify the heritability
-of height.
-
-Galton famously developed the correlation coefficient in the late
-1880s (see \cite{galton-co-relations}.)  One of his motivations was to
-put on a quantitative footing the theory of evolution established
-by his half-cousin, Charles Darwin.  It's important to realize that
-Darwin himself did not know the mechanism by which traits were
-inherited.  He imagined a particle of inheritance which he called a
-``gemmule.''  The words ``gene'' and ``genetics'' date from the first
-decade of the 20th century, the same decade when William Gossett started
-publishing under the pseudonym ``Student.''  It wasn't until 1944 when
-DNA was shown to be associated with genetic heritability.
-
-Without a mechanism of genotype, Galton needed to rely on what we now
-call ``phenotype,'' the observable characteristics themselves.  The 
-\pkg{mosaic} package
-includes the 
-\texttt{Galton} dataset, transcribed to a modern format, of measurements that Galton himself
-collected on the heights of adult children and their parents. 
-\authNote{Add sidebar about Hanley}
-
-
-
-<<galton-data>>=
-data(Galton)
-head(Galton)
-@ 
-
-By today's standards, Galton's techniques were quite limited, but did
-suffice to quantify in some ways the heritability of height.  Galton
-examined, for the boys, the correlation between the height of the
-``mid-parent'' and the boy's height.  If Galton had R available (rather than
-having to invent the correlation coefficient $r$!), he might have done the following calculation:
-<<>>=
-Galton$midparent <- (Galton$father + 1.08*Galton$mother)/2
-boys = subset(Galton, sex=="M")
-with(boys, cor(midparent,height))
-@ 
-
-You may be wondering where the 1.08 comes from in Galton's definition of mid-parent height.  It 
-comes from another model!
-<<>>=
-lm(father~ 0+mother, Galton)
+<<fig.width=5>>=
+<<swim-data>>
+plotFun(s4(year=year,sex="F")~year,add=TRUE,col="red",lwd=3)
+plotFun(s4(year=year,sex="M")~year,add=TRUE,col="black")
 @
-\authNote{rjp: added explanation of mid-parent.  Could also redefine mid-parent based on a model
-with an intercept -- or perhaps make that an exercise.}
 
-This is purely speculation, but it seems unlikely that Galton,
-with interests ranging from exploration of Namibia to fingerprints to meteorology (and, it
-must be mentioned, eugenics), would have restricted himself to a
-correlation between the mid-parent and boy's heights.  Might height be
-inherited differently from the mother and the father?  Is the same
-mechanism at work for girls as for boys?  Does one parent's height
-have a potentiating effect on the influence of the other parent's height?
+Interactions can be confusing at first.  Students tend to want to interpret the word ``interaction'' as meaning that one variable affects the other.  This is not quite right.  An interaction describes how the effect of one variable on the response is modulated by the other variable.  For example, the interaction between \VN{sex} and \VN{year} tells how the relationship between \VN{year} and world-record \VN{time} differs for the two sexes.  You see that interaction in the graph as different slopes for the fitted lines for the two sexes.
 
-Presumably, Galton would have constructed more detailed descriptions
-of the relationship between a child's adult height and the genetic and
-environmental influences, rather than focusing on only the parent's
-height.  Even with the somewhat limited variables in Galton's dataset, one can
-use models to explore hypothesized relationships.
+Another, way to describe the interaction is that the relationship between \VN{sex} and world-record \VN{time} is changing over the years.  You can see that from the changing vertical distance between the lines for females and males. Both these ways of describing the interaction --- how the relationship between \VN{sex} and \VN{time} is modulated over the years, and how the relationship between \VN{year} and \VN{time} is different for the two sexes --- are equivalent.  Given that the slopes of the two lines is different, the vertical distance between the two lines is going to change.
 
-By all means, use Galton's data to illustrate simple modeling
-techniques, e.g., 
-<<tidy=FALSE>>=
-model <- lm(height ~ midparent * sex, data = Galton); model
-xyplot(height ~ midparent, groups=sex, data=Galton, alpha=.4)
-height <- makeFun(model)
-plotFun(height(midparent, sex='M') ~ midparent, add=TRUE)
-plotFun(height(midparent, sex='F') ~ midparent, add=TRUE)
-@ 
+\section{Example: The Genetic Component of Human Height}
 
+... An example where the relationship is not completely obvious from the graph.  Moving from graphical tools to inferential tools.
+
+the famous data collected by Francis Galton in 19th century London in order to explore the genetic component of human height.  Galton measured the heights of adult children and their parents.  Here's a plot of the child's full-grown height versus the mother's height:
 <<>>=
-lm(height ~ father + sex, data = Galton)
-@ 
-
-But consider going further and using inferential methods to see what
-evidence is contained in Galton's data more detailed descriptions.
-For instance, in the relatively simple model
-<<>>=
-summary(lm(height ~ sex + father + mother + nkids, data = Galton))
-@ 
-
-Ask your students to investigate, through modeling, whether the
-influence of the parents is different for the different sexes, or
-whether what looks like an even split of influence between the father
-and mother could all, in fact, be attributed to the mother.
-
-\begin{problem}
-%[stars=1]
-Consider the \texttt{CPS85} data that measured per-hour wages and
-  other variables for workers in the mid-1980s.  Is there evidence in the data for
-  discrimination on the basis of race and/or sex?  What covariates
-  might one reasonably adjust for in measuring the difference between
-  the races or the sexes?
-\end{problem}
-  
-
-\shipoutProblems
-
-\section{Tallying}
-This idea of breaking down one variable by another is natural.  For instance, to find out left- or right-handedness is distributed by sex, use:
-<<>>=
-tally(domhand~sex,data=KidsFeet)
+xyplot( height ~ mother | sex, data=Galton)
 @
-This is a different question than asking how sex is broken down by handedness:
-<<>>=
-tally(sex~domhand,data=KidsFeet)
-@
-The formula notation makes it clear which variable is being broken down by which.
 
-\marginnote{To avoid having to say things like \model{sex}{1}, some functions such as \function{mean} let you use just the bare variable name without the \model{}{}.  In the functions that have not been configured this way, you can say \model{}{sex}, leaving the right-hand side blank, to accomplish the same thing.  It's debatable whether \model{sex}{1} is better than \model{}{sex}.  Unfortunately, R does not allow \model{sex}{}, which would be a natural way to say, ``broken down by nothing.''}
+\section{Covariates and Partial Change}
 
-Sometimes you don't want to break down one variable by another.  In such situations, you can use \texttt{1} to stand for ``the same for every case.''  For example:
-<<>>=
-mean(length ~ 1,data=KidsFeet)
-tally(sex ~ 1,data=KidsFeet)
-@
-These formulas still mean, break down the variable on the left side of the formula according to the ``variable'' on the right side, but since the variable on the right side is always 1, there's only one group. This is admittedly a little unnatural, but drawing attention to \texttt{1} early pays off later one.
+Heading toward Simpson's paradox.
+
+The \texttt{SaratogaHouses.csv} data.
+
+\texttt{SAT} data.
+
+\chapter{Statistical Inference}
+
+Quick resampling example to demonstrate confidence intervals, then use \function{confint}.
+
+ANOVA as a way of tracking $R^2$ as more terms are added.
+
+\chapter{Links to Mathematics}
+
+Notation of functions.  Polynomials in two variables.  Transformation variables.
+
+
+
+\chapter{EXERCISES}
+
+These are just sketches for exercises.  Where to deploy them?
+
+\paragraph{One}. Why square instead of taking the absolute value?  There's nothing wrong with mean absolute value as a way of describing the sum of the residuals. Construct the model function where the value is the median of each group.  That function will have a mean absolute value of differences that is as small as any other possible function.
+
+\paragraph{Two}. Do the grand mean.  It's not so easy to think about what the input is.  There is no input.  In this sense, groupwise means are easier to conceive of than grand means.
+
+\paragraph{Three}. Show that \VN{object} gives a perfect prediction of \VN{projectileWt} in the \texttt{trebuchet} data. Does \VN{object} contribute anything beyond \VN{projectileWt} in explaining \VN{distance}?
+
+\end{document}
 
