@@ -1,9 +1,13 @@
+
 <<echo=FALSE,include=FALSE>>=
 source('../include/setup.R')
-opts_chunk$set( fig.path="figure/Multivariable-fig-" ) 
-if (!exists("standAlone")) set_parent('../include/MainDocument.Rnw')
+opts_chunk$set( fig.path="figures/Multivariable-" ) 
+if (!exists("..makingMaster..")) {
+	set_parent('Master-Modeling.Rnw')
+}
 set.seed(123)
 @
+
 
 
 \chapter*{Preface}
@@ -68,9 +72,9 @@ xyplot(distance ~ projectileWt,data=trebuchet)
 bwplot(distance ~ object,data=trebuchet)
 @
 
-Each of these examples involves two variables.  They are often called $y$ and $x$ by students.  Alternative names frequently encountered are ``vertical axis" and ``horizontal axis,'', ``dependent'' and ``independent'' variables, ``input'' and ``output.''  Among math teachers, ``ordinate'' and ``abscissa'' are sometimes the preferred terms.  Whatever you choose to call them --- we'll use \newword{explanatory} and \newword{response} variables when describing models, and \newword{input} and \newword{output} for functions --- the notation must make clear which variable is in which role.  
+Each of these examples involves two variables.  They are often called $y$ and $x$ by students.  Alternative names frequently encountered are ``vertical axis" and ``horizontal axis,'', ``dependent'' and ``independent'' variables, ``input'' and ``output.''  Among math teachers, ``ordinate'' and ``abscissa'' are sometimes the preferred terms.  Whatever you choose to call them --- we'll use \term{explanatory} and \term{response} variables when describing models, and \term{input} and \term{output} for functions --- the notation must make clear which variable is in which role.  
 
-In R notation, a \newword{formula} is an expression involving the \verb+~+ squiggle character --- ``tilde'' --- that provides slots for laying out how you want to relate variables: y versus x, what to break down by what.  
+In R notation, a \term{formula} is an expression involving the \verb+~+ squiggle character --- ``tilde'' --- that provides slots for laying out how you want to relate variables: y versus x, what to break down by what.  
 
 There's more going on here than just identifying which variable gets plotted on each axis: the formula in R provides a {\em modeling language} that gives an easy path from basic graphics and basic statistics to multivariable modeling.  The path is easy enough that it makes sense to start in that direction early: using the concepts, terminology, and techniques of modeling as a way of introducing statistics.  Here is what such a journey might look like.
 
@@ -293,7 +297,11 @@ sd(resid(mod2))
 @
 
 
-This phenomenon, \marginnote{Use \function{rand} to generate random variables to add into a model, e.g. to add two random variables, use
+This phenomenon, 
+that adding an explanatory variable to a model will reduce the size of the residuals, provides a powerful segue to statistical inference.  For example, you can have your students add a random quantity as a explanatory variable or randomize the explanatory variable by shuffling.  
+
+Danny wants this in a margin note, but it breaks: 
+Use \function{rand()} to generate random variables to add into a model, e.g. to add two random variables, use
 <<>>=
 lm(distance ~ projectileWt + rand(2),data=trebuchet)
 @
@@ -301,8 +309,7 @@ Shuffling is applied to variables one at a time to randomize them:
 <<>>=
 lm(distance ~ projectileWt + shuffle(counterWt),data=trebuchet)
 @
-With these operations, one can implement the null hypothesis rather than just stating it.}
-that adding an explanatory variable to a model will reduce the size of the residuals, provides a powerful segue to statistical inference.  For example, you can have your students add a random quantity as a explanatory variable or randomize the explanatory variable by shuffling.  
+With these operations, one can implement the null hypothesis rather than just stating it.
 
 The two-variable model also provides a more reliable prediction:
 <<>>=
@@ -342,7 +349,7 @@ g1("golf")
 g1("tennis ball")
 @
 
-It may seem odd to your students that a word (or \newword{character string}) can be used as the input to a function.  Remind them that a function is a machine that takes one or more inputs and produces an output.  There's no requirement that the inputs be numbers.
+It may seem odd to your students that a word (or \term{character string}) can be used as the input to a function.  Remind them that a function is a machine that takes one or more inputs and produces an output.  There's no requirement that the inputs be numbers.
 
 The function \function{g1} can be used to calculate a model value for each case in the \texttt{trebuchet} data and, from that, the residuals:
 <<>>=
@@ -368,7 +375,7 @@ g2("tennis ball")
 
 Which gives a better description of the distances flown by the various objects, \function{g1} or \function{g2}?  As previously, you can find the residuals from this model and compare them to the residuals from \function{g1}.
 
-The function \function{g2} takes just a single character string.  To allow it to work on a vector of character strings, you can \newword{vectorize} it:\AuthNote{Any way to avoid this?}
+The function \function{g2} takes just a single character string.  To allow it to work on a vector of character strings, you can \term{vectorize} it:\authNote{Any way to avoid this?}%
 <<>>=
 g2 = Vectorize(g2)
 @
@@ -401,7 +408,7 @@ sd(g1(object),data=trebuchet)
 @
 In every case, the size of variation in the fitted model values is {\bf less} than the size of the response variables.  Where's the rest of the variation?  In the residuals.
 
-A fitted model \newword{partitions} variation between that accounted for by the model and that which remains unaccounted for.  Measure the variation accounted for using the variation in the fitted model values; measure the rest of the variation using the residuals.  For instance, for \texttt{mod1}:
+A fitted model \term{partitions} variation between that accounted for by the model and that which remains unaccounted for.  Measure the variation accounted for using the variation in the fitted model values; measure the rest of the variation using the residuals.  For instance, for \texttt{mod1}:
 <<>>=
 sd(fitted(mod1))
 sd(resid(mod2))
@@ -452,7 +459,7 @@ So far, we've explored these sorts of models:
 
 All of these sorts models were constructed with the same syntax and all of them fit into the same framework: explanatory and response variables, fitted model values, residuals, $R^2$.  The syntax and framework extend to more complicated models.  You can add in more explanatory variables using exactly the same syntax.
 
-You can also add in \newword{interactions} among explanatory variables.
+You can also add in \term{interactions} among explanatory variables.
 
 To illustrate, consider world records in the 100 meter freestyle swimming event as they have changed over the years.  Plot these separately for the two sexes.
 <<swim-data,fig.width=5>>=
@@ -498,7 +505,7 @@ plotFun(s3(year=year,sex="M")~year,add=TRUE,col="black")
 
 You might be surprised to see that the graph of the function for males is parallel to that for females.  That's because there was nothing in the model design that produces a different slope with respect to \VN{year} for females and males. 
 
-Including such a difference in a model is a matter of including an \newword{interaction term} between \VN{sex} and \VN{year}:
+Including such a difference in a model is a matter of including an \term{interaction term} between \VN{sex} and \VN{year}:
 <<>>=
 swim4 = lm(time~year+sex+year:sex,data=SwimRecords)
 s4 = makeFun(swim4)

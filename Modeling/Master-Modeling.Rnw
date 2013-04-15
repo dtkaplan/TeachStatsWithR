@@ -1,0 +1,30 @@
+
+
+\documentclass[open-any,12pt]{tufte-book}
+
+\usepackage{../include/RBook}
+\def\tilde{\texttt{\~}}
+
+\title{Start Modeling with R}
+\author{Daniel Kaplan and Randall Pruim and Nicholas Horton}
+\date{DRAFT: \today}
+
+\renewenvironment{knitrout}{\relax}{\noindent}
+\begin{document}
+
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+<<include=FALSE>>=
+..makingMaster.. <- TRUE
+@
+
+<<child='Multivariable.Rnw', eval=TRUE>>=
+@
+
+
+\end{document}
