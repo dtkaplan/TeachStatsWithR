@@ -323,6 +323,7 @@ Notice how much narrower the prediction interval is for the two-variable model c
 In terms of notation, there's not much difference between these two statements:
 <<echo=FALSE>>=
 print.lm <- function(x) coef(x) # for nicer printing for lm.
+print.summary.lm <- function(x) coef(x)
 @
 
 <<results="hide",tidy=FALSE>>=
@@ -450,7 +451,7 @@ Does this mean that \texttt{mod3} is better than \texttt{mod1}?  That will turn 
 
 \chapter{Combinations of categorical and quantitative variables}
 
-So far, we've explored these sorts of models:
+So far, you have encountered these sorts of models:
 \begin{itemize}
 \item One quantitative explanatory variable.
 \item One categorical explanatory variable.
@@ -523,6 +524,8 @@ Another, way to describe the interaction is that the relationship between \VN{se
 
 \section{Example: The Genetic Component of Human Height}
 
+
+
 ... An example where the relationship is not completely obvious from the graph.  Moving from graphical tools to inferential tools.
 
 the famous data collected by Francis Galton in 19th century London in order to explore the genetic component of human height.  Galton measured the heights of adult children and their parents.  Here's a plot of the child's full-grown height versus the mother's height:
@@ -532,13 +535,97 @@ xyplot( height ~ mother | sex, data=Galton)
 
 \section{Covariates and Partial Change}
 
-Heading toward Simpson's paradox.
+Often, the purpose of a model is to describe the relatonship between the response and a single explanatory variable, e.g. how does blood pressure respond to a drug versus placebo. It's tempting to translate this mathematically into a function of one variable.  Resist the temptation!
 
-The \texttt{SaratogaHouses.csv} data.
+Almost always, there are additional explanatory variables in which there is little or no direct interest but which may play an important role in the relationship.  The term \term{covariate} is used to designate such variables.  Of course, in a mathematical sense, covariates are just ordinary explanatory variables.  The word covariate simply signals the modeler's interest in them. 
 
-\texttt{SAT} data.
+Other related terms are \term{confounders} or \term{lurking variables}.  These terms properly suggest the vulnerability of the conclusions drawn from a model to unknowns or to known variables not included in a model.  But whenever a variable is known and measured, it should be considered as a candidate to be included in a model.  Unthinkingly to leave a covariate out of a model is burying your head in the sand.  
+
+It's traditional to point to the situation of an experiment.  In one form of experiment, identifiable confounders are held constant by design.  In another form, both identifiable and unidentified counters are balanced by randomized assignment.  Understandably, statistics textbooks warn about the perils of drawing conclusions about causation from observational data.  Such warnings follow the conventions of a mathematical emphasis on proof. 
+
+There are lessons to be drawn from other fields, however.  In epidemiology, for instance, important conclusions to guide action need to be drawn from imperfect, observational data. 
+
+To illustrate, consider a news story  (Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk, by Allison Aubrey, NPR - March 15, 2013) reporting on research findings published in the American Heart Association journal {\em Stroke}.  The main result: a daily habit of coffee or tea drinking cuts the risk of stroke by 20\%.  The news story puts this in a historical context: 
+\begin{quotation}
+% ... recent studies have linked a regular coffee habit to a range of benefits — from a reduced risk of Type 2 diabetes to a protective effect against Parkinson's disease.
+
+It's interesting to note how much the thinking about caffeine and coffee has changed.
+
+In the 1980s, surveys found that many Americans were trying to avoid it; caffeine was thought to be harmful, even at moderate doses.
+
+One reason? Meir Stampfer of the Harvard School of Public Health says back then, coffee drinkers also tended to be heavy smokers. And in early studies, it was very tough to disentangle the two habits.
+
+``So it made coffee look bad in terms of health outcomes,'' says Stampfer.
+
+But as newer studies began to separate out the effects of coffee and tea, a new picture emerged suggesting benefits, not risks.
+
+Researchers say there's still a lot to learn here --- they haven't nailed down all the mechanisms by which coffee and tea influence our health. Nor have they ruled out that it may be other lifestyle habits among coffee and tea drinkers that's leading to the reduced risk of disease.
+\end{quotation}
+
+Austin Bradford Hill was an epidemiologist and statistician --- the president of the Royal Statistical Society who succeeded Fisher.  He pioneered randomized clinical trials, taken as the gold standard for inferring causation in medicine. Hill's famously offered nine viewpoints for guiding causal inference.\cite{bradford-hill}  Number eight is ``Experiment'':
+\begin{quotation}
+Occasionally, it is possible to appeal to experiment, or semi-experimental evidence.  For example, because of an observed association some preventive active is taken.  Does it in fact prevent?  The dust in the workshop is reduced, lubricating oils are changed, persons stop smoking cigarettes.  Is the frequency of the associated events affected?  Here the strongest support for the causation hypothesis may be revealed.\cite{bradford-hill}
+\end{quotation}
+The prior seven are strength, consistency, specificity, temporality, biological gradient, plausibility, and coherence, each of which garners a longer explanation by Hill than experiment.  Experiment may be the simplest and most compelling, but experiment is not always possible or available.
+
+If students are to operate in a world where causal inferences will be drawn from non-experimental data, they certainly need to be away of confounding and lurking variables, the ecological fallacy, etc.  But they also need to have the tools to attempt to untangle confounding.  Multivariable modeling provides a straightforward way to do this.
+
+DL Guber\cite{Guber-JSE} \marginnote{Deborah Lynn Guber, ``Getting what you pay for: the debate over equity in public school expenditures'' (1999), {\em Journal of Statistics Education} 7(2).} presents a nice example of untangling confounding in the context of achievement and expenditure in public education.  Drawing on the 1997 {\em Digest of Education Statistics}, Guber assembled a data set of state-by-state averages that can be used to relate school expenditures to SAT.  It's easy to construct a model.
+<<>>=
+mod1 = lm( sat ~ expend, data=SAT)
+summary(mod1)
+@
+
+Judging from this model, expenditures are negatively associated with SAT scores.  The relationship is statistically significant.  Commenting on the association (if not the statistical significance), well-known editorial columnist George Will points to Senator Pat Moynihan's humorous observation of a positive correlation between scores on standardized math tests and distance of the states' capitals from the Canadian border, a correlation that's stronger than that seen between test scores and per-pupil expenditures.  Will goes on:
+\begin{quotation}
+In a 1992 study ... Paul Barton argues that a more powerful measure of school quality than the pupil-teacher ratio is the parent-teacher ratio.  ... The proportions of children in single-parent families vary substantially among the states, so some conclusions are suggested by data such as: In a recent year North Dakota had the nation's second-highest proportion of children in two-parent families and the highest math scores.  The Distribut of Columbia ranked last on the family composition scale and next to last in test scores.
+ \cite{george-will-1993}
+\end{quotation}
+% Full text here: http://www.isds.duke.edu/courses/Spring06/sta101.1/homework.dir/GeorgeWillEditorial.pdf
+
+While Moynihan's distance-from-Canada variable is not meant to be taken seriously, the parent-teacher ratio variable is a serious contender.  It's hardly possible to do an experiment to vary the parent-teacher ratio.  Without experiment, what's left?
+
+Will writes:
+\begin{quotation}
+The fact that the quality of schools correlates more positively with the quality of the families from which children come to school than it does with education appropriatiations will have no effect on the teachers unions' insistence that money is the crucial variable. \cite{george-will-1993}
+\end{quotation}
+
+What's wrong here is the idea of the ``crucial variable.''  Teachers' unions are understandably concerned with education appropriations, just as editorial columnists are with the structure of families.  That these variables are ``crucial'' reflects the interests of the modelers --- it's perfectly feasible for a model to include both variables.  Rather than identifying a single variable as crucial and looking for an association with that variable to the exclusion of all other explanatory variables, it's more appropriate to construct a model with multiple variables.  The issue is confounding, not cruciality. 
+
+Returning to the SAT data, consider one simple confounder, \VN{frac}, the proportion of students in each state who take the SAT.  In upper Mid-west states like North Dakota, many college-bound students take the ACT rather than the SAT; SAT's tend to be taken by students heading out of state, who are often higher-scoring.  In many states, only a small fraction of students take the SAT, and these students also tend to be higher-scoring. So use \VN{frac} as a covariate:
+<<>>=
+mod2 = lm(sat ~ expend+frac,data=SAT)
+summary(mod2)
+@
+
+Taking into account the covariate \VN{frac}, the relationship between expenditures and test scores is positive.  Such a reversal of sign when including a covariate is called \term{Simpson's paradox}.  
+
+More than one covariate can be included in a model, of course.  The models themselves won't sort out what causes what, but they provide a framework for having such a debate.  
+
+\subsection{Example: What's a Fireplace Worth?}
+
+Statistician Richard De Veaux has shared a dataset on house prices in Saratoga Springs, NY.  In addition to the sales price of the house, the there is a variable indicating whether or not the house has a fireplace:
+<<message=FALSE>>=
+houses = fetchData("SaratogaHouses.csv")
+median( Price ~ Fireplace, data=houses )
+summary(lm(Price ~ Fireplace, data=houses))
+@
+Houses with a fireplace are about \$70,000$\pm$9000 more expensive than houses without.  But this doesn't mean that a fireplace is worth \$70,000.  Houses with fireplace are have other traits that distinguish them from houses without, for example, they tend to be larger.
+<<>>=
+summary(lm(Living.Area ~ Fireplace, data=houses))
+@
+It seems sensible to build a model that takes such confounding into account by including \VN{Living.Area} as a covariate:
+<<>>=
+summary(lm(Price ~ Fireplace+Living.Area, data=houses))
+@
+This model puts the value of a fireplace at about \$10,000$\pm$8000.  Notice that the difference between estimates made using the different models is much larger than the margin of error for either model.  This illuminates a point that it's often difficult to convey to students: a margin of error has to do with sampling variation, not with proximity to the ``true'' value.
+
 
 \chapter{Statistical Inference}
+
+
+
+The question for the modeler should be, ``Does including this covariate improve the model for the purpose?''  There are times when it's best to leave a covariate out of a model
 
 Quick resampling example to demonstrate confidence intervals, then use \function{confint}.
 
