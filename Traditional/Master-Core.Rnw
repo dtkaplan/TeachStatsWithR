@@ -1,0 +1,31 @@
+
+
+
+\documentclass[open-any,12pt]{tufte-book}
+
+\usepackage{../include/RBook}
+\def\tilde{\texttt{\~}}
+
+\title{Traditional Statistics by Untraditional Means}
+\author{Nicholas Horton and Daniel Kaplan and Randall Pruim}
+\date{DRAFT: \today}
+
+\renewenvironment{knitrout}{\relax}{\noindent}
+\begin{document}
+
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+<<include=FALSE>>=
+..makingMaster.. <- TRUE
+@
+
+<<child='Core.Rnw', eval=TRUE>>=
+@
+
+
+\end{document}
