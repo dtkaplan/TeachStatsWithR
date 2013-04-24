@@ -5,6 +5,7 @@
 \def\IfClass#1#2#3{\@ifundefined{opt@#1.cls}{#3}{#2}}
 \makeatother
 \IfClass{tufte-book}{\setcounter{secnumdepth}{3}}{\relax}
+\IfClass{tufte-book}{\def\subsubsection#1{\newthought{#1}}}{}
 
 \RequirePackage{import}
 \RequirePackage{graphicx}
@@ -35,6 +36,7 @@
 \usetikzlibrary{shapes.geometric}
 
 \RequirePackage[utf8]{inputenc}
+\RequirePackage{underscore}
 
 \newcommand{\mymarginpar}[1]{%
 \vadjust{\smash{\llap{\parbox[t]{\marginparwidth}{#1}\kern\marginparsep}}}}
@@ -161,20 +163,26 @@
 }
 
 %%% indexing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%
-\newcommand{\printindex}[1]{\relax}
-\newcommand{\indexchap}[1]{\relax}
-\RequirePackage{amsmidx}
+%\newcommand{\printindex}[1]{\relax}
+%\newcommand{\indexchap}[1]{\relax}
+%\RequirePackage{amsmidx}
+\RequirePackage{makeidx}
+
 \newcommand{\exampleidx}[1]{{\it #1}}
 \newcommand{\defidx}[1]{{\bf #1}}
 \newcommand{\mainidx}[1]{{\bf #1}}
 \newcommand{\probidx}[1]{{{\underline{#1}}}}
-\makeindex{Rindex}
-\makeindex{mainIndex}
-\newcommand{\Rindex}[1]{\index{Rindex}{#1@\texttt{#1}}}
-\newcommand{\myindex}[1]{\index{mainIndex}{#1}}
-\newcommand{\mathindex}[1]{\index{mainIndex}{$#1$}}
+\makeindex
+%\makeindex{Rindex}
+%\makeindex{mainIndex}
+%\newcommand{\Rindex}[1]{\index{Rindex}{#1@\texttt{#1}}}
+%\newcommand{\myindex}[1]{\index{mainIndex}{#1}}
+%\newcommand{\mathindex}[1]{\index{mainIndex}{$#1$}}
+\newcommand{\Rindex}[1]{\index{#1@\texttt{#1}}}
+\newcommand{\myindex}[1]{\index{#1}}
+\newcommand{\mathindex}[1]{\index{$#1$}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% probably don't need this --rjp
 \makeatletter
 \newcommand\gobblepar{%
