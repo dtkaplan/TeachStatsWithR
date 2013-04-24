@@ -1,6 +1,6 @@
 
 
-\documentclass{tufte-book}
+\documentclass[openany]{tufte-book}
 
 \usepackage{../include/RBook}
 
