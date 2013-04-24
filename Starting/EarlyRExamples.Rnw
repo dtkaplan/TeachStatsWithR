@@ -267,6 +267,10 @@ rflip(10)
 Typing \code{rflip(10)} a bunch of times is almost as tedious as 
 flipping all those coins.   But it is not too hard to 
 tell \R\ to \function{do()} this a bunch of times.
+\marginpar{Notice that \function{do()} is clever about what information
+it records.  Rather than recording all of the individual tosses, it is 
+only recording the number of flips, the number of heads, and the number 
+of tails.}%
 <<flip2,cache=TRUE>>=
 do(3) * rflip(10)
 @
@@ -346,11 +350,11 @@ tally(results$M, format='perc')
 \subsection{Births by Day}
 
 The \dataframe{Births78} data set contains the number of births in the United States for 
-each day of 1978.  A scatter plot of births by day of year reveals some interesting 
-patterns.
-Let's see how the number of births depends on the day of the year.
+each day of 1978.  
 \marginnote{The use of the phrase ``depends on'' is intentional.  
 Later we will emphasize how \texttt{\~} can often be interpreted as ``depends on''.}
+A scatter plot of births by day of year reveals some interesting patterns.
+Let's see how the number of births depends on the day of the year.
 
 <<births1,out.width=".8\\textwidth",fig.width=5>>=
 xyplot(births ~ dayofyear, Births78)
@@ -374,8 +378,9 @@ readily seen to be holidays.
 trellis.par.set(superpose.symbol=list(pch=16, alpha=.6, cex=.6))
 @
 
-<<births3,fig.width=5,fig.height=3.0>>=
-xyplot(births ~ dayofyear, Births78, groups=dayofyear%%7, auto.key=list(space="right")) 
+<<births3,fig.width=5,fig.height=3.0,tidy=FALSE>>=
+xyplot(births ~ dayofyear, Births78, groups=dayofyear%%7, 
+       auto.key=list(space="right")) 
 @
 
 A discussion of this or some other data set that can be explored through graphical displays
@@ -396,6 +401,14 @@ do worse on the SAT.
 <<SAT1>>=
 xyplot(sat ~ expend, data=SAT)
 @
+The problem is that expenditures are confounded with the proportion of students who take the exam,
+and scores are higher in states where fewer students take the exam.
+<<>>=
+xyplot(expend ~ frac, data=SAT)
+xyplot(sat ~ frac, data=SAT)
+@
+This example can be used to warn against interpreting relationships causally and 
+to illustrate the importance of considering covariates.  
 
 
 \section{Mites and Wilt Disease}

@@ -168,14 +168,15 @@ sqrt(16)                  # square root
 As an alternative, \R\ commands can be stored in a file.  \RStudio\ provides
 an integrated editor for editing these files and facilitates executing some or all of 
 the commands.  To create a file, select \tab{File}, then \tab{New File}, then \tab{R Script}
-from the \RStudio\ menu.  A file editor tab will open.  \R\ code can be entered here, and 
+from the \RStudio\ menu.  A file editor tab will open in the \tab{Source} panel.  
+\R\ code can be entered here, and 
 buttons and menu items are provided to run all the code (called sourcing the file) or 
 to run the code on a single line or in a selected section of the file.
 
-\subsection{Working with RMarkdown Files}
+\subsection{Working with RMarkdown, Sweave and knitr}
 A third alternative is to take advantage of \RStudio's support for reproducible research.
 If you already know \LaTeX, you will want to investigate the knitr/Sweave capabilities.
-For those who do not alrady know \LaTeX, the simpler RMarkdown system provides an easy
+For those who do not already know \LaTeX, the simpler RMarkdown system provides an easy
 entry into the world of reproducible research methods.  It also provides a good facility
 for students to create homework and reports that include text, \R\ code, and graphics.
 
@@ -185,11 +186,11 @@ used.  Click on \tab{Compile HTML} to convert this to an HTML file.  There is a 
 provides a brief index of the mark up provided, and the \RStudio\ web site includes more
 extensive tutorials on using RMarkdown.
 
-\marginnote{RMarkdown files do not have access to the console workspace, so
-the code in them must be self-contained.}%
+\marginnote{RMarkdown, Sweave, and knitr files do not have access to the console workspace, 
+so the code in them must be self-contained.}%
 It is important remember that unlike \R\ scripts, which are executed in the
-console and so do have access to the console workspace,  RMarkdown files do not
-have access to the console workspace.  This is a good feature because it forces
+console and so do have access to the console workspace,  RMarkdown, Sweave, and knitr 
+files do not have access to the console workspace.  This is a good feature because it forces
 the files to be self-contained, which makes them transferable and respects good
 reproducible research practices.  But beginners, especially if they adopt a
 strategy of trying things out in the console and copying and pasting successful
@@ -260,10 +261,10 @@ tab facilitates installing and loading packages.  It will also allow you to sear
 packages that have been updated since you installed them.
 
 
-\section{Exercises}
+%\section{Exercises}
 
 %For these problems, create a single Word document containing all of your work.
 
-\shipoutProblems
+%\shipoutProblems
 
 

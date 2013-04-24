@@ -66,7 +66,7 @@ One frequent use of this is to save and print a value all in one go:
 @
 
 
-\section{Four Things to Know About \R\ and \RStudio}
+\section{Four Things to Know About \R}
 
 \R\ has to be used on its terms.  \R\ does not learn the personality and style 
 of its users.  Getting along with \R\ is much easier if you keep in mind (and remind 
@@ -99,7 +99,7 @@ arguments must be.
 \item The arguments are \underline{always} \emph{surrounded by (round) parentheses} and 
 \emph{separated by commas}.
 
-Some functions (like \verb!data()!) 
+Some functions (like \function{data()}) 
 have no required arguments, but you still need the parentheses.
 
 \item
@@ -117,7 +117,7 @@ it expects.
 
 The up and down arrows can be used to retrieve past commands.
 \item
-If you see a \verb!+! prompt, it means \R\ is waiting for more input.
+If you see a \code{+} prompt, it means \R\ is waiting for more input.
 
 \Caution{Your students will sometimes find themselves in a syntactic hole from which they cannot
 dig out.  Teach them about the ESC key early.}%
@@ -135,7 +135,7 @@ the \R\ help system.
 
 \subsection{?}
 
-To get help on a specific function or data set, simply precede its name with a \verb!?!:
+To get help on a specific function or data set, simply precede its name with a \code{?}:
 
 \authNote{This isn't working properly}
 <<rs-help1,eval=FALSE,tidy=FALSE>>=
@@ -155,7 +155,7 @@ apropos('tally')            # must include quotes.  single or double.
 @
 
 \subsection{\texttt{??} and \texttt{help.search()}}
-If that fails, you can do a broader search using \verb!??! or \verb!help.search()!, 
+If that fails, you can do a broader search using \code{??} or \function{help.search()}, 
 which will find matches not only in the names of functions and data sets, 
 but also in the documentation for them.  Quotation marks are optional here.
 
@@ -174,7 +174,7 @@ Some of the examples are next to useless, others are excellent.}%
 These examples also appear at the end of the documentation for functions and data sets.
 
 The \pkg{mosaic} package (and some other packages as well) also includes demos.  
-Demos are bits of \R\ code that can be executed using the \verb!demo()! command
+Demos are bits of \R\ code that can be executed using the \function{demo()} command
 with the name of the demo.
 To see how demos work, give this a try:
 <<rs-demo,eval=FALSE,results="hide">>=
@@ -236,7 +236,7 @@ particularly easy and avoids the need for \function{install.packages()}.
 If you are running on a machine where you don't have privileges to
 write to the default library location, you can install a personal 
 copy of a package.  If the location of your personal library is 
-first in \verb!R_LIBS!, this will probably happen automatically.  If not,
+first in \code{R_LIBS}, this will probably happen automatically.  If not,
 you can specify the location manually:
 
 <<eval=FALSE>>=
@@ -297,7 +297,7 @@ data(package="mosaic")
 Typically (provided the author of the package allowed for lazy loading of data) 
 you can use data sets by simply typing their names.  But if you have already
 used that name for something or need to refresh the data after making some changes you no longer
-want, you can explicitly load the data using the \verb!data()! function with the name of the 
+want, you can explicitly load the data using the \function{data()} function with the name of the 
 data set you want.
 
 <<rs-data-load>>=
@@ -329,7 +329,7 @@ Columns correspond to \term{variables} (measurements collected on each
 observational unit).
 \end{itemize}
 \end{boxedText}
-\marginpar{To help students keep variables and data frames straight, and to
+\marginnote{To help students keep variables and data frames straight, and to
 make it easier to remember the names, we have adopted the convention that data
 frames in the \pkg{mosaic} package are capitalized and variables (usually) are
 not.  This convention has worked well, and you may wish to adopt it for your
@@ -361,25 +361,26 @@ View(Births78)
 \authNote{add pointer to fetchData()?}
 
 %\subsection{Getting at the Variables}
-We can gain access to a single variable in a data frame using the \verb!$! operator using
+We can gain access to a single variable in a data frame using the \code{\$} operator using
 the syntax
 \marginnote{An alternative is to use the \function{with()} function.
 }
 <<rs-dollar-sign,eval=FALSE>>=
 dataframe$variable
 @
-But as we shall demonstrate, there are relatively few instances where one needs to do so.
 For example,
 <<rs-Births78-births,eval=FALSE>>=
 Births78$births
 @
 shows the contents of the \variable{births} variable in \dataframe{Births78} data set.
+\marginnote{As we will see, 
+there are relatively few instances where one needs to use the \texttt{\$} operator.}
 Listing the entire set of values for a particular variable
 isn't very useful for a large data set.  
 We would prefer to compute numerical or graphical summaries.  We'll do that shortly.
 
 \Caution{Avoid the use of \function{attach()}.}
-The \verb!attach()! function in R can be used to make objects within data frames
+The \function{attach()} function in R can be used to make objects within data frames
 accessible in \R\ with fewer keystrokes, but we strongly discourage its use, as
 it often leads to name conflicts and other complications.  
 The Google R Style Guide\footnote{
@@ -391,8 +392,8 @@ echoes this advice, stating that
 when using attach are numerous. Avoid it.} 
 \end{quotation}
 It is far better to directly access
-variables using the \verb!$! syntax or to use functions that allow you to 
-avoid the \verb!$! operator.
+variables using the \code{\$} syntax or to use functions that allow you to 
+avoid the \code{\$} operator.
 
 
 
@@ -408,9 +409,9 @@ data, to think about distributions, and to pose statistical questions.
 \subsection{Lattice Graphics}
 
 There are several ways to make graphs in \R.  One approach is a system called
-\verb!lattice! graphics.   Whenever the \pkg{mosaic} package is loaded, the \pkg{lattice}
+\pkg{lattice} graphics.   Whenever the \pkg{mosaic} package is loaded, the \pkg{lattice}
 package is also loaded.  One of the attractive aspects of 
-\verb!lattice! plots is that they make use of a \term{formula interface} 
+\pkg{lattice} plots is that they make use of a \term{formula interface} 
 similar to that used for numerical summaries (using \pkg{mosaic}) and modeling.
 
 All the plots we need can be created with essentially the same syntactic structure:
@@ -423,101 +424,206 @@ plotname( y ~ x | z, data=dataframe,
 @
 \begin{itemize}
 \item
-Here are the names of several \verb!lattice! plots:
+Here are the names of several \pkg{lattice} plots:
 \begin{itemize}
-\item \verb!dotPlot! (notice the capital P)
+	\item \function{dotPlot()} (notice the capital P)
 \footnote{\texttt{dotPlot()} is in the \pkg{mosaic} package and 
 was created because \texttt{dotplot()} in
 the \texttt{lattice} package makes something different from what we call a dot plot.}
-\item \verb!histogram! or \verb!xhistogram!  (for histograms)
+\item \function{histogram()} or \function{xhistogram()}  (for histograms)
 	\footnote{\function{xhistogram()} is a \pkg{mosaic} function that adds some 
 	extra functionality to \function{histogram()}.}
-\item \verb!bwplot!  (for boxplots)
-\item \verb!xyplot!  (for scatter plots)
-\item \verb!qqmath!  (for quantile-quantile plots)
+\item \function{densityplot()}  (for density plots)
+\item \function{freqpolygon()}  (for frequency polygons)
+\item \function{bwplot()}  (for boxplots)
+\item \function{xyplot()}  (for scatter plots)
+\item \function{qqmath()}  (for quantile-quantile plots)
 \end{itemize}
 \item
-\verb!x! is the name of the variable that is plotted along the horizontal 
+\variable{x} is the name of the variable that is plotted along the horizontal 
 ($x$) axis.
 \item
-\verb!y! is the name of the variable that is plotted along the vertical ($y$) 
+\variable{y} is the name of the variable that is plotted along the vertical ($y$) 
 axis.  (For some plots, this slot is empty because \R\ computes these values
-from the values of \verb!x!.)
-\Caution{Even when \texttt{y} is missing, the \texttt{\~} is still mandatory.}
+from the values of \variable{x}.)
+\Caution{Even when \variable{y} is missing, the \texttt{\~} is still mandatory.}
 \item
-\verb!z! is a conditioning variable used to split the plot into 
+\variable{z} is a conditioning variable used to split the plot into 
 multiple subplots called \term{panels}.
 \item
-\verb!grouping_variable! is used to display different groups differently
+\variable{grouping_variable} is used to display different groups differently
 (different colors or symbols, for example) within the same panel.
 \item
-\verb!...! There are many additional arguments to these functions that let you
+\variable{...} There are many additional arguments to these functions that let you
 control just how the plots look.  (But we'll focus on the basics for now.)
 \end{itemize}
 
 %\subsection*{Some Examples}
 
-\subsection{Dot plots: \texttt{dotPlot()}}
+\subsection{The shape of a distribution: Histograms and their kin}
 
-A dot plot represents each value of a quantitative variable with a dot.  The values
+A number of plots can be used to visualize the ``shape'' of a distribution, including
+dot plots, histograms, density plots and frequency polygons.  Of these, the histogram
+is probably the most commonly used, but there are situations when one of the others
+is a better alternative.  Each can be created in \R\ using a simple command structure
+<<eval=FALSE>>=
+plotname(~ x, data = ...)
+@
+Since for each of these plots the values along the $y$ axis are computed rather than
+provided in the data, the \variable{y} slot in the formula is empty.
+
+\subsubsection{Dot plots: \texttt{dotPlot()}}
+
+A \term{dot plot} represents each value of a quantitative variable with a dot.  The values
 are rounded a bit so that the dots line up neatly, and dots are stacked up into little
-towers when the data values cluster near each other.
+towers when the data values cluster near each other.  Dot plots are primarily used with 
+modestly sized data sets and can be used as a bridge to the other plots, where there is
+no longer a direct connection between a component of the plot and an individual observation.
 
-For a dot plot, the \verb!y! component of the formula is empty since we let \R\
-calculate that for us.
-
+Here is an example using the sepal lengths recorded in the \dataframe{iris} data set.
 <<rs-dotPlot,cache=FALSE,fig.width=5,fig.height=3.0>>=
 # n = 30 gives approx 30 columns
-dotPlot(~ births, data=Births78, n=30)    
+dotPlot(~ Sepal.Length, data=iris, n=30)    
 @
-We can use a conditional variable to give us separate dot plots for each
-species, and shrink the dots.
+We can use a conditional variable to give us separate dot plots for each of the three
+species in this data set.
 <<rs-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
 dotPlot(~ Sepal.Length | Species, data=iris, n=20, 
 		cex=.6,        # cex used to shrink the dots a bit
 		layout=c(3,1)) 
 @
 
-\subsection{Histograms: \texttt{xhistogram()}}
+\subsubsection{Histograms: \texttt{xhistogram()}}
 
-Histograms are a lot like dot plots, but the towers of dots are replaced by vertical bars.
-Again the \verb!y! component of the formula is empty since we let \R\
+\term{Histograms} are a lot like dot plots, but the towers of dots are replaced by vertical bars.
+Again the \variable{y} component of the formula is empty since we let \R\
 compute the heights of the bars for us.
-<<rs-iris-histogram,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
+<<rs-iris-histogram,cache=TRUE,fig.width=6,out.width=".9\\textwidth">>=
 # n= 20 gives approx. 20 bars
 xhistogram(~ Sepal.Length, data=iris, n=20)       
 @
 We can use a conditional variable to give us separate histograms for each species.
+\marginnote{This reveals the true story of the data -- the distribution of sepal
+length is different for the different species of iris.}
 
-<<rs-iris-histogram-cond,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
-xhistogram(~ Sepal.Length | Species, data=iris, n=20, layout=c(3,1))
+<<rs-iris-histogram-cond,cache=TRUE,tidy=FALSE,fig.width=6,out.width=".9\\textwidth">>=
+xhistogram(~ Sepal.Length | Species, data=iris, n=20, 
+		   layout=c(3,1))  # 3 columns (x) and 1 row (y) 
 @
-
-
-In lattice lingo, the three subplots are called panels and the labels at the
+In lattice lingo, the three subplots are called \term{panels} and the labels at the
 top are called strips.  
 %(Strips can be placed on the left side if you prefer.)
+
+\subsubsection{Frequency polygons: \texttt{freqpolygon()}}
+
+\term{Frequency polygons} and \term{density plots} provide alternatives to histograms
+that make it easier to overlay the representations of multiple subsets of the data.
+A frequency polygon is created from the same data summary (bins and counts) as a histogram, 
+but instead of representing each bin with a bar, it is represented by a point 
+(at the center of the where the top of the histogram bar would have been).  
+These points are then connected with line segments.
+\marginnote{The names in the \dataframe{faithful} data set are 
+poorly chosen.  The \dataframe{geyser} data set in the \pkg{MASS}
+package has better names and more data.}
+Here is an example that shows the distribution of Old Faithful eruptions times
+from a sequence of observations 
+\marginnote{The interesting feature of this distribution is the clear bimodality.
+In particular, the mean and median eruption time are not a good measures of the duration of a  
+``typical'' eruption since almost none of the eruption durations are near the mean and median.}
+<<>>=
+require(MASS)
+freqpolygon( ~ duration, data=geyser, n=15)
+@
+Numerically, the data are being summarized and  represented in exactly the same way as for 
+histograms, but visually the horizontal and vertical line segments of the histogram are 
+replaced by sloped line segments.  
+<<echo=FALSE>>=
+xhistogram( ~ duration, data=geyser, n=15, col="lightskyblue")
+ladd( panel.freqpolygon(geyser$duration, n=15) )
+@
+This may give a more accurate visual representation in some 
+situations (since the distribution can ``taper off'' better).  More importantly, it makes 
+it much easier to overlay multiple distributions.
+<<>>=
+freqpolygon( ~ Sepal.Length, data=iris, groups=Species, ylim=c(0,65))
+@
+
+\subsubsection{Density plots: \texttt{densityplot()}}
+
+\term{Density plots} are similar to frequency polygons, but the piecewise linear
+representation is replaced by a smooth curve.  
+<<>>=
+densityplot( ~ Sepal.Length, data=iris, groups=Species)
+@
+Beginners do not need to know the details
+of how that smooth curve is generated, but should be introduced to the \option{adjust}
+argument which controls the degree of smoothing.  It is roughly equivalent to choosing 
+wider or narrower bins for a histogram or frequency polygon.  The default value is 1.
+Higher values smooth more heavily; lower values, less so.
+<<tidy=FALSE>>=
+densityplot( ~ Sepal.Length, data=iris, groups=Species, 
+             adjust=3)
+densityplot( ~ Sepal.Length, data=iris, groups=Species, 
+             adjust=1/3)
+@
+
+\subsubsection{The Density Scale}
+
+There are three scales that can be used for the plots in the preceding section: 
+\code{count}, 
+\code{percent}, 
+and \code{density}.  
+Beginning students will be most familiar with the \code{count} scale and perhaps also 
+the \code{percent} scale, but most will not have seen the \code{density} scale.
+The density scale captures the most important aspect of all of these plots
+
+\begin{boxedText}
+	\centerline{Area is proportional to frequency.}
+\end{boxedText}
+
+\noindent
+The density scale is chosen so that the constant of proportionality is 1, in which case we have
+\begin{boxedText}
+	\centerline{Area equals proportion.}
+\end{boxedText}
+\TeachingTip{Create some histograms or frequency polygons with a density scale and see
+if your students can determine what the scale is.  Choosing convenient bin widths (but not 1)
+and comparing plots with multiple bin widths and multiple scale types can help them
+reach a good conjecture about the density scale.}
+This is the only scale available for \function{densityplot()} and is the most suitable 
+scale if one is primarily interested in the \emph{shape} of the distribution.  The vertical scale
+is affected very little by the choice of bin widths or \option{adjust} multipliers.
+It is also the appropriate scale to use when overlaying a density function.
+<<fig.width=6,out.width="\\textwidth", tidy=FALSE>>=
+xhistogram( ~ Sepal.Length | Species, data=iris, 
+                                      fit="normal" )
+@
+
+The other scales
+are primarily of use when one wants to be able to read off bin counts or percents from the plot.
+
 
 
 \subsection{Boxplots: \texttt{bwplot()}}
 
-Boxplots are constructed in much the same manner as histograms:
+Boxplots are constructed in much the same manner as the plots in the previous section:
 <<rs-iris-bwplot>>=
 bwplot(~ Sepal.Length, data=iris)
 @
 
 As we did for histograms, we can use conditioning to 
 show boxplots for multiple groups within the data set:
-
 <<rs-iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".7\\textwidth">>=
 bwplot(~ Sepal.Length | Species, data=iris, layout=c(3,1))
 @
 But there are better ways to do this.
-\InstructorNote{This assumes that the variable on the right hand side of the \tilde\
-is categorical}%
+\InstructorNote{The boxplots are vertical when the categorical variable is on the 
+right hand side of the \tilde.}
 <<label="rs-iris-bwplot-2d">>=
 bwplot(Sepal.Length ~ Species, data=iris)
 @
+\InstructorNote{The boxplots are horizontal when the categorical variable is on the 
+left hand side of the \tilde.}
 <<label="rs-iris-bwplot-2dmore">>=
 bwplot(Species ~ Sepal.Length, data=iris)
 @
@@ -526,14 +632,14 @@ bwplot(Species ~ Sepal.Length, data=iris)
 
 \subsection{Scatterplots: \texttt{xyplot()}}
 
-Scatterplots are made with \verb!xyplot()!.  The formula and modeling interface is used in the same manner as before.
+Scatterplots are made with \function{xyplot()}.  The formula and modeling interface is used in the same manner as before.
 Just remember that the ``$y$ variable'' comes first.  (Its label is also farther left on 
 the plot, if that helps you remember.)
 <<rs-iris-xyplot,cache=TRUE>>=
 xyplot(Sepal.Length ~ Sepal.Width, data=iris)
 @
 Again, we can use conditioning to make a panel for each species.
-<<rs-iris-xyplot-cond,tidy=FALSE,cache=TRUE,fig.width=7,out.width=".7\\textwidth">>=
+<<rs-iris-xyplot-cond,tidy=FALSE,cache=TRUE,fig.width=6,out.width=".8\\textwidth">>=
 xyplot(Sepal.Length ~ Sepal.Width | Species, data=iris,
   layout=c(3,1)) # layout controls number of columns and rows
 @
@@ -547,8 +653,8 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species,
 \subsection{Saving Your Plots}
 
 There are several ways to save plots in \RStudio, but the easiest is probably the following:
-\marginnote{You can save all of this exporting and copying and pasting if you use RMardown or 
-knitr/Sweave to prepare your documents.}
+\marginnote{You can save all of this exporting and copying and pasting if you use RMardown, 
+Sweave or knitr to prepare your documents.}
 \begin{enumerate}
 \item
 In the \tab{Plots} tab, click the ``Export'' button.
@@ -559,6 +665,9 @@ Go to your document (e.g. Microsoft Word) and paste in the image.
 \item
 Resize or reposition your image as needed.
 \end{enumerate}
+The \function{pdf()} function can be used to save plots as pdf files.  See 
+the documentation of this function for details and links to functions that 
+can be used to save graphics in other file formats.
 
 
 \section{Numerical Summaries}
@@ -568,7 +677,7 @@ Most of the numerical summaries already familiar to you have obvious names.
 Here are a few examples.  
 \authNote{add iqr() once an aggregating version is in the package}%
 \marginnote{In the current version of the \pkg{mosaic} package,
-the \tilde can be omited in the one-variable numerical summary functions.  This is 
+the \tilde\ can be omited in the one-variable numerical summary functions.  This is 
 not true for the \pkg{lattice} plots, so we recommend that you use the \tilde\ and
 be consistent across multiple functions.}
 
@@ -579,7 +688,7 @@ sd(~ births, data=Births78)
 max(~ births, data=Births78)
 min(~ births, data=Births78)
 @
-The \verb!favstats()! function in the \pkg{mosaic} package computes several numerical 
+The \function{favstats()} function in the \pkg{mosaic} package computes several numerical 
 summaries all at once.
 <<>>=
 favstats(~ births, data=Births78)
@@ -588,7 +697,7 @@ favstats(~ births, data=Births78)
 The formula interface for these functions provided by the \pkg{mosaic} package
 \begin{itemize}
 	\item
-		Removes the need for the \verb!$! operator.
+		Removes the need for the \code{\$} operator.
 
 	\item
 		Simplifies computing summary statistics separately in each of several groups.  For
@@ -605,7 +714,7 @@ mean( ~ length | sex, data=KidsFeet )
 \end{itemize}
 
 \begin{problem}
-What is the average (mean) \emph{width} of the sepals in the \verb!iris! data set?
+What is the average (mean) \emph{width} of the sepals in the \dataframe{iris} data set?
 \end{problem}
 \begin{solution}
 <<>>=
@@ -614,7 +723,7 @@ mean(Sepal.Width, data=iris)
 \end{solution}
 
 \begin{problem}
-Determine the average (mean) sepal width for each of the three species in the \verb!iris! data set.
+Determine the average (mean) sepal width for each of the three species in the \dataframe{iris} data set.
 \end{problem}
 \begin{solution}
 <<>>=
@@ -677,27 +786,30 @@ tally(~ sector | race, CPS85)   # conditional on race
 
 The \pkg{mosaic} function \function{bargraph()} can 
 display these tables as bar graphs.
-<<rs-bargraph1a>>=
-bargraph(~ sector, CPS85, scales=list(x=list(rot=45)))
+<<rs-bargraph1a,tidy=FALSE>>=
+bargraph(~ sector, data=CPS85, 
+                   scales=list(x=list(rot=45)))
 @
 <<rs-bargraph2a>>=
-bargraph(~ sector, CPS85, horizontal=TRUE)  # horizontal bars
+bargraph(~ sector, data=CPS85, horizontal=TRUE)  # horizontal bars
 @
 
 As with the other lattice plots, we can add grouping or conditioning to 
 our plot.
-<<rs-bargraph3a>>=
-bargraph(~ sector, CPS85, groups=race, scales=list(x=list(rot=45)))
+<<rs-bargraph3a,tidy=FALSE>>=
+bargraph(~ sector, data=CPS85, groups=race, 
+                   scales=list(x=list(rot=45)))
 @
 <<rs-bargraph3amore>>=
-bargraph(~ sector | race, CPS85, scales=list(x=list(rot=45)))
+bargraph(~ sector | race, data=CPS85, 
+                          scales=list(x=list(rot=45)))
 @
 
 
 Bar graphs can also be used to display two-way tables.  
-
 <<rs-barchart3aa>>=
-bargraph( ~ sector, groups=race, data=CPS85)
+bargraph( ~ sector, groups=race, data=CPS85,
+                    scales=list(x=list(rot=45)))
 @
 
 
@@ -748,18 +860,19 @@ divided by the number of days in the billing cycle.
 \item Use the documentation to determine what the \vn{kwh} variables contains.
 \item
 Make a scatter plot of \dataframe{gasbillpday} vs. \dataframe{monthsSinceY2K} using the command
-<<rs-gasbill,fig.keep="none">>=
-xyplot(gasbillpday ~ monthsSinceY2K, data=Utilities2, type='l')   # the letter l
+<<rs-gasbill,fig.keep="none", tidy=FALSE>>=
+xyplot(gasbillpday ~ monthsSinceY2K, data=Utilities2, 
+                     type='l')        # the letter l
 @
 \item[]
 What pattern(s) do you see?
 \item
-What does \verb!type='l'! do?  Make your plot with and without it.  Which is easier to read
+What does \option{type='l'} do?  Make your plot with and without it.  Which is easier to read
 in this situation?
 \item
 What happens if we replace 
-\verb!type='l'! with 
-\verb!type='b'!?
+\option{type='l'} with 
+\option{type='b'}?
 \item
 Make a scatter plot of \vn{gasbillpday} by \vn{month}.   
 What do you notice?
@@ -771,7 +884,7 @@ What do you notice?
 
 Your first try probably won't give you what you expect.  The reason is that month is coded
 using numbers, so \R\ treats it as numerical data.  We want to treat it as categorical data.
-To do this in \R\, use \verb!factor(month)! in place of \dataframe{month}.  
+To do this in \R\, use \variable{factor(month)} in place of \variable{month}.  
 \R\ calls categorical data a \term{factor}.
 
 \item
@@ -806,8 +919,8 @@ Recreate the table in \R. %Copy and paste the results into your Word document.
 What percent of the subjects slept with a nightlight as infants?
 
 There are several ways to do this.  You could use \R\ as a calculator to do the arithmetic.
-You can save some typing if you use the function \verb!tally()!.  See
-\verb!?tally! for documentation.
+You can save some typing if you use the function \function{tally()}.  See
+\code{?tally} for documentation.
 %If you just want row and column totals added to the table, see \verb!mar_table()!
 %in the \verb!vcd! package.
 \item Create a graphical representation of the data.  What does this plot reveal?
@@ -838,7 +951,7 @@ mycrosstable <- rbind(
 			  )
 mycrosstable
 @
-Replacing \verb!rbind()! with \verb!cbind()! will allow you to give the data
+Replacing \function{rbind()} with \function{cbind()} will allow you to give the data
 column-wise instead.
 
 We can use \function{barchart()} instead of \function{bargraph()} to plot data 
@@ -896,14 +1009,14 @@ births <-
 \subsection{Importing Data in \RStudio}
 \InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
 will want to know how to use functions like \function{read.csv()} for working
-in RMarkdown or knitr files.}
+in RMarkdown, Sweave, or knitr files.}
 The \RStudio\ interface provides some GUI tools for loading data.
 If you are using the \RStudio\ server, you will first need to upload the data
 to the server (in the \tab{Files} tab), and then import the data into your \R\ 
 session (in the \tab{Workspace} tab).  
 \TeachingTip{Remind students that the 2-step process (upload, then import)
 works much like images in Facebook.  First you upload them to Facebook, and once 
-they are there you can include them in posts, etc.}
+they are there you can include them in posts, etc.}%
 If you are running the desktop version, the upload step is not needed.
 
 
@@ -960,14 +1073,14 @@ abdData(2)               # all data sets in chapter 2
 
 \section{\R\ Examples}
 \vspace{-3mm}
-The commands below are illustrated with the data sets \verb!iris! and 
-\verb!CPS85!.  To apply these in other situations, you will need to 
+The commands below are illustrated with the data sets \dataframe{iris} and 
+\dataframe{CPS85}.  To apply these in other situations, you will need to 
 substitute the name of your data frame and the variables in it.
 
 \vspace{-3mm}
 \begin{center}
 \begin{longtable}{p{2.45in}p{3.30in}}
-\verb!answer <- 42! & Store the value 42 in a variable named \verb!answer!.
+\verb!answer <- 42! & Store the value 42 in a variable named \variable{answer}.
 \\[3mm]
 %\verb!sl <- iris$Sepal.Length! & Store the \verb!Sepal.Length! variable from the 
 %\verb!iris! data frame into a variable called \verb!sl! (to save typing, for example).

@@ -45,7 +45,7 @@ operation.
 
 Nevertheless, we can borrow from the collective wisdom of the programming community and
 adopt some practices that will make our experience more pleasurable, more efficient, and 
-less error prone.
+less error-prone.
 
 \begin{itemize}
   \item Store your code in a file.  %# rather than entering it at the prompt.
@@ -74,14 +74,14 @@ savehistory("someRCommandsIalmostLost.R")
 @
 In \RStudio,
 you can selectively copy portions of your history to a script file
-(or the console) using the History panel.
+(or the console) using the \tab{History} tab.
 
   \item Use meaningful names.
 
 	  Rarely should objects be named with a single letter.  
 	  
-	  Adopt a personal convention regarding case of letters to you have one
-	  less thing to remember when trying to recall the name of an object.  For
+	  Adopt a personal convention regarding case of letters.  This will mean you
+	  have one less thing to remember when trying to recall the name of an object.  For
 	  example, in the \pkg{mosaic} package, all data frames begin with a
 	  capital letter.  Most variables begin with a lower case letter (a few
 	  exceptions are made for some variables with names that are well-known in
@@ -168,6 +168,12 @@ vectors of length~1.  Missing values are coded as \code{NA} (not available).  As
 for an entry ``off the end'' of a vector returns \code{NA}.
 Assigning a value ``off the end'' of a vector results in the vector being
 lengthened so that the new value can be stored in the appropriate location.
+<<>>=
+q <- 1:5
+q
+q[10] <- 10
+q
+@
 
 There are important ways that \R\ has 
 been optimized to work with vectors since they correspond to variables 
@@ -189,8 +195,8 @@ mode.  A \rterm{matrix} is a 2-dimensional array.
 
 \Rindex{[ ]}%
 \Rindex{[[ ]]}%
-The access operators (\code{[ ]} for vectors, matrices, arrays, and data frames,
-and  \code{[[ ]]} for lists) are actually \emph{functions} in \R.
+The access operators -- \code{[ ]} for vectors, matrices, arrays, and data frames,
+and  \code{[[ ]]} for lists -- are actually \emph{functions} in \R.
 This has some important consequences:
 \begin{itemize}
   \item Accessing elements is slower than in a language like C/C++
@@ -202,8 +208,8 @@ This has some important consequences:
 <<"bracket-function">>=
 xm <- matrix(1:16, nrow=4); xm
 xm[5]
-xm[,2]                   # this is 1 dimensional (a vector)
-xm[,2, drop=FALSE]        # this is 2 dimensional (still a matrix)
+xm[,2]                   # this is 1-d (a vector)
+xm[,2, drop=FALSE]        # this is 2-d (still a matrix)
 @
 
 Many objects have a \rterm{dim attribute} that stores the dimension
@@ -280,8 +286,8 @@ alpha <- c("a", "1", "b", "0.5")
 mode(alpha)
 @
 <<>>=
-as.numeric(alpha)      # can't do the coercion, so NAs are introduced
-as.integer(alpha)      # notice coercion of 0.5 to 0
+as.numeric(alpha)    # note the NAs when coercion isn't possible
+as.integer(alpha)    # notice coercion of 0.5 to 0
 @
 
 \section{More About Vectors}
@@ -317,8 +323,10 @@ Most traditional mathematics functions are available and work this way.
 \Rindex{median()}%
 \Rindex{log()}%
 
-<<vectors01>>=
-x <- 1:5; y <- seq(10, 60, by=10); z <- rnorm(10); x; y
+<<vectors01,tidy=FALSE>>=
+x <- 1:5; y <- seq(10, 60, by=10); 
+x
+y
 y + 1
 x * 10
 x < 3
@@ -334,9 +342,10 @@ This can facilitate side-by-side comparisons.
 \Rindex{round()}%
 \Rindex{signif()}%
 
-<<vectors01a>>=
+<<vectors01a,tidy=FALSE>>=
 # compare round() and signif() by binding rowwise into matrix
-rbind(round(z, digits=2), signif(z, digits=2))   
+z <- rnorm(5); z
+rbind(round(z, digits=3), signif(z, digits=3))   
 @
 
 
@@ -356,15 +365,17 @@ sum(x); prod(x)                         # sums and products
 
 <<vectors02a>>=
 z <- rnorm(5); z
-sort(z); rank(z); order(z)              # sort, rank, order
+sort(z); rank(z); order(z)              
 rev(x)                                  # reverse x
 @
 
+The following functions produce vectors, but not by applying a 
+function component by component.
 <<vectors02b>>=
+x
 diff(x)                                 # pairwise differences
 cumsum(x)                               # cumulative sum
 cumprod(x)                              # cumulative product
-sum(x); prod(x)                         # sums and products
 @
 \label{r:sumprod}%
 
@@ -488,7 +499,7 @@ are used to select or deselect elements of the vector.
 
 <<vectors04b>>=
 x <- seq(2, 20, by=2)
-x[c(TRUE, TRUE, FALSE)]      # skips every third element (recycling!)
+x[c(TRUE, TRUE, FALSE)]      # skips every third (note recycling)
 x[x > 10]                    # more typical use of boolean in selection
 @
 
@@ -496,9 +507,7 @@ x[x > 10]                    # more typical use of boolean in selection
 Negative indices are used to omit elements.
 
 <<vectors04c>>=
-x <- seq(2, 20, by=2)
-x[c(TRUE,TRUE,FALSE)]        # skips every third element (recycling!)
-x[x > 10]                    # more typical use of boolean in selection
+x[-c(2,4)]                   # all but 2nd and 4th
 @
 
 \noindent
@@ -528,7 +537,7 @@ and in Section~\ref{sec:usingdata} we discussed methods for bringing your
 own data into \R.   In both of these scenarios, we have assumed that the data
 had been entered and cleaned in some other software and focussed primarily on
 data import.
-In this section we primarily discuss ways to create and manipulate 
+In this section we discuss ways to create and manipulate 
 data within \R.   But first discuss a few more details regarding importing data.
 
 
@@ -575,7 +584,7 @@ x <- c(1,1,2,3,5,8,13); x
 @
 
 The \function{scan()} function can speed up data entry in the console 
-by allowing you to avoid the commas
+by allowing you to avoid the commas.
 \Rindex{scan()}%
 Individual values are separated by white space or new lines.  
 A blank line is used to signal the end of the data.
@@ -609,8 +618,8 @@ myDataFrame
 \myindex{SQL}%
 The \pkg{RMySQL} package allows direct access to data in MySQL data bases.
 This can be convenient when dealing with subsets of very large data sets.
-The example below queries a the UCSC genome browser to find the first
-5000 genes on chromosome~1.
+The example below queries a the UCSC genome browser to find all the known genes
+on chromosome~1.
 
 \begin{table*}
 <<ucsc-sql,tidy=FALSE>>=
@@ -624,11 +633,11 @@ ucscData <- dbConnect(MySQL(),
 # Function to make it easier to query 
 query <- function(...) dbGetQuery(ucscData, ...)
  
-# Get the UCSC gene name, start and end sites for the first 5000 genes on Chromosome 1
-results <- 
-  query("SELECT name, chrom, txStart, txEnd FROM mm9.knownGene WHERE chrom='chr1' LIMIT 5000;")
-dim(results)
-head(results,2)
+# Get the UCSC gene name, start and end sites for genes on Chromosome 1
+chrom1 <- 
+  query("SELECT name, chrom, txStart, txEnd FROM mm9.knownGene WHERE chrom='chr1';")
+dim(chrom1)
+head(chrom1,2)
 @
 \end{table*}
 
@@ -1015,9 +1024,9 @@ course support system.
 
 The \function{transform()} function can be used to add or modify variables in a data frame.
 <<>>=
-results <- transform(results, length=(txEnd - txStart)/1000)
-head(results, 2)
-xhistogram( ~length, data=results, xlab="gene length (kb)" )
+chrom1 <- transform(chrom1, length=(txEnd - txStart)/1000)
+head(chrom1, 2)
+xhistogram( ~log10(length), data=chrom1, xlab="gene length (kb)" )
 @
 
 Here we show how to modify the \dataframe{Births78} data frame so 
@@ -1030,6 +1039,7 @@ weekdays <- c("Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat")
 Births <- transform( Births78, 
              day = factor(weekdays[1 + (dayofyear - 1) %% 7], 
                           ordered=TRUE, levels = weekdays) )
+head(Births,3)
 @
 \begin{figure*}
 <<Births-plot,fig.width=6,out.width="\\textwidth", tidy=FALSE>>=
@@ -1053,58 +1063,15 @@ The \dataframe{CPS85} data frame contains data from a Current Population Survey
 Two of the variables in this data frame are \variable{age} and \variable{educ}.  We can estimate
 the number of years a worker has been in the workforce if we assume they have been in the workforce
 since completing their education and that their age at graduation is 6 more than the number
-of years of education obtained.  We can this as a new variable in the data frame simply
-by assigning to it:
+of years of education obtained.  
 <<>>=
-CPS85$workforce.years <- with(CPS85, age - 6 - educ)
+CPS85 <- transform(CPS85, workforce.years = age - 6 - educ)
 favstats(~workforce.years, data=CPS85)
 @
 In fact this is what was done for all but one of the cases to create the \variable{exper} 
 variable that is already in the \dataframe{CPS85} data.
 <<>>=
-tally(exper - workforce.years, data=CPS85)
-@
-
-\subsection{Creating subsets}
-\label{sec:subsets}
-We can also use \function{subset()} to reduce the size of a data set by selecting 
-only certain rows.
-\begin{center}
-<<faithful-long-xy>>=
-data(faithful)
-names(faithful) <- c('duration', 'time.til.next')
-# any logical can be used to create subsets
-faithfulLong <- subset(faithful, duration > 3)        
-xyplot( time.til.next ~ duration, faithfulLong )
-@
-\end{center}
-
-Of course, if all we want to do is produce a graph, there is no reason to create 
-a new data frame.  The plot above could also be made with
-<<eval=FALSE>>=
-xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
-@
-
-\authNote{NH: need to flesh out}
-
-\subsection{Dropping variables}
-Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
-Notice the clever use of the minus sign.
-<<>>=
-CPS1 <- subset(CPS85, select = -workforce.years)
-@
-Any number of variables can be dropped or kept in this manner by supplying a vectors
-of variables names.
-<<>>=
-CPS1 <- subset(CPS85, select = -c(workforce.years,exper))
-@
-
-If we only want to work with the first few variables, we can discard the rest in a similar way.
-Columns can be specified by number as well as name (but this can be dangerous if you are wrong 
-about where the columns are):
-<<>>=
-CPSsmall <- subset(CPS85, select=1:4)
-head(CPSsmall,2)
+tally(~ (exper - workforce.years), data=CPS85)
 @
 
 \subsection{Renaming variables}
@@ -1127,7 +1094,7 @@ has very unfortunate names.
 <<>>=
 names(faithful)
 @
-The measurements are the duration of an euption and the time until the subsequent eruption,
+The measurements are the duration of an eruption and the time until the subsequent eruption,
 so let's give it some better names.
 <<>>=
 names(faithful) <- c('duration', 'time.til.next')
@@ -1138,19 +1105,17 @@ head(faithful, 3)
 xyplot(time.til.next ~ duration, faithful)
 @
 \end{center}
+\marginnote{
 If the variable containing a data frame is modified or used to store a different object,
 the original data from the package can be recovered using \function{data()}.
-<<>>=
-data(faithful)
-head(faithful, 3)
-@
+}
 
 \begin{problem}
 Using \dfn{faithful} data frame, make a scatter plot of eruption duration times vs. the time
 since the previous eruption.
 \end{problem}
 
-If we want to rename a variable, we can do this using \function{names()}.
+We can also rename a single variable using \function{names()}. 
 For example, perhaps we want to rename \variable{educ} (the second column) to \variable{education}.
 <<>>=
 names(CPS85)[2] <- 'education'
@@ -1165,6 +1130,48 @@ it clearer what is going on here.}
 names(CPS85)[names(CPS85) == 'education'] <- 'educ'
 CPS85[1,1:4]
 @
+\subsection{Creating subsets}
+\label{sec:subsets}
+We can use \function{subset()} to select 
+only certain rows from a data frame.
+\begin{center}
+<<faithful-long-xy>>=
+# any logical can be used to create subsets
+faithfulLong <- subset(faithful, duration > 3)        
+xyplot( time.til.next ~ duration, faithfulLong )
+@
+\end{center}
+
+Of course, if all we want to do is produce a graph, there is no reason to create 
+a new data frame.  The plot above could also be made with
+<<eval=FALSE, tidy=FALSE>>=
+xyplot( time.til.next ~ duration, faithful, 
+        subset=duration > 3 )
+@
+
+\authNote{NH: need to flesh out}
+
+\subsection{Dropping variables}
+Since we already have \variable{educ}, there is no reason to keep our new variable
+\variable{workforce.years}.  Let's drop it.
+Notice the clever use of the minus sign.
+<<>>=
+CPS1 <- subset(CPS85, select = -workforce.years)
+@
+Any number of variables can be dropped or kept in this manner by supplying a vectors
+of variables names.
+<<>>=
+CPS1 <- subset(CPS85, select = -c(workforce.years,exper))
+@
+
+If we only want to work with the first few variables, we can discard the rest in a similar way.
+Columns can be specified by number as well as name (but this can be dangerous if you are wrong 
+about where the columns are):
+<<>>=
+CPSsmall <- subset(CPS85, select=1:4)
+head(CPSsmall,2)
+@
+
 
 %\subsection{Creating variables}
 %

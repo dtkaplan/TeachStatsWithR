@@ -1,8 +1,9 @@
 
 
-\documentclass[open-any,12pt]{tufte-book}
+\documentclass{tufte-book}
 
 \usepackage{../include/RBook}
+
 \def\tilde{\texttt{\~}}
 
 \title{Start Teaching with R}
@@ -10,8 +11,8 @@
 \date{DRAFT: \today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
-\begin{document}
 
+\begin{document}
 
 \maketitle
 
@@ -42,7 +43,7 @@
 <<child='RForInstructors.Rnw', eval=TRUE>>=
 @
 
-<<child='ByHand.Rnw', eval=TRUE>>=
+<<child='ByHand.Rnw', eval=FALSE>>=
 @
 
 % Unless we create more examples, this is begin deleted.
@@ -56,10 +57,17 @@
 <<child='Manipulate.Rnw', eval=TRUE>>=
 @
 
-<<child='RIntro.Rnw', eval=TRUE>>=
+<<child='RIntro.Rnw', eval=FALSE>>=
 @
 
 <<child='Handouts.Rnw', eval=TRUE>>=
 @
+
+\backmatter
+
+\bibliographystyle{alpha}
+\bibliography{../include/USCOTS}
+
+\printindex
 
 \end{document}
