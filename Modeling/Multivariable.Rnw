@@ -524,20 +524,88 @@ Another, way to describe the interaction is that the relationship between \VN{se
 
 \section{Example: The Genetic Component of Human Height}
 
+The world-record swim-time data is ordered enough that it's easy to draw a satisfactory functional approximation by hand.  That makes it easier for students to visualize how different model terms set the ``shape'' of the function.  But students may wonder what statistics has to do with it.
 
+To place things more firmly in a statistical context, consider the data collected by Francis Galton in 19th century London.  Galton was interested in exploring the heritability of biological traits, in particular the relationship between the heights of parents and their full-grown, adult children.  These data played an important part in the development of the correlation coefficient and regression toward the mean  \marginnote{Francis Galton, ``Correlations and their measurement, chiefly from anthropometric data'' (1889) {\em Nature} 39:238, and ``Regression towards mediocrity in hereditary stature'' (1886) {\em Journal of the Anthropological Institute of Great Britain and Ireland} 15:246-263.  For a commentary, see James Hanley, ```Transmutting' Women into men: Galton's family data on human stature'' (2004) {\em American Statistician} 58(3):237-243)}
 
-... An example where the relationship is not completely obvious from the graph.  Moving from graphical tools to inferential tools.
-
-the famous data collected by Francis Galton in 19th century London in order to explore the genetic component of human height.  Galton measured the heights of adult children and their parents.  Here's a plot of the child's full-grown height versus the mother's height:
-<<>>=
-xyplot( height ~ mother | sex, data=Galton)
+A man of his era, Galton focused on the heights of sons.  Here are both sexes of children, plotted out against the mother's height:
+<<galton-data,fig.width=5>>=
+xyplot(height ~ mother | sex, data=Galton)
 @
 
-\section{Covariates and Partial Change}
+From the graph alone, it's obvious that height differ from males to females and there is a slight tendency that a taller mother is associated with taller children.  Here's a model that includes an interaction term between the child's sex and the mother's height:
+<<fig.width=5>>=
+<<galton-data>>
+hmod1 = lm(height~mother*sex,data=Galton)
+h1 = makeFun(hmod1)
+plotFun(h1(mother=m,sex="F")~m,add=TRUE,col="red",lwd=3)
+plotFun(h1(mother=m,sex="M")~m,add=TRUE,col="black")
+@
 
-Often, the purpose of a model is to describe the relatonship between the response and a single explanatory variable, e.g. how does blood pressure respond to a drug versus placebo. It's tempting to translate this mathematically into a function of one variable.  Resist the temptation!
+What's new in this example is that a specific line can be judged as the best fit to a cloud of data.  Certainly a student could do this by hand, but they would likely have little confidence that their particular line was best.  Certainly, the precision with which one might draw a line by hand wouldn't justify drawing lines of different slopes for the males and females.  Indeed, it remains to be seen whether the interaction term is contributing much to the model.  That sort of question provides a seque to statistical inference.  (See below.)
 
-Almost always, there are additional explanatory variables in which there is little or no direct interest but which may play an important role in the relationship.  The term \term{covariate} is used to designate such variables.  Of course, in a mathematical sense, covariates are just ordinary explanatory variables.  The word covariate simply signals the modeler's interest in them. 
+What's the father's role in this.  In a scatter plot, it's impossible to use both the father and the mother along on the $x$-axis, one has to choose.  There are some tricks, for example creating panels for different intervals of the father's height, but it's hard to gain much quantitative insight from the graphic.
+
+<<galton-father,fig.width=5,fig.height=5,tidy=FALSE>>=
+xyplot(height ~ mother | 
+         sex + cut(father,breaks=qdata(seq(0,1,by=.5),father)), 
+       data=Galton)
+@
+
+Instead, consider a model that uses both mother's and father's height (and the child's sex) to account for the child's height.  For now, leave off the interaction terms; you can return to those later with some statistical inference tools in hand:  (Do the interaction, and also see if the family does a better job than the father's and mother's height, and inquire about how good a job it should be doing for us to consider it.)
+<<>>=
+hmod2 = lm(height~mother+father+sex,data=Galton)
+h2 = makeFun(hmod2)
+@
+
+<<fig.width=5,fig.height=5,tidy=FALSE>>=
+<<galton-father>>
+plotFun(h1(mother=m,sex="F")~m,add=TRUE,col="black",lwd=3)
+plotFun(h2(mother=m,father=64,sex="F")~m,add=TRUE,col="black")
+plotFun(h2(mother=m,father=74,sex="F")~m,add=TRUE,col="black")
+@
+
+The thin lines show the mother+father model values for two different heights of father (just for female children).  For comparison, the thick line shows the model with just the mother. The thick line shows the model without father.  That the lines are different for the two different heights of father shows the association between father's height and child's height, for each given mother's height.  Note that the slopes are different between the mother-only mother and the mother+father model; the association of mother's height with child's height depends on whether father is included in the model.
+
+
+\section{Partial Change}
+
+``All things being equal'' is an everyday phrase.   In the Galton height data, for instance, one can examine the association of \VN{mother}'s height with child's \VN{height}, holding the other things constant, e.g., the \VN{father}'s height and the child's \VN{sex}.  Given a model function, this \term{partial change} is easy to calculate: look at the difference in child's model height for two different values of the mother's height, while holding \VN{father} and \VN{sex} constant.  For instance,
+<<>>=
+h2(mother=66,father=68,sex="F") - h2(mother=65,father=68,sex="F")
+@
+Similarly, one can examine the partial change with respect to \VN{father} and with respect to \VN{sex}:
+<<>>=
+h2(mother=66,father=68,sex="F") - h2(mother=66,father=67,sex="F")
+h2(mother=66,father=68,sex="F") - h2(mother=66,father=68,sex="M")
+@
+The reason to call these differences ``partial'' change is by analogy with partial derivatives in calculus: the change with respect to one variable holding the other constant.
+
+Of course, for the continuous variables --- \VN{mother} and \VN{father} --- one can calculate the partial derivative itself.  This would be appropriate for students who are familiar with derivatives, but it is not essential that one consider any sort of limiting process as in calculus.  The important point is that the change in model output can be considered with respect to each of the input variables individually.
+
+The partial change is a straightforward measure of \term{effect size}.  The intellectual question is what quantities to hold constant.  Answering this requires some expert knowledge.  Students have considerable expertise, even if it's just about common sense matters.  For instance, it's a form of expert knowledge to know that the mother's height doesn't affect the sex of the child.  So in considering the effect size of mother's \VN{height}, it's sensible to hold \VN{sex} constant. 
+
+Occasionally, it makes sense to consider the change while varying two or more variables simultaneously.  As an example with a simple mechanism, consider trying to predict a person's wage based on their education and job experience.  The \texttt{CPS85} data contains information from the Current Population Survey that can be used for this purpose.  First, build a model with both education and experience as explanatory variables (and whatever covariates you think appropriate), e.g.,
+<<>>=
+wmod = lm(wage~educ+exper,data=CPS85)
+@
+Wage here is in dollars per hour (in 1985).  To look at the effect of a college education, you might examine the partial difference with education varying to 16 years from 12 years while experience is being held constant at, say, 10 years. (Twelve years of education corresponds to a high-school graduate.)
+<<>>=
+w1 = makeFun(wmod)
+w1(educ=16,exper=10)-w1(educ=12,exper=10)
+@
+Judging from this, the four years of extra education lead to an increase in wage of \$3.70 per hour.  
+
+But hold on.  The four years of extra education comes by decreasing work experience by those four years, so the proper comparison is not a partial change in one variable alone, but a simultaneous, compensatory change in education and experience:
+<<>>=
+w1(educ=16,exper=10)-w1(educ=12,exper=14)
+@
+
+EXERCISES: From the total versus partial sheets.
+
+\section{Covariates}
+
+Often, the purpose of a model is to describe the relationship between the response and a single explanatory variable, e.g. how does blood pressure respond to a drug versus placebo.  Almost always, though, there are additional explanatory variables in which there is little or no direct interest but which may play an important role in the relationship.  The term \term{covariate} is used to designate such variables.  Of course, in a mathematical sense, covariates are just ordinary explanatory variables.  The word ``covariate'' simply signals the modeler's lack of direct interest in them. 
 
 Other related terms are \term{confounders} or \term{lurking variables}.  These terms properly suggest the vulnerability of the conclusions drawn from a model to unknowns or to known variables not included in a model.  But whenever a variable is known and measured, it should be considered as a candidate to be included in a model.  Unthinkingly to leave a covariate out of a model is burying your head in the sand.  
 
@@ -563,6 +631,7 @@ Researchers say there's still a lot to learn here --- they haven't nailed down a
 \end{quotation}
 
 Austin Bradford Hill was an epidemiologist and statistician --- the president of the Royal Statistical Society who succeeded Fisher.  He pioneered randomized clinical trials, taken as the gold standard for inferring causation in medicine. Hill's famously offered nine viewpoints for guiding causal inference.\cite{bradford-hill}  Number eight is ``Experiment'':
+\marginnote{AB Hill, ``The environment and disease: association or causation?'' {\em Proceedings of the Royal Society of Medicine} (1965) 58:295-300}
 \begin{quotation}
 Occasionally, it is possible to appeal to experiment, or semi-experimental evidence.  For example, because of an observed association some preventive active is taken.  Does it in fact prevent?  The dust in the workshop is reduced, lubricating oils are changed, persons stop smoking cigarettes.  Is the frequency of the associated events affected?  Here the strongest support for the causation hypothesis may be revealed.\cite{bradford-hill}
 \end{quotation}

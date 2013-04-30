@@ -5,8 +5,8 @@
 \usepackage{../include/RBook}
 \def\tilde{\texttt{\~}}
 
-\title{Start Modeling with R}
-\author{Daniel Kaplan and Randall Pruim and Nicholas Horton}
+\title{Start Modeling\\$\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $with R}
+\author{Daniel Kaplan\\Randall Pruim\\ Nicholas Horton}
 \date{DRAFT: \today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
