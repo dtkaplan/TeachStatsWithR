@@ -692,17 +692,112 @@ This model puts the value of a fireplace at about \$10,000$\pm$8000.  Notice tha
 
 \chapter{Statistical Inference}
 
+Statistical inference --- confidence intervals, hypothesis testing, etc. --- is often presented as being about data.  Data are undeniably central, but it's misleading to distract attention from the context in which the data are being analyzed.  
+
+\section{Hypothesis Testing}
+
+To someone familiar with t-tests, one-way ANOVA, etc., the previous sentence may seem odd.  What context is there to asking whether two groups are different or whether there is a difference between multiple groups.  But consider the matter as it would be expressed in modeling notation:
+
+\begin{description}
+\item[Two-way t test.]  Are the means of two different groups different?  In the modeling notation, this corresponds to the significance of the coefficient on a grouping variable with two levels, e.g.
+```{r}
+mod1 = lm(time~sex,data=SwimRecords)
+coef(mod1)
+```
+\item[One-way ANOVA.] Are the means of several different groups different.  In the modeling notation, this corresponds to the ability of a categorical variable with more than two levels to account for variation in the response variable.
+```{r}
+mod2 = lm(wage~sector,data=CPS85)
+coef(mod2)
+\end{description}
+
+There are at least two strong advantages to presenting inference in terms of the modeling notation.
+\begin{itemize}
+\item Modeling allows covariates to be introduced.  There's not much point in worrying about the second digit in a p-value (that is, is $p<0.05$) when the first digit might be strongly influenced by covariates.
+\item Modeling emphasizes the common logic of statistical inference, allowing students to handle multiple different settings with the same logic.
+\end{itemize}
+George Cobb [citation] has described the logic of statistical inference as the ``Three Rs'': randomize, repeat, reject.  To illustrate how this applies to models, let's construct a simple t- or ANOVA-type test on the two models given above.  To start, draw on the resampling/randomization logic detailed in [CITATION TO THE RESAMPLING VIGNETTE OR WHATEVER REPLACES IT].
+
+First, you need a \term{test statistic}.  A convenient one is $R^2$.  
+
+Next, you need to randomize the explanatory variable and calculate the test statistic under randomization.  Doing this many times gives a sampling distribution under the Null Hypothesis.  Comparing the actual (non-randomized) value of the test statistic then allows a p-value to be extracted.
+
+To illustrate with the swim-records model, construct the test statistic:
+```{r}
+mod1 = lm(time~sex,data=SwimRecords)
+test.stat = r.squared(mod1) # test statistic
+test.stat
+@
+Now, just for demonstration, carry out one randomization trial and find the test statistic:
+```{r}
+# One randomization
+r.squared(lm(time~shuffle(sex),data=SwimRecords))
+```
+It's worthwhile when working with students to repeat the above line several times to show that the test statistic varies.  Then you can move on to having the computer repeat the trials many times and collect the results:
+```{r}
+s = do(1000)*r.squared(lm(time~shuffle(sex),data=SwimRecords))
+```
+Finally, to ask how often the random trials produce a test statistic at least as strong as that observed in the original data:
+```{r}
+tally( ~result >= test.stat, data=s, format="percentage")
+```
+
+\newcommand{\lsim}{\mathrel{\hbox{\rlap{\lower.55ex \hbox{$\sim$}} \kern-.3em \raise.4ex \hbox{$<$}}}}
+The result: in none of the 1000 trials did the randomization produce a test statistic as strong as that observed in the original data.  This suggests a p-value $\sim 0.001$.
+
+It's exactly the same structure for the one-way ANOVA test.
+```{r}
+mod2 = lm(wage~sector,data=CPS85)
+test.stat2 = r.squared(mod2) # test statistic
+s2 = do(1000)*r.squared(lm(wage~shuffle(sector),data=CPS85))
+tally( ~result >= test.stat2, data=s2, format="percentage")
+```
+
+Once students see the structure of a hypothesis test, it's easy for them to switch to interpretation mode: using the built-in normal-theory calculations to generate p-values:
+```{r}
+anova(mod1)
+anova(mod2)
+```
+
+It may seem odd to get an ANOVA report instead of a t-test.  But a t-test\marginnote{For sticklers: it's the equal variance t-test that's equivalent to ANOVA.  But when have you ever seen an unequal variance t-test that performs better than an equal-variance t-test on ranks?  The unequal variance t-test is a mathematical nicety, contributing little or nothing to statistical insight.} is the same thing as ANOVA:
+```{r}
+t.test(time~sex,data=SwimRecords,var.equal=TRUE)
+```
 
 
-The question for the modeler should be, ``Does including this covariate improve the model for the purpose?''  There are times when it's best to leave a covariate out of a model
+You may ask, doesn't it matter that the simulation-based p-values are different from the normal-theory p-values.  Doesn't this mean that the simulations are wrong?  The answer is that there's not right or wrong here, just what is reasonable.  How precisely do you need to know a p-value?  Is there any value to reporting more than two digits of a p-value?
 
-Quick resampling example to demonstrate confidence intervals, then use \function{confint}.
+What's more, the p-values generated by the normal theory are based on assumptions that may be unwarranted, so extreme precision in the reported value is itself unwarrented.  As many statistical educators recognize, there are \term{distributional assumptions}.  Arguably more important are the covariates.  The statistical methods you teach should allow students to include covariates as appropriate.  The hypothesis tests implemented by \function{shuffle} or by the theory behind \function{anova} and the regression-table generator \function{summary} extend automatically and easily to models with covariates.
 
-ANOVA as a way of tracking $R^2$ as more terms are added.
+This also provides a new context for conducting hypothesis tests:  ``Does including this covariate improve the model for the purpose?''  If the data provide little evidence for the non-null role of a covariate in the context of the other explanatory variables, perhaps best to leave it out of the model.
 
-\chapter{Links to Mathematics}
+\section{Confidence Intervals}
 
-Notation of functions.  Polynomials in two variables.  Transformation variables.
+Cobb's randomize and repeat logic of statistical inference applies to the construction of confidence intervals as well.  In this setting, rather than shuffling variables, resample with replacement on a case-by-case basis, so that each individual case preserves the authentic relationship among its variables.  To illustrate, here's a resampling based calculation of the standard error on a model of the coefficient on \VN{projectileWt} in a model of the trebuchet throw-distance:
+<<tidy=FALSE>>=
+tmod = lm(distance~projectileWt+counterWt,data=trebuchet)
+s = do(1000)*lm(distance~projectileWt+counterWt,
+                data=resample(trebuchet))
+sd(projectileWt,data=s)
+@
+
+After seeing the randomization-based logic of the construction of confidence intervals, it's easy to shift
+to the normal-theory results:
+<<>>=
+summary(tmod)
+@
+
+Indeed, one might as well introduce the confidence interval itself, rather than the standard error, 
+<<>>=
+confint(tmod)
+@
+
+Of course, the confidence intervals depend on the structure of the model.  Add in more covariates, add in interaction or transformation terms, and the confidence intervals may get smaller or larger.  Explaining how this happens (see, e.g., Chapter 12 in {\em Statistical Modeling: A Fresh Approach}) is arguably more important that working students through the algebraic details of a calculation that does not apply in the situation that's appropriate for answering the question at hand.  Use resampling to establish the logic of confidence intervals, then have students explore the interpretation of confidence intervals and the factors on which they depend.
+
+\subsection{In-Class Activity: Coverage}
+
+%\chapter{Links to Mathematics}
+%
+%Notation of functions.  Polynomials in two variables.  Transformation variables. Tukey transformations?
 
 
 
