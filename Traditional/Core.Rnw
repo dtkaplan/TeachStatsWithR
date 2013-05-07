@@ -248,6 +248,7 @@ xpnorm(1.96, mean=0, sd=1)
 \end{center}
 
 \section{Inference for a single sample}
+\label{sec:bootstrapsing}
 
 We can calculate a 95\% confindence interval for the mean CESD 
 score for females by using a t-test:
@@ -532,17 +533,18 @@ the homeless rather than the housed).
 in the \pkg{vcd} package also makes mosaic plots.}
 
 \begin{center}
-<<mosaicplot,fig.height=3.5>>=
-mytab <- tally(~ homeless + sex, margins=FALSE, data=HELPrct)
+<<mosaicplot,fig.height=3.5,tidy=FALSE>>=
+mytab <- tally(~ homeless + sex, margins=FALSE, 
+  data=HELPrct)
 mosaicplot(mytab)
 @
 \end{center}
 
 \section{Chi-squared tests}
 
-%with(HELPrct, chisq.test(homeless, sex, correct=FALSE))
-<<chisq1>>=
-chisq.test(xtabs(~ homeless + sex, data=HELPrct), correct=FALSE)
+<<chisq1,tidy=FALSE>>=
+chisq.test(xtabs(~ homeless + sex, data=HELPrct), 
+  correct=FALSE)
 @
 
 There is a statistically significant association found: it is unlikely that we would observe
@@ -552,9 +554,11 @@ population.
 When a student finds a significant association, 
 it's important for them to be able to interpret this in the context of the problem. 
 The \function{xchisq.test()} function provides additional details to help with this process.
+\FoodForThought{\code{x} is for eXtra.}
 
-<<chisq2>>=
-xchisq.test(xtabs(~homeless + sex, data=HELPrct), correct=FALSE)
+<<chisq2,tidy=FALSE>>=
+xchisq.test(xtabs(~homeless + sex, data=HELPrct), 
+  correct=FALSE)
 @
 
 We observe that there are fewer homeless women, and more homeless men that would be expected.
@@ -575,15 +579,15 @@ fisher.test(xtabs(~homeless + sex, data=HELPrct))
 \section{A Bivariate predictor: numerical and graphical summaries}
 Here we will compare the distributions of CESD scores by sex.
 
-The \function{aggregate()} function can be used to calculate the mean CESD score
-for each of the two groups 
+The \function{mean()} function can be used to calculate the mean CESD score
+separately for males and females.
 <<aggregate>>=
-aggregate(cesd ~ sex, data=HELPrct, FUN=mean)
+mean(cesd ~ sex, data=HELPrct)
 @
 
-The \function{summary()} function can provide more statistics by group.
+The \function{favstats()} function can provide more statistics by group.
 <<summary>>=
-summary(cesd ~ sex, data=HELPrct, fun=favstats)
+favstats(cesd ~ sex, data=HELPrct)
 @
 
 
@@ -619,7 +623,7 @@ biologist.}
 
 The Student's two sample t-test can be run without or with an equal variance assumption.
 
-<<HELPrct-nonpar>>=
+<<HELPrct-nonpar,tidy=FALSE>>=
 t.test(cesd ~ sex, data=HELPrct, var.equal=FALSE)
 @
 
@@ -637,26 +641,30 @@ wilcox.test(cesd ~ sex, data=HELPrct)
 
 \section{Permutation test}
 
-Here we extend the methods introduced in section \ref{sec:comparing-two-means} to 
-undertake a two-sided test.
-
-\authNote{Need to update using new functions}
-%rtest.stats[simulations+1,] <- test.stat  # add in the observed value
-<<permute-HELPrct>>=
-simulations <- 500
-test.stat <-  abs(diff(aggregate(cesd ~ sex, data=HELPrct, mean)$cesd))
+Here we extend the methods introduced in section \ref{sec:bootstrapsing} to 
+undertake a two-sided test comparing the ages at baseline by gender.  First we calculate the observed difference in means:
+<<>>=
+mean(age ~ sex, data=HELPrct)
+test.stat <- compareMean(age ~ sex, data=HELPrct)
 test.stat
-rtest.stats <- do(simulations) * c(diff= diff(aggregate(cesd ~ shuffle(sex), HELPrct, mean)$cesd))
-histogram(~ abs(diff), rtest.stats, n=40, xlim=c(0, 6),
-  groups=abs(rtest.stats$diff) >= test.stat, pch=16, cex=.8 ) # was dotPlot
+@
+We can calculate the same statistic after shuffling the group labels:
+<<>>=
+compareMean(age ~ shuffle(sex), data=HELPrct)
+compareMean(age ~ shuffle(sex), data=HELPrct)
+@
+
+<<permute-HELPrct,tidy=FALSE>>=
+rtest.stats = do(500) * compareMean(age ~ shuffle(sex), 
+  data=HELPrct)
+xhistogram(~ result, n=40, xlim=c(-6, 6),
+  groups=result >= test.stat, pch=16, cex=.8, 
+  data=rtest.stats)
 ladd(panel.abline(v=test.stat))
 @
 
-
-\authNote{NH: line still isn't showing up}
-
-The same conclusion is observed with a permutation test (the
-observed value is nowhere in the vicinity of the permuted values).
+Here we don't see much evidence to contradict the null hypothesis that the populations
+have the same mean age back in the population.
 
 \section{One-way ANOVA}
 
@@ -671,7 +679,7 @@ bwplot(cesd ~ substance, data=HELPrct)
 
 
 <<aggregate2>>=
-aggregate(cesd ~ substance, data=HELPrct, FUN=mean)
+mean(cesd ~ substance, data=HELPrct)
 @
 <<help-aov>>=
 mod <- aov(cesd ~ substance, data=HELPrct)
@@ -708,7 +716,7 @@ compare <- TukeyHSD(mod, "substance")
 compare
 @
 <<help-hsd3,fig.height=4>>=
-plot(compare)
+plot(compare,cex.lab=0.7)
 @
 
 Again, we see that the cocaine group has significantly lower CESD scores
@@ -720,8 +728,7 @@ than the other two groups.
 
 Logistic regression is available from within the \function{glm()} function: a variety of
 link functions and distributional forms for generalized linear models are supported.
-
-\FoodForThought{\function{glm()} has arguments \option{family}  and
+\FoodForThought{The \function{glm()} function has arguments \option{family}  and
 \option{link}.  The \code{logit} link is the default link for the binomial family,
 so we don't need to specify it here.}
 <<help-logit,tidy=FALSE>>=
@@ -740,13 +747,14 @@ Extensive support for Survival (Time to Event) analysis is available within the
 \section{Kaplan-Meier plot}
 
 \begin{center}
-<<help-km,fig.width=6,fig.height=3.9>>=
-library(survival)
-fit <- survfit(Surv(dayslink, linkstatus) ~ treat, data=HELPrct)
-plot(fit, conf.int=FALSE, lty=1:2, lwd=2, xlab="time (in days)",
-  ylab="P(not linked)")
-legend(20, 0.4, legend=c("Control", "Treatment"), lty=c(1,2),
-  lwd=2)
+<<help-km,fig.width=6,fig.height=3.9,tidy=FALSE>>=
+require(survival)
+fit <- survfit(Surv(dayslink, linkstatus) ~ treat, 
+  data=HELPrct)
+plot(fit, conf.int=FALSE, lty=1:2, lwd=2, 
+  xlab="time (in days)", ylab="P(not linked)")
+legend(20, 0.4, legend=c("Control", "Treatment"), 
+  lty=c(1,2), lwd=2)
 title("Product-Limit Survival Estimates (time to linkage)")
 @
 \end{center}
@@ -756,9 +764,10 @@ link to primary care than the control (usual care) group.
 
 \section{Cox proportional hazards model}
 
-<<help-surv>>=
-library(survival)
-summary(coxph(Surv(dayslink, linkstatus) ~ age + substance, data=HELPrct))
+<<help-surv,tidy=FALSE>>=
+require(survival)
+summary(coxph(Surv(dayslink, linkstatus) ~ age + substance, 
+  data=HELPrct))
 @
 
 Neither age, nor substance group was significantly associated with linkage to primary care.
@@ -771,6 +780,7 @@ Neither age, nor substance group was significantly associated with linkage to pr
 We can fit a two (or more) way ANOVA model, without or with an interaction,
 using the same modeling syntax.
 <<help-aovplot>>=
+median(cesd ~ substance | sex, data=HELPrct)
 bwplot(cesd ~ substance | sex, data=HELPrct)
 @
 <<help-aov2>>=
@@ -783,13 +793,25 @@ There's little evidence for the interaction, though there are statistically
 significant main effects terms for \VN{substance} group and 
 \VN{sex}.
 
-<<help-interaction>>=
-xyplot(cesd ~ substance, data=HELPrct, groups=sex, type='a')
+<<help-interaction,tidy=FALSE>>=
+xyplot(cesd ~ substance, data=HELPrct, groups=sex, 
+  type='a')
 @
 
 
 \section{Multiple regression}
 
+Multiple regression is a logical extension of the prior commands, adding 
+additional predictors (and allowing students to start to try to disentangle 
+multivariate relationships).  
+
+\InstructorNote{We also tend to introduce multiple linear regression
+early in our courses, as a purely descriptive technique, then return to it
+regularly.  The motivation for this is described at length in the companion volume 
+\emph{Start Modeling with R}.}
+
+Here we consider a model for depressive symptoms as a function of Mental Component Score,
+age (in years) and sex of the subject.
 <<help-multreg>>=
 lm1 <- lm(cesd ~ mcs + age + sex, data=HELPrct)
 summary(lm1)
@@ -815,12 +837,14 @@ random variables from these distributions, which can be used
 for simulation and analysis.
 
 <<probdist>>=
-xpnorm(1.96, 0, 1)    # P(Z < 1.96)
-qnorm(.975, 0, 1)
-integrate(dnorm, -Inf, 0)
+xpnorm(1.96, mean=0, sd=1)    # P(Z < 1.96)
+@
+<<>>=
+qnorm(.975, mean=0, sd=1)   #  value which satisfies P(Z < z) = 0.975
+integrate(dnorm, -Inf, 0)   # P(Z < 0)
 @
 
-The following displays the basenames for probability distributions 
+The following table displays the basenames for probability distributions 
 available within base \R.  These functions can be prefixed by {\tt d} to 
 find the density function for the distribution, {\tt p} to find the 
 cumulative density function, {\tt q} to find quantiles, and {\tt r} to 
@@ -880,8 +904,8 @@ qexp(.5, rate=10)
 
 While not generally a major topic in introductory courses, power and sample size calculations
 help to reinforce key ideas in statistics.  In this section, we will explore how \R\ can 
-be used to undertake power calculations using analytic approaches (see \ref{sec:power}
-for simulation based approaches).  We consider a simple problem with two tests (t-test and
+be used to undertake power calculations using analytic approaches.
+We consider a simple problem with two tests (t-test and
 sign test) of
 a one-sided comparison.
 
@@ -905,21 +929,21 @@ which is near the nominal value in the problem.
 
 We calculate the power of the sign test as follows. The probability that $X > 0$, given that $H_A$ is true is given by:
 <<pnorm1>>=
-1 - pnorm(0, 0.3, 1)
+1 - pnorm(0, mean=0.3, sd=1)
 @
 We can view this graphically using the command:
 
 \authNote{duplicated figure}
 \begin{center}
 <<pnorm2,fig.width=5,fig.height=1.9>>= 
-xpnorm(0, 0.3, 1)
+xpnorm(0, mean=0.3, sd=1)
 @
 \end{center}
 
 So now we need to find the power under the alternative, which is equal to the probability of getting 17 or more positive values,
 given that $p=0.6179$:
 <<pbinom2>>=
-1 - pbinom(16, 25, 0.6179)
+1 - pbinom(16, size=25, prob=0.6179)
 @
 
 The power is modest at best.
@@ -931,10 +955,11 @@ fair, we will set our $\alpha$ level equal to 0.05388.
 First we need to find the rejection region.  
 
 <<>>=
-alpha <- 1-pbinom(16, 25, .5) # == 0.0539, our alpha level.
+# == 0.0539, our alpha level.
+alpha <- 1-pbinom(16, size=25, prob=0.5) 
 n <- 25; sigma <- 1 # given
 stderr <- sqrt(sigma^2/n)
-zstar <- qnorm(1-alpha, 0, 1)
+zstar <- qnorm(1-alpha, mean=0, sd=1)
 zstar
 crit <- zstar*stderr
 crit
@@ -945,7 +970,7 @@ To calculate the power of this one-sided test we find the area
 under the alternative hypothesis 
 that is to the right of this cutoff:
 <<>>=
-power <- 1 - pnorm(crit, 0.3, stderr)
+power <- 1 - pnorm(crit, mean=0.3, sd=stderr)
 power
 @
 Thus, the power of the test based on normal theory is \Sexpr{round(power,3)}.
@@ -980,9 +1005,6 @@ power.t.test(n=n, delta=.5, sd=1, sig.level=alpha)
 @
 \end{solution}
 
-\begin{problem}
-Repeat problem \ref{prob:power1} by simulating using the methods of section \ref{sec:power}.
-\end{problem}
 
 \begin{problem}
 Find the sample size needed to have 90\% power for a two group t-test
