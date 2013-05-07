@@ -1,13 +1,12 @@
 
 
-
 \documentclass[open-any,12pt]{tufte-book}
 
 \usepackage{../include/RBook}
 \def\tilde{\texttt{\~}}
 
-\title{Traditional Statistics by Untraditional Means}
-\author{Nicholas Horton and Daniel Kaplan and Randall Pruim}
+\title{Compendium of R Commands for Teaching Stats}
+\author{Nicholas J. Horton\\ Daniel Kaplan\\Randall Pruim}
 \date{DRAFT: \today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
