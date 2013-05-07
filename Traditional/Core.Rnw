@@ -31,8 +31,8 @@ to give your students to help them keep straight ``what to do when".
 Other related resources may be helpful, including an annotated set of examples
 from the 
 sixth edition of
-Moore, McCabe and Craig's \emph{Introduction to the Practice of Statitics} \cite{moor:mcca:2007} (see \url{http://www.math.smith.edu/~nhorton/ips6e}) as well as
-the third edition of the \emph{Statistical Sleuth} \cite{Sleuth3} (see \url{http://www.math.smith.edu/~nhorton/sleuth3}).
+Moore, McCabe and Craig's \emph{Introduction to the Practice of Statitics}\cite{moor:mcca:2007} (see \url{http://www.math.smith.edu/~nhorton/ips6e}) as well as
+the third edition of the \emph{Statistical Sleuth}\cite{Sleuth3} (see \url{http://www.math.smith.edu/~nhorton/sleuth3}).
 
 This work leverages initiatives undertaken by Project MOSAIC (\url{http://www.mosaic-web.org}), an NSF-funded effort to improve the teaching of statistics, calculus, science and computing in the undergraduate curriculum. In particular, we utilize the
 \pkg{mosaic} package, which was written to simplify the use of R for introductory statistics courses. A short summary of the R needed to teach introductory statistics can be found in the mosaic package vignette (\url{http://cran.r-project.org/web/packages/mosaic/vignettes/MinimalR.pdf}).
@@ -478,7 +478,7 @@ xyplot(resid(model) ~ fitted(model), type=c("p", "smooth", "r"), alpha=0.5, cex=
 Prediction bands can be added to a plot using the \function{panel.lmbands()} function.
 \begin{center}
 <<HELPrct-pred-plot>>=
-xyplot(cesd ~ mcs, panel=panel.lmbands, cex=0.1, data=HELPrct)
+xyplot(cesd ~ mcs, panel=panel.lmbands, cex=0.2, data=HELPrct)
 @
 \end{center}
 
@@ -506,39 +506,25 @@ for homeless status (homeless one or more nights in the past 6 months or housed)
 and sex.
 
 <<homeless-sex>>=
-xtabs(~ homeless + sex, data=HELPrct)     
+tally(~ homeless + sex, margins=FALSE, data=HELPrct)     
 @
 
-
-
-\authNote{Need to decide how we want to create datas from summaries}
-
-XX Epidemiologic statistics
-
-To demonstrate how to extend \R\ using your own functions, we can write
-one which calculates epidemiologic statistics such as the odds ratio (OR).
-More information about writing your own functions can be found in 
-section
-\ref{sec:writingFunctions}.
-
-<<orfunc>>=
-odds.ratio <- function(x, y, ds) {
-  tab = xtabs(~ x + y)
-  return(tab[1,1]*tab[2,2]/(tab[1,2]*tab[2,1]))
-}
-with(HELPrct, odds.ratio(homeless, sex))
+We can calculate the odds ratio directly from the table:
+<<tidy=FALSE>>=
+OR = (40*177)/(67*169); OR
 @
 
-The \pkg{mosaic} package has a function which will calculate odds ratios:
-<<>>=
-oddsRatio(tally(~ homeless + sex, data=HELPrct)) 
+The
+\pkg{mosaic} package has a function which will calculate odds ratios:
+<<tidy=FALSE>>=
+oddsRatio(tally(~ homeless + sex, margins=FALSE, 
+  data=HELPrct)) 
 @
-
-XX Graphical summaries
+Note that the reference group is flipped (and that $1/1.599 = \Sexpr{1/1.599}$).
 
 Graphical summaries of cross classification tables may be helpful in visualizing
 associations.  Mosaic plots are one example (though the jury is still out
-regarding its utility, relative to the low data to ink ratio \cite{Tufte:2001:Visual}.  
+regarding its utility, relative to the low data to ink ratio\cite{Tufte:2001:Visual}.  
 Here we see that males tend to be over-represented
 amongst the homeless subjects (as represented by the horizontal line which is higher for
 the homeless rather than the housed).  
@@ -1289,7 +1275,7 @@ Subjects were interviewed at baseline during
 their detoxification stay and follow-up interviews were undertaken
 every 6 months for 2 years.  A variety of continuous, count, discrete, and survival time predictors and outcomes were collected at each of these five occasions.
 The details of the
-randomized trial along with the results from a series of additional analyses have been published \cite{same:lars:hort:2003,rees:sait:hort:2001,hort:sait:lair:2002,lieb:save:2002,kert:hort:frie:2003,sait:lars:2004,sait:hort:2005,shan:linc:2005,lars:sait:2006,wine:sait:2007}.
+randomized trial along with the results from a series of additional analyses have been published\cite{same:lars:hort:2003,rees:sait:hort:2001,hort:sait:lair:2002,lieb:save:2002,kert:hort:frie:2003,sait:lars:2004,sait:hort:2005,shan:linc:2005,lars:sait:2006,wine:sait:2007}.
 The Institutional Review Board of
 Boston University Medical Center approved all aspects of the study, including the creation of the de-identified dataset.  Additional
 privacy protection was secured by the issuance of a Certificate of
@@ -1300,7 +1286,7 @@ The \verb!mosaic! package contains several forms of the de-identified HELP datas
 We will focus on \verb!HELPrct!, which contains
 27 variables for the 453 subjects
 with minimal missing data, primarily at baseline.
-Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found in \cite{Horton:2011:R}.
+Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found here\cite{Horton:2011:R}.
 \begin{longtable}{|p{2.1cm}|p{6.8cm}|p{4.5cm}|}
 \caption{Annotated description of variables in the \VN{HELPrct} dataset}
 \label{tab:helpvars} \\
