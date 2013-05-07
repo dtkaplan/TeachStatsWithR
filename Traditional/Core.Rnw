@@ -466,17 +466,15 @@ two (or more) categorical variables.  Here we consider the contingency table
 for homeless status (homeless one or more nights in the past 6 months or housed) 
 and sex.
 
-\subsubsection{From Raw Data}
 <<homeless-sex>>=
 xtabs(~ homeless + sex, data=HELPrct)     
 @
 
-\subsubsection{Building Cross Tables from Already Summarized Data}
 
-\authNote{Need to decide how we want to do this.}
 
-\subsubsection{Epidemiologic statistics}
-\label{sec:epistats}
+\authNote{Need to decide how we want to create datas from summaries}
+
+XX Epidemiologic statistics
 
 To demonstrate how to extend \R\ using your own functions, we can write
 one which calculates epidemiologic statistics such as the odds ratio (OR).
@@ -497,7 +495,7 @@ The \pkg{mosaic} package has a function which will calculate odds ratios:
 oddsRatio(tally(~ homeless + sex, data=HELPrct)) 
 @
 
-\subsubsection{Graphical Summaries}
+XX Graphical summaries
 
 Graphical summaries of cross classification tables may be helpful in visualizing
 associations.  Mosaic plots are one example (though the jury is still out
@@ -525,8 +523,6 @@ chisq.test(xtabs(~ homeless + sex, data=HELPrct), correct=FALSE)
 There is a statistically significant association found: it is unlikely that we would observe
 an association this strong if there was homeless status and sex were independent back in the 
 population.
-
-\subsubsection{Displaying additional information}
 
 When a student finds a significant association, 
 it's important for them to be able to interpret this in the context of the problem. 
