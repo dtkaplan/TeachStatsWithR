@@ -780,8 +780,7 @@ s = do(1000)*lm(distance~projectileWt+counterWt,
 sd(projectileWt,data=s)
 @
 
-After seeing the randomization-based logic of the construction of confidence intervals, it's easy to shift
-to the normal-theory results:
+After seeing the randomization-based logic of the construction of confidence intervals, it's easy to shift to the normal-theory results:
 <<>>=
 summary(tmod)
 @
@@ -799,6 +798,82 @@ Of course, the confidence intervals depend on the structure of the model.  Add i
 %
 %Notation of functions.  Polynomials in two variables.  Transformation variables. Tukey transformations?
 
+\subsection{Keeping Models in Proportion}
+
+A conventional introduction to statistics has methods relating to means (t-tests, one-way and two-way ANOVA) and to proportions (p-tests) and to counts ($\chi^2 tests).  Quantities such as $\sqrt{p(1-p)/N}$ and $\sum \frac{(obs-exp)^2}{exp}$ are almost iconic.  The modeling approach might at first seem to have nothing to do with proportions and counts, but that's not true.  Indeed, proportions and counts fit in well with the modeling framework.  Modeling unifies seemingly disparate methods under one roof.
+
+To illustrate, consider a simple set of data about the health effects of smoking:
+```{r}
+w = fetchData("whickham.csv")
+```
+These data are from a survey of women in Whickhamshire, UK.  The women were surveyed to find (among other things) their ages and whether they smoke.  A follow-up was conducted 20 years later, at which time it was recorded whether the woman was still alive.
+
+Here's the count of women, broken down by the alive/dead outcome:
+```{r}
+tally(~outcome, data=w)
+```
+And the proportion in each group:
+```{r}
+tally(~outcome, data=w, format="proportion")
+```
+It's a conventional problem in intro stats to give a standard error on the proportion, typically using the Wald formula.  For the fraction who have died, the standard error is: $\sqrt{p(1-p)/N} = \sqrt{0.2808 ( 1 - 0.2808)/1314} = 0.012.  This gives a 95\% margin of error of 0.024 and therefore a Wald confidence interval of $0.2808 \pm 0.0235 = [0.257,0.305]$.
+
+Another way to get the same proportions is to take the mean of the Yes/No variable that indicates whether the person has died:
+```{r}
+mean(~outcome=="Dead", data=w)
+```
+
+Now remember that the model with just an intercept produces model values that are the same as means, so the proportion can also be calculated as:
+```{r}
+mod0 = lm(outcome=="Dead" ~ 1, data=w)
+coef(mod0)
+```
+Now the apparatus of modeling can be applied, for instance to generate the 95\% confidence interval:
+```{r}
+confint(mod0)
+```
+
+A more typical application involves the difference between two proportions, say the fraction of the smokers who died versus the fraction of non-smokers.
+```{r}
+tally(~outcome|smoker, data=w, format="proportion")
+```
+It looks like the smokers are a little {\em less} likely to have died.
+
+In modeling language, we're interested in whether the outcome depends on the explanatory variable \VN{smoker}:
+```{r}
+mod1 = lm(outcome=="Dead" ~ smoker, data=w)
+summary(mod1)
+```
+The smokers have a lower death rate. The difference is significant.
+
+In a non-modeling course, this question might be addressed by a p-test, or by a $\chi^2$ test.  For example:
+```{r}
+counts = tally(~outcome & smoker, data=w, margins=FALSE)
+counts
+chisq.test(counts)
+```
+
+The p-value is similar to that from regression.  This is not to say that the $\chi^2$ p-value is right, even though the counts are large.  The Fisher exact test gives yet another p-value:
+```{r}
+fisher.test(counts)
+```
+
+Should you be concerned about the differences between 0.0025 and 0.0030?  There's no practical meaning to the difference.  However, there is a very large practical importance to the covariate \VN{age}, which has not been included in the analysis to this point.
+
+It's easy enough to build a model that incorporates \VN{age}:
+```{r}
+mod2 = lm(outcome=="Dead" ~ smoker+ age, data=w)
+summary(mod2)
+```
+This model suggests that the null hypothesis cannot be rejected.  The p-value on \VN{smoker} is about 0.6.  There is little point in worrying about the second significant digit of a p-value on the difference of counts or proportions when the first digit of the p-value depends on a covariate.
+
+It's worth mentioning that a linear model, while reasonable, is not the right sort of model to build to model proportions.  Better to use a logistic regression model.  This involves a few new concepts (odds, log-odds) and a new R command, but the similarities of logistic regression to linear modeling are larger than the differences.  For reference, here's the logistic regression version of just-smoker model and the age-adjusted model:
+```{r}
+mod3 = glm(outcome=="Dead"~smoker,data=w,family="binomial")
+summary(mod3)
+mod4 = glm(outcome=="Dead"~smoker+age,data=w,family="binomial")
+summary(mod4)
+```
 
 
 \chapter{EXERCISES}
