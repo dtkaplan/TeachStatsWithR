@@ -11,12 +11,12 @@ set.seed(123)
 
 In this monograph, we briefly review the commands and functions needed
 to analyze data from introductory and second courses in statistics.  This is intended to complement
-the materials related to XX STARTING R, MODELING and RESAMPLING XX.
+the \emph{Start Teaching with R} and \emph{Start Modeling with R} books.
 
 We will use data from the HELP (Health Evaluation and Linkage to Primary 
 Care) study: a randomized trial of a novel 
 way to link at-risk subjects with primary care.  More information on the
-dataset can be found in section \ref{sec:help}.
+dataset can be found in chapter \ref{sec:help}.
 
 Some data management is needed by students (and more by instructors).  This
 material is reviewed in section \ref{sec:manipulatingData}.
@@ -28,15 +28,27 @@ it straightforward to find what you are looking for even if you present
 things in a different order.  This is also a good organizational template
 to give your students to help them keep straight ``what to do when".
 
-to rumor, some of us do on occasion.  Nick has used the 6th edition of
-Moore and McCabe \cite{moor:mcca:2007}, where he introduces least squares 
-regression at the end of the first week of a semester, and multiple regression
-(purely descriptively) at the end of the second week.  Design is the next
-main topic, then a brutally pruned intro to probability and sampling distributions.
-Interval estimation and testing are introduced in one or two settings, then 
-the class returns to inference for multiple regression.  While students are working
-on projects involving a multiple linear regression model with 2 predictors,
-some categorical data analysis is covered.
+Other related resources may be helpful, including an annotated set of examples
+from the 
+sixth edition of
+Moore, McCabe and Craig's \emph{Introduction to the Practice of Statitics} \cite{moor:mcca:2007} (see \url{http://www.math.smith.edu/~nhorton/ips6e}) as well as
+the third edition of the \emph{Statistical Sleuth} \cite{Sleuth3} (see \url{http://www.math.smith.edu/~nhorton/sleuth3}).
+
+This work leverages initiatives undertaken by Project MOSAIC (\url{http://www.mosaic-web.org}), an NSF-funded effort to improve the teaching of statistics, calculus, science and computing in the undergraduate curriculum. In particular, we utilize the
+\pkg{mosaic} package, which was written to simplify the use of R for introductory statistics courses. A short summary of the R needed to teach introductory statistics can be found in the mosaic package vignette (\url{http://cran.r-project.org/web/packages/mosaic/vignettes/MinimalR.pdf}).
+
+To use a package within R, it must be installed (one time), and loaded (each session). The package can be installed using the following command:
+<<install_mosaic,eval=FALSE>>=
+install.packages('mosaic')               # note the quotation marks
+@
+The {\tt \#} character is a comment in R, and all text after that on the
+current line is ignored.
+
+Once the package is installed (one time only), it can be loaded by running the command:
+<<load_mosaic,eval=FALSE>>=
+require(mosaic)
+@
+
 
 \chapter{One Quantitative Variable}
 
@@ -46,14 +58,31 @@ some categorical data analysis is covered.
 These include the capability of calculating the mean, standard deviation,
 variance, median, five number summary, intra-quartile range (IQR) as well as arbitrary quantiles.  We will
 illustrate these using the CESD (Center for Epidemiologic Studies - Depression)
-measure of depressive symptoms.  To improve the legibility of output,
+measure of depressive symptoms (which takes on values between 0 and 60, with higher
+scores indicating more depressive symptoms.  
+
+To improve the legibility of output,
 we will also set the default number of digits to display to a more reasonable
 level (see {\tt ?options} for more configuration possibilities).
 
 <<cesd1,cache=FALSE>>=
+require(mosaic)
 options(digits=3)
 mean(~ cesd, data=HELPrct)
 @
+Note that the \function{mean()} in the \pkg{mosaic} package supports a modeling language
+common to \pkg{lattice} graphics and linear models (e.g. \function{lm()}).  We will use
+these commands throughout this file.
+\DiggingDeeper{The \emph{Start Modeling with R} will be helpful if you are unfamiliar with the 
+modeling language}
+
+The same output could be 
+created using the following commands (though we will prefer the MOSAIC version):
+<<>>=
+with(HELPrct, mean(cesd))
+mean(HELPrct$cesd)
+@
+Similar functions exist for other summary statistics.
 <<cesd2,cache=FALSE>>=
 sd(~ cesd, data=HELPrct)
 @
@@ -68,24 +97,26 @@ It is also straightforward to calculate quantiles of the distribution.
 median(~ cesd, data=HELPrct)
 @
 
-<<cesd4>>=
-with(HELPrct, quantile(cesd))
-with(HELPrct, quantile(cesd, c(.25, .50)))
-@
-
 By default, the 
 \function{quantile()} function displays the quartiles, but can be given
 a vector of quantiles to display.  
-<<>>=
-favstats(~ cesd, data=HELPrct)
+\Caution{Not all commands (including \function{quantile()}) have been upgraded to
+support the formula interface. These must be accessed using \function{with()} or the \$ operator.}
+<<cesd4>>=
+with(HELPrct, quantile(cesd))
+with(HELPrct, quantile(cesd, c(.025, .975)))
 @
+
 Finally, the \function{favstats()}
 function in the \pkg{mosaic} package provides a concise summary of 
 many useful statistics.
+<<>>=
+favstats(~ cesd, data=HELPrct)
+@
 
 \section{Graphical summaries}
 The \function{xhistogram()} function is used to create a histogram.
-Here we use the formula interface (as discussed in section \ref{sec:formula}) to
+Here we use the formula interface (as discussed in the \emph{Start Modeling with R} book) to
 specify that we want a histogram of the CESD scores.
 
 \vspace{-4mm}
@@ -99,6 +130,7 @@ xhistogram(~ cesd, data=HELPrct)
 In the \VN{HELPrct} dataset, approximately one quarter of the subjects are female.  
 <<>>=
 tally(~ sex, data=HELPrct)
+tally(~ sex, format="percent", data=HELPrct)
 @
 It is straightforward to restrict our attention to just those subjects.
 If we are going to do many things with a subset of our data, it may be easiest
@@ -113,9 +145,11 @@ male <- subset(HELPrct, sex=='male')
 with(female, stem(cesd))
 @
 
-Subsets can also be generated and used on the fly:
-<<women-cesd-hist>>=
-xhistogram(~ cesd, data=subset(HELPrct, sex=='female'))   # notice the quotes
+Subsets can also be generated and used on the fly (this time including
+an overlaid normal density):
+<<women-cesd-hist,tidy=FALSE>>=
+xhistogram(~ cesd, fit="normal",
+  data=subset(HELPrct, sex=='female'))  
 @
 
 Alternatively, we can make side-by-side plots to compare multiple subsets.
@@ -123,38 +157,55 @@ Alternatively, we can make side-by-side plots to compare multiple subsets.
 xhistogram(~ cesd | sex, data=HELPrct)
 @
 
+The layout can be rearranged.
+\begin{center}
+<<cesd-dotlayout>>=
+xhistogram(~ cesd | sex, layout=c(1, 2), data=HELPrct)   
+@
+\end{center}
+
 \begin{problem}
 Using the \VN{HELPrct} dataset, 
 create side by side boxplots of the CESD scores by substance abuse
-group, just for the male subjects.
+group, just for the male subjects, with an overlaid normal density.
 \end{problem}
 \begin{solution}
-<<subsmale>>=
-bwplot(cesd ~ substance, data=subset(HELPrct, sex=='male'))
+<<subsmale, tidy=FALSE>>=
+bwplot(cesd ~ substance, fit="normal", 
+  data=subset(HELPrct, sex=='male'))
 @
 \end{solution}
 
-The \function{dotPlot()} function is used to create a dotplot (a la Fathom).
-
+We can control the number of bins in a number of ways.  These can be specified 
+as the total number.
 \begin{center}
 <<cesd-dot,fig.height=1.8>>=
-xhistogram(~ cesd, nint=20, data=female)   # was dotPlot
+xhistogram(~ cesd, nint=20, data=female)   
+@
+\end{center}
+
+Or the width can be constrained.
+\begin{center}
+<<cesd-dotwidth,fig.height=1.8>>=
+xhistogram(~ cesd, width=1, data=female)   
 @
 \end{center}
 
 We could also have made our subset ``on the fly'', just for the purposes of graphing:
 \begin{center}
 <<cesd-dot2,fig.height=1.8>>=
-xhistogram(~ cesd, data=HELPrct, subset=(sex=='female'))   # was dotPlot
+xhistogram(~ cesd, data=HELPrct, subset=(sex=='female'))   
 @
 \end{center}
 
-Or we could make side-by-side dotplots of men and women:
-\begin{center}
-<<cesd-dot3>>=
-xhistogram(~ cesd | sex, data=HELPrct)   # was dotPlot
+
+The \function{dotPlot()} function is used to create a dotplot (a la Fathom)
+for a smaller subset of subjects (homeless females).  We also demonstrate
+how to change the x-axis label.
+<<cesd-dot4,tidy=FALSE>>=
+dotPlot(~ cesd, xlab="CESD score", data=subset(HELPrct, 
+  sex=="female" & homeless=="homeless"))
 @
-\end{center}
 
 
 \section{Density curves}
@@ -163,20 +214,21 @@ One disadvantage of histograms is that they can be sensitive to the choice of th
 number of bins.  Another display to consider is a density curve.
 \FoodForThought{Density plots are also sensitive to certain choices.  If your density plot
 is too jagged or too smooth, try adjusting the \option{adjust} argument (larger than 1 for
-smoother plots, less than 1 for more jagged plots.}
+smoother plots, less than 1 for more jagged plots).}
 
 Here we adorn a density plot with some gratuitous additions to 
 demonstrate how to build up a graphic for pedagogical purposes.
 We add some text, a superimposed normal density as well as
-a vertical line.
+a vertical line. A variety of line types can be specified, 
+as well as line widths.
 
 \begin{center}
-<<dens1>>=
+<<dens1,tidy=FALSE>>=
 densityplot(~ cesd, data=female)
 ladd(grid.text(x=0.2, y=0.8, 'only females'))
-ladd(panel.mathdensity(args=list(mean=mean(female$cesd), sd=sd(female$cesd)),
-  col="red"))
-ladd(panel.abline(v=60, col="green"))
+with(female, ladd(panel.mathdensity(args=
+  list(mean=mean(cesd), sd=sd(cesd)), col="red")))
+ladd(panel.abline(v=60, lty=2, lwd=3, col="green"))
 @
 \end{center}
 
@@ -189,7 +241,7 @@ be found in section \ref{sec:probability}.
 \section{Normal distributions}
 \begin{center}
 <<norm1,fig.width=5,fig.height=2.4>>=
-xpnorm(1.96, 0, 1)
+xpnorm(1.96, mean=0, sd=1)
 @
 \end{center}
 
@@ -198,30 +250,34 @@ xpnorm(1.96, 0, 1)
 We can calculate a 95\% confindence interval for the mean CESD 
 score for females by using a t-test:
 <<tinterval>>=
-t.test(female$cesd)
+with(female, t.test(cesd))
+confint(with(female, t.test(cesd)))
 @
 
 But it's also straightforward to calculate this using a bootstrap 
-(using the approach described in chapter \ref{chap:simulation}).
+(using the approach described in the \pkg{mosaic} package Resampling Vignette).
 The statistic that we want to resample is the mean.  
 <<calculuatemean>>=
-with( female, mean(cesd) )
+mean(~ cesd, data=female)
 @
 
-One resampling trial can be carried out with
+One resampling trial can be carried out:
 <<resamplemean>>=
-with(resample(female), mean(cesd))
+mean(~ cesd, data=resample(female))
 @
-Even though a single trial is of little use, it's a nice idea to have
+Another will yield different results:
+<<>>=
+mean(~ cesd, data=resample(female))
+@
+\DiggingDeeper{Even though a single trial is of little use, it's smart have
 students do the calculation to show that they are getting a different
-(usually!) result than without resampling.
+(usually!) result than without resampling.}
 
 Now conduct 1000 resampling trials, saving the results in an object
 called \texttt{trials}:
 <<bootint>>=
-trials = do(1000) *
-  with(resample(female), mean(cesd))
-quantile(trials$result, c(.025, .975))
+trials = do(1000) * mean(~ cesd, data=resample(female))
+with(trials, quantile(result, c(.025, .975)))
 @
 
 \chapter{One Categorical Variable}
@@ -232,12 +288,10 @@ The \function{tally()} can be used to calculate
 counts, percentages and proportions for a categorical variable.
 
 <<homeless-table>>=
-tally(~ homeless, data=HELPrct)      # display table using counts
-tally(~ homeless, format="percent", data=HELPrct)      # display table using percentage
-tally(~ homeless, format="proportion", data=HELPrct)      # display table using proportion
+tally(~ homeless, data=HELPrct)      
+tally(~ homeless, format="percent", data=HELPrct)      
+tally(~ homeless, format="proportion", data=HELPrct)  
 @
-\authNote{NH: how best to add row and/or column totals?  rjp:  Seems like someone must
-have done this already, but I don't know of a function to do it.  I've thought about writing one.  NH: would "addmargins()" be helpful?}
 
 \section{The binomial test}
 
@@ -261,12 +315,10 @@ there are a number of useful quantities available from
 the object returned by the function.  
 For example, the user can extract the confidence interval either manually
 <<binomtest2>>=
-result$conf.int
-result$conf.int[1]
+confint(result)
+pval(result)
 @
-or via the \function{interval()} function in the \pkg{mosaic} package.%
-\footnote{A word of explanation is in order here.  In \R\ what you see is not 
-what you get.  Most of the objects we encounter in \R\ have a \function{print()}
+\DiggingDeeper{Most of the objects in \R\ have a \function{print()}
 method.  So when we get \code{result}, what we are seeing displayed is
 \code{print(result)}.  There may be a good deal of additional information
 lurking inside the object itself.  To make matter even more complicated, some
@@ -275,15 +327,6 @@ the returned object to a variable and process it later, even if nothing shows up
 on the screen.  This is the case for the \pkg{lattice} graphics functions, for example.
 You can save a plot into a variable, say \code{myplot} and display the plot again later 
 using \code{print(myplot)}.}%
-\InstructorNote{You may want to read the footnote that describes what's going on here in 
-a bit more detail.}%
-<<>>=
-interval(result)
-@
-We can extract the p-value similarly.
-<<>>=
-pval(result)
-@
 
 
 \section{The proportion test}
@@ -396,7 +439,9 @@ and predictors.  Here we consider fitting the model \model{\VN{cesd}}{\VN{mcs}}.
 model <- lm(cesd ~ mcs, data=HELPrct)
 coef(model)
 @
+To simplify the output, we turn off the option to display significance stars.
 <<>>=
+options(show.signif.stars=FALSE)
 summary(model)
 @
 
@@ -676,7 +721,7 @@ Significant Difference (HSD).  Other options are available with the
 \pkg{multcomp} package.
 
 <<help-hsd>>=
-with(HELPrct, tapply(cesd, substance, mean))
+favstats(cesd ~ substance, data=HELPrct)
 @
 <<help-hsd2>>=
 compare <- TukeyHSD(mod, "substance")
@@ -699,10 +744,12 @@ link functions and distributional forms for generalized linear models are suppor
 \FoodForThought{\function{glm()} has arguments \option{family}  and
 \option{link}.  The \code{logit} link is the default link for the binomial family,
 so we don't need to specify it here.}
-<<help-logit>>=
-logitmod <- glm(homeless ~ age + female, family=binomial, data=HELPrct)
+<<help-logit,tidy=FALSE>>=
+logitmod <- glm(homeless ~ age + female, family=binomial, 
+  data=HELPrct)
 summary(logitmod)
 exp(coef(logitmod))
+exp(confint(logitmod))
 @
 
 \chapter{Survival Time Outcomes}
@@ -977,7 +1024,7 @@ power.t.test(delta=.25, sd=1, sig.level=alpha, power=0.90)
 
 %\subsection{Cross Tabulation with \texttt{xtabs()}}
 %\subsection{\texttt{aggregate()} and \texttt{Hmisc::summary()}}
-\subsection{Adding new variables to a data frame}
+\section{Adding new variables to a data frame}
 We can add additional variables to an existing data frame by simple assignment.
 
 <<mr-adding-variable2>>=
@@ -1010,7 +1057,7 @@ variable that is already in the \dfn{CPS85} data.
 with(CPS85, table(exper - workforce.years))
 @
 
-\subsection{Dropping variables}
+\section{Dropping variables}
 Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
 Notice the clever use of the minus sign.
 <<>>=
@@ -1030,7 +1077,7 @@ CPSsmall <- subset(CPS85, select=1:4)
 head(CPSsmall,2)
 @
 
-\subsection{Renaming variables}
+\section{Renaming variables}
 Both the column (variable) names and the row names of a data frames can be changed by
 simple assignment using \function{names()} or \function{row.names()}.
 <<>>=
@@ -1081,15 +1128,13 @@ CPS85[1,1:4]
 @
 
 If we don't know the column number (or generally to make our code clearer), a few more 
-keystrokes produces
-\FoodForThought{See Section \ref{sec:Rvectors} for information that will make 
-it clearer what is going on here.}
+keystrokes produces:
 <<>>=
 names(CPS85)[names(CPS85) == 'education'] <- 'educ'
 CPS85[1,1:4]
 @
 
-\subsection{Creating subsets}
+\section{Creating subsets}
 \label{sec:subsets}
 We can also use \function{subset()} to reduce the size of a data set by selecting 
 only certain rows.
@@ -1111,7 +1156,7 @@ xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
 
 
 \authNote{NH: need to flesh out}
-\subsection{Creating variables}
+\section{Creating variables}
 
 <<>>=
 HELP$newsex <- factor(HELP$female, labels=c('M','F'))
@@ -1129,9 +1174,9 @@ spacer
 
 spacer
 
-\subsection{Accounting for missing data}
+\section{Accounting for missing data}
 
-\subsection{Merging datasets}
+\section{Merging datasets}
 
 The \dfn{fusion1} data frame in the \pkg{fastR} package contains 
 genotype information for a SNP (single nucleotide polymorphism) in the gene
@@ -1183,7 +1228,7 @@ Tidy up your data frame by dropping any columns that are redundant or that you j
 have in your final data frame.
 \end{problem}
 
-\subsection{Slicing and dicing}
+\section{Slicing and dicing}
 
 The \function{reshape()} function provides a flexible way to change the arrangement of data.  
 \Rindex{reshape()}%
@@ -1223,18 +1268,6 @@ The \pkg{Hmisc} package also provides \function{reShape()} as an alternative
 to \function{reshape()}.
 \Rindex{stack()}%
 \Rindex{unstack()}%
-
-%\subsection{Simple Relational Database Operations}
-%
-%\newthought{Example: Grades/Courses}
-%
-%Using the grade/courses database, show how to combine data from
-%different data frames. [DTK]
-
-%\newthought{Example: Merging Genotype and Phenotype Data}
-%\label{example:fusion1-glm1}%
-%\myindex{FUSION|exampleidx}%
-%\myindex{logistic regression}%
 
 
 \chapter{Health Evaluation and Linkage to Primary Care (HELP) Study}
