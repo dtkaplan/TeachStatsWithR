@@ -826,6 +826,33 @@ anova(lm1, lm2)
 There is little evidence for an interaction effect: we may want
 to drop this from the model.
 
+It's straightforward to undertake residual diagnostics for this model.  We begin by adding the
+fitted values and residuals to the dataset.
+<<>>=
+HELPrct = transform(HELPrct, resids = resid(lm1))
+HELPrct = transform(HELPrct, pred = fitted(lm1))
+@
+<<tidy=FALSE>>=
+xhistogram(~ resids, xlab="residuals", fit="normal", 
+  data=HELPrct)
+@
+We can display the observations with extremely large negative residuals.
+<<>>=
+subset(HELPrct, resids < -25)
+@
+
+<<tidy=FALSE>>=
+xyplot(resids ~ pred, xlab="residuals", 
+  ylab="predicted values", cex=0.3,
+  type=c("p", "r", "smooth"), data=HELPrct)
+@
+<<tidy=FALSE>>=
+xyplot(resids ~ mcs, xlab="mental component score", 
+  ylab="predicted values", cex=0.3,
+  type=c("p", "r", "smooth"), data=HELPrct)
+@
+The assumptions of normality, linearity and homoscedasticity seem reasonable here.
+
 \chapter{Probability distributions and random variables}
 
 \label{sec:DiscreteDistributions}
@@ -933,7 +960,6 @@ We calculate the power of the sign test as follows. The probability that $X > 0$
 @
 We can view this graphically using the command:
 
-\authNote{duplicated figure}
 \begin{center}
 <<pnorm2,fig.width=5,fig.height=1.9>>= 
 xpnorm(0, mean=0.3, sd=1)
@@ -974,7 +1000,8 @@ power <- 1 - pnorm(crit, mean=0.3, sd=stderr)
 power
 @
 Thus, the power of the test based on normal theory is \Sexpr{round(power,3)}.
-To provide a general check (or for future calculations of this sort) we can use the {\tt power.t.test()} in \R.
+To provide a general check (or for future calculations of this sort) we can use the 
+\function{power.t.test()} function.
 <<>>=
 power.t.test(n=25, delta=.3, sd=1, sig.level=alpha, alternative="one.sided",
 type="one.sample")$power
@@ -982,8 +1009,8 @@ type="one.sample")$power
 
 This yields a similar estimate to the value that we calculated directly.  
 Overall, we see that the t-test has higher power than the sign test, if the underlying
-data are truly normal.  It's useful to have students calculate power empirically, 
-as demonstrated for this example in \ref{sec:power}.
+data are truly normal.  \DiggingDeeper{It's useful to have students calculate power empirically, 
+to demonstrate the power of simulations.}
 
 \begin{problem}
 \label{prob:power1}
@@ -1020,12 +1047,14 @@ power.t.test(delta=.25, sd=1, sig.level=alpha, power=0.90)
 
 
 \chapter{Data management}
-\label{sec:manipulatingData}
-
 \label{sec:manipulatingData}%
 
-%\subsection{Cross Tabulation with \texttt{xtabs()}}
-%\subsection{\texttt{aggregate()} and \texttt{Hmisc::summary()}}
+Data management is a key capacity to allow students (and instructors) to ``compute with data''.
+We tend to keep student data management to a minimum during the early part of an introductory
+statistics course, then gradually introduce topics as needed.  For courses where students
+undertake substantive projects, data management is more important.  This chapter describes 
+some key data management tasks.
+
 \section{Adding new variables to a data frame}
 We can add additional variables to an existing data frame by simple assignment.
 
@@ -1034,7 +1063,8 @@ head(iris)
 @
 
 <<mr-adding-variable>>=
-iris <- transform(iris, Length = cut(Sepal.Length, 4:8))    # cut places data into bins
+# cut places data into bins
+iris <- transform(iris, Length = cut(Sepal.Length, 4:8))    
 @
 
 <<"mr-adding-variable2-again">>=
@@ -1063,7 +1093,9 @@ with(CPS85, table(exper - workforce.years))
 Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
 Notice the clever use of the minus sign.
 <<>>=
+names(CPS85)
 CPS1 <- subset(CPS85, select = -workforce.years)
+names(CPS1)
 @
 Any number of variables can be dropped or kept in this manner by supplying a vectors
 of variables names.
@@ -1083,19 +1115,21 @@ head(CPSsmall,2)
 Both the column (variable) names and the row names of a data frames can be changed by
 simple assignment using \function{names()} or \function{row.names()}.
 <<>>=
-ddd                        # small data frame we defined earlier
+ddd <- data.frame(number=1:5, letter=letters[1:5])
 row.names(ddd) <- c("Abe","Betty","Claire","Don","Ethel")
 ddd                        # row.names affects how a data.frame prints
 @
 More interestingly, it is possible to reset just individual names with the following
 syntax.
 <<>>=
-row.names(ddd)[2] <- "Bette"         # misspelled a name, let's fix it
+# misspelled a name, let's fix it
+row.names(ddd)[2] <- "Bette"         
 row.names(ddd)
 @
 
 The \dfn{faithful} data set (in the \pkg{datasets} package, which is always available)
 has very unfortunate names.
+\DiggingDeeper{It's a good idea to start teach good practices for choice of variable names from day one.}
 <<>>=
 names(faithful)
 @
@@ -1107,7 +1141,7 @@ head(faithful, 3)
 @
 \begin{center}
 <<"mr-faithful-xy">>=
-xyplot(time.til.next ~ duration, faithful)
+xyplot(time.til.next ~ duration, alpha=0.5, data=faithful)
 @
 \end{center}
 If the variable containing a data frame is modified or used to store a different object,
@@ -1146,37 +1180,33 @@ data(faithful)
 names(faithful) <- c('duration', 'time.til.next')
 # any logical can be used to create subsets
 faithfulLong <- subset(faithful, duration > 3)        
-xyplot( time.til.next ~ duration, faithfulLong )
+xyplot( time.til.next ~ duration, data=faithfulLong )
 @
 \end{center}
 
 Of course, if all we want to do is produce a graph, there is no reason to create 
-a new data frame.  The plot above could also be made with
-<<eval=FALSE>>=
-xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
+a new data frame.  The plot above could also be made with:
+\DiggingDeeper{Unfortunately, not all functions in R support the \function{subset=} or
+\function{data=} options.}
+<<eval=FALSE,tidy=FALSE>>=
+xyplot(time.til.next ~ duration, subset=duration > 3, 
+  data=faithful)
 @
 
 
-\authNote{NH: need to flesh out}
-\section{Creating variables}
+\section{Derived variable creation}
 
+XX
 <<>>=
 HELP$newsex <- factor(HELP$female, labels=c('M','F'))
 @
 
-\newthought{character variables}
+\section{Sorting data frames}
 
-spacer 
-
-\newthought{coercing variables}
-
-spacer
-
-\newthought{recoding variables}
-
-spacer
+XX
 
 \section{Accounting for missing data}
+XX
 
 \section{Merging datasets}
 
@@ -1191,13 +1221,15 @@ genotypes and phenotypes using \verb!merge()!.
 %\Rindex{merge()}%
 <<>>=
 require(fastR)
+fusion1 = fusion1[order(fusion1$id),]
 head(fusion1,3)
 head(pheno,3)
 @
 
-<<>>=
+<<tidy=FALSE>>=
 # merge fusion1 and pheno keeping only id's that are in both
-fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id', all.x=FALSE, all.y=FALSE)
+fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id', 
+  all.x=FALSE, all.y=FALSE)
 head(fusion1m, 3)
 @
 In this case, since the values are the same for each data frame, we could collapse
@@ -1210,7 +1242,7 @@ should be kept (\code{TRUE}) or dropped
 
 Now we are ready to begin our analysis.
 <<"mr-fusion1-xtabs">>=
-xtabs(~t2d + genotype + marker, fusion1m)
+tally(~t2d + genotype | marker, data=fusion1m)
 @
 
 \begin{problem}
@@ -1248,20 +1280,22 @@ traffic
 We can reformat this so that each row contains a measurement for a 
 single state in one year.
 
-<<>>=
+<<tidy=FALSE>>=
 longTraffic <-
-	reshape(traffic[,-2], idvar="year", ids=row.names(traffic),
-        times=names(traffic)[3:6], timevar="state",
-        varying=list(names(traffic)[3:6]),
-        v.names="deathRate",
-        direction="long") 
+  reshape(traffic[,-2], idvar="year", 
+  ids=row.names(traffic),
+  times=names(traffic)[3:6], 
+  timevar="state",
+  varying=list(names(traffic)[3:6]),
+  v.names="deathRate",
+  direction="long") 
 head(longTraffic)
 @
 And now we can reformat the other way, this time having all data for a given state 
 form a row in the data frame.
-<<>>=
+<<tidy=FALSE>>=
 stateTraffic <- reshape(longTraffic, direction='wide', 
-                           v.names="deathRate", idvar="state", timevar="year")
+  v.names="deathRate", idvar="state", timevar="year")
 stateTraffic
 @
 
@@ -1276,7 +1310,8 @@ to \function{reshape()}.
 
 \label{sec:help}
 
-The HELP study was a clinical trial for adult inpatients recruited from a detoxification unit.
+Many of the examples in this guide utilize data from the HELP study,
+a randomized clinical trial for adult inpatients recruited from a detoxification unit.
 Patients with no primary care physician were randomized to receive a multidisciplinary assessment and a brief motivational intervention or usual care,
 with the goal of linking them to primary medical care.
 Funding for the HELP study was provided by the National Institute
@@ -1297,15 +1332,15 @@ Subjects were interviewed at baseline during
 their detoxification stay and follow-up interviews were undertaken
 every 6 months for 2 years.  A variety of continuous, count, discrete, and survival time predictors and outcomes were collected at each of these five occasions.
 The details of the
-randomized trial along with the results from a series of additional analyses have been published\cite{same:lars:hort:2003,rees:sait:hort:2001,hort:sait:lair:2002,lieb:save:2002,kert:hort:frie:2003,sait:lars:2004,sait:hort:2005,shan:linc:2005,lars:sait:2006,wine:sait:2007}.
+randomized trial along with the results from a series of additional analyses have been published\cite{same:lars:hort:2003,lieb:save:2002,kert:hort:frie:2003}.
 The Institutional Review Board of
 Boston University Medical Center approved all aspects of the study, including the creation of the de-identified dataset.  Additional
 privacy protection was secured by the issuance of a Certificate of
 Confidentiality by the Department of Health and Human Services.
 A copy of the study instruments can be found at: \url{http://www.math.smith.edu/help}.
 
-The \verb!mosaic! package contains several forms of the de-identified HELP dataset.
-We will focus on \verb!HELPrct!, which contains
+The \pkg{mosaic} package contains several forms of the de-identified HELP dataset.
+We will focus on \pkg{HELPrct}, which contains
 27 variables for the 453 subjects
 with minimal missing data, primarily at baseline.
 Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found here\cite{Horton:2011:R}.
