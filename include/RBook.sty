@@ -108,6 +108,15 @@
 \newcommand{\reuseenumi}{\setcounter{enumi}{\value{myenumi}}}
 
 \newcommand{\cran}{\href{http://www.R-project.org/}{CRAN}}
+
+%%%%%%%% tufte-book work-arounds %%%%%%%%%
+\makeatletter
+\newenvironment{widestuff}%
+{
+\hspace*{-2ex}\begin{minipage}{\@tufte@fullwidth}}%
+{\end{minipage}}
+\makeatother
+
 %%%%%%%% Some R Stuff %%%%%%%%%%%%%%%
 \newcommand{\rterm}[1]{\textbf{#1}}
 \def\R{{\sf R}}
@@ -198,4 +207,7 @@
 \renewcommand{\topfraction}{0.8}
 \renewcommand{\bottomfraction}{0.8}
 \renewcommand{\floatpagefraction}{0.75}
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{4}
+\setcounter{totalnumber}{8} 
 
