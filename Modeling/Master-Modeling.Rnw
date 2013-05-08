@@ -3,10 +3,11 @@
 \documentclass[open-any,12pt]{tufte-book}
 
 \usepackage{../include/RBook}
+\usepackage{multicol}
 \def\tilde{\texttt{\~}}
 
-\title{Start Modeling\\$\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $with R}
-\author{Daniel Kaplan\\Randall Pruim\\ Nicholas Horton}
+\title[Start Modeling in R]{Start Modeling\\$\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $with R}
+\author{Daniel T. Kaplan\\Randall J. Pruim\\ Nicholas J. Horton}
 \date{DRAFT: \today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
