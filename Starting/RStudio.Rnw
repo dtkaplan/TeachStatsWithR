@@ -9,16 +9,15 @@ set.seed(123)
 @
 
 \chapter{Getting Started with RStudio}
-
 \label{chap:RStudio}
 
 \RStudio\ is an integrated development environment (IDE) for \R\ that provides an alternative
-interface to \R\ that has several advantages over other the defautl \R\ interfaces:
+interface to \R\ that has several advantages over other the default \R\ interfaces:
 \begin{itemize}
-	\item \RStudio\ runs on Mac, PC, and linux machines \emph{and looks and feels
+	\item \RStudio\ runs on Mac, PC, and Linux machines \emph{and looks and feels
 		identical on all of them.}
 
-		The defaults interfaces are quite different on the different platforms.  This
+		The default interfaces for \R\ are quite different on the various platforms.  This
 		is a distractor for students and adds an extra layer of support responsibility
 		for the instructor.
 	\item
@@ -26,7 +25,10 @@ interface to \R\ that has several advantages over other the defautl \R\ interfac
 
 		In addition to stand-alone desktop versions, \RStudio\ can be set up 
 		as a server application that is accessed via the internet.  Installation
-		is straightforward for anyone with experience administering a linux system.
+		is straightforward for anyone with experience administering a Linux system.
+		Once set up at your institution, students can start using \RStudio\ by
+		simply opening a website from a browser and logging in.  No additional 
+		installation or configuration is required.
 
 		The web interface is nearly identical to the desktop version. 
 		\Caution{The desktop and server version of \RStudio\ are so similar
@@ -36,27 +38,33 @@ interface to \R\ that has several advantages over other the defautl \R\ interfac
 		If students logout and login in again later, even on a different machine,
 		their session is restored and they can resume their analysis 
 		right where they left off.
-		\marginnote{It's like Facebook for statistics.}
 		With a little advanced set up, instructors can save the history of their 
 		classroom \R\ use and students can load those history files into their own
 		workspace.
+		\marginnote{\RStudio\ is like Facebook for statistics.}%
 	\item
 		\RStudio\ provides support for reproducible research.
 
 		\RStudio\ makes it easy to include text, statistical analysis (\R\ code
 		 and \R\ output), and graphical displays all in the same document.
 		 The RMarkdown system provides a simple markup language and renders the 
-		 results in HTML.  The Sweave and knitr systems are a bit more involved
-		 and allow users to combine \R\ and \LaTeX\ in the same document.  The 
-		 reward for learning the more complicated system is much finer control
-		 over the output format.  Students can use either of these for homework
-		 and projects.  
+		 results in HTML.  The \pkg{knitr}/\LaTeX\ system 
+		 allows users to combine \R\ and \LaTeX\ in the same document.  The 
+		 reward for learning this more complicated system is much finer control
+		 over the output format.  Depending on the level of the course, 
+		 students can use either of these for homework and projects.  
+		 \authNote{NH (via rjp): Add some pointers to more information?}
+		 \marginnote{To use Markdown or \pkg{knitr}/\LaTeX\ requires that 
+		 the \pkg{knitr} package be installed on your system.  
+		 See Section~\ref{sec:installingPackages} for instructions
+		 on installing packages.}
 		 
 		 We typically introduce students to RMarkdown very early,
 		 requiring students to use it for assignments and reports.
-		 Handouts, exams, and books like this one are produced using knitr,
-		 and it is relatively easy for interested students to migrate to knitr
+		 Handouts, exams, and books like this one are produced using \pkg{knitr}\LaTeX,
+		 and it is relatively easy for interested students to migrate to \pkg{knitr}
 		 from RMarkdown if they are interested.
+
 
 	 \item
 		 \RStudio\ provides an integrated support for editing and executing \R\
@@ -92,7 +100,7 @@ is in active development, we fully expect more useful features in the future.
 \section{Setting up R and RStudio} 
 
 \R\ can be obtained from \url{http://cran.r-project.org/}.  
-Download and installation are pretty straightforward for Mac, PC, or linux machines.
+Download and installation are pretty straightforward for Mac, PC, or Linux machines.
 \RStudio\ is available from \url{http://www.rstudio.org/}.
 \RStudio\ can be installed as a desktop (laptop) application or as a server application
 that is accessible to others via the Internet.
@@ -104,9 +112,9 @@ Running in the browser has the advantage that you don't have to install or
 configure anything.  Just login and you are good to go.  Futhermore, \Rstudio\
 will ``remember'' what you were doing so that each time you login (even on a
 different machine) you can pick up right where you left off.  This is ``\R\ in
-the cloud" and works a bit like GoogleDocs for \R.
+the cloud" and works a bit like GoogleDocs or Facebook for \R.
 
-Your systems administrator will likely need to set up your own version of
+Your system administrator will likely need to set up your own installation of
 \RStudio\ for your institution, but we can attest that the process is
 straightforward and greatly facilitates student and faculty use.
 
@@ -145,17 +153,19 @@ you will see something like Figure~\ref{fig:Rstudio-bigview}.
 Notice that \Rstudio\ divides its world into four panels.  Several of the panels
 are further subdivided into multiple tabs.  Which tabs appear in which panels
 can be customized by the user.
+\marginnote[-2in]{We find it convenient to put the console in the upper left rather than the default 
+location (lower right) so that students can see it better when we project or \R\ session in class.}
 
 \section{Using R as a Calculator}
 \R\ can do much more than a simple calculator, and we will introduce 
 additional features in due time.  But performing simple calculations in \R\ is a
 good way to begin learning the features of \RStudio.
-\RStudio.
+
 \subsection{Calculating in the Console Tab}
-Commands entered in the \tab{Console} tab are immediately executed by \R\.
+Commands entered in the \tab{Console} tab are immediately executed by \R.
 A good way to familiarize yourself with the console is to do some simple 
 calculator-like computations.  Most of this will work just like you would 
-expect from your calculator.
+expect from a typical calculator.
 Try typing the following commands in the console panel.
 
 <<arithmetic>>=
@@ -173,23 +183,23 @@ from the \RStudio\ menu.  A file editor tab will open in the \tab{Source} panel.
 buttons and menu items are provided to run all the code (called sourcing the file) or 
 to run the code on a single line or in a selected section of the file.
 
-\subsection{Working with RMarkdown, Sweave and knitr}
+\subsection{Working with RMarkdown, and knitr/\LaTeX}
 A third alternative is to take advantage of \RStudio's support for reproducible research.
-If you already know \LaTeX, you will want to investigate the knitr/Sweave capabilities.
+If you already know \LaTeX, you will want to investigate the \pkg{knitr}/\LaTeX\ capabilities.
 For those who do not already know \LaTeX, the simpler RMarkdown system provides an easy
 entry into the world of reproducible research methods.  It also provides a good facility
-for students to create homework and reports that include text, \R\ code, and graphics.
+for students to create homework and reports that include text, \R\ code, \R\ output, and graphics.
 
 To create a new RMardown file, select \tab{File}, then \tab{New File}, then \tab{RMarkdown}.
-The file will be opened with a short template document that illustrates the mark up language 
-used.  Click on \tab{Compile HTML} to convert this to an HTML file.  There is a button the 
-provides a brief index of the mark up provided, and the \RStudio\ web site includes more
+The file will be opened with a short template document that illustrates the mark up language.
+Click on \tab{Compile HTML} to convert this to an HTML file.  There is a button the 
+provides a brief description of the mark commands supported, and the \RStudio\ web site includes more
 extensive tutorials on using RMarkdown.
 
-\marginnote{RMarkdown, Sweave, and knitr files do not have access to the console workspace, 
+\marginnote{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console workspace, 
 so the code in them must be self-contained.}%
 It is important remember that unlike \R\ scripts, which are executed in the
-console and so do have access to the console workspace,  RMarkdown, Sweave, and knitr 
+console and have access to the console workspace,  RMarkdown and \pkg{knitr}/\LaTeX\
 files do not have access to the console workspace.  This is a good feature because it forces
 the files to be self-contained, which makes them transferable and respects good
 reproducible research practices.  But beginners, especially if they adopt a
@@ -199,7 +209,7 @@ incomplete and therefore do not compile correctly.
 
 One good strategy for getting student to use RMarkdown is to provide them with a template
 that includes the boiler plate you want them to use, loads any \R\ packages that they will
-need, sets any knitr or \R\ settings they way you prefer them, and has placeholders for the 
+need, sets any \pkg{knitr} or \R\ settings they way you prefer them, and has placeholders for the 
 work you want them to do.
 
 
@@ -208,11 +218,11 @@ work you want them to do.
 \subsection{The History Tab}
 
 As commands are entered in the console, they appear in the \tab{History} tab.
-These histories can be saved an loaded, there is a search feature to locate
+These histories can be saved and loaded, there is a search feature to locate
 previous commands, and individual lines or sections can be transfered back to
 the console.  Keeping the \tab{History} tab open will allow students to look
 back and see the previous several commands.  This can be especially useful when
-commands produce a fair amount of output and so scroll of the screen rapidly.
+commands produce a fair amount of output and so scroll off the screen rapidly.
 History files can be saved and distributed to students so that they can rerun the 
 code illustrated in class.  (Before saving the history, you can remove any lines 
 that you don't want saved to spare your students repeating all of your typing errors.)
@@ -236,7 +246,7 @@ For example
 Will provide the help file for the logarithm function.
 
 \subsection{The Workspace Tab}
-The \tab{Workspace} tab shows the opjects available to the console.  These are
+The \tab{Workspace} tab shows the objects available to the console.  These are
 subdivided into data, values (non-data frame, non-function objects) and
 functions.  Clicking on a data frame will open it a data viewer.  Clicking on
 other objects will open them in a small editor so you can ``fix'' them.
@@ -244,15 +254,17 @@ other objects will open them in a small editor so you can ``fix'' them.
 \subsection{The Plots Tab}
 Plots created in the console are displayed in the \tab{Plots} tab.  For example,
 <<>>=
-require(lattice)
+# this will make lattice graphics available to the session
+require(mosaic)       
 xyplot( births ~ dayofyear, data=Births78)
 @
-\noindent
 will display the number of births in the United States for each day in 1978.
 From the \tab{Plots} tab, you can navigate to previous plots and also export plots 
 in various formats after interactively resizing them.
 
 
+% this fixes bad spacing -- but I don't know why the spacing was bad
+\bigskip
 \subsection{The Packages Tab}
 
 Much of the functionality of \R\ is located in packages, many of which can be obtained

@@ -252,10 +252,11 @@ row.names(ddd)
 
 \R\ provides a number of functions for testing the mode or class of an object.
 
-<<whatIsThis>>=
+<<whatIsThis,tidy=FALSE>>=
 mode(xm); class(xm)
-c(is.numeric(xm), is.character(xm), is.integer(xm), is.logical(xm))
-c(is.vector(xm), is.matrix(xm), is.array(xm))
+c(numeric=is.numeric(xm), char=is.character(xm), 
+  int=is.integer(xm),  logical=is.logical(xm))
+c(vector=is.vector(xm), matrix=is.matrix(xm), array=is.array(xm))
 @
 
 
@@ -621,11 +622,12 @@ This can be convenient when dealing with subsets of very large data sets.
 The example below queries a the UCSC genome browser to find all the known genes
 on chromosome~1.
 
-\begin{table*}
+\begin{widestuff}
 <<ucsc-sql,tidy=FALSE>>=
 require(RMySQL)
  
-# Set up a connection to the public MySQL server for the UCSC genome browser (no password)
+# Set up a connection to the public MySQL server 
+# for the UCSC genome browser (no password)
 ucscData <- dbConnect(MySQL(), 
                       user="genome", 
                       host="genome-mysql.cse.ucsc.edu")
@@ -639,7 +641,7 @@ chrom1 <-
 dim(chrom1)
 head(chrom1,2)
 @
-\end{table*}
+\end{widestuff}
 
 %A great example of this is the 12 gigabytes of data from the Airline on-time
 %performance dataset included in the 2009 Data Expo (\url{http://stat-computing.org/dataexpo/2009}).
@@ -677,6 +679,8 @@ c(1:5, 10, 3:5)
 rnorm(10, mean=10, sd=2)  
 x <- 5:20                 # all integers in a range
 # random sample of size 5 from x (no replacement)
+sample(x, size=5)         
+# a different random sample of size 5 from x (no replacement)
 sample(x, size=5)         
 # random sample of size 5 from x (with replacement)
 resample(x, size=5)         
@@ -741,8 +745,10 @@ The downside is that these files are only readable in \R.
 <<savingData,exec=FALSE,echo=TRUE>>=
 abc <- "abc"
 ddd <- data.frame(number=1:5, letter=letters[1:5])
-save(ddd, abc, file="ddd.rda")   # saves both objects in a single file
-load("ddd.rda")                  # loads them both
+# save both objects in a single file
+save(ddd, abc, file="ddd.rda")   
+# load them both
+load("ddd.rda")                  
 @
 
 
@@ -820,18 +826,18 @@ course-support software system or any other place for distribution to
 students.  For a csv file, reading the contents of the file into \R\
 can be done with the \function{read.csv} function, by giving it the
 quoted URL:
+\begin{figure*}
 <<read-quoted-URL>>=
 a <- read.csv("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
 @ 
-\InstructorNote{The history feature in \RStudio\ can be used to 
-re-run this command in future sessions.}
+%\InstructorNote{The history feature in \RStudio\ can be used to 
+%re-run this command in future sessions.}
 
-\begin{figure}
 \begin{center}
-\includegraphics[width=4.5in]{images/dropbox2.png}
+\includegraphics[width=.9\textwidth]{images/dropbox2.png}
 \end{center}
 \caption{\label{fig:dropbox2}Getting the URL of a file in a Dropbox Public directory}
-\end{figure}
+\end{figure*}
 
 This technique makes it easy to distribute data with little
 advance preparation.  It's fast enough to do in the middle of a
@@ -844,6 +850,7 @@ The same technique can be applied to all sorts of files like
 Of course, your students need to
 use the appropriate \R\ command: \function{load()} for a workspace or
 \function{source()} for a script.
+\authNote{RP: Not sure workspace is the best word for this.}
 
 The example below will source a file that will print a welcoming message for you.
 <<source-example>>=
@@ -987,25 +994,22 @@ open it using the csv tools in \R, such as \function{read.csv}.
     %directly into \R.}
 %\end{figure}
 
-%\iffalse
-Direct communication with
-GoogleDocs requires facilities
+Direct communication with GoogleDocs requires facilities
 that are not present in the base version of \R, but are available
-through the \texttt{RCurl} package.  
-
-%\fi
-
+through the \pkg{RCurl} package.  
 In order to make these readily
 available to students, the \pkg{mosaic} package contains a function that takes the quoted (and cumbersome)
 string with the Google-published URL and reads the corresponding file
-into a data frame:
-<<"read-from-google1",echo=FALSE,results="hide">>=
-elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
-@
+into a data frame.  \pkg{RCurl} neads to be installed for this to work, and will be loaded
+if it is not already loaded when \function{fetchGoogle()} is called.
 <<"read-from-google2",eval=FALSE,tidy=FALSE>>=
 elev <- fetchGoogle(
-"https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=
-0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
+"https://spreadsheets.google.com/spreadsheet/pub?
+hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&
+single=TRUE&gid=0&output=csv")
+@
+<<"read-from-google1",echo=FALSE,results="hide">>=
+elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
 @
 <<"read-from-google3">>=
 head(elev)
@@ -1023,10 +1027,11 @@ course support system.
 \subsection{Adding new variables to a data frame}
 
 The \function{transform()} function can be used to add or modify variables in a data frame.
-<<>>=
+<<tidy=FALSE>>=
 chrom1 <- transform(chrom1, length=(txEnd - txStart)/1000)
 head(chrom1, 2)
-xhistogram( ~log10(length), data=chrom1, xlab="gene length (kb)" )
+xhistogram( ~log10(length), data=chrom1, 
+            xlab="gene length (kb)" )
 @
 
 Here we show how to modify the \dataframe{Births78} data frame so 
@@ -1085,7 +1090,8 @@ ddd                        # row.names affects how a data.frame prints
 More interestingly, it is possible to reset just individual names with the following
 syntax.
 <<>>=
-row.names(ddd)[2] <- "Bette"         # misspelled a name, let's fix it
+# misspelled a name, let's fix it
+row.names(ddd)[2] <- "Bette"
 row.names(ddd)
 @
 
@@ -1188,7 +1194,7 @@ head(CPSsmall,2)
 %\newthought{recoding variables}
 %stuff here 
 
-\subsection{Accounting for missing data}
+%\subsection{Accounting for missing data}
 
 \subsection{Merging datasets}
 
@@ -1207,9 +1213,10 @@ head(fusion1,3)
 head(pheno,3)
 @
 
-<<>>=
+<<tidy=FALSE>>=
 # merge fusion1 and pheno keeping only id's that are in both
-fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id', all.x=FALSE, all.y=FALSE)
+fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id', 
+                  all.x=FALSE, all.y=FALSE)
 head(fusion1m, 3)
 @
 In this case, since the values are the same for each data frame, we could collapse
@@ -1262,20 +1269,20 @@ traffic
 We can reformat this so that each row contains a measurement for a 
 single state in one year.
 
-<<>>=
+<<tidy=FALSE>>=
 longTraffic <-
-	reshape(traffic[,-2], idvar="year", ids=row.names(traffic),
-        times=names(traffic)[3:6], timevar="state",
-        varying=list(names(traffic)[3:6]),
-        v.names="deathRate",
-        direction="long") 
+  reshape(traffic[,-2], idvar="year", ids=row.names(traffic),
+      times=names(traffic)[3:6], timevar="state",
+      varying=list(names(traffic)[3:6]), v.names="deathRate",
+      direction="long") 
 head(longTraffic)
 @
 And now we can reformat the other way, this time having all data for a given state 
 form a row in the data frame.
-<<>>=
-stateTraffic <- reshape(longTraffic, direction='wide', 
-                           v.names="deathRate", idvar="state", timevar="year")
+<<tidy=FALSE>>=
+stateTraffic <- 
+   reshape(longTraffic, direction='wide', 
+           v.names="deathRate", idvar="state", timevar="year")
 stateTraffic
 @
 
@@ -1462,11 +1469,12 @@ favstats(Sepal.Length ~ Species, data=iris)
 There are lots of arguments that control how lattice plots look.  Here are just a few examples.
 
 \newthought{auto.key}
-It would be useful to have a legend for the previous plot.   \verb!auto.key=TRUE! 
-turns on a simple legend.  (There are ways to have more control, if you need it.)
-<<iris-xyplot-key,cache=TRUE>>=
-xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
-	auto.key=TRUE)   
+When using overlayed groups in a plot, it is often useful to 
+have a legend.  \verb!auto.key=TRUE!  turns on a simple legend.  
+(There are ways to have more control, if you need it.)
+<<iris-xyplot-key,cache=TRUE,tidy=FALSE>>=
+xyplot(Sepal.Length ~ Sepal.Width, groups=Species, 
+    data=iris, auto.key=TRUE)   
 @
 
 \newthought{alpha, cex}
@@ -1476,25 +1484,25 @@ Setting the \verb!alpha! argument to a value between 0 and 1 controls the degree
 of transparency: 1 is completely opaque, 0 is invisible.
 The \verb!cex! argument controls ``character expansion" and can be used to make the 
 plotting ``characters" larger or smaller by specifying the scaling ratio.
-<<iris-xyplot-alpha,cache=TRUE>>=
-xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
-	auto.key=list(columns=3),
-	alpha=.5,
-	cex=1.3)   
+<<iris-xyplot-alpha,cache=TRUE,tidy=FALSE>>=
+xyplot(Sepal.Length ~ Sepal.Width, data=iris, 
+    groups=Species, 
+    auto.key=list(columns=3),
+    alpha=.5, cex=1.3)   
 @
 
 \vspace{-8mm}
 \newthought{main, sub, xlab, ylab}
 
 You can add a title or subtitle, or change the default labels of the axes.
-<<iris-xyplot-text,cache=TRUE>>=
+<<iris-xyplot-text,cache=TRUE,tidy=FALSE>>=
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
-	main="Some Iris Data",
-	sub="(R. A. Fisher analysed these data in 1936)",
-	xlab="sepal width (cm)",
-	ylab="sepal length (cm)",
-	alpha=.5,        
-	auto.key=list(columns=3))   
+    main="Some Iris Data",
+    sub="(R. A. Fisher analysed these data in 1936)",
+    xlab="sepal width (cm)",
+    ylab="sepal length (cm)",
+    alpha=.5,        
+    auto.key=list(columns=3))   
 @
 
 \newthought{trellis.par.set()}
@@ -1503,9 +1511,9 @@ Default settings for lattice graphics are set using
 Don't like the default font sizes?  You can change to a 7 point (base) font using
 
 <<fontsize,eval=TRUE>>=
-trellis.par.set(fontsize=list(text=7))    # base size for text is 7 point 
+# set the base size for text to 7 point 
+trellis.par.set(fontsize=list(text=7))    
 @
-
 
 Nearly every feature of a lattice plot can be controlled: fonts, colors,
 symbols, line thicknesses, colors, etc.
@@ -1513,27 +1521,32 @@ Rather than describe them all here, we'll mention only that groups of these sett
 can be collected into a theme.  \verb!show.settings()! will show you what the theme looks like.
 
 <<themes-whitbg,cache=TRUE,fig.height=4.0,fig.width=6>>=
-trellis.par.set(theme=col.whitebg())      # a theme in the lattice package
+# a theme in the lattice package
+trellis.par.set(theme=col.whitebg())      
 show.settings()
 @
 
 <<themes-mosaic,cache=TRUE,fig.height=4,fig.width=6>>=
-trellis.par.set(theme=col.mosaic())        # a theme in the mosaic package
+# a theme in the mosaic package
+trellis.par.set(theme=col.mosaic())        
 show.settings()
 @
-\SuggestionBox{Do you have a great eye for colors?  Help us design other 
-lattice themes.}%
+%\SuggestionBox{Do you have a great eye for colors?  Help us design other 
+%lattice themes.}%
 
 \DiggingDeeper{The \pkg{RColorBrewer} package provides several
 palettes of colors that are highly distinguishable and aesthetically pleasing.}%
 <<themes-mosaicbw,cache=TRUE,fig.height=4,fig.width=6>>=
-trellis.par.set(theme=col.mosaic(bw=TRUE)) # black and white version of previous theme
+# black and white version of previous theme
+trellis.par.set(theme=col.mosaic(bw=TRUE)) 
 show.settings()
 @
 
 <<themes-mosaic-redo>>=
-trellis.par.set(theme=col.mosaic())       # back to the mosaic theme
-trellis.par.set(fontsize=list(text=9))    # and back to a larger font 
+# back to the mosaic theme
+trellis.par.set(theme=col.mosaic())       
+# and back to a larger font 
+trellis.par.set(fontsize=list(text=9))    
 @
 
 \begin{problem}
@@ -1586,22 +1599,35 @@ quotation mark \emph{inside} your text.  Then you should use the other type of
 quotation mark to mark the beginning and the end.
 
 <<quotes>>=
-text1 <- "Mary didn't come"            # apostrophe inside requires double quotes around text
-text2 <- 'Do you use "scare quotes"?'  # this time we flip things around
-@
-
-If you omit quotes, you will often see error messages telling you that \R\ can't find 
-an object because \R\
-will look for a function, data set or other object with that name instead of treating
-your text as text.
-<<noquotes-error,error=TRUE>>=
-text3 <- blah
+# apostrophe inside requires double quotes around text
+text1 <- "Mary didn't come"            
+# this time we flip things around
+text2 <- 'Do you use "scare quotes"?'  
 @
 
 
 \section{Common Error Messages and What Causes Them}
 
 \subsection{Object not found}
+
+\R\ reports that an object is not found when it cannot locate an object with the name you have 
+used.  One common reason for this is a typing error.  This is easily corrected by retyping the
+name with the correct spelling.
+<<>>=
+histogram( ~ aeg, data=HELPrct )
+@
+
+Another reason for an object-not-found error is using unquoted 
+text where quotation marks were required.
+<<noquotes-error,error=TRUE>>=
+text3 <- hello
+@
+In this case, \R\ is looking for some object named \variable{hello}, but we meant to store
+a string:
+<<noquotes-error-fix,error=TRUE>>=
+text3 <- "hello"
+@
+
 
 \subsection{Other error messages here}
 

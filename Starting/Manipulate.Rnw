@@ -81,13 +81,14 @@ manipulate(
 
 Drop-down menus can be added using the \function{picker()} function.
 
-<<manipulate-histogram3, eval=inRStudio>>=
+<<manipulate-histogram3, eval=inRStudio, tidy=FALSE>>=
 manipulate(
-	xhistogram( ~ age, data=HELPrct, n=N, fit=DISTRIBUTION, dlwd=4),
-	N = slider(5,40),
-	DISTRIBUTION = 
-		picker('normal', 'gamma', 'exponential', 'lognormal',
-			   label="distribution")
+    xhistogram( ~ age, data=HELPrct, n=N, 
+                       fit=DISTRIBUTION, dlwd=4),
+    N = slider(5,40),
+    DISTRIBUTION = 
+        picker('normal', 'gamma', 'exponential', 'lognormal',
+               label="distribution")
 )
 @
 
@@ -102,27 +103,31 @@ to allow them to explore interactively in a more flexible way.
 
 We begin by creating an illustration of tail probabilities in a normal distribution.
 <<manipulate-xpnorm, tidy=FALSE, eval=inRStudio>>=
-  manipulate( xpnorm( X, 500, 100, verbose=FALSE, invisible=TRUE ), 
-              X = slider(200,800) )
+manipulate( 
+    xpnorm( X, 500, 100, verbose=FALSE, invisible=TRUE ), 
+    X = slider(200,800) )
 @
 \centerline{\includegraphics[width=3.8in]{images/manipulate-xpnorm}}
 %
 The version below can be used to investigate central probabilities and tail probabilities.
-<<manipulate-xpnorm2, eval=inRStudio>>=
-  manipulate( xpnorm( c(-X,X), 500, 100, verbose=FALSE, invisible=TRUE ), 
-              X = slider(200,800) )
+<<manipulate-xpnorm2, eval=inRStudio, tidy=FALSE>>=
+manipulate( 
+    xpnorm( c(-X,X), 500, 100, verbose=FALSE, invisible=TRUE ), 
+    X = slider(200,800) )
 @
 
 These examples work with a fixed distribution.  Here is a fancier version in which 
 a function returns a manipulate object.  This allows us to easily create illustrations
 like the ones above for any normal distribution.
-<<eval=inRStudio>>=
+<<eval=inRStudio, tidy=FALSE>>=
 mNorm <- function( mean=0, sd=1 ) {
   lo <- mean - 5*sd 
   hi <- mean + 5*sd
-  manipulate( xpnorm( c(A,B), mean, sd, verbose=FALSE, invisible=TRUE ), 
-			 A = slider(lo, hi, initial=mean-sd), 
-			 B = slider(lo, hi, initial=mean+sd))
+  manipulate( 
+    xpnorm( c(A,B), mean, sd, verbose=FALSE, invisible=TRUE ), 
+    A = slider(lo, hi, initial=mean-sd), 
+    B = slider(lo, hi, initial=mean+sd)
+  )
 }
 mNorm( mean=100, sd=10 )
 @

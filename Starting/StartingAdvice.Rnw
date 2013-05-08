@@ -21,7 +21,7 @@ In this chapter we discuss some strategies and tactics for getting started teach
 statistics with \R.  
 In subsequent chapters we provide more details about the (relatively few) \R\ 
 \marginnote{The \pkg{mosaic} package includes a vignette outlining a possible
-minimalistic set of \R\ commands for teaching and introductory course.}
+minimalist set of \R\ commands for teaching an introductory course.}
 commands that students need to know and some additional information about \R\ 
 that is useful for instructors to know.  Along the way we present some of our favorite 
 examples that highlight the use of \R, including some that can be used very early
@@ -132,7 +132,7 @@ Replace them with computation.  Teach only the most intuitive formulas. Focus on
 how they lead to intuition and understanding, \emph{not} computation.
 
 \item
-(Most) hand calculations.
+(Almost all) hand calculations.
 
 \end{itemize}
 At the same time, other things become possible that were not before:
@@ -165,17 +165,23 @@ Focus on diagnosing what they don't know and how to help them ``get it''.
 
 In our experience, the computer is often a fall guy for other things the student
 does not understand.  Because the computer gives immediate feedback, it reveals these 
-misunderstandings.  If students are confused about variables, statistics, and observational
-units, they will have a difficult time providing the correct information to a plotting function.
+misunderstandings.  For exapmle, if students are confused about the distinctions among
+variables, statistics, and observational units, 
+they will have a difficult time providing the correct information to a plotting function.
 The student may blame \R, but that is not the primary source of the difficulty.  If you can
 diagnose the true problem, you will improve their understanding of statistics
 and fix \R\ difficulties simultaneously.
+\marginnote[-6ex]{When introducing \R\ code to students, we emphasize the 
+following questions:  What do you want \R\ to do for you?  What information must
+you provide, if \R\ is going to do that?  The first question generally determines 
+the function that will be used.  The second determines the inputs to that function.}%
+\authNote{Nick wanted more examples than this.}%
 
 But even students with a solid understanding of the statistical concepts you are teaching
 will encounter \R\ errors that they cannot eliminate.
 \TeachingTip{Tell your students to copy and paste error messages
 into email rather than describe them vaguely.  It's a big time saver for
-both of you.}%
+everyone}%
 Tell students to copy and paste \R\ code and error messages into email when they
 have trouble.  When you reply, explain how the error message helped you diagnose their
 problem and help them generalize your solution to other situations.

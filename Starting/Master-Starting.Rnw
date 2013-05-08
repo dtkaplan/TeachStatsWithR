@@ -7,14 +7,14 @@
 \def\tilde{\texttt{\~}}
 
 \title{Start Teaching with R}
-\author{Randall Pruim and Nicholas Horton and Daniel Kaplan}
+\author{Randall Pruim, Nicholas J. Horton, and Daniel Kaplan}
 \date{DRAFT: \today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
 
 \begin{document}
 
-\maketitle
+%\maketitle
 
 \tableofcontents
 

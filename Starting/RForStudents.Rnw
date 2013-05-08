@@ -28,17 +28,11 @@ sqrt(16)  # square root function
 @
 This last example demonstrates how functions are called within \R\ as
 well as the use of comments.
+Comments are prefaced with the \verb!#! character.
 Comments can be very helpful when writing scripts 
 with multiple commands or to annotate example code for your students.
-Comments are prefaced with the \verb!#! character.
 
 You can save values to named variables for later reuse.
-\TeachingTip{It's probably best to settle on using 
-one or the other of the right-to-left assignment operators rather than to switch
-back and forth.  The authors have different preferences:
-two of us find the equal sign to be simpler for students and more 
-intuitive, while the other prefers the arrow operator because
-it can also be used in a left to right manner.}%
 
 <<rs-variables1a,tidy=FALSE>>=
 product = 15.3 * 23.4       # save result
@@ -46,6 +40,16 @@ product                     # display the result
 product <- 15.3 * 23.4      # <- can be used instead of =
 product                     
 @
+\TeachingTip{It's probably best to settle on using 
+one or the other of the right-to-left assignment operators rather than to switch
+back and forth.  The authors have different preferences:
+two of us find the equal sign to be simpler for students and more 
+intuitive, while the other prefers the arrow operator because it
+represents visually what is happening in an assignment, because it
+can also be used in a left to right manner, and because it makes 
+a clear distinction between the assignment operator, the use of \code{=}
+to provide values to arguments of functions, and the use of \code{==} to test
+for equality.}%
 Once variables are defined, they can be referenced in other operations
 and functions.
 
@@ -53,7 +57,7 @@ and functions.
 0.5 * product               # half of the product
 log(product)                # (natural) log of the product
 log10(product)              # base 10 log of the product
-log(product,base=2)         # base 2 log of the product
+log(product, base=2)        # base 2 log of the product
 @
 \authNote{can we come up with a better (e.g. less mathematical) example?}
 
@@ -68,7 +72,8 @@ One frequent use of this is to save and print a value all in one go:
 
 \section{Four Things to Know About \R}
 
-\R\ has to be used on its terms.  \R\ does not learn the personality and style 
+As is true for most computer languages, \R\ has to be used on its terms.  
+\R\ does not learn the personality and style 
 of its users.  Getting along with \R\ is much easier if you keep in mind (and remind 
 your students about) a few key features of the \R\ language.
 
@@ -76,7 +81,7 @@ your students about) a few key features of the \R\ language.
 \item \R\ is case-sensitive
 
 If you mis-capitalize something in \R\ it won't do what you want.
-Unfortunately, there is not a strong convention about how capitalization 
+Unfortunately, there is not a consistent convention about how capitalization 
 should be used, so you just have to pay attention when encountering new
 functions and data sets.  
 \TeachingTip{Some students will be slow
@@ -115,7 +120,7 @@ list of possible ways to complete the command.  If you hit TAB after the
 opening parenthesis of a function, \RStudio\ will display the list of arguments
 it expects.  
 
-The up and down arrows can be used to retrieve past commands.
+The up and down arrows can be used to retrieve past commands when working in the console.
 \item
 If you see a \code{+} prompt, it means \R\ is waiting for more input.
 
@@ -126,6 +131,87 @@ syntax error.  If you have messed up and just want to get back to the normal pro
 press the escape key and start the command fresh.
 \end{enumerate}
 
+\section{Installing and Using Packages}
+\label{sec:installingPackages}
+
+\marginnote{If you set up an \RStudio\ server, you can install all
+of the packages you want to use.  You can even configure the server to 
+autoload packages you use frequently.  Students who use \R\ on their 
+desktop machines will need to know how to install and load these packages, 
+however.}
+
+\R\ is open source software.  Its development is supported by
+a team of core developers and a large community of users.  
+One way that users support
+\R\ is by providing \term{packages} that contain data and functions
+for a wide variety of tasks.  
+As an instructor,
+you will want to select a few packages that support the way you want
+to teach your course.
+
+%\subsection{Installing packages from \cran}
+If you need to install a package, most likely it will be on \cran, 
+the Comprehensive R Archive Network.
+Before a package can be used, it must be \term{installed} 
+(once per computer or account)
+and
+\term{loaded} (once per \R\ session).  
+Installing downloads the package software and prepares it for use
+by compiling (if necessary) and putting its components in the proper
+location for future use.
+Loading makes a previously installed package available for use 
+in an \R\ session.
+
+For example, to use the \pkg{mosaic} package:
+\Rindex{install.packages()}%
+\Rindex{require()}%
+
+<<eval=FALSE,tidy=FALSE>>=
+install.packages("mosaic") # fetch package from CRAN 
+require(mosaic)            # load the package before use.
+@
+\Caution{Remember that in RMarkdown and Rnw files, any
+packages you use must be loaded \emph{within the file}.}
+\noindent
+The \tab{Packages} tab in \RStudio\ makes installing and loading packages
+particularly easy and avoids the need for \function{install.packages()}.
+
+If you are running on a machine where you don't have privileges to
+write to the default library location, you can install a personal 
+copy of a package.  If the location of your personal library is 
+first in \code{R_LIBS}, this will probably happen automatically.  If not,
+you can specify the location manually:
+
+<<eval=FALSE>>=
+install.packages("mosaic", lib="~/R/library")
+@
+%On a networked machine, be sure to use a different local directory for 
+%each platform since packages must match the platform.
+
+%Binary packages have been precompiled for a 
+%particular platform and are generally faster and easier to set up, if they 
+%are available.  Source packages need to be compiled and built on your local
+%machine.  Usually this happens automatically -- provided you have all the 
+%necessary tools installed on your machine -- so the only disadvantage is the
+%extra time it takes to do the compiling and building.
+
+%\subsection{Installing other packages}
+
+Occasionally you might find a package of interest that is not available via
+a repository like \cran.  
+Typically, if you find such a package, you will also find instructions
+on how to install it.  If not, you can usually install directly from the 
+zipped up package file.
+
+<<eval=FALSE,echo=TRUE>>=
+# repos = NULL indicates to use a file, not a repository
+install.packages('some-package.tar.gz', repos=NULL)           
+@
+
+\begin{boxedText}
+	From this point on, we will assume that the \pkg{mosaic}
+	package has been installed and loaded.
+\end{boxedText}
 
 \section{Getting Help}
 
@@ -142,7 +228,7 @@ To get help on a specific function or data set, simply precede its name with a \
 ?log      # help for the log function
 @
 <<rs-help2,eval=FALSE,tidy=FALSE>>=
-?HELPrct  # help on a data set
+?HELPrct  # help on a data set in the mosaic package
 @
 This will give you the documentation for the object you are interested in.
 
@@ -170,7 +256,7 @@ example(xhistogram)
 will generate a number of example plots (and provide you with the commands used to create them).
 Examples such as this are intended to help you learn how specific \R\ functions work.
 \Caution{Not all package authors are equally skilled at creating examples.  
-Some of the examples are next to useless, others are excellent.}%
+Some of the examples are nonexistent or next to useless, others are excellent.}%
 These examples also appear at the end of the documentation for functions and data sets.
 
 The \pkg{mosaic} package (and some other packages as well) also includes demos.  
@@ -219,12 +305,15 @@ location for future use.
 Loading makes a previously installed package available for use 
 in an \R\ session.
 
-For example, to use the \pkg{mosaic} package:
 \Rindex{install.packages()}%
 \Rindex{require()}%
 
+For example, to use the \pkg{mosaic} package, we must first install it:
 <<eval=FALSE,tidy=FALSE>>=
 install.packages("mosaic") # fetch package from CRAN 
+@
+and then load it:
+<<>>=
 require(mosaic)            # load the package before use.
 @
 \Caution{Remember that in RMarkdown and Rnw files, any
@@ -276,7 +365,7 @@ Data sets in \R\ packages are the easiest to deal with.
 how to import their own data once they understand how to work with
 data.}%
 In section \ref{sec:usingdata},
-we'll describe how to get your own data into \R\ and \RStudio,
+we'll describe how to load your own data into \R\ and \RStudio,
 but we recommend starting with data in packages, 
 and that is what we will do here, too.  Once students know 
 how to work with data and what data in \R\ are supposed to look
@@ -379,6 +468,7 @@ Listing the entire set of values for a particular variable
 isn't very useful for a large data set.  
 We would prefer to compute numerical or graphical summaries.  We'll do that shortly.
 
+\subsection{The Perils of attach()}
 \Caution{Avoid the use of \function{attach()}.}
 The \function{attach()} function in R can be used to make objects within data frames
 accessible in \R\ with fewer keystrokes, but we strongly discourage its use, as
@@ -389,12 +479,11 @@ echoes this advice, stating that
 
 \begin{quotation}
 \emph{The possibilities for creating errors
-when using attach are numerous. Avoid it.} 
+when using \function{attach()} are numerous. Avoid it.} 
 \end{quotation}
 It is far better to directly access
 variables using the \code{\$} syntax or to use functions that allow you to 
 avoid the \code{\$} operator.
-
 
 
 \section{Graphical Summaries of Data}
@@ -443,10 +532,10 @@ the \texttt{lattice} package makes something different from what we call a dot p
 \variable{x} is the name of the variable that is plotted along the horizontal 
 ($x$) axis.
 \item
+\Caution{Even when \variable{y} is missing, the \texttt{\~} is still mandatory.}%
 \variable{y} is the name of the variable that is plotted along the vertical ($y$) 
-axis.  (For some plots, this slot is empty because \R\ computes these values
-from the values of \variable{x}.)
-\Caution{Even when \variable{y} is missing, the \texttt{\~} is still mandatory.}
+axis.  (For some plots, such as histograms, this slot is empty because \R\ computes 
+these values from the values of \variable{x}.)
 \item
 \variable{z} is a conditioning variable used to split the plot into 
 multiple subplots called \term{panels}.
@@ -487,17 +576,17 @@ dotPlot(~ Sepal.Length, data=iris, n=30)
 @
 We can use a conditional variable to give us separate dot plots for each of the three
 species in this data set.
-<<rs-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width=".8\\textwidth",fig.width=7>>=
+<<rs-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width="\\textwidth",fig.width=6>>=
 dotPlot(~ Sepal.Length | Species, data=iris, n=20, 
-		cex=.6,        # cex used to shrink the dots a bit
-		layout=c(3,1)) 
+         cex=.6,        # cex used to shrink the dots a bit
+         layout=c(3,1)) 
 @
 
 \subsubsection{Histograms: \texttt{xhistogram()}}
 
 \term{Histograms} are a lot like dot plots, but the towers of dots are replaced by vertical bars.
 Again the \variable{y} component of the formula is empty since we let \R\
-compute the heights of the bars for us.
+compute the heights of the bars
 <<rs-iris-histogram,cache=TRUE,fig.width=6,out.width=".9\\textwidth">>=
 # n= 20 gives approx. 20 bars
 xhistogram(~ Sepal.Length, data=iris, n=20)       
@@ -545,7 +634,8 @@ This may give a more accurate visual representation in some
 situations (since the distribution can ``taper off'' better).  More importantly, it makes 
 it much easier to overlay multiple distributions.
 <<>>=
-freqpolygon( ~ Sepal.Length, data=iris, groups=Species, ylim=c(0,65))
+freqpolygon( ~ Sepal.Length, data=iris, groups=Species, 
+               ylim=c(0,65))
 @
 
 \subsubsection{Density plots: \texttt{densityplot()}}
@@ -628,6 +718,11 @@ left hand side of the \tilde.}
 bwplot(Species ~ Sepal.Length, data=iris)
 @
 %\vspace{-12mm}
+\Caution{If numbers are used to label the categories 
+of a categorical variable, \R\ will consider the data to be quantitative.
+You can convert numerical values into a categorical factor by
+wrapping it in the function \function{factor()}, e.g., \code{factor(x)}.
+}
 
 
 \subsection{Scatterplots: \texttt{xyplot()}}
@@ -676,6 +771,8 @@ Numerical summaries are computed using a syntax that matches the
 Most of the numerical summaries already familiar to you have obvious names.  
 Here are a few examples.  
 \authNote{add iqr() once an aggregating version is in the package}%
+\authNote{NH wants a discussion of \function{with()} and the use of 
+\texttt{\$} here.  RJP says keep it simple.}%
 \marginnote{In the current version of the \pkg{mosaic} package,
 the \tilde\ can be omited in the one-variable numerical summary functions.  This is 
 not true for the \pkg{lattice} plots, so we recommend that you use the \tilde\ and
@@ -740,25 +837,47 @@ characteristics of the workers, including sex, number of years of education,
 years of work experience, occupational status, region of residence and union
 membership.
 
+<<include=FALSE>>=
+oldOpts <- options(width=100)
+@
+\begin{widestuff}
 <<>>=
 head(CPS85, 3)
 @
+\end{widestuff}
 
-%\newthought{Calculating Frequency and Contingency Tables from Data}
+%\newthought{Frequency and Contingency Tables}
 Categorical variables are  often summarized in a table.  
 \R\ can make a table for a categorical variable using \function{tally()}.
 
+\begin{widestuff}
+	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut purus elit,
+	vestibulum ut, placerat ac, adipiscing vitae, felis. Curabitur dictum
+	gravida mauris. Nam arcu libero, nonummy eget, consectetuer id, vulputate
+	a, magna. Donec vehicula augue eu neque. Pellentesque habitant morbi
+	tristique senectus et netus et malesuada fames ac turpis egestas. Mauris ut
+	leo. Cras viverra metus rhoncus sem. Nulla et lectus vestibulum urna
+	fringilla ultrices. Phasellus eu tellus sit amet tortor gravida placerat.
+	Integer sapien est, iaculis in, pretium quis, viverra ac, nunc. Praesent
+	eget sem vel leo ultrices bibendum. Aenean faucibus. Morbi dolor nulla,
+	malesuada eu, pulvinar at, mollis ac, nulla. Curabitur auctor semper nulla.
+	Donec varius orci eget risus. Duis nibh mi, congue eu, accumsan eleifend,
+	sagittis quis, diam. Duis eget orci sit amet orci dignissim rutrum.
 <<rs-table1>>=
 tally(~ race, CPS85)
 tally(~ sector, CPS85)
 @
+\end{widestuff}
 
 If we prefer to have the results presented as proportions or percents, we 
 just have to ask.
+
+\begin{widestuff}
 <<rs-table2>>=
 tally( ~ sector, CPS85, format='perc')
 tally( ~ sector, CPS85, format='prop')
 @
+\end{widestuff}
 %Alternatively, we can use \verb!table()!, \verb!proptable()!, and
 %\verb!perctable()!  to make tables of counts, proportions, or percentages,
 %respectively.
@@ -770,17 +889,24 @@ summarizing this data with \function{tally()}.
 This often provides a useful display of the relationship between
 two categorical variables.
 
-
+\begin{widestuff}
 <<rs-xtabs>>=
 tally(~ race + sector, CPS85)   # 2-way cross-table
 @
+\end{widestuff}
 Alternatively, we can select one of our categorical variables to be 
 a conditional variable.  The report is then done using proportions by default.
+
+\begin{widestuff}
 <<>>=
 tally(~ race | sector, CPS85)   # conditional on sector
 tally(~ sector | race, CPS85)   # conditional on race
 @
+\end{widestuff}
 
+<<include=FALSE>>=
+options(oldOpts)
+@
 
 \subsection{Graphing Categorical Data}
 
@@ -791,7 +917,8 @@ bargraph(~ sector, data=CPS85,
                    scales=list(x=list(rot=45)))
 @
 <<rs-bargraph2a>>=
-bargraph(~ sector, data=CPS85, horizontal=TRUE)  # horizontal bars
+# horizontal bars
+bargraph(~ sector, data=CPS85, horizontal=TRUE)  
 @
 
 As with the other lattice plots, we can add grouping or conditioning to 
@@ -800,14 +927,14 @@ our plot.
 bargraph(~ sector, data=CPS85, groups=race, 
                    scales=list(x=list(rot=45)))
 @
-<<rs-bargraph3amore>>=
+<<rs-bargraph3amore,tidy=FALSE>>=
 bargraph(~ sector | race, data=CPS85, 
                           scales=list(x=list(rot=45)))
 @
 
 
 Bar graphs can also be used to display two-way tables.  
-<<rs-barchart3aa>>=
+<<rs-barchart3aa,tidy=FALSE>>=
 bargraph( ~ sector, groups=race, data=CPS85,
                     scales=list(x=list(rot=45)))
 @
@@ -1072,6 +1199,8 @@ abdData(2)               # all data sets in chapter 2
 \newpage
 
 \section{\R\ Examples}
+
+\begin{widestuff}
 \vspace{-3mm}
 The commands below are illustrated with the data sets \dataframe{iris} and 
 \dataframe{CPS85}.  To apply these in other situations, you will need to 
@@ -1156,14 +1285,15 @@ quantiles of \verb!x!.
 \end{longtable}
 %\rule{4in}{1pt}
 \end{center}
+\end{widestuff}
 
 \vspace*{-.5in}
+\newpage
 \section{Exercises}
 
 %For these problems, create a single Word document containing all of your work.
 
 \shipoutProblems
-
 
 
 
