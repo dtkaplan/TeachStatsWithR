@@ -813,12 +813,13 @@ early in our courses, as a purely descriptive technique, then return to it
 regularly.  The motivation for this is described at length in the companion volume 
 \emph{Start Modeling with R}.}
 
-Here we consider a model for depressive symptoms as a function of Mental Component Score,
+Here we consider a model (parallel slopes) for depressive symptoms as a function of Mental Component Score (MCS),
 age (in years) and sex of the subject.
 <<help-multreg>>=
 lm1 <- lm(cesd ~ mcs + age + sex, data=HELPrct)
 summary(lm1)
 @
+We can also fit a model that includes an interaction between MCS and sex.
 <<help-multreg2>>=
 lm2 <- lm(cesd ~ mcs + age + sex + mcs*sex, data=HELPrct)
 summary(lm2)
@@ -829,9 +830,26 @@ anova(lm1, lm2)
 There is little evidence for an interaction effect, so we drop
 this from the model.
 
-\subsection{PLOTFUN}
+\subsection{Visualizing the results from the regression}
 
-\subsection{RESIDUAL DIAGNOSTICS}
+The \function{makeFun()} and \function{plotFun()} functions from the \pkg{mosaic} package 
+can be used to display the results from a regression model.  For this example, we might 
+display the predicted CESD values for a 36 year old male and female subject from the parallel
+slopes model.
+<<makeFUN>>=
+lm1fun = makeFun(lm1)
+@
+We can now plot this function for a range of values for MCS (mental component score).  
+<<plotFUN,tidy=FALSE>>=
+plotFun(lm1fun(mcs, age=36, sex="male") ~ mcs, 
+  xlim=c(0,60), lwd=2, ylab="predicted CESD")
+plotFun(lm1fun(mcs, age=36, sex="female") ~ mcs, 
+  xlim=c(0,60), lty=2, lwd=3, add=TRUE)
+@
+
+
+
+\subsection{Residual diagnostics}
 
 It's straightforward to undertake residual diagnostics for this model.  We begin by adding the
 fitted values and residuals to the dataset.
@@ -843,25 +861,223 @@ HELPrct = transform(HELPrct, pred = fitted(lm1))
 xhistogram(~ resids, xlab="residuals", fit="normal", 
   data=HELPrct)
 @
-We can display the observations with extremely large negative residuals.
+We can display the observations with the extremely large negative residual.
 <<>>=
 subset(HELPrct, resids < -25)
 @
 
 <<tidy=FALSE>>=
-xyplot(resids ~ pred, xlab="residuals", 
-  ylab="predicted values", cex=0.3,
+xyplot(resids ~ pred, ylab="residuals", cex=0.3,
+  xlab="predicted values", main="predicted vs. residuals",
   type=c("p", "r", "smooth"), data=HELPrct)
 @
 <<tidy=FALSE>>=
 xyplot(resids ~ mcs, xlab="mental component score", 
-  ylab="predicted values", cex=0.3,
+  ylab="residuals", cex=0.3,
   type=c("p", "r", "smooth"), data=HELPrct)
 @
 The assumptions of normality, linearity and homoscedasticity seem reasonable here.
+\begin{problem}
+The {\tt RailTrail} dataset within the \pkg{mosaic} package includes the counts 
+of crossings of a rail trail in Northampton, Massachusetts for 90 days in 2005.  
+City officials are interested in understanding usage of the trail network, and
+how it changes as a function of temperature and day of the week.  
+Describe the distribution of the variable {\tt avgtemp} in terms of its
+center, spread and shape.
+<<tidy=FALSE>>=
+favstats(~ avgtemp, data=RailTrail)
+densityplot(~ avgtemp, xlab="Average daily temp (degrees F)", 
+  data=RailTrail)
+@
+\end{problem}
 
+\begin{solution}
+The distribution of average temperature (in degrees Fahrenheit) is approximately normally
+distributed with mean 57.4 degrees and standard deviation of 11.3 degrees.
+\end{solution}
 
-XX plotFun and the RailTrail example?
+\begin{problem}
+The {\tt RailTrail} dataset also includes a variable called {\tt cloudcover}.  
+Describe the distribution of this variable in terms of its
+center, spread and shape.
+\end{problem}
+
+\begin{solution}
+<<>>=
+favstats(~ cloudcover, data=RailTrail)
+densityplot(~ cloudcover, data=RailTrail)
+@
+The distribution of cloud cover is ungainly (almost triangular), with increasing probability for more
+cloudcover.  The mean is 5.8 oktas (out of 10), with standard deviation of 3.2 oktas.  It tends to be
+cloudy in Northampton!
+\end{solution}
+
+\begin{problem}
+The variable in the {\tt RailTrail} dataset that provides the daily count
+of crossings is called {\tt volume}. 
+Describe the distribution of this variable in terms of its
+center, spread and shape.
+\end{problem}
+
+\begin{solution}
+<<>>=
+favstats(~ volume, data=RailTrail)
+densityplot(~ volume, xlab="# of crossings", data=RailTrail)
+subset(RailTrail, volume > 700)
+@
+The distribution of daily crossings is approximately normally
+distributed with mean 375 crossings  and standard deviation of 127 crossings.
+There is one outlier with 736 crossings which occurred on a Monday holiday in the spring
+(Memorial Day).  
+\end{solution}
+
+\begin{problem}
+The {\tt RailTrail} dataset also contains an indicator of whether the day was 
+a weekday ({\tt weekday==1}) or a weekend/holiday ({\tt weekday==0}).
+Use \function{tally()} to describe the distribution of this categorical variable.
+What percentage of the days are weekends/holidays?
+\end{problem}
+
+\begin{solution}
+<<>>=
+tally(~ weekday, data=RailTrail)
+tally(~ weekday, format="percent", data=RailTrail)
+@
+Just over 30\% of the days are weekends or holidays.
+\end{solution}
+
+\begin{problem}
+Use side-by-side boxplots to compare the distribution of {\tt volume} by day type in the {\tt RailTrail} dataset.
+Hint: you'll need to turn the numeric {\tt weekday} variable into a factor variable using \function{as.factor()}.
+What do you conclude?
+\end{problem}
+
+\begin{solution}
+<<>>=
+bwplot(volume ~ as.factor(weekday), data=RailTrail)
+@
+or
+<<>>=
+RailTrail = transform(RailTrail, daytype = ifelse(weekday==1, "weekday", "weekend/holiday"))
+bwplot(volume ~ daytype, data=RailTrail)
+@
+
+We see that the weekend/holidays tend to have more users.
+\end{solution}
+
+\begin{problem}
+Use overlapping densityplots to compare the distribution of {\tt volume} by day type in the {\tt RailTrail} dataset.
+What do you conclude?
+\end{problem}
+
+\begin{solution}
+<<>>=
+densityplot(volume ~ weekday, auto.key=TRUE, data=RailTrail)
+@
+We see that the weekend/holidays tend to have more users.
+\end{solution}
+
+\begin{problem}
+Create a scatterplot of {\tt volume} as a function of {\tt avgtemp} using the {\tt RailTrail} dataset, along with a regression line and scatterplot
+smoother (lowess curve).  What do you observe about the relationship?  
+\end{problem}
+
+\begin{solution}
+<<>>=
+xyplot(volume ~ avgtemp, xlab="average temperature (degrees F)", 
+  type=c("p", "r", "smooth"), lwd=2, data=RailTrail)
+@
+We see that there is a positive relationship between these two variables, but the association is 
+somewhat nonlinear (which makes sense as we wouldn't continue to predict an increase in usage when the 
+temperature becomes uncomfortably warm).  
+\end{solution}
+
+\begin{problem}
+Using the {\tt RailTrail} dataset,
+fit a multiple regression model for {\tt volume} as a function of {\tt cloudcover}, {\tt avgtemp}, {\tt weekday} and the interaction
+between these day type and average temperature.
+Is there evidence to retain the interaction term at the $\alpha=0.05$ level?
+\end{problem}
+
+\begin{solution}
+<<>>=
+fm = lm(volume ~ cloudcover + avgtemp + weekday + avgtemp:weekday, data=RailTrail)
+summary(fm)
+@
+The interaction between average temperature and day-type is statistically significant (p=0.016).  We 
+interpret this as being a steeper slope (stronger association) on weekdays rather than weekends.
+(Perhaps on weekends/holidays people will tend to head out on the trails irrespective of the weather?)
+\end{solution}
+
+\begin{problem}
+Use \function{makeFun()} to calculate the predicted number of crossings on a weekday with average 
+temperature 60 degrees and no clouds.  Verify this calculation using the coefficients from the 
+model.
+<<>>=
+coef(fm)
+@
+\end{problem}
+\begin{solution}
+<<>>=
+myfun = makeFun(fm)
+myfun(cloudcover=0, avgtemp=60, weekday=1)
+@
+We expect just over 480 crossings on a day with these characteristics.
+\end{solution}
+
+\begin{problem}
+Use \function{makeFun()} and \function{plotFun()} to display predicted values for the number of crossings
+on weekdays and weekends/holidays for average temperatures between 30 and 80 degrees and a cloudy day ({\tt cloudcover=10}).  
+\end{problem}
+\begin{solution}
+<<>>=
+myfun = makeFun(fm)
+xyplot(volume ~ avgtemp, data=RailTrail)
+plotFun(myfun(cloudcover=10, avgtemp, weekday=0) ~ avgtemp, lwd=2, add=TRUE)
+plotFun(myfun(cloudcover=10, avgtemp, weekday=1) ~ avgtemp, lty=2, lwd=3, add=TRUE)
+@
+We
+interpret this as being a steeper slope (stronger association) on weekdays rather than weekends.
+(Perhaps on weekends/holidays people will tend to head out on the trails irrespective of the weather?)
+\end{solution}
+
+\begin{problem}
+Using the multiple regression model, generate a histogram (with overlaid normal 
+density) to assess the normality of the residuals.  
+\end{problem}
+
+\begin{solution}
+<<>>=
+xhistogram(~ resid(fm), fit="normal")
+@
+The distribution is approximately normal.
+\end{solution}
+
+\begin{problem}
+Using the same model generate a scatterplot of the residuals versus predicted values and comment
+on the linearity of the model and assumption of equal variance.
+\end{problem}
+
+\begin{solution}
+<<>>=
+xyplot(resid(fm) ~ fitted(fm), type=c("p", "r", "smooth"))
+@
+The association is fairly linear, except in the tails.  There's some evidence that the variability
+of the residuals increases with larger fitted values.
+\end{solution}
+
+\begin{problem}
+Using the same model generate a scatterplot of the residuals versus average temperature and comment
+on the linearity of the model and assumption of equal variance.
+\end{problem}
+
+\begin{solution}
+<<>>=
+xyplot(resid(fm) ~ avgtemp, type=c("p", "r", "smooth"), data=RailTrail)
+@
+The association is somewhat non-linear.  There's some evidence that the variability
+of the residuals increases with larger fitted values.
+\end{solution}
 
 \chapter{Probability distributions and random variables}
 
@@ -877,7 +1093,8 @@ for simulation and analysis.
 xpnorm(1.96, mean=0, sd=1)    # P(Z < 1.96)
 @
 <<>>=
-qnorm(.975, mean=0, sd=1)   #  value which satisfies P(Z < z) = 0.975
+# value which satisfies P(Z < z) = 0.975
+qnorm(.975, mean=0, sd=1)   
 integrate(dnorm, -Inf, 0)   # P(Z < 0)
 @
 
@@ -1023,11 +1240,7 @@ data are truly normal.  \DiggingDeeper{It's useful to have students calculate po
 to demonstrate the power of simulations.}
 
 \begin{problem}
-\label{prob:power1}
-<<setup1,echo=FALSE>>=
-n <- 100
-alpha <- 0.01
-@
+\label{prob:power1}%
 Find the power of a two-sided two-sample t-test where both distributions 
 are approximately normally distributed with the same standard deviation, but the group differ by 50\% of the standard deviation.  Assume that there are 
 \Sexpr{n}
@@ -1035,6 +1248,10 @@ observations per group and an alpha level of \Sexpr{alpha}.
 
 \end{problem}
 \begin{solution}
+<<setup1,echo=FALSE>>=
+n <- 100
+alpha <- 0.01
+@
 <<power>>=
 n
 alpha
@@ -1204,19 +1421,17 @@ xyplot(time.til.next ~ duration, subset=duration > 3,
 @
 
 
-\section{Derived variable creation}
-
-XX
-<<>>=
-HELP$newsex <- factor(HELP$female, labels=c('M','F'))
-@
 
 \section{Sorting data frames}
 
-XX
+Data frames can be sorted using the \function{order()} function.
+<<>>=
+head(faithful, 3)
+sorted = faithful[order(faithful$duration),]
+head(sorted, 3)
+@
 
-\section{Accounting for missing data}
-XX
+
 
 \section{Merging datasets}
 
@@ -1252,7 +1467,7 @@ should be kept (\code{TRUE}) or dropped
 
 Now we are ready to begin our analysis.
 <<"mr-fusion1-xtabs">>=
-tally(~t2d + genotype | marker, data=fusion1m)
+tally(~t2d + genotype, data=fusion1m)
 @
 
 \begin{problem}
@@ -1315,6 +1530,49 @@ to \function{reshape()}.
 \Rindex{stack()}%
 \Rindex{unstack()}%
 
+\section{Derived variable creation}
+
+A number of functions help facilitate the creation or recoding of variables.
+
+\subsection{Creating categorical variable from a quantitative variable}
+We begin by detaching the \pkg{fastR} package.  Then we can create a categorical variable
+at cuts at 20 and 40.
+<<tidy=FALSE>>=
+detach("package:fastR")
+favstats(~ cesd, data=HELPrct)
+HELPrct = transform(HELPrct, cesdcut = cut(cesd, 
+  breaks=c(0, 20, 40, 60), include.lowest=TRUE))
+bwplot(cesd ~ cesdcut, data=HELPrct)
+@
+
+\subsection{Reordering factors}
+By default R uses the first level in lexicographic order as the reference group for modeling.  This 
+can be overriden using the \function{relevel()} function (see also \function{reorder()}).
+<<tidy=FALSE>>=
+tally(~ substance, data=HELPrct)
+coef(lm(cesd ~ substance, data=HELPrct))
+HELPrct = transform(HELPrct, subnew = relevel(substance, 
+  ref="heroin"))
+coef(lm(cesd ~ subnew, data=HELPrct))
+@
+
+\section{Accounting for missing data}
+
+Missing values arise in almost all real world investigations.  R uses the {\tt NA} character as an 
+indicator for missing data.  The {\tt HELPmiss} dataframe within the \pkg{mosaic} package includes all 
+$n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some missing data who 
+were not included in {\tt HELPrct}).  
+<<tidy=FALSE>>=
+smaller = subset(HELPmiss, select=c("cesd", "drugrisk", 
+  "indtot", "mcs", "pcs", "substance"))
+dim(smaller)
+summary(smaller)
+favstats(~ mcs, data=smaller)
+with(smaller, sum(is.na(mcs)))
+nomiss = na.omit(smaller)
+dim(nomiss)
+favstats(~ mcs, data=nomiss)
+@
 
 \chapter{Health Evaluation and Linkage to Primary Care (HELP) Study}
 
@@ -1354,7 +1612,7 @@ We will focus on \pkg{HELPrct}, which contains
 27 variables for the 453 subjects
 with minimal missing data, primarily at baseline.
 Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found here\cite{Horton:2011:R}.
-\begin{longtable}{|p{2.1cm}|p{6.8cm}|p{4.5cm}|}
+\begin{longtable}{|p{2.1cm}|p{6.8cm}|p{3.5cm}|}
 \caption{Annotated description of variables in the \VN{HELPrct} dataset}
 \label{tab:helpvars} \\
 \hline
@@ -1362,7 +1620,7 @@ VARIABLE & DESCRIPTION (VALUES) & NOTE \\ \hline
 {\tt age} & age at baseline (in years) (range 19--60) & \\ \hline
 {\tt anysub} & use of any substance post-detox & see also {\tt daysanysub}
 \\ \hline
-{\tt cesd} & Center for Epidemiologic Studies Depression scale (range 0--60)  & \\ \hline
+{\tt cesd} & Center for Epidemiologic Studies Depression scale (range 0--60, higher scores indicate more depressive symptoms)  & \\ \hline
 {\tt d1} & how many times hospitalized for medical problems (lifetime)  (range 0--100)  & \\ \hline
 {\tt daysanysub} & time (in days) to first use of any substance post-detox (range 0--268)  & see also {\tt anysubstatus} \\ \hline
 {\tt dayslink} & time (in days) to linkage to primary care (range 0--456)  & see also {\tt linkstatus}
@@ -1386,13 +1644,13 @@ VARIABLE & DESCRIPTION (VALUES) & NOTE \\ \hline
 \\ \hline
 {\tt linkstatus} & post-detox linkage to primary care (0=no, 1=yes)  & see also {\tt dayslink}
 \\ \hline
-{\tt mcs} & SF-36 Mental Component Score  (range 7-62)  & see also {\tt pcs}
+{\tt mcs} & SF-36 Mental Component Score  (range 7-62, higher scores are better)  & see also {\tt pcs}
 \\ \hline
-{\tt pcrec} & number of primary care visits in past 6 months   (range 0--2)  & see also {\tt linkstatus}, not observed at baseline \\ \hline
-{\tt pcs} & SF-36 Physical Component Score  (range 14-75)  & see also {\tt mcs}
+{\tt pcs} & SF-36 Physical Component Score  (range 14-75, higher scores are better)  & see also {\tt mcs}
 \\ \hline
 {\tt pss\_fr} & perceived social supports (friends, range 0--14) & 
 \\ \hline
+{\tt racegrp} & race/ethnicity (black, white, hispanic or other)  &  \\ \hline
 {\tt satreat} & any BSAS substance abuse treatment at baseline (0=no, 1=yes)  &  \\ \hline
 {\tt sex} & sex of respondent  (male or female)  & \\ \hline
 {\tt sexrisk} & Risk-Assessment Battery (RAB) sex risk score  (range 0--21)  & see also {\tt drugrisk}
