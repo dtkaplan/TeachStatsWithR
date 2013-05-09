@@ -6,6 +6,10 @@ set.seed(123)
 @
 
 
+<<include=FALSE>>=
+require(fastR)
+@
+
 \chapter{Introduction}
 
 

@@ -3,6 +3,7 @@
 \documentclass[openany]{tufte-book}
 
 \usepackage{../include/RBook}
+\usepackage{pdfpages}
 
 \def\tilde{\texttt{\~}}
 
@@ -15,6 +16,8 @@
 \begin{document}
 
 %\maketitle
+\includepdf{USCOTS-cover}
+\newpage
 
 \tableofcontents
 
@@ -60,10 +63,10 @@
 <<child='RIntro.Rnw', eval=FALSE>>=
 @
 
-<<child='Handouts.Rnw', eval=TRUE>>=
+<<child='Handouts.Rnw', eval=FALSE>>=
 @
 
-\backmatter
+%\backmatter
 
 \bibliographystyle{alpha}
 \bibliography{../include/USCOTS}

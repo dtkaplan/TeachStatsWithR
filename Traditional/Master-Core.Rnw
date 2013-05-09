@@ -3,6 +3,7 @@
 \documentclass[open-any,12pt]{tufte-book}
 
 \usepackage{../include/RBook}
+\usepackage{pdfpages}
 \def\tilde{\texttt{\~}}
 
 \title{A Compendium of R Commands to Teach Statistics}
@@ -13,7 +14,11 @@
 \begin{document}
 
 
-\maketitle
+%\maketitle
+
+\includepdf{USCOTS-cover}
+
+\newpage
 
 \tableofcontents
 

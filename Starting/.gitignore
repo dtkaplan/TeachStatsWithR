@@ -1,7 +1,6 @@
 *.log
 *.aux
 *.blg
-*.pdf
 *.tex
 *.bk
 *~
