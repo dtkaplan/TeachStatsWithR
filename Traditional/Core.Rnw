@@ -13,13 +13,11 @@ In this monograph, we briefly review the commands and functions needed
 to analyze data from introductory and second courses in statistics.  This is intended to complement
 the \emph{Start Teaching with R} and \emph{Start Modeling with R} books.
 
-We will use data from the HELP (Health Evaluation and Linkage to Primary 
+Most of our examples will use data from the HELP (Health Evaluation and Linkage to Primary 
 Care) study: a randomized trial of a novel 
 way to link at-risk subjects with primary care.  More information on the
 dataset can be found in chapter \ref{sec:help}.
 
-Some data management is needed by students (and more by instructors).  This
-material is reviewed in section \ref{sec:manipulatingData}.
 
 Since the selection and order of topics can vary greatly from 
 textbook to textbook and instructor to instructor, we have chosen to 
@@ -28,16 +26,21 @@ it straightforward to find what you are looking for even if you present
 things in a different order.  This is also a good organizational template
 to give your students to help them keep straight ``what to do when".
 
-Other related resources may be helpful, including an annotated set of examples
-from the 
-sixth edition of
-Moore, McCabe and Craig's \emph{Introduction to the Practice of Statitics}\cite{moor:mcca:2007} (see \url{http://www.math.smith.edu/~nhorton/ips6e}) as well as
-the third edition of the \emph{Statistical Sleuth}\cite{Sleuth3} (see \url{http://www.math.smith.edu/~nhorton/sleuth3}).
+Some data management is needed by students (and more by instructors).  This
+material is reviewed in chapter \ref{sec:manipulatingData}.
+
 
 This work leverages initiatives undertaken by Project MOSAIC (\url{http://www.mosaic-web.org}), an NSF-funded effort to improve the teaching of statistics, calculus, science and computing in the undergraduate curriculum. In particular, we utilize the
 \pkg{mosaic} package, which was written to simplify the use of R for introductory statistics courses. A short summary of the R needed to teach introductory statistics can be found in the mosaic package vignette (\url{http://cran.r-project.org/web/packages/mosaic/vignettes/MinimalR.pdf}).
 
-To use a package within R, it must be installed (one time), and loaded (each session). The package can be installed using the following command:
+Other related resources from Project MOSAIC may be helpful, including an annotated set of examples
+from the 
+sixth edition of
+Moore, McCabe and Craig's \emph{Introduction to the Practice of Statistics}\cite{moor:mcca:2007} (see \url{http://www.math.smith.edu/~nhorton/ips6e}) as well as
+the third edition of the \emph{Statistical Sleuth}\cite{Sleuth3} (see \url{http://www.math.smith.edu/~nhorton/sleuth3}).
+
+To use a package within R, it must be installed (one time), and loaded (each session). The 
+\pkg{mosaic} package can be installed using the following command:
 <<install_mosaic,eval=FALSE>>=
 install.packages('mosaic')               # note the quotation marks
 @
@@ -69,9 +72,9 @@ level (see {\tt ?options} for more configuration possibilities).
 require(mosaic)
 options(digits=3)
 @
-Note that the \function{mean()} in the \pkg{mosaic} package supports a modeling language
+Note that the \function{mean()} function in the \pkg{mosaic} package supports a modeling language
 common to \pkg{lattice} graphics and linear models (e.g. \function{lm()}).  We will use
-these commands throughout this document.
+this modeling language commands throughout this document.
 \DiggingDeeper{The \emph{Start Modeling with R} book will be helpful if you are unfamiliar with the 
 modeling language.}
 <<>>=
@@ -130,7 +133,7 @@ xhistogram(~ cesd, data=HELPrct)
 \end{center}
 
 
-In the \VN{HELPrct} dataset, approximately one quarter of the subjects are female.  
+In the \variable{HELPrct} dataset, approximately one quarter of the subjects are female.  
 <<>>=
 tally(~ sex, data=HELPrct)
 tally(~ sex, format="percent", data=HELPrct)
@@ -166,9 +169,8 @@ The layout can be rearranged.
 xhistogram(~ cesd | sex, layout=c(1, 2), data=HELPrct)   
 @
 \end{center}
-
 \begin{problem}
-Using the \VN{HELPrct} dataset, 
+Using the \variable{HELPrct} dataset, 
 create side by side boxplots of the CESD scores by substance abuse
 group, just for the male subjects, with an overlaid normal density.
 \end{problem}
@@ -178,7 +180,6 @@ bwplot(cesd ~ substance, fit="normal",
   data=subset(HELPrct, sex=='male'))
 @
 \end{solution}
-
 We can control the number of bins in a number of ways.  These can be specified 
 as the total number.
 \begin{center}
@@ -187,7 +188,7 @@ xhistogram(~ cesd, nint=20, data=female)
 @
 \end{center}
 
-Or the width can be constrained.
+Or the width can be specified.
 \begin{center}
 <<cesd-dotwidth,fig.height=1.8>>=
 xhistogram(~ cesd, width=1, data=female)   
@@ -206,8 +207,8 @@ The \function{dotPlot()} function is used to create a dotplot (a la Fathom)
 for a smaller subset of subjects (homeless females).  We also demonstrate
 how to change the x-axis label.
 <<cesd-dot4,tidy=FALSE>>=
-dotPlot(~ cesd, xlab="CESD score", data=subset(HELPrct, 
-  sex=="female" & homeless=="homeless"))
+dotPlot(~ cesd, xlab="CESD score", 
+  data=subset(HELPrct, sex=="female" & homeless=="homeless"))
 @
 
 
@@ -231,9 +232,13 @@ densityplot(~ cesd, data=female)
 ladd(grid.text(x=0.2, y=0.8, 'only females'))
 with(female, ladd(panel.mathdensity(args=
   list(mean=mean(cesd), sd=sd(cesd)), col="red")))
-ladd(panel.abline(v=60, lty=2, lwd=3, col="green"))
+ladd(panel.abline(v=60, lty=2, lwd=2, col="grey"))
 @
 \end{center}
+\DiggingDeeper{The \function{plotFun()} function can also be used to annotate plots.}
+
+
+\section{Normal distributions}
 
 The most famous density curve is a normal distribution.  The \function{xpnorm()} function
 displays the probability that a random variable is less than the first argument, for a 
@@ -241,8 +246,6 @@ normal distribution with mean given by the second argument and standard deviatio
 third.  More information about probability distributions can 
 be found in section \ref{sec:probability}.
 \FoodForThought{\code{x} is for eXtra.}
-
-\section{Normal distributions}
 \begin{center}
 <<norm1,fig.width=5,fig.height=2.4>>=
 xpnorm(1.96, mean=0, sd=1)
@@ -435,7 +438,7 @@ early in our courses, as a purely descriptive technique.}
 Linear regression models are described in detail in \emph{Start Modeling with R}.
 These use the same formula interface introduced previously for statistics and graphics 
 to specify the outcome 
-and predictors.  Here we consider fitting the model \model{\VN{cesd}}{\VN{mcs}}.
+and predictors.  Here we consider fitting the model \model{\variable{cesd}}{\variable{mcs}}.
 
 
 <<>>=
@@ -492,7 +495,7 @@ predicting the number of drinks per day as a function of the mental
 component score.  
 
 This model can be specified using the formula:
-\model{\VN{i1}}{\VN{mcs}}.  
+\model{\variable{i1}}{\variable{mcs}}.  
 
 Assess the distribution of the residuals for this model.
 \end{problem}
@@ -793,8 +796,8 @@ summary(aov(cesd ~ substance + sex, data=HELPrct))
 summary(aov(cesd ~ substance * sex, data=HELPrct))
 @
 There's little evidence for the interaction, though there are statistically
-significant main effects terms for \VN{substance} group and 
-\VN{sex}.
+significant main effects terms for \variable{substance} group and 
+\variable{sex}.
 
 <<help-interaction,tidy=FALSE>>=
 xyplot(cesd ~ substance, groups=sex, type='a',
@@ -1300,7 +1303,7 @@ head(iris)
 %\Rindex{summary()}
 
 
-The \dfn{CPS85} data frame contains data from a Current Population Survey (current in 1985, that is).
+The \dataframe{CPS85} data frame contains data from a Current Population Survey (current in 1985, that is).
 Two of the variables in this data frame are \variable{age} and \variable{educ}.  We can estimate
 the number of years a worker has been in the workforce if we assume they have been in the workforce
 since completing their education and that their age at graduation is 6 more than the number
@@ -1311,7 +1314,7 @@ CPS85 <- transform(CPS85, workforce.years = age - 6 - educ)
 favstats(~ workforce.years, data=CPS85)
 @
 In fact this is what was done for all but one of the cases to create the \variable{exper} 
-variable that is already in the \dfn{CPS85} data.
+variable that is already in the \dataframe{CPS85} data.
 <<>>=
 with(CPS85, table(exper - workforce.years))
 @
@@ -1354,7 +1357,7 @@ row.names(ddd)[2] <- "Bette"
 row.names(ddd)
 @
 
-The \dfn{faithful} data set (in the \pkg{datasets} package, which is always available)
+The \dataframe{faithful} data set (in the \pkg{datasets} package, which is always available)
 has very unfortunate names.
 \DiggingDeeper{It's a good idea to start teach good practices for choice of variable names from day one.}
 <<>>=
@@ -1379,7 +1382,7 @@ head(faithful, 3)
 @
 
 \begin{problem}
-Using \dfn{faithful} data frame, make a scatter plot of eruption duration times vs. the time
+Using \dataframe{faithful} data frame, make a scatter plot of eruption duration times vs. the time
 since the previous eruption.
 \end{problem}
 
@@ -1435,10 +1438,10 @@ head(sorted, 3)
 
 \section{Merging datasets}
 
-The \dfn{fusion1} data frame in the \pkg{fastR} package contains 
+The \dataframe{fusion1} data frame in the \pkg{fastR} package contains 
 genotype information for a SNP (single nucleotide polymorphism) in the gene
 \emph{TCF7L2}.  
-The \dfn{pheno} data frame contains phenotypes
+The \dataframe{pheno} data frame contains phenotypes
 (including type 2 diabetes case/control status) for an intersecting set of individuals.
 We can merge these together to explore the association between
 genotypes and phenotypes using \verb!merge()!.
@@ -1471,11 +1474,11 @@ tally(~t2d + genotype, data=fusion1m)
 @
 
 \begin{problem}
-The \dfn{fusion2} data set in the \pkg{fastR} package contains genotypes for 
-another SNP.  Merge \dfn{fusion1}, \dfn{fusion2}, and \dfn{pheno} into a single data
+The \dataframe{fusion2} data set in the \pkg{fastR} package contains genotypes for 
+another SNP.  Merge \dataframe{fusion1}, \dataframe{fusion2}, and \dataframe{pheno} into a single data
 frame.
 
-Note that \dfn{fusion1} and \dfn{fusion2} have the same columns.
+Note that \dataframe{fusion1} and \dataframe{fusion2} have the same columns.
 <<>>=
 names(fusion1)
 names(fusion2)
@@ -1496,7 +1499,7 @@ time series data and its arguments are named with that in mind.
 
 A common situation is when we want to convert from a wide form to a 
 long form because of a change in perspective about what a unit of 
-observation is.  For example, in the \dfn{traffic} data frame, each 
+observation is.  For example, in the \dataframe{traffic} data frame, each 
 row is a year, and data for multiple states are provided.
 
 <<"mr-traffic-reshape">>=
@@ -1558,10 +1561,10 @@ coef(lm(cesd ~ subnew, data=HELPrct))
 
 \section{Accounting for missing data}
 
-Missing values arise in almost all real world investigations.  R uses the {\tt NA} character as an 
-indicator for missing data.  The {\tt HELPmiss} dataframe within the \pkg{mosaic} package includes all 
+Missing values arise in almost all real world investigations.  R uses the \variable{NA} character as an 
+indicator for missing data.  The \dataframe{HELPmiss} dataframe within the \pkg{mosaic} package includes all 
 $n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some missing data who 
-were not included in {\tt HELPrct}).  
+were not included in \dataframe{HELPrct}).  
 <<tidy=FALSE>>=
 smaller = subset(HELPmiss, select=c("cesd", "drugrisk", 
   "indtot", "mcs", "pcs", "substance"))
@@ -1613,51 +1616,51 @@ We will focus on \pkg{HELPrct}, which contains
 with minimal missing data, primarily at baseline.
 Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found here\cite{Horton:2011:R}.
 \begin{longtable}{|p{2.1cm}|p{6.8cm}|p{3.5cm}|}
-\caption{Annotated description of variables in the \VN{HELPrct} dataset}
+\caption{Annotated description of variables in the \dataframe{HELPrct} dataset}
 \label{tab:helpvars} \\
 \hline
 VARIABLE & DESCRIPTION (VALUES) & NOTE \\ \hline
-{\tt age} & age at baseline (in years) (range 19--60) & \\ \hline
-{\tt anysub} & use of any substance post-detox & see also {\tt daysanysub}
+\variable{age} & age at baseline (in years) (range 19--60) & \\ \hline
+\variable{anysub} & use of any substance post-detox & see also {\tt daysanysub}
 \\ \hline
-{\tt cesd} & Center for Epidemiologic Studies Depression scale (range 0--60, higher scores indicate more depressive symptoms)  & \\ \hline
-{\tt d1} & how many times hospitalized for medical problems (lifetime)  (range 0--100)  & \\ \hline
-{\tt daysanysub} & time (in days) to first use of any substance post-detox (range 0--268)  & see also {\tt anysubstatus} \\ \hline
-{\tt dayslink} & time (in days) to linkage to primary care (range 0--456)  & see also {\tt linkstatus}
+\variable{cesd} & Center for Epidemiologic Studies Depression scale (range 0--60, higher scores indicate more depressive symptoms)  & \\ \hline
+\variable{d1} & how many times hospitalized for medical problems (lifetime)  (range 0--100)  & \\ \hline
+\variable{daysanysub} & time (in days) to first use of any substance post-detox (range 0--268)  & see also {\tt anysubstatus} \\ \hline
+\variable{dayslink} & time (in days) to linkage to primary care (range 0--456)  & see also {\tt linkstatus}
 \\ \hline
-{\tt drugrisk} & Risk-Assessment Battery (RAB) drug risk score  (range 0--21)  & see also {\tt sexrisk}
+\variable{drugrisk} & Risk-Assessment Battery (RAB) drug risk score  (range 0--21)  & see also {\tt sexrisk}
 \\ \hline
-{\tt e2b} & number of times in past 6 months entered a detox program  (range 1--21)  & \\ \hline
-{\tt female} & gender of respondent  (0=male, 1=female)  &
+\variable{e2b} & number of times in past 6 months entered a detox program  (range 1--21)  & \\ \hline
+\variable{female} & gender of respondent  (0=male, 1=female)  &
 \\ \hline
-{\tt g1b} & experienced serious thoughts of suicide (last 30 days, values 0=no, 1=yes)  &
+\variable{g1b} & experienced serious thoughts of suicide (last 30 days, values 0=no, 1=yes)  &
 \\ \hline
-{\tt homeless} & 1 or more nights on the street or shelter in past 6 months (0=no, 1=yes) & 
+\variable{homeless} & 1 or more nights on the street or shelter in past 6 months (0=no, 1=yes) & 
 \\ \hline
-{\tt i1} & average number of drinks (standard units) consumed per day (in the past 30 days, range 0--142) & see also {\tt i2}
+\variable{i1} & average number of drinks (standard units) consumed per day (in the past 30 days, range 0--142) & see also {\tt i2}
 \\ \hline
-{\tt i2} & maximum number of drinks (standard units) consumed per day (in the past 30 days range 0--184) & see also {\tt i1}
+\variable{i2} & maximum number of drinks (standard units) consumed per day (in the past 30 days range 0--184) & see also {\tt i1}
 \\ \hline
-{\tt id} & random subject identifier (range 1--470) &
+\variable{id} & random subject identifier (range 1--470) &
 \\ \hline
-{\tt indtot} & Inventory of Drug Use Consequences (InDUC) total score  (range 4--45)  &
+\variable{indtot} & Inventory of Drug Use Consequences (InDUC) total score  (range 4--45)  &
 \\ \hline
-{\tt linkstatus} & post-detox linkage to primary care (0=no, 1=yes)  & see also {\tt dayslink}
+\variable{linkstatus} & post-detox linkage to primary care (0=no, 1=yes)  & see also {\tt dayslink}
 \\ \hline
-{\tt mcs} & SF-36 Mental Component Score  (range 7-62, higher scores are better)  & see also {\tt pcs}
+\variable{mcs} & SF-36 Mental Component Score  (range 7-62, higher scores are better)  & see also {\tt pcs}
 \\ \hline
-{\tt pcs} & SF-36 Physical Component Score  (range 14-75, higher scores are better)  & see also {\tt mcs}
+\variable{pcs} & SF-36 Physical Component Score  (range 14-75, higher scores are better)  & see also {\tt mcs}
 \\ \hline
-{\tt pss\_fr} & perceived social supports (friends, range 0--14) & 
+\variable{pss\_fr} & perceived social supports (friends, range 0--14) & 
 \\ \hline
-{\tt racegrp} & race/ethnicity (black, white, hispanic or other)  &  \\ \hline
-{\tt satreat} & any BSAS substance abuse treatment at baseline (0=no, 1=yes)  &  \\ \hline
-{\tt sex} & sex of respondent  (male or female)  & \\ \hline
-{\tt sexrisk} & Risk-Assessment Battery (RAB) sex risk score  (range 0--21)  & see also {\tt drugrisk}
+\variable{racegrp} & race/ethnicity (black, white, hispanic or other)  &  \\ \hline
+\variable{satreat} & any BSAS substance abuse treatment at baseline (0=no, 1=yes)  &  \\ \hline
+\variable{sex} & sex of respondent  (male or female)  & \\ \hline
+\variable{sexrisk} & Risk-Assessment Battery (RAB) sex risk score  (range 0--21)  & see also {\tt drugrisk}
 \\ \hline
-{\tt substance} & primary substance of abuse (alcohol, cocaine or heroin) &
+\variable{substance} & primary substance of abuse (alcohol, cocaine or heroin) &
 \\ \hline
-{\tt treat} & randomization group (randomize to HELP clinic, no or yes) & 
+\variable{treat} & randomization group (randomize to HELP clinic, no or yes) & 
 \\ \hline
 \end{longtable}
 \noindent

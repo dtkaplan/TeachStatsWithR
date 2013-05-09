@@ -27,7 +27,7 @@ inference, and multivariate graphical techniques.  A secondary goal is to
 facilitate computing with data through use of small simulation studies, data
 scraping from the internet and appropriate statistical analysis workflow.
 This follows the
-philosophy outlined by Nolan and Temple Lang \cite{nola:temp:2010}.
+philosophy outlined by Nolan and Temple Lang\cite{nola:temp:2010}.
 
 Throughout this book, we
 introduce multiple activities, some
@@ -201,7 +201,7 @@ including:
 \begin{description}
 \item
 [Faculty development and training opportunities,] 
-such as teh USCOTS 2011 and 2013 workshops on 
+such as the USCOTS 2011 and 2013 workshops on 
 \emph{Teaching Statistics Using \R\ and \RStudio}, our 2010 
 Project MOSAIC kickoff workshop at the Institute for Mathematics
 and its Applications, and our \emph{Modeling: Early and Often in Undergraduate Calculus}
@@ -263,8 +263,6 @@ the availability of technology for student use,
 the perspective of the text book used,
 and the comfort-level 
 of the instructor with both statistics and computation.
-\authNote{Should we say something about the current discussion in stat ed about
-randomization tests and bootstrap?}%
 
 Among the various statistical software packages available, \R\ is becoming
 increasingly popular.  The recent addition of \RStudio\ had made \R\ both
