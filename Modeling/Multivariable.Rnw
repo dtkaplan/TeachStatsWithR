@@ -33,10 +33,13 @@ The notes are part of a series on teaching with R, but they are not primarily ab
 
 If you don't already know R, we hope that you will think the commands are simple enough that you can use them yourself; that you can learn R by observation.  Our students appear to be able to do that.  
 
-It is possible to implement the strategy presented here using other software.  It might even be possible to present it without using software at all.  But you always need some notation to communicate. The R computer notation is simple and concise, a rival for traditional mathematical notation, even as it extends to include operations not in the algebric repertoire: sampling, randomization, iteration, etc. 
+It is possible to implement the strategy presented here using other software.  It might even be possible to present it without using software at all.  But you always need some notation to communicate. The R computer notation is simple and concise, a rival for traditional mathematical notation, even as it extends to include operations not in the algebraic repertoire: sampling, randomization, iteration, etc. 
 
 These notes are meant for teachers; this isn't a textbook for students.  Examples of materials for students, including a textbook \marginnote{DT Kaplan (2011) ``Statistical Modeling: A Fresh Approach'' 2nd ed., {\em Project MOSAIC}} are available at \url{www.mosaic-web.org/StatisticalModeling}.
 
+\bigskip
+
+We wish to acknowledge the support of the Howard Hughes Medical Institute, the W.M. Keck Foundation, and the US National Science Foundation (DUE-0920350).
 
 
 <<include=FALSE>>=
@@ -279,20 +282,24 @@ Many students will be unfamiliar with functions of two variables, simply because
 A good place to start is to ask your students to imagine themselves standing on a hillside.  Is the slope the same in all directions?  Many students will respond, ``yes.''  They have an intuitive notion of the gradient and are thinking that, at each point on the hillside, there is just one slope.  But, as skiers know, the hill is steep in some directions and not at all steep in others.  (Indeed, for every point on every hill, there is a direction where the landscape is flat.)  Looking back at the contour plot, ask the students whether the hill is steeper in the East-West direction (that is, along the $x$-axis), or in the North-South diretion (along the $y$ axis).  It's easy to find the slope in each direction, by taking a small step in that direction and finding the change in altitude.
 
 For the trebuchet distance function, you can take such steps by varying one variable while holding the other constant.  For instance, what's the change in distance (according to the model) when changing the projectile weight by one gram while holding the counter-weight constant.  Pick a value for each variable and tweak projectile weight:
-\begin{figure*}[h]
+
+\begin{widestuff}
 <<tidy=FALSE>>=
 ballistic(projectileWt=51,counterWt=1) - ballistic(projectileWt=50,counterWt=1)
 @
-\end{figure*}
+\end{widestuff}
+
 This indicates that a 1 gm increase in projectile weight is associated with a decrease of 8.5 cm in the distance flown.  
 
 On the other hand, increasing the counter weight is associated with an increase in distance:
-\begin{figure*}[h]
+
+\begin{widestuff}
 <<tidy=FALSE>>=
 ballistic(projectileWt=50,counterWt=2) - ballistic(projectileWt=50,counterWt=1)
 @
-\end{figure*}
-A 1 kg increase in the counter-weight is associated with an increase of 365 cm in the distance.
+\end{widestuff}
+
+\noindent A 1 kg increase in the counter-weight is associated with an increase of 365 cm in the distance.
 
 Show your students the points on the contour plot corresponding to these finite differences.\marginnote{Practice is important here.  The time invested will pay off handsomely.}  This helps them to understand why each input variable can be associated with a different connection to the output.  Once students understand this, it's easier for them to generalize to functions of more than two variables.  The key thing is to move away from functions of a single variable.
 
@@ -301,10 +308,12 @@ It's well worth observing that the two models, \texttt{mod1} and \texttt{mod2}, 
 f1(projectileWt=51)-f1(projectileWt=50)
 @
 But for \texttt{mod2} (translated into function \function{ballistic}) the change in distance is much less, as already seen:
+
+\begin{widestuff}
 <<tidy=FALSE>>=
-ballistic(projectileWt=51,counterWt=1) - 
-  ballistic(projectileWt=50,counterWt=1)
+ballistic(projectileWt=51,counterWt=1) - ballistic(projectileWt=50,counterWt=1)
 @
+\end{widestuff}
 
 That the two functions give different answers can be confusing to students.  The difference comes about because the \function{ballistic} function allows you to hold the counter-weight constant while changing the projectile weight.  This is, of course, completely natural --- you can change the projectile weight without changing the counter-weight.  But the experiment happened to be done in such a way that only the lightest projectiles were used with the heaviest counterweights. \marginnote{Tip: The imbalance in this design --- that not all the levels of \VN{counterWt} were used for each level of \VN{projectileWt} --- is the norm for many observational studies.    Modeling makes it clear that imbalance introduces ambiguities that are related to covariation and can be dealt with in the same way.}
 <<>>=
@@ -361,17 +370,23 @@ vals
 @
 
 The second statement fits a model that accounts for the variation in \VN{distance} by the variation in \VN{object}:
-\begin{figure*}[h]
+
+\begin{widestuff}
+<<echo=FALSE>>=
+tempw = options(width=80)
+@
 <<>>=
 mod3 = lm(distance~object,data=trebuchet)
 coef(mod3)
 @
-\end{figure*}
-As it happens, the model values from \texttt{mod} coincide directly with the values produced by \function{mean}. To see this, extract the function from the model:
+\end{widestuff}
+
+\noindent As it happens, the model values from \texttt{mod} coincide directly with the values produced by \function{mean}. To see this, extract the function from the model:
+
+\begin{widestuff}
 <<>>=
 g1 = makeFun(mod3)
 @
-\begin{figure*}[h]
 \begin{multicols}{3}
 <<>>=
 g1("foose")
@@ -383,30 +398,38 @@ g1("golf")
 g1("tennis ball")
 @
 \end{multicols}
-\end{figure*}
+\end{widestuff}
 
 It may seem odd to your students that a word (or \term{character string}) can be used as the input to a function.  Remind them that a function is a machine that takes one or more inputs and produces an output.  There's no requirement that the inputs be numbers.
 
 The function \function{g1} can be used to calculate a model value for each case in the \texttt{trebuchet} data and, from that, the residuals:
+
+\begin{widestuff}
 <<tidy=FALSE>>=
-trebuchet = transform(trebuchet,
-                      g1resids = distance-g1(object))
+trebuchet = transform(trebuchet, g1resids = distance-g1(object))
 @
+\end{widestuff}
+
 The size of the residuals can be described, as always, by their standard deviation:
+
+\begin{widestuff}
 <<>>=
 sd(g1resids, data=trebuchet)
 @
+\end{widestuff}
 
 To see what's special about the model values here --- that is, why the groupwise mean is special --- construct another function that assigns a specific value to each group.  For example, here's a function that says the golf balls go 300 cm, foose balls 500, tennis balls 100 and washers 300.
-\begin{figure*}[h]
+
+\begin{widestuff}[h]
 <<tidy=FALSE>>=
 g2 = makeFun(
-  switch(object,"golf"=300,"foose"=500,"tennis ball"=100,"big washerb"=300,NA) ~ 
-    object)
+      switch(object,"golf"=300,"foose"=500,"tennis ball"=100,"big washerb"=300,NA) ~ object
+     )
 @
-\end{figure*}
+\end{widestuff}
 This is not the traditional form for a function.  The function \texttt{g2} takes an input \texttt{object} and compares it to the names of the different kinds of balls.  It returns the associated value (or \texttt{NA} if there is no associated value), for instance:
-\begin{figure*}[h]
+
+\begin{widestuff}
 \begin{multicols}{3}
 <<>>=
 g2("foose")
@@ -418,7 +441,8 @@ g2("golf")
 g2("tennis ball")
 @
 \end{multicols}
-\end{figure*}
+\end{widestuff}
+
 Which gives a better description of the distances flown by the various objects, \function{g1} or \function{g2}?  As previously, you can find the residuals from this model and compare them to the residuals from \function{g1}.
 
 The function \function{g2} takes just a single character string.  To allow it to work on a vector of character strings, you can \term{vectorize} it:\authNote{Any way to avoid this?}%
@@ -426,13 +450,13 @@ The function \function{g2} takes just a single character string.  To allow it to
 g2 = Vectorize(g2)
 @
 
-\begin{figure*}[h]
+\begin{widestuff}
 <<tidy=FALSE>>=
 trebuchet = transform(trebuchet, g2resids = distance-g2(object))
 sd(g1resids,data=trebuchet)
 sd(g2resids,data=trebuchet)
 @
-\end{figure*}
+\end{widestuff}
 
 \function{g2} produces larger residuals than the function \function{g1} produced by fitting to data.  The values of the parameters of the fitted model minimize the size of the  residuals (as measured by the sum of squares or the standard deviation) compared to any other parameter values.
 
@@ -523,9 +547,12 @@ All of these sorts models were constructed with the same syntax and all of them 
 You can also add in \term{interactions} among explanatory variables.
 
 To illustrate, consider world records in the 100 meter freestyle swimming event as they have changed over the years.  Plot these separately for the two sexes.
+
+\begin{widestuff}
 <<swim-data,fig.width=6>>=
 xyplot(time ~ year | sex, data=SwimRecords)
 @
+\end{widestuff}
 
 It's evident from the data that, for both sexes the records are improving over time. (How could they not?  That's the nature of a world record.)  The pattern is so clear that one hardly needs a model to interpret it.  But, to display the syntax of models, let's do so anyways.
 
@@ -543,48 +570,58 @@ s3 = makeFun(swim3)
 @
 
 The first model doesn't include \VN{year}.  Still, to graph the model function on the axes, you need to include \VN{year} in the plotting statement. 
+
+\begin{widestuff}
 <<fig.width=6>>=
 <<swim-data>>
 plotFun(s1(sex="F")~year,add=TRUE)
 plotFun(s1(sex="M")~year,add=TRUE,lty="dotdash")
 @
+\end{widestuff}
+
 The function \function{s1} doesn't depend on \VN{year}, so the graphs of the function are flat with respect to \VN{year}.  The function does have \VN{sex} as an input and you can see in the graph how the function values for females (thick line) differ from those for males (thin line).
 
 Now consider \function{s2}, which depends on \function{year} but not \function{sex}.
 
+\begin{widestuff}
 <<fig.width=6>>=
 <<swim-data>>
 plotFun(s2(year)~year,add=TRUE)
 plotFun(s2(year)~year,add=TRUE,lty="dotdash")
 @
+\end{widestuff}
+
 The functions are the same for males and females, of course, so they overlie one another on the graph.
 
 Including both \VN{sex} and \VN{year} in the model produces a function that depends on both variables:
-\begin{fullwidth}
+
+\begin{widestuff}
 <<fig.width=6>>=
 <<swim-data>>
 plotFun(s3(year=year,sex="F")~year,add=TRUE)
 plotFun(s3(year=year,sex="M")~year,add=TRUE,lty="dotdash")
 @
-\end{fullwidth}
+\end{widestuff}
 
 You might be surprised to see that the graph of the function for males is parallel to that for females.  That's because there was nothing in the model design that produces a different slope with respect to \VN{year} for females and males: the two lines must therefore be parallel. 
 
 Including such a difference in a model is a matter of including an \term{interaction term} between \VN{sex} and \VN{year}:
-<<>>=
+
+\begin{widestuff}
+<<fig.width=6>>=
 swim4 = lm(time~year+sex+year:sex,data=SwimRecords)
 s4 = makeFun(swim4)
-@
-
-<<fig.width=6>>=
 <<swim-data>>
 plotFun(s4(year=year,sex="F")~year,add=TRUE)
 plotFun(s4(year=year,sex="M")~year,add=TRUE,lty="dotdash")
 @
+\end{widestuff}
 
 \newthought{Interactions are confusing}; they imply a ``difference of differences.'' \marginnote{For students who have been exposed to the algebra of functions of two variables, it may be helpful to point out that the model $x + y + x:y$ corresponds to the polynomial $f(x,y) = a_0 + a_1 x + a_2 y + a_3 x y$.  The coefficient on the interaction term is $a_0$.  This corresponds to the mixed partial derivative, $\partial^2 f/\partial x \partial y$.  This is the calculus equivalent of ``difference of differences.''} Students tend to want to interpret the word ``interaction'' as meaning that one variable affects the other.  This is not quite right.  An interaction describes how the effect of one variable on the response is modulated by the other variable.  For example, the interaction between \VN{sex} and \VN{year} tells how the relationship between \VN{year} and world-record \VN{time} differs for the two sexes.  You see that interaction in the graph as different slopes for the fitted lines for the two sexes.
 
 Another, way to describe the interaction is that the relationship between \VN{sex} and world-record \VN{time} is changing over the years.  You can see that from the changing vertical distance between the lines for females and males. Both these ways of describing the interaction --- how the relationship between \VN{sex} and \VN{time} is modulated over the years, and how the relationship between \VN{year} and \VN{time} is different for the two sexes --- are equivalent.  Given that the slopes of the two lines is different, the vertical distance between the two lines is going to change.
+
+\newpage
 
 \section{Example: The Genetic Component of Human Height}
 
@@ -593,12 +630,16 @@ The world-record swim-time data is ordered enough that it's easy to draw a satis
 \newthought{To place things more firmly in a statistical context},\marginnote{Francis Galton, ``Correlations and their measurement, chiefly from anthropometric data'' (1889) {\em Nature} 39:238, and ``Regression towards mediocrity in hereditary stature'' (1886) {\em Journal of the Anthropological Institute of Great Britain and Ireland} 15:246-263.  For a commentary and access to further background on the data, see James Hanley, `` `Transmutting' Women into men: Galton's family data on human stature'' (2004) {\em American Statistician} 58(3):237-243)} consider the data collected by Francis Galton in 19th century London.  Galton was interested in exploring the heritability of biological traits, in particular the relationship between the heights of parents and their full-grown, adult children.  These data played an important part in the development of the correlation coefficient and regression toward the mean  
 
 A man of his era, Galton focused on the heights of sons.  Here are both sexes of children, plotted out against the mother's height:
+
+\begin{widestuff}
 <<galton-data,fig.width=6>>=
 xyplot(height ~ mother | sex, data=Galton)
 @
+\end{widestuff}
 
 From the graph alone, it's obvious that height differ from males to females and there is a slight tendency that a taller mother is associated with taller children.  Here's a model that includes an interaction term between the child's sex and the mother's height:
 
+\begin{widestuff}
 <<fig.width=6>>=
 <<galton-data>>
 hmod1 = lm(height~mother*sex,data=Galton)
@@ -606,27 +647,30 @@ h1 = makeFun(hmod1)
 plotFun(h1(mother=m,sex="F")~m,add=TRUE)
 plotFun(h1(mother=m,sex="M")~m,add=TRUE,lty="dotdash")
 @
+\end{widestuff}
 
-What's new in this example is that a specific line can be judged as the best fit to a cloud of data.  Certainly a student could do this by hand, but they would likely have little confidence that their particular line was best.  Certainly, the precision with which one might draw a line by hand wouldn't justify drawing lines of different slopes for the males and females.  Indeed, it remains to be seen whether the interaction term is contributing much to the model.  That sort of question provides a seque to statistical inference.  (See below.)
+What's new in this example is that a specific line can be judged as the best fit to a cloud of data.  Certainly a student could do this by hand, but they would likely have little confidence that their particular line was best.  Certainly, the precision with which one might draw a line by hand wouldn't justify drawing lines of different slopes for the males and females.  Indeed, it remains to be seen whether the interaction term is contributing much to the model.  That sort of question provides a segue to statistical inference.  (See below.)
 
 What's the father's role in this.  In a scatter plot, it's impossible to use both the father and the mother along on the $x$-axis, one has to choose.  There are some tricks, for example creating panels for different intervals of the father's height, but it's hard to gain much quantitative insight from the graphic.
 
+\begin{widestuff}
 <<galton-father,fig.width=5,fig.height=5,tidy=FALSE>>=
 xyplot(height ~ mother | cut(father,breaks=2) + sex, data=Galton)
 @
+\end{widestuff}
 
 Instead, consider a model that uses both mother's and father's height (and the child's sex) to account for the child's height.  For now, leave off the interaction terms; you can return to those later with some statistical inference tools in hand: 
-<<>>=
+
+\begin{widestuff}
+<<fig.width=5,fig.height=5,tidy=FALSE>>=
 hmod2 = lm(height~mother+father+sex,data=Galton)
 h2 = makeFun(hmod2)
-@
-
-<<fig.width=5,fig.height=5,tidy=FALSE>>=
 <<galton-father>>
 plotFun(h1(mother=m,sex="F")~m,add=TRUE)
 plotFun(h2(mother=m,father=64,sex="F")~m,add=TRUE,lty="dotdash")
 plotFun(h2(mother=m,father=74,sex="F")~m,add=TRUE,lty="dotted")
 @
+\end{widestuff}
 
 The dotted and dot-dashed lines show the mother+father model values for two different heights of father (just for female children).  For comparison, the solid line shows the model with just the mother. That the lines are different for the two different heights of father shows the association between father's height and child's height, for each given mother's height.  
 
@@ -634,15 +678,23 @@ The dotted and dot-dashed lines show the mother+father model values for two diff
 \section{Partial Change}
 
 ``All things being equal'' is an everyday phrase.   In the Galton height data, for instance, one can examine the association of \VN{mother}'s height with child's \VN{height}, holding the other things constant, e.g., the \VN{father}'s height and the child's \VN{sex}.  Given a model function, this \term{partial change} is easy to calculate: look at the difference in child's model height for two different values of the mother's height, while holding \VN{father} and \VN{sex} constant.  For instance,
+
+\begin{widestuff}
 <<tidy=FALSE>>=
 h2(mother=66,father=68,sex="F") - h2(mother=65,father=68,sex="F")
 @
+\end{widestuff}
+
 Similarly, one can examine the partial change with respect to \VN{father} and with respect to \VN{sex}:
+
+\begin{widestuff}
 <<tidy=FALSE>>=
 h2(mother=66,father=68,sex="F") - h2(mother=66,father=67,sex="F")
 h2(mother=66,father=68,sex="F") - h2(mother=66,father=68,sex="M")
 @
-The reason to call these differences ``partial'' change is by analogy with partial derivatives in calculus: the change with respect to one variable holding the other constant.
+\end{widestuff}
+
+\newthought{The reason to call these differences ``partial'' change} is by analogy with partial derivatives in calculus: the change with respect to one variable holding the other constant.
 
 Of course, for the continuous variables --- \VN{mother} and \VN{father} --- one can calculate the partial derivative itself.  This would be appropriate for students who are familiar with derivatives, but it is not essential that one consider any sort of limiting process as in calculus.  The important point is that the change in model output can be considered with respect to each of the input variables individually.
 
@@ -676,7 +728,7 @@ It's traditional to point to the situation of an experiment.  In one form of exp
 
 There are lessons to be drawn from other fields, however.  In epidemiology, for instance, important conclusions to guide action need to be drawn from imperfect, observational data. 
 
-To illustrate, consider a news story  (Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk, by Allison Aubrey, NPR - March 15, 2013) reporting on research findings published in the American Heart Association journal {\em Stroke}.  The main result: a daily habit of coffee or tea drinking is associatd with a decreates of 20\% in stroke risk.  The news story puts this in a historical context: 
+To illustrate, consider a news story  (Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk, by Allison Aubrey, NPR - March 15, 2013) reporting on research findings published in the American Heart Association journal {\em Stroke}.  The main result: a daily habit of coffee or tea drinking is associated with a decrease of 20\% in stroke risk.  The news story puts this in a historical context: 
 \begin{quotation}
 % ... recent studies have linked a regular coffee habit to a range of benefits — from a reduced risk of Type 2 diabetes to a protective effect against Parkinson's disease.
 
@@ -717,12 +769,12 @@ While Moynihan's distance-from-Canada variable is not meant to be taken seriousl
 
 Will writes:
 \begin{quotation}
-The fact that the quality of schools correlates more positively with the quality of the families from which children come to school than it does with education appropriatiations will have no effect on the teachers unions' insistence that money is the crucial variable.
+The fact that the quality of schools correlates more positively with the quality of the families from which children come to school than it does with education appropriations will have no effect on the teachers unions' insistence that money is the crucial variable.
 \end{quotation}
 
 What's wrong here is the idea of the ``crucial variable.''  Teachers' unions are understandably concerned with education appropriations, just as editorial columnists are with the structure of families.  That these variables are ``crucial'' reflects the interests of the modelers --- it's perfectly feasible for a model to include both variables.  Rather than identifying a single variable as crucial and looking for an association with that variable to the exclusion of all other explanatory variables, it's more appropriate to construct a model with multiple variables.  The issue is confounding, not cruciality. 
 
-Returning to the SAT data, consider one simple confounder, \VN{frac}, the proportion of students in each state who take the SAT.  In upper Mid-west states like North Dakota, many college-bound students take the ACT rather than the SAT; SAT's tend to be taken by students heading out of state, who are often higher-scoring.  In many states, only a small fraction of students take the SAT, and these students also tend to be higher-scoring. So use \VN{frac} as a covariate: \marginnote{Confounding occurs any time a covariate is correlated with an explanatory variable.  The term \term{Simpson's paradox} is used to identify situations when the coefficient on the explanatory variable of interest changes sign when a covariate is introduced into a model.  It's called a ``paradox'' because the sign change isn't anticipated by intuition.  But a change in coefficient is an inevitable result of the correlation of a covariate with an explanatory variable.  ``Paradox'' shouldn't be interpreted as ``rare'' or ``unlikely.''  Confounding is a perfectly ordinary situation.}  
+Returning to the SAT data, consider one simple confounder, \VN{frac}, the proportion of students in each state who take the SAT.  In upper Mid-west states like North Dakota, many college-bound students take the ACT rather than the SAT; SATs tend to be taken by students heading out of state, who are often higher-scoring.  In many states, only a small fraction of students take the SAT, and these students also tend to be higher-scoring. So use \VN{frac} as a covariate: \marginnote{Confounding occurs any time a covariate is correlated with an explanatory variable.  The term \term{Simpson's paradox} is used to identify situations when the coefficient on the explanatory variable of interest changes sign when a covariate is introduced into a model.  It's called a ``paradox'' because the sign change isn't anticipated by intuition.  But a change in coefficient is an inevitable result of the correlation of a covariate with an explanatory variable.  ``Paradox'' shouldn't be interpreted as ``rare'' or ``unlikely.''  Confounding is a perfectly ordinary situation.}  
 <<>>=
 mod2 = lm(sat ~ expend+frac,data=SAT)
 summary(mod2)
@@ -734,7 +786,7 @@ More than one covariate can be included in a model, of course.  The models thems
 
 \subsection{Example: What's a Fireplace Worth?}
 
-Statistician Richard De Veaux has shared a dataset on house prices in Saratoga Springs, NY.  In addition to the sales price of the house, the there is a variable indicating whether or not the house has a fireplace:
+Statistician Richard De Veaux has shared a data set on house prices in Saratoga Springs, NY.  In addition to the sales price of the house, the there is a variable indicating whether or not the house has a fireplace:
 <<message=FALSE>>=
 houses = fetchData("SaratogaHouses.csv")
 median( Price ~ Fireplace, data=houses )
@@ -772,10 +824,13 @@ mod1 = lm(time~sex,data=SwimRecords)
 coef(mod1)
 @
 \item[One-way ANOVA.] Are the means of several different groups different.  In the modeling notation, this corresponds to the ability of a categorical variable with more than two levels to account for variation in the response variable.
+
+\begin{widestuff}
 <<>>=
 mod2 = lm(wage~sector,data=CPS85)
 coef(mod2)
 @
+\end{widestuff}
 \end{description}
 
 There are at least two strong advantages to presenting inference in terms of the modeling notation.
@@ -801,26 +856,38 @@ Now, just for demonstration, carry out one randomization trial and find the test
 r.squared(lm(time~shuffle(sex),data=SwimRecords))
 @
 It's worthwhile when working with students to repeat the above line several times to show that the test statistic varies.  Then you can move on to having the computer repeat the trials many times and collect the results:
+
+\begin{widestuff}
 <<>>=
 s = do(1000)*r.squared(lm(time~shuffle(sex),data=SwimRecords))
 @
+\end{widestuff}
+
 Finally, to ask how often the random trials produce a test statistic at least as strong as that observed in the original data:
+
+\begin{widestuff}
 <<>>=
-tally( ~result >= test.stat, data=s, format="proportion")
+tally( ~result >= test.stat, data=s, format="count")
 @
+\end{widestuff}
 
 \newcommand{\lsim}{\mathrel{\hbox{\rlap{\lower.55ex \hbox{$\sim$}} \kern-.3em \raise.4ex \hbox{$<$}}}}
 The result: in none of the 1000 trials did the randomization produce a test statistic as strong as that observed in the original data.  This suggests a p-value $\sim 0.001$.
 
 It's exactly the same structure for the one-way ANOVA test.
+
+\begin{widestuff}
 <<>>=
 mod2 = lm(wage~sector,data=CPS85)
 test.stat2 = r.squared(mod2) # test statistic
 s2 = do(1000)*r.squared(lm(wage~shuffle(sector),data=CPS85))
-tally( ~result >= test.stat2, data=s2, format="proportion")
+tally( ~result >= test.stat2, data=s2, format="count")
 @
+\end{widestuff}
 
 Once students see the structure of a hypothesis test, it's easy for them to switch to interpretation mode: using the built-in normal-theory calculations to generate p-values:
+
+\newpage
 <<>>=
 anova(mod1)
 anova(mod2)
@@ -837,7 +904,7 @@ cat(print.ttest(t.test(time~sex,data=SwimRecords,var.equal=TRUE)))
 
 You may ask, doesn't it matter that the simulation-based p-values are different from the normal-theory p-values.  Doesn't this mean that the simulations are wrong?  The answer is that there's not right or wrong here, just what is reasonable.  How precisely do you need to know a p-value?  Is there any value to reporting more than two digits of a p-value?
 
-What's more, the p-values generated by the normal theory are based on assumptions that may be unwarranted, so extreme precision in the reported value is itself unwarrented.  As many statistical educators recognize, there are \term{distributional assumptions}.  Arguably more important are the covariates.  The statistical methods you teach should allow students to include covariates as appropriate.  The hypothesis tests implemented by \function{shuffle} or by the theory behind \function{anova} and the regression-table generator \function{summary} extend automatically and easily to models with covariates.
+What's more, the p-values generated by the normal theory are based on assumptions that may be unwarranted, so extreme precision in the reported value is itself unwarranted.  As many statistical educators recognize, there are \term{distributional assumptions}.  Arguably more important are the covariates.  The statistical methods you teach should allow students to include covariates as appropriate.  The hypothesis tests implemented by \function{shuffle} or by the theory behind \function{anova} and the regression-table generator \function{summary} extend automatically and easily to models with covariates.
 
 This also provides a new context for conducting hypothesis tests:  ``Does including this covariate improve the model for the purpose?''  If the data provide little evidence for the non-null role of a covariate in the context of the other explanatory variables, perhaps best to leave it out of the model.
 
@@ -899,6 +966,8 @@ Now the apparatus of modeling can be applied, for instance to generate the 95\% 
 <<>>=
 confint(mod0)
 @
+
+\newpage
 
 A more typical application involves the difference between two proportions, say the fraction of the smokers who died versus the fraction of non-smokers.
 <<>>=
