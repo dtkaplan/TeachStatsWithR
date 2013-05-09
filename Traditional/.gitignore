@@ -5,6 +5,5 @@
 *.notes
 *.synctex.gz
 *-concordance.tex
-*.pdf
 *.tex
 figure
