@@ -1079,7 +1079,7 @@ The association is somewhat non-linear.  There's some evidence that the variabil
 of the residuals increases with larger fitted values.
 \end{solution}
 
-\chapter{Probability distributions and random variables}
+\chapter{Probability Distributions and Random Variables}
 
 \label{sec:DiscreteDistributions}
 \label{sec:probability}
@@ -1273,7 +1273,7 @@ power.t.test(delta=.25, sd=1, sig.level=alpha, power=0.90)
 \end{solution}
 
 
-\chapter{Data management}
+\chapter{Data Management}
 \label{sec:manipulatingData}%
 
 Data management is a key capacity to allow students (and instructors) to ``compute with data''.

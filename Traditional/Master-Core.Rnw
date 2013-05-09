@@ -5,7 +5,7 @@
 \usepackage{../include/RBook}
 \def\tilde{\texttt{\~}}
 
-\title{R Commands for Teaching Statistics}
+\title{A Compendium of R Commands to Teach Statistics}
 \author{Nicholas J. Horton,\\Daniel Kaplan and\\Randall Pruim}
 \date{DRAFT: \today}
 
