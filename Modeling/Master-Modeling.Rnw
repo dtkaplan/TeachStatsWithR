@@ -4,6 +4,9 @@
 
 \usepackage{../include/RBook}
 \usepackage{multicol}
+%\usepackage[shownotes]{authNote}
+\usepackage[hidenotes]{authNote}
+
 \def\tilde{\texttt{\~}}
 
 \title[Start Modeling in R]{Start Modeling\\$\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $with R}

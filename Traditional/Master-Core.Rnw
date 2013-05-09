@@ -4,6 +4,9 @@
 
 \usepackage{../include/RBook}
 \usepackage{pdfpages}
+%\usepackage[shownotes]{authNote}
+\usepackage[hidenotes]{authNote}
+
 \def\tilde{\texttt{\~}}
 
 \title{A Compendium of R Commands to Teach Statistics}

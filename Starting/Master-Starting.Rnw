@@ -4,6 +4,8 @@
 
 \usepackage{../include/RBook}
 \usepackage{pdfpages}
+%\usepackage[shownotes]{authNote}
+\usepackage[hidenotes]{authNote}
 
 \def\tilde{\texttt{\~}}
 
