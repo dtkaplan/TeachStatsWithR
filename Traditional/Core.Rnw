@@ -170,8 +170,8 @@ xhistogram(~ cesd | sex, layout=c(1, 2), data=HELPrct)
 @
 \end{center}
 \begin{problem}
-Using the \variable{HELPrct} dataset, 
-create side by side boxplots of the CESD scores by substance abuse
+Using the \dataframe{HELPrct} dataset, 
+create side-by-side boxplots of the CESD scores by substance abuse
 group, just for the male subjects, with an overlaid normal density.
 \end{problem}%
 \begin{solution}
@@ -491,16 +491,12 @@ xyplot(cesd ~ mcs, panel=panel.lmbands, cex=0.2,
   band.lwd=2, data=HELPrct)
 @
 \end{center}
-
-
 \begin{problem}
-Using the HELPrct dataset, fit a simple linear regression model 
+Using the \dataframe{HELPrct} dataset, fit a simple linear regression model 
 predicting the number of drinks per day as a function of the mental
 component score.  
-
 This model can be specified using the formula:
 \model{\variable{i1}}{\variable{mcs}}.  
-
 Assess the distribution of the residuals for this model.
 \end{problem}
 
@@ -564,7 +560,6 @@ When a student finds a significant association,
 it's important for them to be able to interpret this in the context of the problem. 
 The \function{xchisq.test()} function provides additional details to help with this process.
 \FoodForThought{\code{x} is for eXtra.}
-
 <<chisq2,tidy=FALSE>>=
 xchisq.test(tally(~homeless + sex, margins=FALSE,
   data=HELPrct), correct=FALSE)
@@ -881,6 +876,7 @@ plotFun(lm1fun(mcs, age=36, sex="female") ~ mcs,
 
 It's straightforward to undertake residual diagnostics for this model.  We begin by adding the
 fitted values and residuals to the dataset.
+\Caution{Be careful when fitting regression models with missing values (see also section \ref{sec:miss}).}
 <<>>=
 HELPrct = transform(HELPrct, residuals = resid(lm1))
 HELPrct = transform(HELPrct, pred = fitted(lm1))
@@ -918,18 +914,15 @@ densityplot(~ avgtemp, xlab="Average daily temp (degrees F)",
   data=RailTrail)
 @
 \end{problem}
-
 \begin{solution}
 The distribution of average temperature (in degrees Fahrenheit) is approximately normally
 distributed with mean 57.4 degrees and standard deviation of 11.3 degrees.
 \end{solution}
-
 \begin{problem}
 The \dataframe{RailTrail} dataset also includes a variable called \variable{cloudcover}.  
 Describe the distribution of this variable in terms of its
 center, spread and shape.
 \end{problem}
-
 \begin{solution}
 <<>>=
 favstats(~ cloudcover, data=RailTrail)
@@ -939,14 +932,12 @@ The distribution of cloud cover is ungainly (almost triangular), with increasing
 cloudcover.  The mean is 5.8 oktas (out of 10), with standard deviation of 3.2 oktas.  It tends to be
 cloudy in Northampton!
 \end{solution}
-
 \begin{problem}
 The variable in the \dataframe{RailTrail} dataset that provides the daily count
 of crossings is called \variable{volume}. 
 Describe the distribution of this variable in terms of its
 center, spread and shape.
 \end{problem}
-
 \begin{solution}
 <<>>=
 favstats(~ volume, data=RailTrail)
@@ -958,14 +949,12 @@ distributed with mean 375 crossings  and standard deviation of 127 crossings.
 There is one outlier with 736 crossings which occurred on a Monday holiday in the spring
 (Memorial Day).  
 \end{solution}
-
 \begin{problem}
 The \dataframe{RailTrail} dataset also contains an indicator of whether the day was 
 a weekday (\variable{weekday==1}) or a weekend/holiday (\variable{weekday==0}).
 Use \function{tally()} to describe the distribution of this categorical variable.
 What percentage of the days are weekends/holidays?
 \end{problem}
-
 \begin{solution}
 <<>>=
 tally(~ weekday, data=RailTrail)
@@ -973,13 +962,11 @@ tally(~ weekday, format="percent", data=RailTrail)
 @
 Just over 30\% of the days are weekends or holidays.
 \end{solution}
-
 \begin{problem}
 Use side-by-side boxplots to compare the distribution of \variable{volume} by day type in the \dataframe{RailTrail} dataset.
 Hint: you'll need to turn the numeric \variable{weekday} variable into a factor variable using \function{as.factor()}.
 What do you conclude?
 \end{problem}
-
 \begin{solution}
 <<>>=
 bwplot(volume ~ as.factor(weekday), data=RailTrail)
@@ -989,7 +976,6 @@ or
 RailTrail = transform(RailTrail, daytype = ifelse(weekday==1, "weekday", "weekend/holiday"))
 bwplot(volume ~ daytype, data=RailTrail)
 @
-
 We see that the weekend/holidays tend to have more users.
 \end{solution}
 
@@ -998,19 +984,16 @@ Use overlapping densityplots to compare the distribution of \variable{volume} by
 \dataframe{RailTrail} dataset.
 What do you conclude?
 \end{problem}
-
 \begin{solution}
 <<>>=
 densityplot(volume ~ weekday, auto.key=TRUE, data=RailTrail)
 @
 We see that the weekend/holidays tend to have more users.
 \end{solution}
-
 \begin{problem}
 Create a scatterplot of \variable{volume} as a function of \variable{avgtemp} using the \dataframe{RailTrail} dataset, along with a regression line and scatterplot
 smoother (lowess curve).  What do you observe about the relationship?  
 \end{problem}
-
 \begin{solution}
 <<>>=
 xyplot(volume ~ avgtemp, xlab="average temperature (degrees F)", 
@@ -1020,7 +1003,6 @@ We see that there is a positive relationship between these two variables, but th
 somewhat nonlinear (which makes sense as we wouldn't continue to predict an increase in usage when the 
 temperature becomes uncomfortably warm).  
 \end{solution}
-
 \begin{problem}
 Using the \dataframe{RailTrail} dataset,
 fit a multiple regression model for \variable{volume} as a function of \variable{cloudcover}, \variable{avgtemp}, 
@@ -1028,7 +1010,6 @@ fit a multiple regression model for \variable{volume} as a function of \variable
 between day type and average temperature.
 Is there evidence to retain the interaction term at the $\alpha=0.05$ level?
 \end{problem}
-
 \begin{solution}
 <<>>=
 fm = lm(volume ~ cloudcover + avgtemp + weekday + avgtemp:weekday, data=RailTrail)
@@ -1038,7 +1019,6 @@ The interaction between average temperature and day-type is statistically signif
 interpret this as being a steeper slope (stronger association) on weekdays rather than weekends.
 (Perhaps on weekends/holidays people will tend to head out on the trails irrespective of the weather?)
 \end{solution}
-
 \begin{problem}
 Use \function{makeFun()} to calculate the predicted number of crossings on a weekday with average 
 temperature 60 degrees and no clouds.  Verify this calculation using the coefficients from the 
@@ -1054,7 +1034,6 @@ myfun(cloudcover=0, avgtemp=60, weekday=1)
 @
 We expect just over 480 crossings on a day with these characteristics.
 \end{solution}
-
 \begin{problem}
 Use \function{makeFun()} and \function{plotFun()} to display predicted values for the number of crossings
 on weekdays and weekends/holidays for average temperatures between 30 and 80 degrees and a cloudy day 
@@ -1071,24 +1050,20 @@ We
 interpret this as being a steeper slope (stronger association) on weekdays rather than weekends.
 (Perhaps on weekends/holidays people will tend to head out on the trails irrespective of the weather?)
 \end{solution}
-
 \begin{problem}
 Using the multiple regression model, generate a histogram (with overlaid normal 
 density) to assess the normality of the residuals.  
 \end{problem}
-
 \begin{solution}
 <<>>=
 xhistogram(~ resid(fm), fit="normal")
 @
 The distribution is approximately normal.
 \end{solution}
-
 \begin{problem}
 Using the same model generate a scatterplot of the residuals versus predicted values and comment
 on the linearity of the model and assumption of equal variance.
 \end{problem}
-
 \begin{solution}
 <<>>=
 xyplot(resid(fm) ~ fitted(fm), type=c("p", "r", "smooth"))
@@ -1096,12 +1071,10 @@ xyplot(resid(fm) ~ fitted(fm), type=c("p", "r", "smooth"))
 The association is fairly linear, except in the tails.  There's some evidence that the variability
 of the residuals increases with larger fitted values.
 \end{solution}
-
 \begin{problem}
 Using the same model generate a scatterplot of the residuals versus average temperature and comment
 on the linearity of the model and assumption of equal variance.
 \end{problem}
-
 \begin{solution}
 <<>>=
 xyplot(resid(fm) ~ avgtemp, type=c("p", "r", "smooth"), data=RailTrail)
@@ -1568,13 +1541,11 @@ to \function{reshape()}.
 A number of functions help facilitate the creation or recoding of variables.
 
 \subsection{Creating categorical variable from a quantitative variable}
-We begin by detaching the \pkg{fastR} package (which redefined the \function{favstats()} function.  
 
 Next we demonstrate how to 
 create a three-level categorical variable
 with cuts at 20 and 40 for the CESD scale (which ranges from 0 to 60 points).
 <<tidy=FALSE>>=
-detach("package:fastR")
 favstats(~ cesd, data=HELPrct)
 HELPrct = transform(HELPrct, cesdcut = cut(cesd, 
   breaks=c(0, 20, 40, 60), include.lowest=TRUE))
@@ -1593,6 +1564,7 @@ coef(lm(cesd ~ subnew, data=HELPrct))
 @
 
 \section{Accounting for missing data}
+\label{sec:miss}
 
 Missing values arise in almost all real world investigations.  R uses the \variable{NA} character as an 
 indicator for missing data.  The \dataframe{HELPmiss} dataframe within the \pkg{mosaic} package includes all 
@@ -1621,6 +1593,8 @@ with the goal of linking them to primary medical care.
 Funding for the HELP study was provided by the National Institute
 on Alcohol Abuse and Alcoholism (R01-AA10870, Samet PI) and
 National Institute on Drug Abuse (R01-DA10019, Samet PI).
+The details of the
+randomized trial along with the results from a series of additional analyses have been published\cite{same:lars:hort:2003,lieb:save:2002,kert:hort:frie:2003}.
 
 Eligible subjects were
 adults, who spoke Spanish or English, reported alcohol, heroin or
@@ -1635,19 +1609,17 @@ pregnancy were excluded.
 Subjects were interviewed at baseline during
 their detoxification stay and follow-up interviews were undertaken
 every 6 months for 2 years.  A variety of continuous, count, discrete, and survival time predictors and outcomes were collected at each of these five occasions.
-The details of the
-randomized trial along with the results from a series of additional analyses have been published\cite{same:lars:hort:2003,lieb:save:2002,kert:hort:frie:2003}.
 The Institutional Review Board of
 Boston University Medical Center approved all aspects of the study, including the creation of the de-identified dataset.  Additional
 privacy protection was secured by the issuance of a Certificate of
 Confidentiality by the Department of Health and Human Services.
-A copy of the study instruments can be found at: \url{http://www.math.smith.edu/help}.
 
 The \pkg{mosaic} package contains several forms of the de-identified HELP dataset.
 We will focus on \pkg{HELPrct}, which contains
 27 variables for the 453 subjects
 with minimal missing data, primarily at baseline.
 Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found here\cite{Horton:2011:R}.
+A copy of the study instruments can be found at: \url{http://www.math.smith.edu/help}.
 \begin{longtable}{|p{2.1cm}|p{6.8cm}|p{3.5cm}|}
 \caption{Annotated description of variables in the \dataframe{HELPrct} dataset}
 \label{tab:helpvars} \\
