@@ -3,10 +3,11 @@
 \documentclass[open-any,12pt]{tufte-book}
 
 \usepackage{../include/RBook}
+\usepackage{multicol}
 \def\tilde{\texttt{\~}}
 
-\title{R Commands for Teaching Statistics}
-\author{Nicholas J. Horton,\\Daniel Kaplan and\\Randall Pruim}
+\title[Start Modeling in R]{Start Modeling\\$\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $with R}
+\author[Kaplan, Pruim, Horton]{Daniel T. Kaplan\\Randall J. Pruim\\ Nicholas J. Horton}
 \date{DRAFT: \today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
@@ -23,10 +24,7 @@
 ..makingMaster.. <- TRUE
 @
 
-<<child='../Starting/FrontMatter.Rnw', eval=TRUE>>=
-@
-
-<<child='Core.Rnw', eval=TRUE>>=
+<<child='Multivariable.Rnw', eval=TRUE>>=
 @
 
 
