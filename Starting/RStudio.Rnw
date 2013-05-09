@@ -196,7 +196,7 @@ Click on \tab{Compile HTML} to convert this to an HTML file.  There is a button 
 provides a brief description of the mark commands supported, and the \RStudio\ web site includes more
 extensive tutorials on using RMarkdown.
 
-\marginnote{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console workspace, 
+\Caution{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console workspace, 
 so the code in them must be self-contained.}%
 It is important remember that unlike \R\ scripts, which are executed in the
 console and have access to the console workspace,  RMarkdown and \pkg{knitr}/\LaTeX\

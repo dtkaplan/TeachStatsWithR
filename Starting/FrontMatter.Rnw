@@ -37,13 +37,12 @@ while also supporting the core material of more traditional courses.
 
 \subsection*{A Work in Progress}
 \Caution{Despite your best efforts, you WILL find bugs both in this document and in our code.
-Please let us know when you encounter them so we can call in the 
-exterminators.}%
+Please let us know when you encounter them so we can call in the exterminators.}%
 Consider these notes to be a work in progress.  
-\SuggestionBox{Sometimes we will mark
-places where we would especially like feedback with one of these suggestion boxes.
-But we won't do that everywhere we want feedback or there won't be room for 
-anything else.}%
+%\SuggestionBox{Sometimes we will mark
+%places where we would especially like feedback with one of these suggestion boxes.
+%But we won't do that everywhere we want feedback or there won't be room for 
+%anything else.}%
 We appreciate any feedback you are willing to share as we continue
 to work on these materials and the accompanying \pkg{mosaic} package.  
 Drop us an email at \url{pis@mosaic.org} with any comments, suggestions,
@@ -128,7 +127,9 @@ Marginal notes appear here and there.
 %some additional information that you may find of interest.}%
 \marginnote{Have a great suggestion for a marginal note?  Pass it along.}%
 Sometimes these are side comments that we 
-wanted to say, but didn't want to interrupt the flow to mention.  
+wanted to say, but we didn't want to interrupt the flow to mention them in
+the main text.  
+Others provide teaching tips or caution about traps, pitfalls and gotchas.
 %\Caution{But warnings are set differently to make sure they catch your attention.}%
 %These may describe more advanced features of the language or make suggestions
 %about how to implement things in the classroom.  Some are warnings
@@ -141,10 +142,6 @@ wanted to say, but didn't want to interrupt the flow to mention.
 
 
 
-This document was created on
-\today, using \pkg{knitr} and 
-\Sexpr{R.version.string}.
-
 \DiggingDeeper{If you know \LaTeX\ as well as \R, then \pkg{knitr}
 provides a nice solution for mixing the two. 
 We used this system to produce this book.  We also use it 
@@ -152,6 +149,11 @@ for our own research and to introduce upper level students to
 reproducible analysis methods.
 For beginners, we introduce \pkg{knitr} with RMardown,
 which produces HTML using a simpler syntax.}
+
+This document was created on
+\today, using \pkg{knitr} and 
+\Sexpr{R.version.string}.
+
 
 
 \chapter*{Project MOSAIC}

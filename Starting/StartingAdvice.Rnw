@@ -109,6 +109,8 @@ bring laptops to class for tests.
 Another of us has both in-class (without computer) and out-of-class
 (with computer) components to his assessment.  
 
+\newpage
+
 \item
 Rethink your course.
 
@@ -171,10 +173,11 @@ they will have a difficult time providing the correct information to a plotting 
 The student may blame \R, but that is not the primary source of the difficulty.  If you can
 diagnose the true problem, you will improve their understanding of statistics
 and fix \R\ difficulties simultaneously.
-\marginnote[-6ex]{When introducing \R\ code to students, we emphasize the 
-following questions:  What do you want \R\ to do for you?  What information must
-you provide, if \R\ is going to do that?  The first question generally determines 
-the function that will be used.  The second determines the inputs to that function.}%
+\TeachingTip[-8ex]{When introducing \R\ code to students, we emphasize the 
+following questions:  \emph{What do you want \R\ to do for you?} and 
+\emph{What information must you provide, if \R\ is going to do that?}  
+The first question generally determines the function that will be used.  
+The second determines the inputs to that function.}%
 \authNote{Nick wanted more examples than this.}%
 
 But even students with a solid understanding of the statistical concepts you are teaching
@@ -203,15 +206,14 @@ nice breaks on histograms, colors) too early.  Let them become
 comfortable with the basic graphics commands and then play (make sure
 it feels like play!) with fancying things up.  
 
+\marginnote{\emph{Students must learn to see before they can see to learn.} % -- R. Pruim
+}
 Keep in mind that just because the graphs are easy to make on the computer doesn't 
 mean your students understand how to read the graphs.  
 Use examples that will
 help students develop good habits for visualizing data.%
 %Remember:
 %\begin{center}
-\marginnote{
-\emph{Students must learn to see before they can see to learn.} % -- R. Pruim
-}
 %\end{center}
 
 \item Introduce Sampling and Randomization Early.

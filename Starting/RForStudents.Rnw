@@ -10,7 +10,7 @@ set.seed(123)
 
 
 
-\chapter[What Students Need]{What Students Need to Know About R\\ 
+\chapter[What Students Need to Know about R]{What Students Need to Know About R\\ 
 \& How to Teach It}
 \label{chap:RForStudents}
 
@@ -40,7 +40,7 @@ product                     # display the result
 product <- 15.3 * 23.4      # <- can be used instead of =
 product                     
 @
-\TeachingTip{It's probably best to settle on using 
+\TeachingTip[-16ex]{It's probably best to settle on using 
 one or the other of the right-to-left assignment operators rather than to switch
 back and forth.  The authors have different preferences:
 two of us find the equal sign to be simpler for students and more 
@@ -79,13 +79,14 @@ your students about) a few key features of the \R\ language.
 
 \begin{enumerate}
 \item \R\ is case-sensitive
+\TeachingTip{Some students will be slow
+to catch on to the importance of capitalization. So you may
+have to remind them several times early on.} 
 
 If you mis-capitalize something in \R\ it won't do what you want.
 Unfortunately, there is not a consistent convention about how capitalization 
 should be used, so you just have to pay attention when encountering new
 functions and data sets.  
-\TeachingTip{Some students will be slow
-to catch on to the importance of capitalization.} 
 
 \item 
 Functions in \R\ use the following syntax:
@@ -134,150 +135,7 @@ press the escape key and start the command fresh.
 \section{Installing and Using Packages}
 \label{sec:installingPackages}
 
-\marginnote{If you set up an \RStudio\ server, you can install all
-of the packages you want to use.  You can even configure the server to 
-autoload packages you use frequently.  Students who use \R\ on their 
-desktop machines will need to know how to install and load these packages, 
-however.}
-
-\R\ is open source software.  Its development is supported by
-a team of core developers and a large community of users.  
-One way that users support
-\R\ is by providing \term{packages} that contain data and functions
-for a wide variety of tasks.  
-As an instructor,
-you will want to select a few packages that support the way you want
-to teach your course.
-
-%\subsection{Installing packages from \cran}
-If you need to install a package, most likely it will be on \cran, 
-the Comprehensive R Archive Network.
-Before a package can be used, it must be \term{installed} 
-(once per computer or account)
-and
-\term{loaded} (once per \R\ session).  
-Installing downloads the package software and prepares it for use
-by compiling (if necessary) and putting its components in the proper
-location for future use.
-Loading makes a previously installed package available for use 
-in an \R\ session.
-
-For example, to use the \pkg{mosaic} package:
-\Rindex{install.packages()}%
-\Rindex{require()}%
-
-<<eval=FALSE,tidy=FALSE>>=
-install.packages("mosaic") # fetch package from CRAN 
-require(mosaic)            # load the package before use.
-@
-\Caution{Remember that in RMarkdown and Rnw files, any
-packages you use must be loaded \emph{within the file}.}
-\noindent
-The \tab{Packages} tab in \RStudio\ makes installing and loading packages
-particularly easy and avoids the need for \function{install.packages()}.
-
-If you are running on a machine where you don't have privileges to
-write to the default library location, you can install a personal 
-copy of a package.  If the location of your personal library is 
-first in \code{R_LIBS}, this will probably happen automatically.  If not,
-you can specify the location manually:
-
-<<eval=FALSE>>=
-install.packages("mosaic", lib="~/R/library")
-@
-%On a networked machine, be sure to use a different local directory for 
-%each platform since packages must match the platform.
-
-%Binary packages have been precompiled for a 
-%particular platform and are generally faster and easier to set up, if they 
-%are available.  Source packages need to be compiled and built on your local
-%machine.  Usually this happens automatically -- provided you have all the 
-%necessary tools installed on your machine -- so the only disadvantage is the
-%extra time it takes to do the compiling and building.
-
-%\subsection{Installing other packages}
-
-Occasionally you might find a package of interest that is not available via
-a repository like \cran.  
-Typically, if you find such a package, you will also find instructions
-on how to install it.  If not, you can usually install directly from the 
-zipped up package file.
-
-<<eval=FALSE,echo=TRUE>>=
-# repos = NULL indicates to use a file, not a repository
-install.packages('some-package.tar.gz', repos=NULL)           
-@
-
-\begin{boxedText}
-	From this point on, we will assume that the \pkg{mosaic}
-	package has been installed and loaded.
-\end{boxedText}
-
-\section{Getting Help}
-
-If something doesn't go quite right, or if you can't remember something, it's good to know
-where to turn for help.  In addition to asking your friends and neighbors, you can use
-the \R\ help system.
-
-\subsection{?}
-
-To get help on a specific function or data set, simply precede its name with a \code{?}:
-
-\authNote{This isn't working properly}
-<<rs-help1,eval=FALSE,tidy=FALSE>>=
-?log      # help for the log function
-@
-<<rs-help2,eval=FALSE,tidy=FALSE>>=
-?HELPrct  # help on a data set in the mosaic package
-@
-This will give you the documentation for the object you are interested in.
-
-\subsection{\texttt{apropos()}}
-If you don't know the exact name of a function, you can give part of the name and 
-\R\ will find all functions that match.  Quotation marks are mandatory here.
-
-<<rs-apropos>>=
-apropos('tally')            # must include quotes.  single or double.
-@
-
-\subsection{\texttt{??} and \texttt{help.search()}}
-If that fails, you can do a broader search using \code{??} or \function{help.search()}, 
-which will find matches not only in the names of functions and data sets, 
-but also in the documentation for them.  Quotation marks are optional here.
-
-
-\subsection{Examples and Demos}
-
-Many functions and data sets in \R\ include example code demonstrating typical uses.
-For example,
-<<rs-example-histogram,eval=FALSE,results="hide">>=
-example(xhistogram)
-@
-will generate a number of example plots (and provide you with the commands used to create them).
-Examples such as this are intended to help you learn how specific \R\ functions work.
-\Caution{Not all package authors are equally skilled at creating examples.  
-Some of the examples are nonexistent or next to useless, others are excellent.}%
-These examples also appear at the end of the documentation for functions and data sets.
-
-The \pkg{mosaic} package (and some other packages as well) also includes demos.  
-Demos are bits of \R\ code that can be executed using the \function{demo()} command
-with the name of the demo.
-To see how demos work, give this a try:
-<<rs-demo,eval=FALSE,results="hide">>=
-demo(lattice)
-@
-Demos are intended to illustrate a concept, a method, or some such thing, and are 
-independent of any particular function or data set.
-
-You can get a list of available demos using
-<<rs-demo-list,eval=FALSE,results="hide">>=
-demo()                     # all demos
-demo(package='mosaic')     # just demos from mosaic package
-@
-
-\section{Installing and Using Packages}
-
-\marginnote{If you set up an \RStudio\ server, you can install all
+\TeachingTip{If you set up an \RStudio\ server, you can install all
 of the packages you want to use.  You can even configure the server to 
 autoload packages you use frequently.  Students who use \R\ on their 
 desktop machines will need to know how to install and load these packages, 
@@ -320,7 +178,11 @@ require(mosaic)            # load the package before use.
 packages you use must be loaded within the file.}
 \noindent
 The \tab{Packages} tab in \RStudio\ makes installing and loading packages
-particularly easy and avoids the need for \function{install.packages()}.
+particularly easy and avoids the need for \function{install.packages()}
+for packages on CRAN, and makes loading packages into the console as easy
+as selecting a check box.  The \function{require()} function is still
+needed to load packages within RMarkdown, \pkg{knitr}/\LaTeX, and script 
+files.
 
 If you are running on a machine where you don't have privileges to
 write to the default library location, you can install a personal 
@@ -353,6 +215,76 @@ zipped up package file.
 # repos = NULL indicates to use a file, not a repository
 install.packages('some-package.tar.gz', repos=NULL)           
 @
+
+
+\begin{boxedText}
+	From this point on, we will assume that the \pkg{mosaic}
+	package has been installed and loaded.
+\end{boxedText}
+
+
+\section{Getting Help}
+
+If something doesn't go quite right, or if you can't remember something, it's good to know
+where to turn for help.  In addition to asking your friends and neighbors, you can use
+the \R\ help system.
+
+\subsection{?}
+
+To get help on a specific function or data set, simply precede its name with a \code{?}:
+
+\authNote{This isn't working properly}
+<<rs-help1,eval=FALSE,tidy=FALSE>>=
+?log      # help for the log function
+@
+<<rs-help2,eval=FALSE,tidy=FALSE>>=
+?HELPrct  # help on a data set in the mosaic package
+@
+This will give you the documentation for the object you are interested in.
+
+\subsection{\texttt{apropos()}}
+If you don't know the exact name of a function, you can give part of the name and 
+\R\ will find all functions that match.  Quotation marks are mandatory here.
+
+<<rs-apropos>>=
+apropos('tally')            # must include quotes.  single or double.
+@
+
+\subsection{\texttt{??} and \texttt{help.search()}}
+If that fails, you can do a broader search using \code{??} or \function{help.search()}, 
+which will find matches not only in the names of functions and data sets, 
+but also in the documentation for them.  Quotation marks are optional here.
+
+
+\subsection{Examples and Demos}
+
+Many functions and data sets in \R\ include example code demonstrating typical uses.
+For example,
+\marginnote{Not all package authors are equally skilled at creating examples.  
+Some of the examples are nonexistent or next to useless, others are excellent.}%
+<<rs-example-histogram,eval=FALSE,results="hide">>=
+example(xhistogram)
+@
+will generate a number of example plots (and provide you with the commands used to create them).
+Examples such as this are intended to help you learn how specific \R\ functions work.
+These examples also appear at the end of the documentation for functions and data sets.
+
+The \pkg{mosaic} package (and some other packages as well) also includes demos.  
+Demos are bits of \R\ code that can be executed using the \function{demo()} command
+with the name of the demo.
+To see how demos work, give this a try:
+<<rs-demo,eval=FALSE,results="hide">>=
+demo(lattice)
+@
+Demos are intended to illustrate a concept, a method, or some such thing, and are 
+independent of any particular function or data set.
+
+You can get a list of available demos using
+<<rs-demo-list,eval=FALSE,results="hide">>=
+demo()                     # all demos
+demo(package='mosaic')     # just demos from mosaic package
+@
+
 
 \section{Data}
 \label{sec:studentdata}%
@@ -418,7 +350,7 @@ Columns correspond to \term{variables} (measurements collected on each
 observational unit).
 \end{itemize}
 \end{boxedText}
-\marginnote{To help students keep variables and data frames straight, and to
+\TeachingTip{To help students keep variables and data frames straight, and to
 make it easier to remember the names, we have adopted the convention that data
 frames in the \pkg{mosaic} package are capitalized and variables (usually) are
 not.  This convention has worked well, and you may wish to adopt it for your
@@ -561,6 +493,7 @@ plotname(~ x, data = ...)
 Since for each of these plots the values along the $y$ axis are computed rather than
 provided in the data, the \variable{y} slot in the formula is empty.
 
+\medskip
 \subsubsection{Dot plots: \texttt{dotPlot()}}
 
 A \term{dot plot} represents each value of a quantitative variable with a dot.  The values
@@ -582,6 +515,7 @@ dotPlot(~ Sepal.Length | Species, data=iris, n=20,
          layout=c(3,1)) 
 @
 
+\medskip
 \subsubsection{Histograms: \texttt{xhistogram()}}
 
 \term{Histograms} are a lot like dot plots, but the towers of dots are replaced by vertical bars.
@@ -603,6 +537,7 @@ In lattice lingo, the three subplots are called \term{panels} and the labels at 
 top are called strips.  
 %(Strips can be placed on the left side if you prefer.)
 
+\medskip
 \subsubsection{Frequency polygons: \texttt{freqpolygon()}}
 
 \term{Frequency polygons} and \term{density plots} provide alternatives to histograms
@@ -610,19 +545,22 @@ that make it easier to overlay the representations of multiple subsets of the da
 A frequency polygon is created from the same data summary (bins and counts) as a histogram, 
 but instead of representing each bin with a bar, it is represented by a point 
 (at the center of the where the top of the histogram bar would have been).  
-These points are then connected with line segments.
-\marginnote{The names in the \dataframe{faithful} data set are 
+\Caution{The \dataframe{faithful} data set contains similar data, but the 
+variable names in that data frame are 
 poorly chosen.  The \dataframe{geyser} data set in the \pkg{MASS}
 package has better names and more data.}
+These points are then connected with line segments.
 Here is an example that shows the distribution of Old Faithful eruptions times
 from a sequence of observations 
-\marginnote{The interesting feature of this distribution is the clear bimodality.
-In particular, the mean and median eruption time are not a good measures of the duration of a  
-``typical'' eruption since almost none of the eruption durations are near the mean and median.}
+
 <<>>=
 require(MASS)
 freqpolygon( ~ duration, data=geyser, n=15)
 @
+\TeachingTip[-1.5in]{Point out that an interesting feature of this distribution is its clear 
+bimodality.
+In particular, the mean and median eruption time are not a good measures of the duration of a  
+``typical'' eruption since almost none of the eruption durations are near the mean and median.}
 Numerically, the data are being summarized and  represented in exactly the same way as for 
 histograms, but visually the horizontal and vertical line segments of the histogram are 
 replaced by sloped line segments.  
@@ -638,6 +576,7 @@ freqpolygon( ~ Sepal.Length, data=iris, groups=Species,
                ylim=c(0,65))
 @
 
+\medskip
 \subsubsection{Density plots: \texttt{densityplot()}}
 
 \term{Density plots} are similar to frequency polygons, but the piecewise linear
@@ -657,6 +596,7 @@ densityplot( ~ Sepal.Length, data=iris, groups=Species,
              adjust=1/3)
 @
 
+\medskip
 \subsubsection{The Density Scale}
 
 There are three scales that can be used for the plots in the preceding section: 
@@ -694,6 +634,7 @@ are primarily of use when one wants to be able to read off bin counts or percent
 
 
 
+\medskip
 \subsection{Boxplots: \texttt{bwplot()}}
 
 Boxplots are constructed in much the same manner as the plots in the previous section:
@@ -703,7 +644,9 @@ bwplot(~ Sepal.Length, data=iris)
 
 As we did for histograms, we can use conditioning to 
 show boxplots for multiple groups within the data set:
-<<rs-iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".7\\textwidth">>=
+\Caution[.2in]{This is not a particularly good plot for displaying this information.
+We'll illustrate a better way in a moment.}
+<<rs-iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".9\\textwidth">>=
 bwplot(~ Sepal.Length | Species, data=iris, layout=c(3,1))
 @
 But there are better ways to do this.
@@ -718,7 +661,7 @@ left hand side of the \tilde.}
 bwplot(Species ~ Sepal.Length, data=iris)
 @
 %\vspace{-12mm}
-\Caution{If numbers are used to label the categories 
+\Caution[-1in]{If numbers are used to label the categories 
 of a categorical variable, \R\ will consider the data to be quantitative.
 You can convert numerical values into a categorical factor by
 wrapping it in the function \function{factor()}, e.g., \code{factor(x)}.
@@ -749,7 +692,7 @@ xyplot(Sepal.Length ~ Sepal.Width, groups=Species,
 
 There are several ways to save plots in \RStudio, but the easiest is probably the following:
 \marginnote{You can save all of this exporting and copying and pasting if you use RMardown, 
-Sweave or knitr to prepare your documents.}
+or \pkg{knitr}/\LaTeX\ to prepare your documents.}
 \begin{enumerate}
 \item
 In the \tab{Plots} tab, click the ``Export'' button.
@@ -837,40 +780,32 @@ characteristics of the workers, including sex, number of years of education,
 years of work experience, occupational status, region of residence and union
 membership.
 
+\begin{widestuff}
 <<include=FALSE>>=
 oldOpts <- options(width=100)
 @
-\begin{widestuff}
 <<>>=
 head(CPS85, 3)
 @
 \end{widestuff}
 
 %\newthought{Frequency and Contingency Tables}
+\begin{widestuff}
 Categorical variables are  often summarized in a table.  
 \R\ can make a table for a categorical variable using \function{tally()}.
+\end{widestuff}
 
 \begin{widestuff}
-	Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Ut purus elit,
-	vestibulum ut, placerat ac, adipiscing vitae, felis. Curabitur dictum
-	gravida mauris. Nam arcu libero, nonummy eget, consectetuer id, vulputate
-	a, magna. Donec vehicula augue eu neque. Pellentesque habitant morbi
-	tristique senectus et netus et malesuada fames ac turpis egestas. Mauris ut
-	leo. Cras viverra metus rhoncus sem. Nulla et lectus vestibulum urna
-	fringilla ultrices. Phasellus eu tellus sit amet tortor gravida placerat.
-	Integer sapien est, iaculis in, pretium quis, viverra ac, nunc. Praesent
-	eget sem vel leo ultrices bibendum. Aenean faucibus. Morbi dolor nulla,
-	malesuada eu, pulvinar at, mollis ac, nulla. Curabitur auctor semper nulla.
-	Donec varius orci eget risus. Duis nibh mi, congue eu, accumsan eleifend,
-	sagittis quis, diam. Duis eget orci sit amet orci dignissim rutrum.
 <<rs-table1>>=
 tally(~ race, CPS85)
 tally(~ sector, CPS85)
 @
 \end{widestuff}
 
+\begin{widestuff}
 If we prefer to have the results presented as proportions or percents, we 
 just have to ask.
+\end{widestuff}
 
 \begin{widestuff}
 <<rs-table2>>=
@@ -883,19 +818,24 @@ tally( ~ sector, CPS85, format='prop')
 %respectively.
 
 %\newthought{Cross-Tabulation with \texttt{xtabs()}}
+\begin{widestuff}
 We can make a \term{cross-table} 
 (also called a \term{contingency table} or a \term{two-way table}) 
 summarizing this data with \function{tally()}.  
 This often provides a useful display of the relationship between
 two categorical variables.
+\end{widestuff}
 
 \begin{widestuff}
 <<rs-xtabs>>=
 tally(~ race + sector, CPS85)   # 2-way cross-table
 @
 \end{widestuff}
+
+\begin{widestuff}
 Alternatively, we can select one of our categorical variables to be 
 a conditional variable.  The report is then done using proportions by default.
+\end{widestuff}
 
 \begin{widestuff}
 <<>>=
@@ -1136,7 +1076,7 @@ births <-
 \subsection{Importing Data in \RStudio}
 \InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
 will want to know how to use functions like \function{read.csv()} for working
-in RMarkdown, Sweave, or knitr files.}
+in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
 The \RStudio\ interface provides some GUI tools for loading data.
 If you are using the \RStudio\ server, you will first need to upload the data
 to the server (in the \tab{Files} tab), and then import the data into your \R\ 

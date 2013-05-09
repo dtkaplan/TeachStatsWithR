@@ -273,7 +273,7 @@ rflip(10)
 Typing \code{rflip(10)} a bunch of times is almost as tedious as 
 flipping all those coins.   But it is not too hard to 
 tell \R\ to \function{do()} this a bunch of times.
-\marginpar{Notice that \function{do()} is clever about what information
+\marginnote{Notice that \function{do()} is clever about what information
 it records.  Rather than recording all of the individual tosses, it is 
 only recording the number of flips, the number of heads, and the number 
 of tails.}%
@@ -374,7 +374,7 @@ xyplot(births ~ dayofyear, data=Births78)
 When shown this image, students should readily be able to 
 describe two patterns in the data; they should notice both the rise and 
 fall over the course of the year and the two ``parallel waves". 
-\marginnote{This can make a good ``think-pair-share'' activity.
+\TeachingTip{This can make a good ``think-pair-share'' activity.
 Have students come up with possible explanations, then discuss these
 explanations with a partner.  Finally, have some of the pairs share 
 their explanations with the entire class.}
@@ -536,7 +536,7 @@ X <- tally(~ wilt + mites, data=Mites)["No","No"]
 X
 nullDist <- do(1000) * 
     tally(~ wilt + shuffle(mites), data=Mites)["No","No"]
-histogram(~ result, data=nullDist,
+xhistogram(~ result, data=nullDist,
 		  width=1, type="density", fit="normal") 
 @
 \end{boxedText}

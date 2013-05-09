@@ -133,6 +133,25 @@ mNorm( mean=100, sd=10 )
 @
 
 
+\section{Shiny}
+
+\pkg{shiny} is a package created by the \RStudio\ team to, in their words,
+\begin{quotation}
+	[make] it incredibly easy to build interactive web
+        applications with R. Automatic ``reactive" binding between
+        inputs and outputs and extensive pre-built widgets make it
+        possible to build beautiful, responsive, and powerful
+        applications with minimal effort.
+\end{quotation}
+These web applications can, of course, run \R\ code to do computations and produce
+graphics that appear in the web page.
+
+The level of coding skill required to create this is beyond the scope of this book, but those
+with a little more programming background can easily learn the necessary toolkit to make beautiful
+interactive web pages.  
+More information about \pkg{shiny} and some example applications are available at 
+\url{http://www.rstudio.com/shiny/}.
+
 \begin{problem}
 The following code makes a scatterplot with separate symbols for each sex.
 <<eval=FALSE>>=

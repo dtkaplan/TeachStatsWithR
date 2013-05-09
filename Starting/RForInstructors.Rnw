@@ -324,6 +324,9 @@ Most traditional mathematics functions are available and work this way.
 \Rindex{median()}%
 \Rindex{log()}%
 
+\marginnote{The \function{seq()} function
+creates an arithmetic sequence of numbers from
+a specified starting point, upper bound, and increment.}
 <<vectors01,tidy=FALSE>>=
 x <- 1:5; y <- seq(10, 60, by=10); 
 x
@@ -332,7 +335,9 @@ y + 1
 x * 10
 x < 3
 x^2
-log(x); log(x, base=10)            # natural and base 10 logs
+log(x)                    # natural log
+log(x, base=10)           # base 10 log
+log10(x)                  # base 10 log again
 @
 
 \noindent
@@ -547,7 +552,7 @@ data within \R.   But first discuss a few more details regarding importing data.
 \marginnote{Even if you primarily use the \RStudio\ 
 interface to import data, it is good to know about the 
 command line methods since these are required to import
-data into scripts, RMarkdown, and Rnw files.}
+data into scripts, RMarkdown, and \pkg{knitr}/\LaTeX\ files.}
 The \option{na.strings} argument can be used to specify
 codes for missing values.  
 The following can be useful, for example:
@@ -715,7 +720,7 @@ but it can be better for illustrative purposes to remove the noise.
 
 \medskip
 
-\subsection{Summarizing and Aggregating with \pkg{plyr}}
+%\subsection{Summarizing and Aggregating with \pkg{plyr}}
 
 \subsection{Saving Data}
 \function{write.table()} and \function{write.csv()} can be used to save data from \R\ into
@@ -725,8 +730,6 @@ delimited flat files.
 ddd <- data.frame(number=1:5, letter=letters[1:5])
 write.table(ddd, "ddd.txt")
 write.csv(ddd, "ddd.csv")
-# this system call should work on a Mac or Linux machine
-system("head ddd.txt ddd.csv")
 @
 
 
@@ -770,7 +773,7 @@ working on projects in small groups; it's nice to have tools to
 support such work so that all members of the group have access to the
 data and can contribute to a written report.
 
-There are now many technologies for supporting such sharing.  For the
+There are now many technologies that support such sharing.  For the
 sake of simplicity, we will emphasize three that we have found
 particularly useful both in teaching statistics and in our
 professional collaborative work.  These are:
@@ -786,6 +789,17 @@ are readily accessible simply by setting up accounts.  Setting up an
 range of skills found in IT offices and even among some individual faculty.
 
 \subsection{Using \RStudio\ server to share files}
+\TeachingTip[.2in]{When accounts are set up on the \RStudio\ server for a new class at Calvin,
+each user is given a symbolic link to a directory where the instructor can write files
+and students can only read files.  This provides an easy way to make data, \R\ code,
+or history files available to students from inside \RStudio.}
+
+The \RStudio\ server runs on a Linux machine.  Users of \RStudio\ have accounts
+on the underlying Linux file system and it is possible to set up shared directories
+with permissions that allow multiple users to read and/or write files stored there.
+This has to be done outside of \RStudio, but if you are familiar with the Linux
+operating system or have a system administrator who is willing to help you out, this is
+not difficult to do.  
 
 \subsection{Your own web site}
 
@@ -794,8 +808,6 @@ can place files and have them accessed directly from the Internet.
 For sharing data, it's best if this site is public, that is, it does not require a login.
 That rules out most ``course support'' systems such as Moodle or
 Blackboard.  
-\FoodForThought{Our discussion of Dropbox is primarily for those who do
-not already know how to do this other ways.}%
 
 The Dropbox service for storing files in the ``cloud'' provides a very
 convenient way to distribute files over the web.  (Go to
@@ -804,6 +816,8 @@ Dropbox is routinely used to provide automated backup and coordinated
 file access on multiple computers.  But the Dropbox service also
 provides a \code{Public} directory.  Any files that you place in that
 directory can be accessed directly by a URL.  
+\FoodForThought{Our discussion of Dropbox is primarily for those who do
+not already know how to do this other ways.}%
 
 To illustrate, suppose you wish to share some data set with your
 students.  You've constructed this data set in a spreadsheet and
@@ -870,16 +884,15 @@ programmed up and put in place for your students to use the next
 morning in class.  Then as you identify bugs and refine the program,
 you can make the updated software immediately available to your students.
 
+\Caution{\emph{Security through Obscurity} of this sort will 
+not generally satisfy institutional data protection regulations nor
+professional ethical requirements, so nothing truly
+sensitive or confidential should be ``protected" in this manner.}%
 If privacy is a concern, for instance if you want the data available
 only to your students, you can effectively accomplish this 
 by giving files names known only to your students, e.g.,
 \code{Example-A78r423.csv}.  
 
-\Caution{\emph{Security through Obscurity} of this sort will 
-not generally satisfy institutional data protection regulations nor
-professional ethical requirements, so nothing truly
-sensitive or
-confidential should be ``protected" in this manner.}
 
 
 \subsection{GoogleDocs}
@@ -1097,6 +1110,9 @@ row.names(ddd)
 
 The \dfn{faithful} data set (in the \pkg{datasets} package, which is always available)
 has very unfortunate names.
+\marginnote{An alternative solution is to use the \dataframe{geyser} data set in
+the \pkg{MASS} package.  The \dataframe{gyser} data frame has better names and more data.
+But here we want to illustrate how to repair the damage in \dataframe{faithful}.}
 <<>>=
 names(faithful)
 @
@@ -1249,6 +1265,7 @@ Tidy up your data frame by dropping any columns that are redundant or that you j
 have in your final data frame.
 \end{problem}
 
+\iffalse
 \subsection{Slicing and dicing}
 \authNote{NH to expand}
 
@@ -1303,6 +1320,7 @@ to \verb!reshape()!.
 %\label{example:fusion1-glm1}%
 %\myindex{FUSION|exampleidx}%
 %\myindex{logistic regression}%
+\fi
 
 \section{Functions in \R} %{An introduction to writing functions}
 \label{sec:writingFunctions}
@@ -1349,6 +1367,9 @@ The list of arguments appears in the \rterm{Usage} section along
 with any default values.  Details about how the arguments are used appear in the 
 \rterm{Arguments} section.  The return value is listed in the \rterm{Value} section.
 Any side effects are typically mentioned in the \rterm{Details} section.  
+\marginnote{Even if you do not end up writing many functions yourself, writing a 
+few functions will give you a much better feel for how information flows through
+\R\ code.}
 
 Now let's try writing our own function.  Suppose you frequently wanted to compute
 the mean, median, and standard deviation of a distribution.  You could make 
@@ -1358,7 +1379,7 @@ The \function{mystats()} will have one argument, which we are assuming will be a
 numeric values.%
 \Rindex{mystats()}%
 \Rindex{function()}%
-\footnote{There are ways to check the \rterm{class} of an argument
+\marginnote[-.5in]{There are ways to check the \rterm{class} of an argument
 to see if it is a data frame, a vector, numeric, etc.  A really robust function
 should check to make sure that the values supplied to the arguments are of appropriate
 types.}
