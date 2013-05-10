@@ -223,5 +223,16 @@ random sample very early, and have students construct their own random samples.
 The phenomenon of a sampling distribution can be introduced in an intuitive
 way, setting it up as a topic for later discussion and analysis.
 
-
 \end{enumerate}
+
+
+\section{Scope of this book}
+
+In keeping with this advice, most of the examples in this book fall in the area of 
+exploratory data analysis.  The organization is chosen to develop gradually an
+understanding of \R.
+See the companion volume 
+\textit{A Compendium of Commands to Teach Statistics with R} for a tour of commands
+used in the primary sorts analyses used in the first two undergraduate statistics courses.
+This companion volume is organized by types of data analyses and presumes some familiarity
+wit the \R\ language.
