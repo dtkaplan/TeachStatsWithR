@@ -1245,7 +1245,7 @@ should be kept (\code{TRUE}) or dropped
 
 Now we are ready to begin our analysis.
 <<fusion1-xtabs>>=
-xtabs(~t2d + genotype + marker, fusion1m)
+tally(~t2d + genotype + marker, data=fusion1m)
 @
 
 \begin{problem}
@@ -1379,7 +1379,7 @@ The \function{mystats()} will have one argument, which we are assuming will be a
 numeric values.%
 \Rindex{mystats()}%
 \Rindex{function()}%
-\marginnote[-.5in]{There are ways to check the \rterm{class} of an argument
+\marginnote{There are ways to check the \rterm{class} of an argument
 to see if it is a data frame, a vector, numeric, etc.  A really robust function
 should check to make sure that the values supplied to the arguments are of appropriate
 types.}
@@ -1629,7 +1629,7 @@ text2 <- 'Do you use "scare quotes"?'
 
 \section{Common Error Messages and What Causes Them}
 
-\subsection{Object not found}
+\subsection{Error: Object not found}
 
 \R\ reports that an object is not found when it cannot locate an object with the name you have 
 used.  One common reason for this is a typing error.  This is easily corrected by retyping the
@@ -1649,126 +1649,105 @@ a string:
 text3 <- "hello"
 @
 
+\subsection{Error: unexpected \dots}
 
-\subsection{Other error messages here}
+If while \R\ is parsing a statement it encounters something that does not make sense it reports
+that something is ``unexpected''.  Often this is the result of a typing error -- like omitting 
+a comma.
 
+<<eval=FALSE,error=TRUE,tidy=FALSE>>=
+c(1,2 3)                        # missing a comma
+
+@
+\vspace*{-.55in}
+<<echo=FALSE,include=FALSE>>=
+c <- function(...) {
+  stop('unexpected numeric constant in "c(1,2 3"')
+}
+@
+<<error=TRUE,echo=FALSE,error=TRUE>>=
+c()
+@
+<<include=FALSE>>=
+rm(c)
+@
+
+\subsection{Error: object of type `closure' is not subsettable}
+The following produces an error if \variable{time} has not been defined.
+<<error=TRUE>>=
+time[3]
+@
+There is a function called \function{time()} in \R, so if you haven't defined a vector by that
+name, \R\ will try to subset the \function{time()} function, which doesn't make sense.  
+
+Typically when you see this error, you have a function in a place you don't mean to have a function.
+The message can be cryptic to new users because of the reference to a closure.
+
+\subsection{Other Errors}
+If you encounter other errors and cannot decipher them, often pasting the error message 
+into a google search will find a discussion of that error in a context where it stumped someone else.
 
 \newpage
 
-\section{\R\ Examples}
-\vspace{-3mm}
-The commands below are illustrated with the data sets \verb!iris! and 
-\verb!CPS85!.  To apply these in other situations, you will need to 
-substitute the name of your data frame and the variables in it.
+\section{Review of \R\ Commands}
 
-\vspace{-3mm}
-\begin{center}
-\begin{longtable}{p{2.45in}p{3.30in}}
-\verb!answer <- 42! & Store the value 42 in a variable named \verb!answer!.
-\\[3mm]
-%\verb!sl <- iris$Sepal.Length! & Store the \verb!Sepal.Length! variable from the 
-%\verb!iris! data frame into a variable called \verb!sl! (to save typing, for example).
-%\\[3mm]
-\verb!log(123); log10(123); sqrt(123)! & Take natural logarithm, base 10 logarithm, or square 
-root of 123.
-\\[3mm]
-\verb!x <- c(1,2,3)! & Make a variable containing values 1, 2, and 3 (in that order).
-\\[3mm]
-\verb!data(iris)! & (Re)load the data set \verb!iris!.
-\\[3mm]
-%\verb!findData(2)! & Find \verb!abd! data in chapter 2.
-%\\[3mm]
-\verb!summary(iris$Sepal.Length)! & 
-Summarize the distribution of the \verb!Sepal.Length! variable in the \verb!iris! data
-frame.
-\\[3mm]
-\verb!summary(iris)! & 
-Summarize each variable in the \verb!iris! data frame.
-\\[3mm]
-\verb!str(iris)! & A different way to summarize the \verb!iris! data frame.
-\\[3mm]
-\verb!head(iris)! & First few rows of the data frame \verb!iris!.
-\\[3mm]
-\verb!require(Hmisc)!
 
-\verb!require(abd)!
+\begin{widestuff}
+Here is a brief summary of the commands introduced in this chapter.
 
-\ 
-& Load packages.  
-(This can also be done by checking boxes in the \tab{Packages} tab.)
-\\[3mm]
-\multicolumn{2}{l}{
-\texttt{summary(Sepal.Length\~{}Species,data=iris,fun=favstats) } 
-}
-\\[1mm]
-& 
-Compute favorite statistics of \verb!Sepal.Length! for each \verb!Species!.
-[requires \verb!Hmisc!]
-\\[3mm]
-%\verb!cut(x,breaks,right=TRUE)! & Divide up the range of \verb!x! into 
-%	intervals and code the values in \verb!x! according to which interval 
-%	they fall into. 
-%\\[3mm]
-\multicolumn{2}{l}{\texttt{histogram(\~{}Sepal.Length|Species, iris)}}
-\\[1mm]
-& 
-Histogram of \verb!Sepal.Length! conditioned on \verb!Species!.
-\\[3mm]
-\verb!bwplot(Sepal.Length~Species, iris)! & 
-Boxplot of \verb!Sepal.Length! conditioned on \verb!Species!.
-\\[3mm]
-\multicolumn{2}{l}{\texttt{xyplot(Sepal.Length\~{}Sepal.Width|Species, iris)}} 
-\\[1mm]
-& 
-Scatterplot of \verb!Sepal.Length! by \verb!Sepal.Width! 
-with separate panels for each  \verb!Species!.
-\\[3mm]
-\verb!xtabs(~ sector, CPS85)! & Frequency table of the variable \verb!sector!.
-\\[3mm]
-\multicolumn{2}{l}{\texttt{barchart(xtabs(\~{}sector, CPS85))}}
-\\[1mm]
-& Make a barchart from the table.
-\\[3mm]
-\multicolumn{2}{l}{\texttt{xtabs(\~{}sector + race, CPS85)}}
-\\[1mm]
-& Cross tabulation of \verb!sector!  and \verb!race!.
-\\[3mm]
-\multicolumn{2}{l}{
-\texttt{mosaic(\~{}sector + race, CPS85)} }
-\\[1mm]
-& Make a mosaic plot.
-\\[3mm]
-\multicolumn{2}{l}{
-\texttt{xtData <- as.data.frame( xtabs(\~{}sector + race, Trematodes) )}}
-\\[1mm]
-  & Save cross table information as \verb!xtData!. 
-\\[3mm]
-\multicolumn{2}{l}{
-\texttt{barchart(Freq\~{}sector, data=xtData, groups=race)}
-}
-\\[1mm]
-& Use \verb!xtData! to make a segmented bar chart.
-\\[3mm]
-\verb!sum(x)!; 
-\verb!mean(x)!; 
-\verb!median(x)!;
+<<tidy=FALSE,results='hide',fig.keep='none'>>=
+source( "file.R" )                               # execute commands in a file
 
-\verb!var(x)!; 
-\verb!sd(x)!; 
-\verb!quantile(x)!
-& Sum, mean, 
-median,
-variance,
-standard deviation,
-quantiles of \verb!x!.
-\\
-\end{longtable}
-%\rule{4in}{1pt}
-\end{center}
+x <- 1:10                                        # create vector with numbers 1 through 10
+M <- matrix( 1:12, nrow=3 )                      # create a 3 x 4 matrix
+data.frame(number = 1:26, letter=letters[1:26] ) # create a data frame
 
-\vspace*{-.5in}
+mode(x)                                   # returns mode of object x
+length(x)                                 # returns length of vector or list
+dim(HELPrct)                              # dimension of a matrix, array, or data frame
+nrow(HELPrct)                             # number of rows
+ncol(HELPrct)                             # number of columns
+names( HELPrct )                          # variable names in data frame
+row.names( HELPrct )                      # row names in a data frame
+attributes(x)                             # returns attributes of x
+
+toupper(x)                                # capitalize
+as.character(x)                           # convert to a character vector 
+as.logical(x)                             # convert to a logical (TRUE or FALSE)
+as.numeric(x)                             # convert to numbers
+as.integer(x)                             # convert to integers
+factor(x)                                 # convert to a factor [categorical data]
+class(x)                                  # returns class of x
+
+smallPrimes <- c(2,3,5,7,11)              # create a (numeric) vector 
+rep(1, 10)                                # ten 1's
+seq(2, 10, by=2)                          # evens less than or equal to 10
+rank(x)                                   # ranks of items in x
+sort(x)                                   # returns elements of x in sorted order
+order(x)                                  # x[ order(x) ] is x in sorted order
+rev(x)                                    # returns elements of x in reverse order
+diff(x)                                   # returns differences between consecutive elements
+paste( "Group", 1:3, sep="" )             # same as c("Group1", "Group2", "Group3")
+
+write.table(HELPrct, file="myHELP.txt")          # write data to a file 
+write.csv(HELPrct, file="myHELP.csv")            # write data to a csv file 
+save(HELPrct, file="myHELP.Rda")                 # save object(s) in R's native format
+
+modData <- transform( HELPrct, old = age > 50 )  # add a new variable to data frame
+women <- subset( HELPrct, sex=='female' )        # select only specified cases
+favs <- subset( HELPrct, select=c('age','sex','substance') )     # keep only 3 columns
+
+trellis.par.set(theme=col.mosaic())              # choose theme for lattcie graphics
+show.settings()                                  # inspect lattice theme
+
+@
+\vspace*{-.55in}
+<<eval=FALSE, tidy=FALSE>>=
+fetchGoogle( ... )                               # get data from google URL
+@
+\end{widestuff}
+
 \section{Exercises}
-
 %For these problems, create a single Word document containing all of your work.
 
 \shipoutProblems

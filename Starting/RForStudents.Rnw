@@ -994,12 +994,11 @@ You can save some typing if you use the function \function{tally()}.  See
 \end{enumerate}
 \end{problem}
 
-\iffalse
 \subsection{Working with Pretabulated Data}
 
 Because categorical data is so easy to summarize in a table, 
 often the frequency or contingency tables are given instead.
-You can enter these tables manually as follows using a combination
+You can enter these tables manually using a combination
 of \function{c()}, \function{rbind()} and \function{cbind()}:
 \TeachingTip{This is an important technique if you use a text book
 that presents categorical data in tables.}
@@ -1020,13 +1019,46 @@ mycrosstable
 @
 Replacing \function{rbind()} with \function{cbind()} will allow you to give the data
 column-wise instead.
+\TeachingTip{If plotting pre-tabulated categorical data is important, you probably
+want to provide your students with a wrapper function to simplify all this.  We generally
+avoid this situation by provided the data in raw format or by presenting an analysing 
+the data in tables without using graphical summaries.}
+
+This arrangement of the data would be sufficient for applying the Chi-squared test, but
+it is not in a format suitable for plotting with \pkg{lattice}.
+Our cross table is still missing a bit of information -- the names of the variables being
+stored.  We can add this information if we convert it to a table
+<<>>=
+class(mycrosstable)
+mycrosstable <- as.table(mycrosstable)
+# mycrosstable now has dimnames, but they are unnamed
+dimnames(mycrosstable)
+# let's add meaninful dimnames
+names(dimnames(mycrosstable)) <- c('race', 'sector')
+mycrosstable
+@
 
 We can use \function{barchart()} instead of \function{bargraph()} to plot data 
-already tabulated in this way.
+already tabulated in this way, but first we need yet one more transformation.
 <<>>=
-barchart( mycrosstable )
+head(as.data.frame(mycrosstable))
 @
-\fi
+
+<<tidy=FALSE>>=
+barchart( Freq ~ sector | race,
+          data=as.data.frame(mycrosstable),
+          auto.key=list(space='right'),
+          scales=list(x=list(rot=45))
+		  )
+@
+<<tidy=FALSE>>=
+barchart( Freq ~ sector, groups=race, 
+          data=as.data.frame(mycrosstable),
+          auto.key=list(space='right'),
+          scales=list(x=list(rot=45))
+		  )
+@
+
 
 \section{Using Your Own Data}
 \label{sec:usingdata}
@@ -1137,97 +1169,47 @@ abdData(2)               # all data sets in chapter 2
 %on CRAN.
 
 \newpage
+\section{Review of \R\ Commands}
 
-\section{\R\ Examples}
 
 \begin{widestuff}
-\vspace{-3mm}
-The commands below are illustrated with the data sets \dataframe{iris} and 
-\dataframe{CPS85}.  To apply these in other situations, you will need to 
-substitute the name of your data frame and the variables in it.
+Here is a brief summary of the commands introduced in this chapter.
 
-\vspace{-3mm}
-\begin{center}
-\begin{longtable}{p{2.45in}p{3.30in}}
-\verb!answer <- 42! & Store the value 42 in a variable named \variable{answer}.
-\\[3mm]
-%\verb!sl <- iris$Sepal.Length! & Store the \verb!Sepal.Length! variable from the 
-%\verb!iris! data frame into a variable called \verb!sl! (to save typing, for example).
-%\\[3mm]
-\verb!log(123); log10(123); sqrt(123)! & Take natural logarithm, base 10 logarithm, or square 
-root of 123.
-\\[3mm]
-\verb!x <- c(1,2,3)! & Make a vector containing values 1, 2, and 3 (in that order).
-\\[3mm]
-\verb!data(iris)! & (Re)load the data set \verb!iris!.
-\\[3mm]
-\verb!names(iris)! & Display the variables within the dataset.
-\\[3mm]
-%\verb!findData(2)! & Find \verb!abd! data in chapter 2.
-%\\[3mm]
-\verb!favstats(~ Sepal.Length, data=iris)! & 
-Summarize the distribution of the \verb!Sepal.Length! variable in the \verb!iris! data
-frame.
-\\[3mm]
-\verb!summary(iris)! & 
-Summarize each variable in the \verb!iris! data frame.
-\\[3mm]
-\verb!str(iris)! & A different way to summarize the \verb!iris! data frame.
-\\[3mm]
-\verb!head(iris)! & First few rows of the data frame \verb!iris!.
-\\[3mm]
-\verb!require(mosaic)!
+<<tidy=FALSE,results='hide',fig.keep="none">>=
+require(mosaic)                        # load the mosaic package
+answer <- 42                           # store the number 42 in a variable named answer
+log(123); log10(123); sqrt(123)        # some standard numerical functions
+x <- c(1,2,3)                          # make a vector containing 1, 2, 3 (in that order)
+data(iris)                             # (re)load the iris data set
+names(iris)                            # see the names of the variables in the iris data
+summary(iris)                          # summarize each variables in the iris data set
+str(iris)                              # show the structure of the iris data set
+head(iris)                             # first few rows of the iris data set
 
-& Load the \pkg{mosaic} package.  
-(This can also be done by checking boxes in the \tab{Packages} tab.)
-\\[3mm]
-%\verb!cut(x,breaks,right=TRUE)! & Divide up the range of \verb!x! into 
-%	intervals and code the values in \verb!x! according to which interval 
-%	they fall into. 
-%\\[3mm]
-\texttt{xhistogram(\~{}Sepal.Length|Species, }
+mydata <- read.table("file.txt")       # read data from a text file
+mydata <- read.csv("file.csv")         # read data from a csv file
+mydata <- read.file("file.txt")        # read data from a text or csv file
 
-\hspace{.5in} \texttt{data=iris)}
-&
-Histogram of \verb!Sepal.Length! conditioned on \verb!Species!.
-\\[3mm]
-\verb!bwplot(Sepal.Length~Species, iris)! & 
-Boxplot of \verb!Sepal.Length! conditioned on \verb!Species!.
-\\[3mm]
-\texttt{xyplot(Sepal.Length\~{}Sepal.Width | }
+tally( ~ sector, data=CPS85 )          # frequency table
+tally( ~ sector + race, data=CPS85 )   # cross tabulation of sector by race   
+mean( ~ age, data = HELPrct )          # mean age of HELPrct subjects
+mean( ~ age | sex, data = HELPrct )    # mean age of male and female HELPrct subjects
+mean( age ~ sex, data = HELPrct )      # mean age of male and female HELPrct subjects
+median(x); var(x); sd(x);              # more numerical summaries
+quantile(x); sum(x); cumsum(x)         # still more summaries
+favstats( ~ Sepal.Length, data=iris )  # compute favorite numerical summaries
 
-\hspace*{.5in}\texttt{Species, data=iris)} 
-& 
-Scatterplot of \verb!Sepal.Length! by \verb!Sepal.Width! 
-with separate panels for each  \verb!Species!.
-\\[3mm]
-\texttt{tally(\~{} sector, CPS85)} & Frequency table of the variable \verb!sector!.
-\\[3mm]
-\texttt{bargraph(\~{}sector, CPS85))}
-& Make a barchart from the table.
-\\[3mm]
-\texttt{tally(\~{}sector + race, CPS85)}
-& Cross tabulation of \verb!sector!  and \verb!race!.
-\\[3mm]
-\verb!sum(x)!; 
-\verb!mean(x)!; 
-\verb!median(x)!;
+dotPlot( ~ Sepal.Length | Species, data=iris )             # dot plots for each species
+xhistogram( ~ Sepal.Length | Species, data=iris )          # histograms (with eXtra features)
+densityplot( ~ Sepal.Length, groups = Species, data=iris ) # overlaid densityplots
+freqpolygon( ~ Sepal.Length, groups = Species, data=iris ) # overlaid frequency polygons
+bwplot( Sepal.Length ~ Species, data = iris )              # side-by-side boxplots
+xyplot( Sepal.Length ~ Sepal.Width | Species, data=iris )  # scatter plots for each species
+bargraph( ~ sector, data=CPS85 )                           # bar graph
+qqmath( ~ age | sex, data=CPS85 )                          # quantile-quantile plots
+@
 
-\verb!var(x)!; 
-\verb!sd(x)!; 
-\verb!quantile(x)!
-& Sum, mean, 
-median,
-variance,
-standard deviation,
-quantiles of \verb!x!.
-\\
-\end{longtable}
-%\rule{4in}{1pt}
-\end{center}
 \end{widestuff}
-
-\vspace*{-.5in}
 \newpage
 \section{Exercises}
 
