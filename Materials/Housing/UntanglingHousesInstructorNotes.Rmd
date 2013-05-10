@@ -3,6 +3,7 @@ Instructor Notes: Untangling House Prices
 
 ```{r error=FALSE,warning=FALSE,message=FALSE,results="hide",echo=FALSE}
 require(mosaic,quietly=TRUE)
+trellis.par.set(theme=col.mosaic())
 ```
 
 The [student handout](UntanglingHousePrices.pdf) contains some background on the data.  That handout is presented as a contrast between analysis using one explanatory variable at a time and analysis using more than one explanatory variable simultaneously.
