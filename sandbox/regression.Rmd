@@ -12,6 +12,7 @@ require(mosaic)
 trellis.par.set(theme=col.mosaic())
 ```
 
+#### Exploratory analyses
 Since this data set comes from the mosaic package, we can load it with **data** command (this ensures that we have a fresh copy). We can also see what variables are contained within it.
 ```{r}
 data(EPA)
@@ -48,6 +49,8 @@ Next we can do the same for the categorical transmission variable.
 tally(~ trans, data=EPA)
 ```
 
+#### Data derivation
+
 Let's turn this into a variable with two levels: either Auto or Manual, using the transform() function.
 ```{r}
 EPA = transform(EPA, transmission = ifelse(grepl("Auto", trans), "Auto", "Manual"))
@@ -58,25 +61,29 @@ We need to check that this has been appropriately recoded.
 tally(~ trans + transmission, data=EPA)
 ```
 
-Is there a difference in miles per gallon by transmission type?
+#### Analysis: mpg, displacement and transmission type.
+Success!  Now we can start to undertake an analysis to help answer the question of understanding the relationships between miles per gallon, displacement and transmission type.
 
 ```{r}
 bwplot(mpg~ transmission, data=EPA)
 densityplot(~ mpg, groups=transmission, auto.key=TRUE, data=EPA)
 ```
 
-Next we can generate a scatterplot of the two variables.
+We can also assess the association between mpg and displacement.
+
 ```{r}
 # Note the use of transparency (the "alpha" option) in order to show multiple points that are right on top of one another. 
 xyplot(mpg ~ displace, alpha=0.3, data=EPA)
 ```
 The pattern seems roughly linear, with a couple of exceptions, so a linear model seems like a reasonable approach. 
 
-Next we can generate a scatterplot of the two variables.
+Next we can generate a scatterplot of mpg and displacement, separately for each of the transmission types.
 ```{r}
 # Note the use of transparency (the "alpha" option) in order to show multiple points that are right on top of one another. 
 xyplot(mpg ~ displace, groups=transmission, auto.key=TRUE, type=c("p", "r"), alpha=0.3, data=EPA)
 ```
-The pattern seems roughly linear, with a couple of exceptions, so a linear model seems like a reasonable approach. 
 
+There's not much difference to be seen.  Both groups have a moderately strong negative linear relationships, with similar slope and intercept.
+
+ASSIGNMENT: Is there a difference in terms of drive (rear wheel vs. 4 wheel drive?).  Explore the relationship between displacement, MPG and drive.  Can you generate a figure or two which characterize the relationship?
 
