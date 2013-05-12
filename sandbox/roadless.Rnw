@@ -17,9 +17,9 @@
 
 \pagestyle{fancy}
 
-\lhead{\textsc{Profs. Baumer \& Horton}}
-\chead{\textsc{MTH 241: Lecture Notes}}
-\rhead{\textsc{March 13, 2013}}
+\lhead{\textsc{USCOTS 2013 Workshop}}
+\chead{\textsc{Teaching Stats with R}}
+\rhead{\textsc{May, 2013}}
 \lfoot{}
 \cfoot{}
 %\cfoot{\thepage}
@@ -32,23 +32,6 @@
 \begin{document}
 %\maketitle
 
-\paragraph{Agenda}
-\begin{enumerate}
-  \itemsep0em 
-  \item Moodle review
-  \item Dataset of the Day: NHANES 
-  \item Confidence Intervals
-\end{enumerate}
-
-\paragraph{Warmup}
-
-Assume that a pollster takes a poll of 1500 individuals, and the true population 
-parameter (proportion) is equal to 0.50.  What is the associated 95\% confidence 
-interval for a proportion in this setting (recall that $\hat{p}$ is a binomial random variable with mean equal to $p=0.5$ and variance equal to $p \cdot (1-p)/1500$.
-
-
-\vspace{.5in}
-
 \paragraph{Roadless America}
 
 Wilderness is, by definition, roadless.  Untouched areas provide important habitat and play a key role in ensuring ecological balance. According to the U.S. Geological Survey, roads affect the ecology of at least 22\% of the land area of the continental United States. Knowing what portion of the US is within 1 mile of a road can help determine wilderness areas since there is a link between access by road and human presence.
@@ -57,10 +40,30 @@ A conservation policy called \emph{roadless area conservation} aims to limit roa
 
 This activity is intended to help reinforce concepts of sampling and confidence intervals while simultaneously understanding how to estimate the proportion of the United States that is within 1 mile of a road. 
 
-You will work in pairs, and will need one computer per group.  Please download and run the first block of code in the file {\tt 2013-03-13.R} on Moodle (under lecture notes).  
-This will create a data frame called {\tt myroadless}.
+We've included this in the workshop to demonstrate how to integrate computing to bring data into the classroom (using samples of locations on the earth).  We will utilize the {\tt googleMap()} function within the {\tt mosaic} package using a helper routine which we've defined (called {\tt getLocation()}).
 
-Now, one at a time, run the {\tt getLocation()} commands (one for each of the 20 locations you randomly sampled), taking notes of whether it was within the continental US, if so, whether it was within a mile of a road, as well as any notes.
+You will work in pairs, and will need one computer per group.  Please run the following command to load the necessary commands:
+<<eval=FALSE>>=
+source("http://www.math.smith.edu/~nhorton/roadless.R")
+@
+This will create a data frame in your workspace called {\tt myroadless}.
+
+Now, one at a time, run the {\tt getLocation()} function.  This takes a single argument, which indicates which of the twenty samples to plot. For example, the first command will be:
+<<eval=FALSE>>=
+getLocation(1)
+@
+This will pop up a map of your location, with a circle of radius one mile.  Here's an example of a location that is near a road.
+
+\noindent
+\includegraphics[width=0.95\textwidth]{NearRoad.pdf}
+
+\newpage 
+For each of your 20 samples, you should takes notes of whether:
+\begin{itemize}
+\item it was within the continental US
+\item if so, whether it was within a mile of a road,
+\item notes about the location (e.g. is it in Canada, Mexico, Atlantic Ocean, Pacific, Gulf or in the US which state)
+\end{itemize}
 
 \begin{tabular}{|l|c|c|c|}
 \hline
@@ -92,11 +95,15 @@ Now, one at a time, run the {\tt getLocation()} commands (one for each of the 20
 \end{tabular}
 
 \noindent
-Calculate the number within both the continental US and 1 mile of a road ($X$), as well as the total number within the continent
-($n$).  This ratio is your observed proportion.  Also calculate a 95\% confidence interval for the population proportion, using the formula: $\hat{p} \pm 1.96*\sqrt(\hat{p}*(1-\hat{p})/n)$ where $n$ is the number
-within the continent.  The command {\tt require(mosaic); binom.test(x, n)} will calculate this infterval for you.  Add this interval on the board (along with your values of $X$ and $n$).
+\begin{enumerate}
+\item Calculate the number within both the continental US and 1 mile of a road ($X$)
+\item Calculate the total number within the continent
+($n$).  
+\item Calculate their ratio.  This  is your observed proportion.  
+\item Calculate a 95\% confidence interval for the population proportion. The command {\tt require(mosaic); binom.test(x, n)} will calculate this interval for you
+\item Add this interval on the board (along with your values of $X$ and $n$).
+\end{enumerate}
 
-\newpage
 \vspace{.2in}
 \noindent
 $X = $
@@ -111,40 +118,24 @@ $\hat{p}=$
 
 \vspace{.2in}
 \noindent
-95\% confidence interval:
+Your 95\% confidence interval for the proportion of the US that is within 1 mile of a road:
 
 \vspace{0.4in}
 \noindent
 CLASS RESULTS:
 
 
-\vspace{2.4in}
+\vspace{1.4in}
+
+As an extension, you can collect the annotated spreadsheets and create a map of all of the locations (combining the groups).  
+\newpage
 \noindent
-Takehome message:
-\vspace{0.6in}
+\includegraphics[width=1\textwidth]{fixedCI2.pdf}
 
 \noindent
-{\bf Deliverable}: to receive full credit for this activity, you need to email Nick your completed {csv} file (all fields filled in for your 20 locations), with the subject line: {\tt MTH241 Roadless} that is also cc'ed to your project group member.  Deadline for submission: 5:00pm EDT on Friday, March 15th.
+\includegraphics[width=1\textwidth]{fixedMap2.pdf}
 
-\paragraph{West Wing}
-
-Confidence intervals and prediction intervals in practice: Case study of the use of proportions in real life (polling in West Wing: "Lies, Damn Lies and Statistics", Season 1).  Can you identify when the following issues arise?
-\begin{description}
-\item[Sampling error] ``Inside the plus or minus" (aka margin of error)
-
-\item[Non-sampling error] question wording
-
-\item[Non-sampling error] non-response bias
-
-\item[Average (trimmed mean)] ``tossing the East German judge"
-
-\item[Good response rate] quality of data collection
-\end{description}
-
- 
-% Nick’s notes: 5-14:20   25:40-30:40
 
 
 
 \end{document}
-asdfasdfasdfasdf
