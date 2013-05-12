@@ -1,0 +1,82 @@
+USCOTS: Exploring data using the modeling language
+===========
+### Horton, Kaplan and Pruim
+
+#### Introduction and setup
+In this activity you will explore the EPA dataset available from within the mosaic package.
+Every year, the Environmental Protection Agency (EPA) collects data on fuel economy. With rising gasoline prices, consumers are using these figures as they decide which automobile to purchase. We will look at two-seater automobiles, many of which are sporty vehicles, using data from 2007. 
+
+We begin by loading the mosaic package and setting a graphics them.  (Note that for this block we include the *message=FALSE* option to suppress output when we load the package).  
+```{r, message=FALSE}
+require(mosaic)
+trellis.par.set(theme=col.mosaic())
+```
+
+Since this data set comes from the mosaic package, we can load it with **data** command (this ensures that we have a fresh copy). We can also see what variables are contained within it.
+```{r}
+data(EPA)
+names(EPA)
+```
+
+The summary() and str() commands give us more information about the variables in the dataframe.
+```{r}
+str(EPA)
+summary(EPA)
+```
+
+It's always a good idea to read the documentation for any data set before working with it, so that you know what the variables are actually measuring. In particular, this *should* tell you important things like: "in what units are the variables measured?" and "how are the categorical variables coded?"
+
+In this block we've used the *eval=FALSE* option to not run the following command, but just display it.  You can also access the *Help* tab on the bottom right pane in RStudio.
+```{r, eval=FALSE}
+help(EPA)
+```
+
+Let's begin by taking a look at the cars manufactured by Porsche.
+```{r}
+subset(EPA, mfr=="PORSCHE")
+```
+
+We want to get a sense of the fuel economy (measured in miles per gallon) as a function of the size of the engine (measured in cubic centimeters), and how this might relate to the transmission (Auto vs. Manual). We begin by calculating some summary statistics and graphical displays for miles per gallon.
+
+```{r}
+favstats(~ mpg, data=EPA)
+xhistogram(~ mpg, data=EPA)
+```
+
+Next we can do the same for the categorical transmission variable.
+```{r}
+tally(~ trans, data=EPA)
+```
+
+Let's turn this into a variable with two levels: either Auto or Manual, using the transform() function.
+```{r}
+EPA = transform(EPA, transmission = ifelse(grepl("Auto", trans), "Auto", "Manual"))
+```
+
+We need to check that this has been appropriately recoded.
+```{r}
+tally(~ trans + transmission, data=EPA)
+```
+
+Is there a difference in miles per gallon by transmission type?
+
+```{r}
+bwplot(mpg~ transmission, data=EPA)
+densityplot(~ mpg, groups=transmission, auto.key=TRUE, data=EPA)
+```
+
+Next we can generate a scatterplot of the two variables.
+```{r}
+# Note the use of transparency (the "alpha" option) in order to show multiple points that are right on top of one another. 
+xyplot(mpg ~ displace, alpha=0.3, data=EPA)
+```
+The pattern seems roughly linear, with a couple of exceptions, so a linear model seems like a reasonable approach. 
+
+Next we can generate a scatterplot of the two variables.
+```{r}
+# Note the use of transparency (the "alpha" option) in order to show multiple points that are right on top of one another. 
+xyplot(mpg ~ displace, groups=transmission, auto.key=TRUE, type=c("p", "r"), alpha=0.3, data=EPA)
+```
+The pattern seems roughly linear, with a couple of exceptions, so a linear model seems like a reasonable approach. 
+
+

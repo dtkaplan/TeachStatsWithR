@@ -1,0 +1,150 @@
+\documentclass[10pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{fancyhdr,url}
+\usepackage{graphicx}
+
+\oddsidemargin 0in  %0.5in
+\topmargin     0in
+\leftmargin    0in
+\rightmargin   0in
+\textheight    9in
+\textwidth     6in %6in
+%\headheight    0in
+%\headsep       0in
+%\footskip      0.5in
+
+
+\pagestyle{fancy}
+
+\lhead{\textsc{Profs. Baumer \& Horton}}
+\chead{\textsc{MTH 241: Lecture Notes}}
+\rhead{\textsc{March 13, 2013}}
+\lfoot{}
+\cfoot{}
+%\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.2pt}
+\renewcommand{\footrulewidth}{0.0pt}
+
+\newcommand{\ans}{\vspace{1in}}
+
+\begin{document}
+%\maketitle
+
+\paragraph{Agenda}
+\begin{enumerate}
+  \itemsep0em 
+  \item Moodle review
+  \item Dataset of the Day: NHANES 
+  \item Confidence Intervals
+\end{enumerate}
+
+\paragraph{Warmup}
+
+Assume that a pollster takes a poll of 1500 individuals, and the true population 
+parameter (proportion) is equal to 0.50.  What is the associated 95\% confidence 
+interval for a proportion in this setting (recall that $\hat{p}$ is a binomial random variable with mean equal to $p=0.5$ and variance equal to $p \cdot (1-p)/1500$.
+
+
+\vspace{.5in}
+
+\paragraph{Roadless America}
+
+Wilderness is, by definition, roadless.  Untouched areas provide important habitat and play a key role in ensuring ecological balance. According to the U.S. Geological Survey, roads affect the ecology of at least 22\% of the land area of the continental United States. Knowing what portion of the US is within 1 mile of a road can help determine wilderness areas since there is a link between access by road and human presence.
+
+A conservation policy called \emph{roadless area conservation} aims to limit road construction in order to halt negative environmental impact on designated public lands. The US Forest Service has formalized the concept of \emph{Inventoried Roadless Areas} as lands identified by governmental agencies without roads that could be candidates for roadless area conservation. According to the US Forest Service, inventoried roadless areas comprise only 2\% of the land in the continental United States.
+
+This activity is intended to help reinforce concepts of sampling and confidence intervals while simultaneously understanding how to estimate the proportion of the United States that is within 1 mile of a road. 
+
+You will work in pairs, and will need one computer per group.  Please download and run the first block of code in the file {\tt 2013-03-13.R} on Moodle (under lecture notes).  
+This will create a data frame called {\tt myroadless}.
+
+Now, one at a time, run the {\tt getLocation()} commands (one for each of the 20 locations you randomly sampled), taking notes of whether it was within the continental US, if so, whether it was within a mile of a road, as well as any notes.
+
+\begin{tabular}{|l|c|c|c|}
+\hline
+\# & w/in cont. & w/in 1 mile & notes/descript \\ \hline \hline
+1 & & & \\ \hline
+2 & & & \\ \hline
+3 & & & \\ \hline
+4 & & & \\ \hline
+5 & & & \\ \hline
+6 & & & \\ \hline
+7 & & & \\ \hline
+8 & & & \\ \hline
+9 & & & \\ \hline
+10 & & & \\ \hline
+\end{tabular}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\# & w/in cont. & w/in 1 mile & notes/descript \\ \hline \hline
+11 & & & \\ \hline
+12 & & & \\ \hline
+13 & & & \\ \hline
+14 & & & \\ \hline
+15 & & & \\ \hline
+16 & & & \\ \hline
+17 & & & \\ \hline
+18 & & & \\ \hline
+19 & & & \\ \hline
+20 & & & \\ \hline
+\end{tabular}
+
+\noindent
+Calculate the number within both the continental US and 1 mile of a road ($X$), as well as the total number within the continent
+($n$).  This ratio is your observed proportion.  Also calculate a 95\% confidence interval for the population proportion, using the formula: $\hat{p} \pm 1.96*\sqrt(\hat{p}*(1-\hat{p})/n)$ where $n$ is the number
+within the continent.  The command {\tt require(mosaic); binom.test(x, n)} will calculate this infterval for you.  Add this interval on the board (along with your values of $X$ and $n$).
+
+\newpage
+\vspace{.2in}
+\noindent
+$X = $
+
+\vspace{.2in}
+\noindent
+$n = $
+
+\vspace{.2in}
+\noindent
+$\hat{p}=$
+
+\vspace{.2in}
+\noindent
+95\% confidence interval:
+
+\vspace{0.4in}
+\noindent
+CLASS RESULTS:
+
+
+\vspace{2.4in}
+\noindent
+Takehome message:
+\vspace{0.6in}
+
+\noindent
+{\bf Deliverable}: to receive full credit for this activity, you need to email Nick your completed {csv} file (all fields filled in for your 20 locations), with the subject line: {\tt MTH241 Roadless} that is also cc'ed to your project group member.  Deadline for submission: 5:00pm EDT on Friday, March 15th.
+
+\paragraph{West Wing}
+
+Confidence intervals and prediction intervals in practice: Case study of the use of proportions in real life (polling in West Wing: "Lies, Damn Lies and Statistics", Season 1).  Can you identify when the following issues arise?
+\begin{description}
+\item[Sampling error] ``Inside the plus or minus" (aka margin of error)
+
+\item[Non-sampling error] question wording
+
+\item[Non-sampling error] non-response bias
+
+\item[Average (trimmed mean)] ``tossing the East German judge"
+
+\item[Good response rate] quality of data collection
+\end{description}
+
+ 
+% Nick’s notes: 5-14:20   25:40-30:40
+
+
+
+\end{document}
+asdfasdfasdfasdf
