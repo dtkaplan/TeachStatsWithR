@@ -1,0 +1,57 @@
+Merging data
+========================================================
+
+It's often useful to be able to merge multiple datasets that share a common identifier.  We've used this to ask questions which span multiple topics in the GapMinder.org collection of datasets.  
+
+In this example, we pull together a dataset with traffic mortality rate in 2004 as well as deaths from falls in 2004.  This utilizes the material described in chapter 12 of the "Compendium" (Data Management).
+
+```{r message=FALSE}
+require(mosaic)
+trellis.par.set(theme=col.mosaic())
+options(digits=3)
+```
+
+```{r}
+ds1 = read.csv("traffic.csv")
+names(ds1)
+names(ds1)[names(ds1)=="Traffic.mortality.per.100.000..age.adjusted"] = "country"
+names(ds1)[names(ds1)=="X2004"] = "traffic2004"
+ds1 = subset(ds1, select=c("country", "traffic2004"))
+head(ds1)
+```
+
+```{r}
+ds2 = read.csv("falls.csv")
+names(ds2)
+names(ds2)[names(ds2)=="Falls..age.adjusted.mortality.per.100.000"] = "country"
+names(ds2)[names(ds2)=="X2004"] = "falls2004"
+ds2 = subset(ds2, select=c("country", "falls2004"))
+head(ds2)
+```
+
+```{r}
+ds = merge(ds1, ds2, by="country")
+head(ds)
+```
+
+```{r}
+favstats(~ falls2004, data=ds)
+favstats(~ traffic2004, data=ds)
+subset(ds, traffic2004 > 115)
+subset(ds, falls2004 > 17)
+subset(ds, is.na(traffic2004))
+noiraq = subset(ds, country != "Iraq")
+```
+
+```{r fig.width=7, fig.height=6}
+xyplot(traffic2004 ~ falls2004, data=ds)
+```
+
+```{r fig.width=7, fig.height=6}
+panel.labels = function(x, y, col='black', labels='x', ...) 
+   { panel.text(x, y, labels, col=col, ...)}
+with(noiraq, xyplot(traffic2004 ~ falls2004, cex=0.5, panel=panel.labels,
+       labels=country))
+```
+
+
