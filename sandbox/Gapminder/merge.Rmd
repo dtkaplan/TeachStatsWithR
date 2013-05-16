@@ -11,8 +11,12 @@ trellis.par.set(theme=col.mosaic())
 options(digits=3)
 ```
 
+Read the traffic dataset (and clean it up)
+
+> traffic deaths per 100,000
+
 ```{r}
-ds1 = read.csv("traffic.csv")
+ds1 = read.csv("http://www.math.smith.edu/~nhorton/traffic.csv")
 names(ds1)
 names(ds1)[names(ds1)=="Traffic.mortality.per.100.000..age.adjusted"] = "country"
 names(ds1)[names(ds1)=="X2004"] = "traffic2004"
@@ -20,8 +24,11 @@ ds1 = subset(ds1, select=c("country", "traffic2004"))
 head(ds1)
 ```
 
+Read the falls dataset (and clean it up)
+
+> mortality from falling per 100,000
 ```{r}
-ds2 = read.csv("falls.csv")
+ds2 = read.csv("http://www.math.smith.edu/~nhorton/falls.csv")
 names(ds2)
 names(ds2)[names(ds2)=="Falls..age.adjusted.mortality.per.100.000"] = "country"
 names(ds2)[names(ds2)=="X2004"] = "falls2004"
@@ -29,10 +36,13 @@ ds2 = subset(ds2, select=c("country", "falls2004"))
 head(ds2)
 ```
 
+Merge datasets and take a look at the results.
 ```{r}
 ds = merge(ds1, ds2, by="country")
 head(ds)
 ```
+
+Let's peruse the datasets and look for interesting observations.
 
 ```{r}
 favstats(~ falls2004, data=ds)
@@ -43,14 +53,18 @@ subset(ds, is.na(traffic2004))
 noiraq = subset(ds, country != "Iraq")
 ```
 
+Unadorned scatterplot
 ```{r fig.width=7, fig.height=6}
 xyplot(traffic2004 ~ falls2004, data=ds)
 ```
 
+Scatterplot displaying the country names. (Note use of "with()" to allow the "panel.labels()" function to access the country variable).
+
 ```{r fig.width=7, fig.height=6}
 panel.labels = function(x, y, col='black', labels='x', ...) 
    { panel.text(x, y, labels, col=col, ...)}
-with(noiraq, xyplot(traffic2004 ~ falls2004, cex=0.5, panel=panel.labels,
+with(noiraq, xyplot(traffic2004 ~ falls2004, cex=0.5, 
+       panel=panel.labels,
        labels=country))
 ```
 
