@@ -260,8 +260,8 @@ xpnorm(1.96, mean=0, sd=1)
 We can calculate a 95\% confidence interval for the mean CESD 
 score for females by using a t-test:
 <<tinterval>>=
-with(female, t.test(cesd))
-confint(with(female, t.test(cesd)))
+t.test(~ cesd, data=female)
+confint(t.test(~ cesd, data=female))
 @
 
 But it's also straightforward to calculate this using a bootstrap 
@@ -733,7 +733,8 @@ Significant Difference (HSD).  Other options are available within the
 favstats(cesd ~ substance, data=HELPrct)
 @
 <<help-hsd2,tidy=FALSE>>=
-HELPrct <- transform(HELPrct, subgrp = factor(substance, levels=c("alcohol", "cocaine", "heroin"),
+HELPrct <- transform(HELPrct, subgrp = factor(substance, 
+  levels=c("alcohol", "cocaine", "heroin"),
   labels=c("A", "C", "H")))
 mod <- lm(cesd ~ subgrp, data=HELPrct)
 compare <- TukeyHSD(mod, "subgrp")
