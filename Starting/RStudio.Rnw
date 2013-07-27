@@ -61,7 +61,7 @@ interface to \R\ that has several advantages over other the default \R\ interfac
 		 
 		 We typically introduce students to RMarkdown very early,
 		 requiring students to use it for assignments and reports.
-		 Handouts, exams, and books like this one are produced using \pkg{knitr}\LaTeX,
+		 Handouts, exams, and books like this one are produced using \pkg{knitr}/\LaTeX,
 		 and it is relatively easy for interested students to migrate to \pkg{knitr}
 		 from RMarkdown if they are interested.
 

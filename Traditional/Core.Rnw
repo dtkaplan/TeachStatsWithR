@@ -124,7 +124,7 @@ favstats(~ cesd, data=HELPrct)
 @
 
 \section{Graphical summaries}
-The \function{xhistogram()} function is used to create a histogram.
+The \function{histogram()} function is used to create a histogram.
 \FoodForThought{\code{x} is for eXtra.}%
 Here we use the formula interface (as discussed in the \emph{Start Modeling with R} book) to
 specify that we want a histogram of the CESD scores.
@@ -132,7 +132,7 @@ specify that we want a histogram of the CESD scores.
 \vspace{-4mm}
 \begin{center}
 <<cesd-hist>>=
-xhistogram(~ cesd, data=HELPrct)
+histogram(~ cesd, data=HELPrct)
 @
 \end{center}
 
@@ -158,19 +158,19 @@ with(female, stem(cesd))
 Subsets can also be generated and used on the fly (this time including
 an overlaid normal density):
 <<women-cesd-hist,tidy=FALSE>>=
-xhistogram(~ cesd, fit="normal",
+histogram(~ cesd, fit="normal",
   data=subset(HELPrct, sex=='female'))  
 @
 
 Alternatively, we can make side-by-side plots to compare multiple subsets.
 <<cesd-male-female>>=
-xhistogram(~ cesd | sex, data=HELPrct)
+histogram(~ cesd | sex, data=HELPrct)
 @
 
 The layout can be rearranged.
 \begin{center}
 <<cesd-dotlayout>>=
-xhistogram(~ cesd | sex, layout=c(1, 2), data=HELPrct)   
+histogram(~ cesd | sex, layout=c(1, 2), data=HELPrct)   
 @
 \end{center}
 \begin{problem}
@@ -188,19 +188,19 @@ We can control the number of bins in a number of ways.  These can be specified
 as the total number.
 \begin{center}
 <<cesd-dot,fig.height=1.8>>=
-xhistogram(~ cesd, nint=20, data=female)   
+histogram(~ cesd, nint=20, data=female)   
 @
 \end{center}
 Or the width can be specified.
 \begin{center}
 <<cesd-dotwidth,fig.height=1.8>>=
-xhistogram(~ cesd, width=1, data=female)   
+histogram(~ cesd, width=1, data=female)   
 @
 \end{center}
 We could also have made our subset ``on the fly'', just for the purposes of graphing:
 \begin{center}
 <<cesd-dot2,fig.height=1.8>>=
-xhistogram(~ cesd, data=HELPrct, subset=(sex=='female'))   
+histogram(~ cesd, data=HELPrct, subset=(sex=='female'))   
 @
 \end{center}
 
@@ -424,14 +424,15 @@ xyplot(cesd ~ mcs, type=c('p','smooth'), pch=1, cex=0.6,
 
 Correlations can be calculated for a pair of variables, or for a matrix of variables.
 <<>>=
-with(HELPrct, cor(cesd, mcs))
-with(HELPrct, cor(cbind(cesd, mcs, pcs)))
+cor(cesd, mcs, data=HELPrct)
+smallHELP = subset(HELPrct, select=c(cesd, mcs, pcs))
+cor(smallHELP)
 @
 
 By default, Pearson correlations are provided, other variants (e.g. Spearman) can be specified using the
 \option{method} option.
 <<>>=
-with(HELPrct, cor(cesd, mcs), method="spearman")
+cor(cesd, mcs, method="spearman", data=HELPrct)
 @
 
 \section{Simple linear regression}
@@ -474,7 +475,7 @@ returns a vector of predicted values.}
 
 \begin{center}
 <<lmhist>>=
-xhistogram(~ residuals(model), density=TRUE)
+histogram(~ residuals(model), density=TRUE)
 @
 \end{center}
 \begin{center}
@@ -673,7 +674,7 @@ do(3) * compareMean(age ~ shuffle(sex), data=HELPrct)
 <<permute-HELPrct,tidy=FALSE>>=
 rtest.stats = do(500) * compareMean(age ~ shuffle(sex), 
   data=HELPrct)
-xhistogram(~ result, n=40, xlim=c(-6, 6),
+histogram(~ result, n=40, xlim=c(-6, 6),
   groups=result >= test.stat, pch=16, cex=.8, 
   data=rtest.stats)
 ladd(panel.abline(v=test.stat))
@@ -731,13 +732,15 @@ Significant Difference (HSD).  Other options are available within the
 <<help-hsd>>=
 favstats(cesd ~ substance, data=HELPrct)
 @
-<<help-hsd2>>=
-mod = lm(cesd ~ substance, data=HELPrct)
-compare <- TukeyHSD(mod, "substance")
+<<help-hsd2,tidy=FALSE>>=
+HELPrct <- transform(HELPrct, subgrp = factor(substance, levels=c("alcohol", "cocaine", "heroin"),
+  labels=c("A", "C", "H")))
+mod <- lm(cesd ~ subgrp, data=HELPrct)
+compare <- TukeyHSD(mod, "subgrp")
 compare
 @
-<<help-hsd3,fig.height=4>>=
-plot(compare,cex.lab=0.7)
+<<help-hsd3,fig.height=3.5,fig.width=6>>=
+plot(compare,cex.lab=0.5)
 @
 
 Again, we see that the cocaine group has significantly lower CESD scores
@@ -806,7 +809,7 @@ We can fit a two (or more) way ANOVA model, without or with an interaction,
 using the same modeling syntax.
 <<help-aovplot>>=
 median(cesd ~ substance | sex, data=HELPrct)
-bwplot(cesd ~ substance | sex, data=HELPrct)
+bwplot(cesd ~ subgrp | sex, data=HELPrct)
 @
 <<help-aov2>>=
 summary(aov(cesd ~ substance + sex, data=HELPrct))
@@ -886,7 +889,7 @@ HELPrct = transform(HELPrct, residuals = resid(lm1))
 HELPrct = transform(HELPrct, pred = fitted(lm1))
 @
 <<tidy=FALSE>>=
-xhistogram(~ residuals, xlab="residuals", fit="normal", 
+histogram(~ residuals, xlab="residuals", fit="normal", 
   data=HELPrct)
 @
 We can display observations with extremely large residuals.
@@ -1060,7 +1063,7 @@ density) to assess the normality of the residuals.
 \end{problem}
 \begin{solution}
 <<>>=
-xhistogram(~ resid(fm), fit="normal")
+histogram(~ resid(fm), fit="normal")
 @
 The distribution is approximately normal.
 \end{solution}
@@ -1286,7 +1289,8 @@ power.t.test(delta=.25, sd=1, sig.level=alpha, power=0.90)
 \chapter{Data Management}
 \label{sec:manipulatingData}%
 
-Data management is a key capacity to allow students (and instructors) to ``compute with data''.
+Data management is a key capacity to allow students (and instructors) to ``compute with data'' or  
+as Diane Lambert has stated, ``think with data''.
 We tend to keep student data management to a minimum during the early part of an introductory
 statistics course, then gradually introduce topics as needed.  For courses where students
 undertake substantive projects, data management is more important.  This chapter describes 
