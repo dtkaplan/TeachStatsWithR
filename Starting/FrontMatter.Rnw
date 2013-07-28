@@ -90,7 +90,7 @@ reproducible research).  \RStudio\ is available from \url{http://www.rstudio.org
 that is accessible to others via the Internet.
 
 In addition to \R\ and \RStudio, we will make use of several packages that need to be installed
-and loaded separately. The \pkg{mosaic} (and its dependencies) will be used throughout.  
+and loaded separately. The \pkg{mosaic} package (and its dependencies) will be used throughout.  
 Other packages appear from time to time as well.
 \iffalse
 including
