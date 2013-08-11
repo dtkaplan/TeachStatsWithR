@@ -510,8 +510,7 @@ var(fitted(mod1))+var(resid(mod1))
 @
 
 The situation here is analogous to one your students have encountered before: the Pythagorean theorem: $A^2 + B^2 = C^2$.  It's the square-length of the sides of a right triangle that add in a nice way, not the lengths themselves.  Similarly, the variances add in a nice way, not the standard deviations. 
-
-For more about the analogy between geometry and model fitting, see \cite{bock-velleman}, \cite{kaplan-fresh} and \cite{saville}.
+\marginnote{For more about the analogy between geometry and model fitting, see \cite{bock-velleman}, \cite{kaplan-fresh} and \cite{saville}.}
 
 The $R^2$ statistic on a model describes what fraction of the variance in the response variable is accounted for by a model.  You can calculate it directly:
 <<>>=
