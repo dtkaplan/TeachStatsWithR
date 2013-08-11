@@ -211,7 +211,7 @@ trebuchet = transform(trebuchet,
 @
 
 
-\marginnote{NOTE IN DRAFT: Include \function{sum} in the aggregating statistics.}
+%\marginnote{XX NOTE IN DRAFT: Include \function{sum} in the aggregating statistics.}
 
 There is one residual for each row in the dataset.  There are several good ways to describe the size of the residuals, e.g. the standard deviation, variance, or the sum of squares.  Here is the standard deviation.
 <<>>=
