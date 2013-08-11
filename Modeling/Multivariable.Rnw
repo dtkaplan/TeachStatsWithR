@@ -233,7 +233,8 @@ Another way to see this same thing, perhaps a bit more obvious to the introducto
 f1(51) - f1(50) 
 @
 
-It's perfectly reasonable at this point to consider the extent to which the data dictate the best fit, and whether other possible straight-line functions, \marginnote{Resampling provides an accessible way to explore the sampling variation of a model.  See \cite{resampling-book} the R/mosaic vignette on resampling.}even if their residuals are not as small as those from \function{f1}, are reasonable fits.  
+It's perfectly reasonable at this point to consider the extent to which the data dictate the best fit, and whether other possible straight-line functions, \marginnote{Resampling provides an accessible way to explore the sampling variation of a model.  See 
+the mosaic package vignette on resampling for more examples.}even if their residuals are not as small as those from \function{f1}, are reasonable fits.  
 
 For models created by \function{lm}, access to confidence intervals is provided by the model function.  Just ask for the interval, specifying whether you want an interval on the model value itself or on the predicted output for a given input.\marginnote{A confidence interval on a model value indicates how much the model value varies due to the particular random sample of data on which the model is based.  A prediction interval includes both the variation in the model value and the variation in the value of an individual case associated with typical residuals from the model value.}
 <<>>=
@@ -345,7 +346,7 @@ ballistic( projectileWt=50,counterWt=2,
 Notice how much narrower the prediction interval is for the two-variable model compared to the one-variable model.  
 
 \marginnote{The observation that adding an explanatory variable to a model will reduce the size of the residuals provides a powerful segue to statistical inference.  The null hypothesis is often stated in terms of ``no difference'' or ``no effect.''  Perhaps better to state the null as ``no meaningful information in the explanatory variable(s).'' You can generate such uninformative explanatory variables using random numbers or shuffling. 
-See the mosaic resampling vignette \cite{resampling} for more information.}
+See the mosaic package resampling vignette for more information.}
 
 
 
@@ -510,7 +511,7 @@ var(fitted(mod1))+var(resid(mod1))
 
 The situation here is analogous to one your students have encountered before: the Pythagorean theorem: $A^2 + B^2 = C^2$.  It's the square-length of the sides of a right triangle that add in a nice way, not the lengths themselves.  Similarly, the variances add in a nice way, not the standard deviations. 
 
-For more about the analogy between geometry and model fitting, see \cite{bock-velleman}, \cite{kaplan-fresh},\cite{saville}.
+For more about the analogy between geometry and model fitting, see \cite{bock-velleman}, \cite{kaplan-fresh} and \cite{saville}.
 
 The $R^2$ statistic on a model describes what fraction of the variance in the response variable is accounted for by a model.  You can calculate it directly:
 <<>>=
@@ -1026,5 +1027,6 @@ These are just sketches for exercises.  Where to deploy them?
 
 \paragraph{Three}. Show that \VN{object} gives a perfect prediction of \VN{projectileWt} in the \texttt{trebuchet} data. Does \VN{object} contribute anything beyond \VN{projectileWt} in explaining \VN{distance}?
 
-\end{document}
+\shipoutProblems
+
 

@@ -10,7 +10,7 @@
 \def\tilde{\texttt{\~}}
 
 \title[Start Modeling in R]{Start Modeling\\$\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $with R}
-\author[Kaplan, Pruim, Horton]{Daniel T. Kaplan\\Randall J. Pruim\\ Nicholas J. Horton}
+\author[Kaplan, Pruim, Horton]{Daniel T. Kaplan\\Randall J. Pruim\\Nicholas J. Horton}
 \date{DRAFT: \today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
@@ -30,5 +30,8 @@
 <<child='Multivariable.Rnw', eval=TRUE>>=
 @
 
+
+\bibliographystyle{alpha}
+\bibliography{../include/USCOTS}
 
 \end{document}
