@@ -728,7 +728,7 @@ It's traditional to point to the situation of an experiment.  In one form of exp
 
 There are lessons to be drawn from other fields, however.  In epidemiology, for instance, important conclusions to guide action need to be drawn from imperfect, observational data. 
 
-To illustrate, consider a news story  (Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk, by Allison Aubrey, NPR - March 15, 2013) reporting on research findings published in the American Heart Association journal {\em Stroke}.  The main result: a daily habit of coffee or tea drinking is associated with a decrease of 20\% in stroke risk.  The news story puts this in a historical context: 
+To illustrate, consider a news story  (``Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk", by Allison Aubrey, NPR - March 15, 2013) reporting on research findings published in the American Heart Association journal {\em Stroke}.  The main result: a daily habit of coffee or tea drinking is associated with a decrease of 20\% in stroke risk.  The news story puts this in a historical context: 
 \begin{quotation}
 % ... recent studies have linked a regular coffee habit to a range of benefits — from a reduced risk of Type 2 diabetes to a protective effect against Parkinson's disease.
 
