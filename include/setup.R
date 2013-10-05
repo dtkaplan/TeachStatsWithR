@@ -43,6 +43,7 @@ knit_hooks$set(document = function(x) {
   gsub('\\\\end\\{knitrout\\}\n', '\\\\end\\{knitrout\\}%', paste(x, collapse = '\n'))
 })
 
+if(FALSE){
 knit_hooks$set(output=function(x,options) {
 	   vshift <- options$vshift
 	   if (is.null(vshift)) vshift <- "0ex"
@@ -54,4 +55,4 @@ knit_hooks$set(output=function(x,options) {
 			 paste("\\vspace*{",vshift,"}", sep=""),
 			  sep="\n" ))
 })
-
+}
