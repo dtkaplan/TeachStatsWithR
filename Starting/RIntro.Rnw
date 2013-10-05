@@ -326,7 +326,7 @@ but also in the documentation for them.  Quotation marks are optional here.
 Many functions and data sets in \R\ include example code demonstrating typical uses.
 For example,
 <<"intro-example-histogram",eval=FALSE,results="hide">>=
-example(xhistogram)
+example(histogram)
 @
 will generate a number of example plots (and provide you with the commands used to create them).
 Examples such as this are intended to help you learn how specific \R\ functions work.
@@ -629,7 +629,7 @@ Here are the names of several \verb!lattice! plots:
 \item \verb!dotPlot! (notice the capital P; \verb!dotplot()! does something different)
 \footnote{\texttt{dotPlot()} is in the \texttt{mosaic} package and was created because \texttt{dotplot()} in
 the \texttt{lattice} package makes something different from what we call a dot plot.}
-\item \verb!xhistogram!  (for histograms)
+\item \verb!histogram!  (for histograms)
 \item \verb!bwplot!  (for boxplots)
 \item \verb!xyplot!  (for scatter plots)
 \item \verb!qqmath!  (for quantile-quantile plots)
@@ -678,20 +678,20 @@ dotPlot(~ Sepal.Length | Species, data=iris, n=20, cex=.6,
 		layout=c(3,1)) # cex used to shrink the dots a bit
 @
 
-\subsection{Histograms: \texttt{xhistogram()}}
+\subsection{Histograms: \texttt{histogram()}}
 
 Histograms are a lot like dot plots, but the towers of dots are replaced by a
 vertical bar.
 Again the \verb!y! component of the formula is empty since we let \R\
 compute the heights of the bars for us.
 <<intro-iris-histogram,cache=TRUE,fig.width=8,out.width=".8\\textwidth">>=
-xhistogram(~ Sepal.Length, data=iris, n=20)       # n= 20 gives approx. 20 bars
+histogram(~ Sepal.Length, data=iris, n=20)       # n= 20 gives approx. 20 bars
 @
 We can use a conditional variable to give us separate histograms for each species.
 
 \authNote{removed plot that was breaking compilation}
 %<<intro-iris-histogram-cond,cache=TRUE,fig.width=8,out.width=".8\textwidth">>=
-%xhistogram(~ Sepal.Length | Species, data=iris, n=20, layout=c(3,1))
+%histogram(~ Sepal.Length | Species, data=iris, n=20, layout=c(3,1))
 %@
 
 
@@ -1264,7 +1264,7 @@ Compute favorite statistics of \verb!Sepal.Length! for each \verb!Species!.
 %	intervals and code the values in \verb!x! according to which interval 
 %	they fall into. 
 %\\[3mm]
-\multicolumn{2}{l}{\texttt{xhistogram(\~{}Sepal.Length|Species, iris)}}
+\multicolumn{2}{l}{\texttt{histogram(\~{}Sepal.Length|Species, iris)}}
 \\[1mm]
 & 
 Histogram of \verb!Sepal.Length! conditioned on \verb!Species!.

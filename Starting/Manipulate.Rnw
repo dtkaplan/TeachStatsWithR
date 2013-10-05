@@ -46,7 +46,7 @@ require(manipulate)
 
 <<manipulate-histogram1, echo=TRUE, tidy=FALSE, eval=inRStudio>>=
 manipulate(
-  xhistogram( ~ eruptions, data=faithful, n=N),
+  histogram( ~ eruptions, data=faithful, n=N),
   N = slider(5,40)
 )
 @
@@ -69,7 +69,7 @@ When the slider is changed, we see a clearer view of the eruptions of Old Faithf
 
 <<manipulate-histogram2, tidy=FALSE, eval=inRStudio>>=
 manipulate(
-  xhistogram( ~ age, data=HELPrct, n=N, density=DENSITY),
+  histogram( ~ age, data=HELPrct, n=N, density=DENSITY),
   N = slider(5,40),
   DENSITY = checkbox()
 )
@@ -83,7 +83,7 @@ Drop-down menus can be added using the \function{picker()} function.
 
 <<manipulate-histogram3, eval=inRStudio, tidy=FALSE>>=
 manipulate(
-    xhistogram( ~ age, data=HELPrct, n=N, 
+    histogram( ~ age, data=HELPrct, n=N, 
                        fit=DISTRIBUTION, dlwd=4),
     N = slider(5,40),
     DISTRIBUTION = 
@@ -131,6 +131,36 @@ mNorm <- function( mean=0, sd=1 ) {
 }
 mNorm( mean=100, sd=10 )
 @
+
+\section{\texttt{mPlot()}}
+
+The \pkg{mosaic} package provides the \function{mPlot()} function 
+which allows users to create a wide variety of 
+plots using either \pkg{lattice} or \pkg{ggplot2}.  Furthermore, the 
+code used to generate these plots can be displayed upon request.  This facilitates
+learning these commands, allows users to make further modifications that are not
+possible in the manipulate interface, and provides an easy copy-and-paste mechanism 
+for dropping these plots into other documents.
+
+The available plots come in two clusters, depending on whether the underlying plot
+is essentially two-variable or one-variable.  Additional variables can be represented
+using color, size, and sub-plots (facets).
+
+<<eval=FALSE>>=
+# These are essentially 2-variable plots
+mPlot( HELPrct, "scatter" )            # start with a scatter plot
+mPlot( HELPrct, "boxplot" )            # start with boxplots
+mPlot( HELPrct, "violin" )             # start with violin plots
+# These are essentially 1-variables plots
+mPlot( HELPrct, "histogram" )          # start with a histogram 
+mPlot( HELPrct, "density" )            # start with a density plot
+mPlot( HELPrct, "frequency polygon" )  # start with a frequency polygon
+@
+
+
+\begin{center}
+	\includegraphics[width=3.8in]{images/mPlot}
+\end{center}
 
 
 \section{Shiny}

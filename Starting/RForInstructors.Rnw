@@ -703,7 +703,7 @@ For teaching purposes it is sometimes nice to create a histogram that has the
 approximate shape of some distribution.  One way to do that was illustrated above.
 <<>>=
 x1 <- rnorm(500, mean=10, sd=2)
-xhistogram(~x1, width=.5)
+histogram(~x1, width=.5)
 @
 This works, but the resulting plot has a fair amount of noise.
 
@@ -712,7 +712,7 @@ allows us to obtain theoretical quantiles of the normal distribution instead.
 The resulting plot now illustrates the idealized sample from a normal distribution.
 <<>>=
 x2 <- qnorm( ppoints(500), mean=10, sd=2 )
-xhistogram(~x2, width=.5)
+histogram(~x2, width=.5)
 @
 This is not what real data will look like (even if it comes from a normal population),
 but it can be better for illustrative purposes to remove the noise.
@@ -1043,7 +1043,7 @@ The \function{transform()} function can be used to add or modify variables in a 
 <<tidy=FALSE>>=
 chrom1 <- transform(chrom1, length=(txEnd - txStart)/1000)
 head(chrom1, 2)
-xhistogram( ~log10(length), data=chrom1, 
+histogram( ~log10(length), data=chrom1, 
             xlab="gene length (kb)" )
 @
 
