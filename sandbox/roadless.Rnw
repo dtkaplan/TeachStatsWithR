@@ -1,0 +1,141 @@
+\documentclass[10pt]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{fancyhdr,url}
+\usepackage{graphicx}
+
+\oddsidemargin 0in  %0.5in
+\topmargin     0in
+\leftmargin    0in
+\rightmargin   0in
+\textheight    9in
+\textwidth     6in %6in
+%\headheight    0in
+%\headsep       0in
+%\footskip      0.5in
+
+
+\pagestyle{fancy}
+
+\lhead{\textsc{USCOTS 2013 Workshop}}
+\chead{\textsc{Teaching Stats with R}}
+\rhead{\textsc{May, 2013}}
+\lfoot{}
+\cfoot{}
+%\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.2pt}
+\renewcommand{\footrulewidth}{0.0pt}
+
+\newcommand{\ans}{\vspace{1in}}
+
+\begin{document}
+%\maketitle
+
+\paragraph{Roadless America}
+
+Wilderness is, by definition, roadless.  Untouched areas provide important habitat and play a key role in ensuring ecological balance. According to the U.S. Geological Survey, roads affect the ecology of at least 22\% of the land area of the continental United States. Knowing what portion of the US is within 1 mile of a road can help determine wilderness areas since there is a link between access by road and human presence.
+
+A conservation policy called \emph{roadless area conservation} aims to limit road construction in order to halt negative environmental impact on designated public lands. The US Forest Service has formalized the concept of \emph{Inventoried Roadless Areas} as lands identified by governmental agencies without roads that could be candidates for roadless area conservation. According to the US Forest Service, inventoried roadless areas comprise only 2\% of the land in the continental United States.
+
+This activity is intended to help reinforce concepts of sampling and confidence intervals while simultaneously understanding how to estimate the proportion of the United States that is within 1 mile of a road. 
+
+We've included this in the workshop to demonstrate how to integrate computing to bring data into the classroom (using samples of locations on the earth).  We will utilize the {\tt googleMap()} function within the {\tt mosaic} package using a helper routine which we've defined (called {\tt getLocation()}).
+
+You will work in pairs, and will need one computer per group.  Please run the following command to load the necessary commands:
+<<eval=FALSE>>=
+source("http://www.math.smith.edu/~nhorton/roadless.R")
+@
+This will create a data frame in your workspace called {\tt myroadless}.
+
+Now, one at a time, run the {\tt getLocation()} function.  This takes a single argument, which indicates which of the twenty samples to plot. For example, the first command will be:
+<<eval=FALSE>>=
+getLocation(1)
+@
+This will pop up a map of your location, with a circle of radius one mile.  Here's an example of a location that is near a road.
+
+\noindent
+\includegraphics[width=0.95\textwidth]{NearRoad.pdf}
+
+\newpage 
+For each of your 20 samples, you should takes notes of whether:
+\begin{itemize}
+\item it was within the continental US
+\item if so, whether it was within a mile of a road,
+\item notes about the location (e.g. is it in Canada, Mexico, Atlantic Ocean, Pacific, Gulf or in the US which state)
+\end{itemize}
+
+\begin{tabular}{|l|c|c|c|}
+\hline
+\# & w/in cont. & w/in 1 mile & notes/descript \\ \hline \hline
+1 & & & \\ \hline
+2 & & & \\ \hline
+3 & & & \\ \hline
+4 & & & \\ \hline
+5 & & & \\ \hline
+6 & & & \\ \hline
+7 & & & \\ \hline
+8 & & & \\ \hline
+9 & & & \\ \hline
+10 & & & \\ \hline
+\end{tabular}
+\begin{tabular}{|l|c|c|c|}
+\hline
+\# & w/in cont. & w/in 1 mile & notes/descript \\ \hline \hline
+11 & & & \\ \hline
+12 & & & \\ \hline
+13 & & & \\ \hline
+14 & & & \\ \hline
+15 & & & \\ \hline
+16 & & & \\ \hline
+17 & & & \\ \hline
+18 & & & \\ \hline
+19 & & & \\ \hline
+20 & & & \\ \hline
+\end{tabular}
+
+\noindent
+\begin{enumerate}
+\item Calculate the number within both the continental US and 1 mile of a road ($X$)
+\item Calculate the total number within the continent
+($n$).  
+\item Calculate their ratio.  This  is your observed proportion.  
+\item Calculate a 95\% confidence interval for the population proportion. The command {\tt require(mosaic); binom.test(x, n)} will calculate this interval for you
+\item Add this interval on the board (along with your values of $X$ and $n$).
+\end{enumerate}
+
+\vspace{.2in}
+\noindent
+$X = $
+
+\vspace{.2in}
+\noindent
+$n = $
+
+\vspace{.2in}
+\noindent
+$\hat{p}=$
+
+\vspace{.2in}
+\noindent
+Your 95\% confidence interval for the proportion of the US that is within 1 mile of a road:
+
+\vspace{0.4in}
+\noindent
+CLASS RESULTS:
+
+
+\vspace{1.4in}
+
+As an extension, you can collect the annotated spreadsheets and create a map of all of the locations (combining the groups).  
+\newpage
+\noindent
+\includegraphics[width=1\textwidth]{fixedCI2.pdf}
+
+\noindent
+\includegraphics[width=1\textwidth]{fixedMap2.pdf}
+
+
+
+
+\end{document}

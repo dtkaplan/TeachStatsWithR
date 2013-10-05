@@ -1,0 +1,220 @@
+
+
+% Try the class options [notes], [notes=only], [trans], [handout],
+% [red], [compress], [draft], [class=article] and see what happens!
+
+\documentclass[slidestop,11pt]{beamer}
+
+%\usepackage{beamerbasearticle}
+%\usepackage{beamerthemeshadow}
+%\usepackage{mybeamer}
+%\usepackage{probstat}
+\usepackage{language}
+%\input{/Users/rpruim/public_html/fast/AMSedition1sol/tex/fastMacros}
+%\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{multicol}
+%\usepackage{xcolor}
+\usepackage{alltt}
+%\usepackage{ifthen}
+%\usepackage{amsmath}
+%\usepackage{ulem}
+%\usepackage{helvet}
+%\usepackage{tikz}
+\usetheme{Singapore}
+\usecolortheme{seahorse}
+\usecolortheme{lily}
+
+
+\def\myemph#1{{\emph{#1}}}
+
+\def\cbox#1{\fbox{\phantom{$\mid$}{\ #1\ }}}
+\def\quickcode#1#2{\fbox{\phantom{$\mid$} \ \ #1 \ \ }%
+                   \fbox{\phantom{$\mid$} \ \ #2 \ \ }
+  			   }
+
+
+\def\pkg#1{\texttt{#1}}
+\usepackage[nogin]{Sweave}
+\usepackage[utf8]{inputenc}
+
+\newlength{\tempfmlength}
+\newsavebox{\fmbox}
+\newenvironment{fmpage}[1]
+     {
+	 \medskip
+	 \setlength{\tempfmlength}{#1}
+	 \begin{lrbox}{\fmbox}
+	   \begin{minipage}{#1}
+		 \vspace*{.02\tempfmlength}
+		 \hfill
+	   \begin{minipage}{.95 \tempfmlength}}
+		 {\end{minipage}\hfill
+		 \vspace*{.015\tempfmlength}
+		 \end{minipage}\end{lrbox}\fbox{\usebox{\fmbox}}
+	 \medskip
+	 }
+
+
+\newenvironment{boxedText}[1][.98\textwidth]%
+{%
+\begin{center}
+\begin{fmpage}{#1}
+}%
+{%
+\end{fmpage}
+\end{center}
+}
+
+\newenvironment{boxedTable}[2][tbp]%
+{%
+\begin{table}[#1]
+  \refstepcounter{table}
+  \begin{center}
+\begin{fmpage}{.98\textwidth}
+  \begin{center}
+	\sf \large Box~\expandafter\thetable. #2
+\end{center}
+\medskip
+}%
+{%
+\end{fmpage}
+\end{center}
+\end{table}		% need to do something about exercises that follow boxedTable
+}
+
+
+
+\begin{document}
+
+\newcommand\smallfonts{\fontsize{8}{9.2}\selectfont}
+\newcommand\regularfonts{\fontsize{10}{11.4}\selectfont}
+\regularfonts
+
+<<setup,include=FALSE>>=
+require(mosaic)
+trellis.par.set(theme=col.mosaic())
+trellis.par.set(fontsize=list(text=5))
+options(keep.blank.line=FALSE)
+options(show.signif.stars=FALSE)
+options(width=70)
+@
+
+<<chunk_opts,include=FALSE,cache=FALSE>>=
+opts_chunk$set(fig.path='figures/fig-',fig.ext='pdf',fig.width=2.0,
+			   fig.height=1.5,
+			   fig.show='hold',
+			   fig.align='center',
+			   comment=NA,prompt=TRUE)
+@
+
+
+\setlength{\parskip}{1.0ex plus0.1ex minus0.1ex}
+\bibliographystyle{apalike}
+
+
+\title{Modeling in R}
+
+\hypersetup{%
+pdftitle={},%
+  pdfauthor={Randall Pruim},
+  pdfsubject={teaching,computation,software,R,RStudio},
+  pdfkeywords={}%
+  }
+
+\author{Randall Pruim, Danny Kaplan and Nicholas Horton}
+
+\date{\copyright 2013}
+
+\institute{Project MOSAIC}
+
+%\date{slides available at \url{http://www.calvin.edu/~rpruim/talks/}}
+
+
+\frame{\titlepage}
+
+%\frame<beamer>{\frametitle{Outline}\tableofcontents}
+
+%-------------------------------------------------------------------
+
+\begin{frame}[fragile]
+  \frametitle{Kids Feet}
+
+<<>>=
+require(mosaic)
+densityplot(~ length, data=KidsFeet)
+@
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Kids Feet}
+
+<<>>=
+require(mosaic)
+favstats(~ length, data=KidsFeet)
+mean(~ length, data=KidsFeet)
+sd(~ length, data=KidsFeet)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]
+	\frametitle{Are Boys' Feet Bigger Than Girls'?}
+
+<<>>=
+favstats(length ~ sex, data=KidsFeet)
+mean(length ~ sex, data=KidsFeet)
+@
+\end{frame}
+
+%-------------------------------------------------------------------
+\begin{frame}[fragile]
+	\frametitle{Are Boys' Feet Bigger Than Girls'?}
+
+	\smallfonts
+<<fig.width=3,fig.height=2>>=
+bwplot(length ~ sex, data=KidsFeet)
+@
+\end{frame}
+
+%-------------------------------------------------------------------
+\begin{frame}[fragile]
+	\frametitle{Are Boys' Feet Bigger Than Girls'?}
+
+	\smallfonts
+<<fig.width=3,fig.height=2>>=
+densityplot(~ length, groups=sex, auto.key=TRUE, data=KidsFeet)
+@
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Are Boys' Feet Bigger Than Girls'?}
+
+<<>>=
+t.test(length ~ sex, data=KidsFeet)
+@
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Are Boys' Feet Bigger Than Girls'?}
+
+<<>>=
+fm = lm(length ~ sex, data=KidsFeet)
+summary(fm)
+@
+\end{frame}
+
+%-------------------------------------------------------------------
+
+\begin{frame}[fragile]
+  \frametitle{Are Boys' Feet Bigger Than Girls'?}
+
+	\smallfonts
+<<fig.width=3,fig.height=2>>=
+xyplot(length ~ width, groups=sex, auto.key=TRUE, data=KidsFeet)
+@
+\end{frame}
+
+
+\end{document}
+

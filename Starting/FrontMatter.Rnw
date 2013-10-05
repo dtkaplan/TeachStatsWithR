@@ -12,11 +12,11 @@ set.seed(123)
 
 These materials were initially created for a workshop entitled 
 \emph{Teaching Statistics Using R} prior to the 2011 United States Conference 
-on Teaching Statistics and reused for the 2013 USCOTS.  
+on Teaching Statistics and revised for the 2013 USCOTS.  
 We organized these workshops to help instructors integrate \R\ (as well as some 
 related technologies) into their statistics courses at all levels.
 We got great feedback and many wonderful ideas from the participants and those
-that we've shared this with since the workshop.  
+that we've shared this with since the workshops.  
 
 We present an approach to teaching introductory and intermediate
 statistics courses that is tightly coupled with computing generally and with
@@ -90,7 +90,7 @@ reproducible research).  \RStudio\ is available from \url{http://www.rstudio.org
 that is accessible to others via the Internet.
 
 In addition to \R\ and \RStudio, we will make use of several packages that need to be installed
-and loaded separately. The \pkg{mosaic} (and its dependencies) will be used throughout.  
+and loaded separately. The \pkg{mosaic} package (and its dependencies) will be used throughout.  
 Other packages appear from time to time as well.
 \iffalse
 including

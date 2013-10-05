@@ -3,21 +3,25 @@
 \documentclass[open-any,12pt]{tufte-book}
 
 \usepackage{../include/RBook}
-\usepackage{multicol}
+\usepackage{pdfpages}
 %\usepackage[shownotes]{authNote}
 \usepackage[hidenotes]{authNote}
 
 \def\tilde{\texttt{\~}}
 
 \title[Start Modeling in R]{Start Modeling\\$\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ $with R}
-\author[Kaplan, Pruim, Horton]{Daniel T. Kaplan\\Randall J. Pruim\\ Nicholas J. Horton}
-\date{DRAFT: \today}
+\author[Kaplan, Pruim, Horton]{Daniel T. Kaplan\\Randall J. Pruim\\Nicholas J. Horton}
+\date{\today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
 \begin{document}
 
 
-\maketitle
+%\maketitle
+
+\includepdf{USCOTS-cover}
+
+\newpage
 
 \tableofcontents
 
@@ -25,6 +29,9 @@
 
 <<include=FALSE>>=
 ..makingMaster.. <- TRUE
+@
+
+<<child='../Starting/FrontMatter.Rnw', eval=TRUE>>=
 @
 
 <<child='Multivariable.Rnw', eval=TRUE>>=
