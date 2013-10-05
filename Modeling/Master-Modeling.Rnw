@@ -19,7 +19,7 @@
 
 %\maketitle
 
-\includepdf{USCOTS-cover}
+\includepdf{USCOTS-cover1}
 
 \newpage
 

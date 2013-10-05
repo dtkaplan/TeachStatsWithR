@@ -421,7 +421,7 @@ sd(g1resids, data=trebuchet)
 
 To see what's special about the model values here --- that is, why the groupwise mean is special --- construct another function that assigns a specific value to each group.  For example, here's a function that says the golf balls go 300 cm, foose balls 500, tennis balls 100 and washers 300.
 
-\begin{widestuff}[h]
+\begin{widestuff}%[h]
 <<tidy=FALSE>>=
 g2 = makeFun(
       switch(object,"golf"=300,"foose"=500,"tennis ball"=100,"big washerb"=300,NA) ~ object
@@ -452,8 +452,8 @@ g2 = Vectorize(g2)
 @
 
 \begin{widestuff}
-<<tidy=FALSE>>=
-trebuchet = transform(trebuchet, g2resids = distance-g2(object))
+<<tidy=FALSE,warning=FALSE>>=
+trebuchet = transform(trebuchet, g2resids = distance - g2(object))
 sd(g1resids,data=trebuchet)
 sd(g2resids,data=trebuchet)
 @
