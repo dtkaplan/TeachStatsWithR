@@ -5,7 +5,7 @@ Master-Core.pdf: Master-Core.tex
 	bibtex Master-Core
 	pdflatex Master-Core
 
-Master-Core.tex: Master-Core.Rnw
+Master-Core.tex: Master-Core.Rnw Core.Rnw
 	knitr Master-Core.Rnw
 	
 	

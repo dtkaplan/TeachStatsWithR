@@ -40,8 +40,8 @@ This work leverages initiatives undertaken by Project MOSAIC (\url{http://www.mo
 Other related resources from Project MOSAIC may be helpful, including an annotated set of examples
 from the 
 sixth edition of
-Moore, McCabe and Craig's \emph{Introduction to the Practice of Statistics}\cite{moor:mcca:2007} (see \url{http://www.math.smith.edu/~nhorton/ips6e}) as well as
-the third edition of the \emph{Statistical Sleuth}\cite{Sleuth3} (see \url{http://www.math.smith.edu/~nhorton/sleuth3}).
+Moore, McCabe and Craig's \emph{Introduction to the Practice of Statistics}\cite{moor:mcca:2007} (see \url{http://www.amherst.edu/~nhorton/ips6e}) as well as
+the second edition of the \emph{Statistical Sleuth}\cite{Sleuth2} (see \url{http://www.amherst.edu/~nhorton/sleuth}).
 
 To use a package within R, it must be installed (one time), and loaded (each session). The 
 \pkg{mosaic} package can be installed using the following command:
@@ -1628,7 +1628,7 @@ We will focus on \pkg{HELPrct}, which contains
 27 variables for the 453 subjects
 with minimal missing data, primarily at baseline.
 Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found here\cite{Horton:2011:R}.
-A copy of the study instruments can be found at: \url{http://www.math.smith.edu/help}.
+A copy of the study instruments can be found at: \url{http://www.amherst.edu/~nhorton/help}.
 \begin{longtable}{|p{2.1cm}|p{6.8cm}|p{3.5cm}|}
 \caption{Annotated description of variables in the \dataframe{HELPrct} dataset}
 \label{tab:helpvars} \\
