@@ -129,7 +129,7 @@ Eventually, the formula will be used to guide students to thinking about using e
 \chapter{From Means to Models}
 
 \marginnote{Remember to load the \texttt{mosaic} package:
-<<>>=
+<<eval=FALSE>>=
 require(mosaic)
 @
 }
