@@ -172,7 +172,7 @@ The model, \texttt{mod1}, created earlier, is not exactly a function.\marginnote
 <<eval=FALSE>>=
 mod1
 @
-This displays the model coefficients.  In addition to \function{makeFun}, you can use such operations as \function{r.squared}, \function{fitted}, and \function{resid}.} It's set up this way because there are several different types of information one might want to get from a model, not just the model function.  You can use \function{makeFun} to extract the model function from \texttt{mod1}: 
+This displays the model coefficients.  In addition to \function{makeFun}, you can use such operations as \function{rsquared}, \function{fitted}, and \function{resid}.} It's set up this way because there are several different types of information one might want to get from a model, not just the model function.  You can use \function{makeFun} to extract the model function from \texttt{mod1}: 
 <<>>=
 f1 = makeFun(mod1)
 @
@@ -518,12 +518,12 @@ var(fitted(mod1))/var(distance,data=trebuchet)
 @
 For convenience, you can extract the $R^2$ statistic directly from the model, just as you can extract the model function, the fitted values and residuals:
 <<>>=
-r.squared(mod1)
+rsquared(mod1)
 @
 
 An important question is whether $R^2$ can be used to compare different model designs to decide which is best.  For instance, $R^2$ from the groupwise-mean model \texttt{mod3} is somewhat larger than for \texttt{mod1}:
 <<>>=
-r.squared(mod3)
+rsquared(mod3)
 @
 Does this mean that \texttt{mod3} is better than \texttt{mod1}?  That will turn out to be a productive route to studying statistical inference.  But before heading in that direction, let's expand the set of models that students can build and interpret.
 
@@ -847,19 +847,19 @@ Next, you need to randomize the explanatory variable and calculate the test stat
 As a specific example, consider a simple model with the swim-records data and $R^2$ as the test statistic: 
 <<>>=
 mod1 = lm(time~sex,data=SwimRecords)
-test.stat = r.squared(mod1) # test statistic
+test.stat = rsquared(mod1) # test statistic
 test.stat
 @
 Now, just for demonstration, carry out one randomization trial and find the test statistic:
 <<>>=
 # One randomization
-r.squared(lm(time~shuffle(sex),data=SwimRecords))
+rsquared(lm(time~shuffle(sex),data=SwimRecords))
 @
 It's worthwhile when working with students to repeat the above line several times to show that the test statistic varies.  Then you can move on to having the computer repeat the trials many times and collect the results:
 
 \begin{widestuff}
 <<>>=
-s = do(1000)*r.squared(lm(time~shuffle(sex),data=SwimRecords))
+s = do(1000)*rsquared(lm(time~shuffle(sex),data=SwimRecords))
 @
 \end{widestuff}
 
@@ -879,8 +879,8 @@ It's exactly the same structure for the one-way ANOVA test.
 \begin{widestuff}
 <<>>=
 mod2 = lm(wage~sector,data=CPS85)
-test.stat2 = r.squared(mod2) # test statistic
-s2 = do(1000)*r.squared(lm(wage~shuffle(sector),data=CPS85))
+test.stat2 = rsquared(mod2) # test statistic
+s2 = do(1000)*rsquared(lm(wage~shuffle(sector),data=CPS85))
 tally( ~result >= test.stat2, data=s2, format="count")
 @
 \end{widestuff}

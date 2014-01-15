@@ -457,7 +457,7 @@ options(show.signif.stars=FALSE)
 coef(model)
 summary(model)
 confint(model)
-r.squared(model)
+rsquared(model)
 @
 
 
