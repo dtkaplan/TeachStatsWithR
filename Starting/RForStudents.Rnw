@@ -40,7 +40,7 @@ product                     # display the result
 product <- 15.3 * 23.4      # <- can be used instead of =
 product                     
 @
-\TeachingTip[-16ex]{It's probably best to settle on using 
+\TeachingTip{It's probably best to settle on using 
 one or the other of the right-to-left assignment operators rather than to switch
 back and forth.  The authors have different preferences:
 two of us find the equal sign to be simpler for students and more 

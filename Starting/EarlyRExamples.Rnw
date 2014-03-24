@@ -352,7 +352,7 @@ tally(~deal(cards, 5))
 know that the possible values are 'M' and 'T', even when only one
 or the other appears in a given random sample.}
 <<lady-five,cache=TRUE>>=
-results <- do(10000) * tally(deal(cards, 5))
+results <- do(10000) * tally(~deal(cards, 5))
 tally(~ M, data=results)
 tally(~ M, data=results, format="prop")
 tally(~ M, data=results, format="perc")
@@ -453,10 +453,10 @@ developed symptoms of Wilt disease.
 
 <<eval=TRUE, message=FALSE, tidy=FALSE>>=
 Mites <- data.frame(
-			mites = c(rep("Yes", 11), rep("No", 17), 
-					  rep("Yes", 15), rep("No", 4)),
-			wilt = c(rep("Yes", 28), rep("No", 19))
-			)
+   mites = c(rep("Yes", 11), rep("No", 17), 
+             rep("Yes", 15), rep("No", 4)),
+   wilt = c(rep("Yes", 28), rep("No", 19))
+)
 tally(~ wilt + mites, Mites)
 @
 
