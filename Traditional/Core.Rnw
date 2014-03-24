@@ -155,7 +155,7 @@ male <- subset(HELPrct, sex=='male')
 with(female, stem(cesd))
 @
 
-Subsets can also be generated and used on the fly (this time including
+Subsets can also be generated and used ``on the fly" (this time including
 an overlaid normal density):
 <<women-cesd-hist,tidy=FALSE>>=
 histogram(~ cesd, fit="normal",
@@ -299,7 +299,7 @@ counts, percentages and proportions for a categorical variable.
 
 <<homeless-table>>=
 tally(~ homeless, data=HELPrct)      
-tally(~ homeless, margins=FALSE, data=HELPrct)      
+tally(~ homeless, margins=TRUE, data=HELPrct)      
 tally(~ homeless, format="percent", data=HELPrct)      
 tally(~ homeless, format="proportion", data=HELPrct)  
 @
