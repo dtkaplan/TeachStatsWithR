@@ -572,8 +572,7 @@ This may give a more accurate visual representation in some
 situations (since the distribution can ``taper off'' better).  More importantly, it makes 
 it much easier to overlay multiple distributions.
 <<>>=
-freqpolygon( ~ Sepal.Length, data=iris, groups=Species, 
-               ylim=c(0,65))
+freqpolygon( ~ Sepal.Length, data=iris, groups=Species )
 @
 
 \medskip
