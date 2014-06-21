@@ -98,6 +98,7 @@ knit_hooks$set(document = function(x) {
 <<child='Manipulate.Rnw', eval=TRUE>>=
 @
 
+% This seems unneeded -- 2014-06-21 rjp
 <<child='RIntro.Rnw', eval=TRUE>>=
 @
 
