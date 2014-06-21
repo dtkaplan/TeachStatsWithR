@@ -83,7 +83,8 @@ knit_hooks$set(document = function(x) {
 <<child='RForInstructors.Rnw', eval=TRUE>>=
 @
 
-<<child='ByHand.Rnw', eval=TRUE>>=
+% don't need this -- just a stub at moment anyway -- 2014-06-21 rjp
+<<child='ByHand.Rnw', eval=FALSE>>=
 @
 
 % Unless we create more examples, this is being deleted.
