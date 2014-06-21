@@ -1,9 +1,6 @@
 <<echo=FALSE,include=FALSE>>=
-source('../include/setup.R')
 opts_chunk$set( fig.path="figures/RIntro-" ) 
-if (!exists("..makingMaster..")) {
-	set_parent('Master-Starting.Rnw')
-}
+set_parent('Master-Starting.Rnw')
 set.seed(123)
 @
 
@@ -116,6 +113,7 @@ What happens if you leave the comma in this number?
 <<>>=
 log(12,345)
 @
+
 %Copy-and-paste your \R\ code into your Word document.  
 %Be sure to use a fixed-width font (like Courier) when you display \R\ code.  This will
 %(1) make it clear that you are displaying \R\ input or output, and (2) keep things aligned 
@@ -131,6 +129,7 @@ log(12,345)
 15.3 * 23.4
 sqrt(16)
 @
+
 This last example demonstrates how functions are called within \R.
 
 You can save values to named variables for later reuse.
@@ -155,6 +154,7 @@ product
 15.3 * 23.4 -> newproduct   # -> assigns to the right: be careful!
 newproduct
 @
+
 Once variables are defined, they can be referenced with other operators
 and functions.
 
@@ -184,6 +184,7 @@ Functions in \R\ use the following syntax:
 <<"intro-function-syntax",eval=FALSE>>=
 functionname( argument1, argument2, ... )
 @
+
 \vspace{-5mm}
 \TeachingTip{To help students get the hang of function arguments,
 ask them \emph{What information does the computer need to compute this?}
@@ -328,6 +329,7 @@ For example,
 <<"intro-example-histogram",eval=FALSE,results="hide">>=
 example(histogram)
 @
+
 will generate a number of example plots (and provide you with the commands used to create them).
 Examples such as this are intended to help you learn how specific \R\ functions work.
 \FoodForThought{Not all package authors are equally skilled at creating examples.  
@@ -622,6 +624,7 @@ require(lattice)
 <<intro-formula-interface, eval=FALSE, echo=TRUE>>=
 plotname( y ~ x | z, data=dataname, groups=grouping_variable, ...)
 @
+
 \begin{itemize}
 \item
 Here are the names of several \verb!lattice! plots:

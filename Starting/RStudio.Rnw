@@ -1,10 +1,7 @@
 
 <<echo=FALSE,include=FALSE>>=
-source('../include/setup.R')
 opts_chunk$set( fig.path="figures/RStudio-" ) 
-if (!exists("..makingMaster..")) {
-	set_parent('Master-Starting.Rnw')
-}
+set_parent('Master-Starting.Rnw')
 set.seed(123)
 @
 

@@ -1,20 +1,12 @@
 <<echo=FALSE,include=FALSE>>=
-source('../include/setup.R')
 opts_chunk$set( fig.path="figures/RForInstructors-" ) 
-if (!exists("..makingMaster..")) {
-	set_parent('Master-Starting.Rnw')
-}
+set_parent('Master-Starting.Rnw')
 set.seed(123)
 @
 
 \chapter{What Instructors Need to Know about R}
 \label{chap:RForInstructors}
 
-
-<<include=FALSE>>=
-source('../include/setup.R')
-opts_chunk$set( fig.path="figures/RForInstructors-" )  
-@ 
 
 
 \marginnote{You may find that some of these things are useful for your 
@@ -62,6 +54,7 @@ handling is supported with the \pkg{optparse} package.}
 <<mr-source,eval=FALSE>>=
 source("file.R") 
 @
+
 \Rstudio\ has additional options for executing some or all lines in a file. 
 See the buttons in the panel for any \R\ script, RMardown or Rnw file.  
 (You can create a new file in the main \tab{File} menu.)
@@ -97,6 +90,7 @@ you can selectively copy portions of your history to a script file
 # compute, save, display idiom
 footModel <- lm( length ~ width, data=KidsFeet ); footModel
 @
+
 	  Often there are multiple ways to do the same thing in \R,
 	  but if you adopt good programming idioms, it will be clearer to both you and
 	  your students what you are doing.
@@ -312,6 +306,7 @@ Names can also be specified as a vector is created using \function{c()}.
 <<>>=
 another <- c(mean=10, sd=2, "trimmed mean"=9.7); another
 @
+
 \subsection{Vectorized functions}
 
 Many \R\ functions and operations are ``vectorized'' and can be applied
@@ -383,6 +378,7 @@ diff(x)                                 # pairwise differences
 cumsum(x)                               # cumulative sum
 cumprod(x)                              # cumulative product
 @
+
 \label{r:sumprod}%
 
 Whether a function is vectorized or treats a vector as a unit
@@ -646,6 +642,7 @@ chrom1 <-
 dim(chrom1)
 head(chrom1,2)
 @
+
 \end{widestuff}
 
 %A great example of this is the 12 gigabytes of data from the Airline on-time
@@ -690,6 +687,7 @@ sample(x, size=5)
 # random sample of size 5 from x (with replacement)
 resample(x, size=5)         
 @
+
 Functions for sampling from other distributions include
 \function{rbinom()},
 \function{rchisq()},
@@ -705,6 +703,7 @@ approximate shape of some distribution.  One way to do that was illustrated abov
 x1 <- rnorm(500, mean=10, sd=2)
 histogram(~x1, width=.5)
 @
+
 This works, but the resulting plot has a fair amount of noise.
 
 The \function{ppoints()} function returns evenly spaced probabilities and 
@@ -714,6 +713,7 @@ The resulting plot now illustrates the idealized sample from a normal distributi
 x2 <- qnorm( ppoints(500), mean=10, sd=2 )
 histogram(~x2, width=.5)
 @
+
 This is not what real data will look like (even if it comes from a normal population),
 but it can be better for illustrative purposes to remove the noise.
 \end{example}
@@ -844,6 +844,7 @@ quoted URL:
 <<read-quoted-URL>>=
 a <- read.csv("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
 @ 
+
 %\InstructorNote{The history feature in \RStudio\ can be used to 
 %re-run this command in future sessions.}
 
@@ -870,6 +871,7 @@ The example below will source a file that will print a welcoming message for you
 <<source-example>>=
 source('http://mosaic-web.org/go/R/hello.R')
 @
+
 But you can put any \R\ code you like in the files you have your students source.
 You can install and load packages, retrieve or modify data sets, define new functions,
 or anything else \R\ allows.
@@ -1059,10 +1061,12 @@ Births <- transform( Births78,
                           ordered=TRUE, levels = weekdays) )
 head(Births,3)
 @
+
 \begin{figure*}
 <<Births-plot,fig.width=6,out.width="\\textwidth", tidy=FALSE>>=
 xyplot( births ~ dayofyear, Births, groups=day, auto.key=list(space='right') )
 @
+
 \caption{Number of US births in 1978 colored by day of week.}
 \end{figure*}
 %If we save \dataframe{Births} using \function{write.csv()}, we will lose the ordering 
@@ -1086,6 +1090,7 @@ of years of education obtained.
 CPS85 <- transform(CPS85, workforce.years = age - 6 - educ)
 favstats(~workforce.years, data=CPS85)
 @
+
 In fact this is what was done for all but one of the cases to create the \variable{exper} 
 variable that is already in the \dataframe{CPS85} data.
 <<>>=
@@ -1100,6 +1105,7 @@ ddd                        # small data frame we defined earlier
 row.names(ddd) <- c("Abe","Betty","Claire","Don","Ethel")
 ddd                        # row.names affects how a data.frame prints
 @
+
 More interestingly, it is possible to reset just individual names with the following
 syntax.
 <<>>=
@@ -1116,16 +1122,19 @@ But here we want to illustrate how to repair the damage in \dataframe{faithful}.
 <<>>=
 names(faithful)
 @
+
 The measurements are the duration of an eruption and the time until the subsequent eruption,
 so let's give it some better names.
 <<>>=
 names(faithful) <- c('duration', 'time.til.next')
 head(faithful, 3)
 @
+
 \begin{center}
 <<faithful-xy>>=
 xyplot(time.til.next ~ duration, faithful)
 @
+
 \end{center}
 \marginnote{
 If the variable containing a data frame is modified or used to store a different object,
@@ -1152,6 +1161,7 @@ it clearer what is going on here.}
 names(CPS85)[names(CPS85) == 'education'] <- 'educ'
 CPS85[1,1:4]
 @
+
 \subsection{Creating subsets}
 \label{sec:subsets}
 We can use \function{subset()} to select 
@@ -1162,6 +1172,7 @@ only certain rows from a data frame.
 faithfulLong <- subset(faithful, duration > 3)        
 xyplot( time.til.next ~ duration, faithfulLong )
 @
+
 \end{center}
 
 Of course, if all we want to do is produce a graph, there is no reason to create 
@@ -1180,6 +1191,7 @@ Notice the clever use of the minus sign.
 <<>>=
 CPS1 <- subset(CPS85, select = -workforce.years)
 @
+
 Any number of variables can be dropped or kept in this manner by supplying a vectors
 of variables names.
 <<>>=
@@ -1235,6 +1247,7 @@ fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id',
                   all.x=FALSE, all.y=FALSE)
 head(fusion1m, 3)
 @
+
 In this case, since the values are the same for each data frame, we could collapse
 \option{by.x} and \option{by.y} to \option{by} and collapse
 \option{all.x} and \option{all.y} to \option{all}.
@@ -1258,6 +1271,7 @@ Note that \dfn{fusion1} and \dfn{fusion2} have the same columns.
 names(fusion1)
 names(fusion2)
 @
+
 You may want to use the \option{suffixes} argument to \function{merge()} or rename the variables
 after you are done merging to make the resulting data frame easier to navigate.
 
@@ -1283,6 +1297,7 @@ row is a year, and data for multiple states are provided.
 <<traffic-reshape>>=
 traffic
 @
+
 We can reformat this so that each row contains a measurement for a 
 single state in one year.
 
@@ -1294,6 +1309,7 @@ longTraffic <-
       direction="long") 
 head(longTraffic)
 @
+
 And now we can reformat the other way, this time having all data for a given state 
 form a row in the data frame.
 <<tidy=FALSE>>=
@@ -1302,6 +1318,7 @@ stateTraffic <-
            v.names="deathRate", idvar="state", timevar="year")
 stateTraffic
 @
+
 
 In simpler cases, \function{stack()} or \function{unstack()} may suffice.
 \verb!Hmisc! also provides \verb!reShape()! as an alternative 
@@ -1643,6 +1660,7 @@ text where quotation marks were required.
 <<noquotes-error,error=TRUE>>=
 text3 <- hello
 @
+
 In this case, \R\ is looking for some object named \variable{hello}, but we meant to store
 a string:
 <<noquotes-error-fix,error=TRUE>>=
@@ -1659,12 +1677,14 @@ a comma.
 c(1,2 3)                        # missing a comma
 
 @
+
 \vspace*{-.55in}
 <<echo=FALSE,include=FALSE>>=
 c <- function(...) {
   stop('unexpected numeric constant in "c(1,2 3"')
 }
 @
+
 <<error=TRUE,echo=FALSE,error=TRUE>>=
 c()
 @
@@ -1745,6 +1765,7 @@ show.settings()                                  # inspect lattice theme
 <<eval=FALSE, tidy=FALSE>>=
 fetchGoogle( ... )                               # get data from google URL
 @
+
 \end{widestuff}
 
 \section{Exercises}

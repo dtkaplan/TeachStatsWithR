@@ -1,9 +1,6 @@
 <<echo=FALSE,include=FALSE>>=
-source('../include/setup.R')
 opts_chunk$set( fig.path="figures/RForStudents-" ) 
-if (!exists("..makingMaster..")) {
-	set_parent('Master-Starting.Rnw')
-}
+set_parent('Master-Starting.Rnw')
 set.seed(123)
 @
 
@@ -26,6 +23,7 @@ Try typing the following commands in the console panel.
 15.3 * 23.4
 sqrt(16)  # square root function
 @
+
 This last example demonstrates how functions are called within \R\ as
 well as the use of comments.
 Comments are prefaced with the \verb!#! character.
@@ -40,6 +38,7 @@ product                     # display the result
 product <- 15.3 * 23.4      # <- can be used instead of =
 product                     
 @
+
 \TeachingTip{It's probably best to settle on using 
 one or the other of the right-to-left assignment operators rather than to switch
 back and forth.  The authors have different preferences:
@@ -50,6 +49,7 @@ can also be used in a left to right manner, and because it makes
 a clear distinction between the assignment operator, the use of \code{=}
 to provide values to arguments of functions, and the use of \code{==} to test
 for equality.}%
+
 Once variables are defined, they can be referenced in other operations
 and functions.
 
@@ -174,6 +174,7 @@ and then load it:
 <<>>=
 require(mosaic)            # load the package before use.
 @
+
 \Caution{Remember that in RMarkdown and Rnw files, any
 packages you use must be loaded within the file.}
 \noindent
@@ -1070,8 +1071,8 @@ to using data they find or collect themselves.  When this happens will depend on
 the type of students you have and the type of course you are teaching.
 
 \R\ provides the functions \function{read.csv()} (for comma separated values files),
-\function{read.table()} (for white space delimited files) and \function{load()}
-(for loading data in \R's native format).
+\function{read.table()} (for white space delimited files) 
+and \function{load()} (for loading data in \R's native format).
 The \pkg{mosaic} package includes a function called \function{read.file()} that uses 
 slightly different default settings and infers whether it should use \function{read.csv()},
 \function{read.table()}, or \function{load()} based on the file name.  
