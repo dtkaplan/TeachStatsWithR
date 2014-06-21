@@ -1,13 +1,14 @@
 
 
-\documentclass[openany]{tufte-book}
+\documentclass[openany,12pt]{tufte-book}
 
 \def\cplabel{^X} 
 
-\usepackage{../include/RBook}
+\usepackage{RBook}
 \usepackage{pdfpages}
 %\usepackage[shownotes]{authNote}
 \usepackage[hidenotes]{authNote}
+\usepackage{language}
 
 \def\tilde{\texttt{\~}}
 
@@ -15,7 +16,7 @@
 \author{Randall Pruim, Nicholas J. Horton, and Daniel Kaplan}
 \date{DRAFT: \today}
 
-\renewenvironment{knitrout}{\relax}{\noindent}
+%\renewenvironment{knitrout}{\relax}{\noindent}
 
 \begin{document}
 
@@ -28,7 +29,39 @@
 \newpage
 
 <<include=FALSE>>=
-..makingMaster.. <- TRUE
+#setCacheDir("cache")
+require(grDevices) 
+require(datasets) 
+require(stats) 
+require(lattice)
+require(grid) 
+# require(fastR)	# commented out by NH on 7/12/2012
+require(mosaic) 
+trellis.par.set(theme=col.mosaic(bw=FALSE))
+trellis.par.set(fontsize=list(text=9))
+options(keep.blank.line=FALSE) 
+options(width=60)
+require(vcd)
+require(knitr)
+opts_chunk$set(  tidy=TRUE,
+			     size='small',
+                 dev="pdf",
+                 fig.path="figures/fig-",  
+                 fig.width=3, fig.height=2,
+                 fig.align="center",
+                 fig.show="hold",
+                 comment=NA)
+@
+
+<<include=FALSE>>=
+knit_hooks$set(document = function(x) { 
+			   sub('\\usepackage[]{color}', '\\usepackage[]{xcolor}', 
+			   x, fixed = TRUE) 
+}) 
+
+knit_hooks$set(document = function(x) { 
+  gsub('%', '%% %%', x, fixed=TRUE)
+}) 
 @
 
 <<child='FrontMatter.Rnw', eval=TRUE>>=
@@ -50,10 +83,10 @@
 <<child='RForInstructors.Rnw', eval=TRUE>>=
 @
 
-<<child='ByHand.Rnw', eval=FALSE>>=
+<<child='ByHand.Rnw', eval=TRUE>>=
 @
 
-% Unless we create more examples, this is begin deleted.
+% Unless we create more examples, this is being deleted.
 <<child='MoreExamples.Rnw', eval=FALSE>>=
 @
 
@@ -64,7 +97,7 @@
 <<child='Manipulate.Rnw', eval=TRUE>>=
 @
 
-<<child='RIntro.Rnw', eval=FALSE>>=
+<<child='RIntro.Rnw', eval=TRUE>>=
 @
 
 <<child='Handouts.Rnw', eval=FALSE>>=
