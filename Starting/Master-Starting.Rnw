@@ -16,17 +16,7 @@
 \author{Randall Pruim, Nicholas J. Horton, and Daniel Kaplan}
 \date{DRAFT: \today}
 
-%\renewenvironment{knitrout}{\relax}{\noindent}
-
-\begin{document}
-
-%\maketitle
-\includepdf{USCOTS-cover}
-\newpage
-
-\tableofcontents
-
-\newpage
+\renewenvironment{knitrout}{\relax}{\noindent}
 
 <<include=FALSE>>=
 #setCacheDir("cache")
@@ -59,10 +49,20 @@ knit_hooks$set(document = function(x) {
 			   x, fixed = TRUE) 
 }) 
 
-knit_hooks$set(document = function(x) { 
-  gsub('%', '%% %%', x, fixed=TRUE)
-}) 
+#knit_hooks$set(document = function(x) { 
+#  gsub('(\\\\end\\{knitrout\\})\n', '\\1', x) 
+#}) 
 @
+\begin{document}
+
+%\maketitle
+\includepdf{USCOTS-cover}
+\newpage
+
+\tableofcontents
+
+\newpage
+
 
 <<child='FrontMatter.Rnw', eval=TRUE>>=
 @
@@ -76,6 +76,8 @@ knit_hooks$set(document = function(x) {
 <<child='EarlyRExamples.Rnw', eval=TRUE>>=
 @
 
+<<child='TheTemplate.Rnw', eval=TRUE>>=
+@
 
 <<child='RForStudents.Rnw', eval=TRUE>>=
 @
