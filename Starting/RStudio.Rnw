@@ -37,7 +37,7 @@ interface to \R\ that has several advantages over other the default \R\ interfac
 		right where they left off.
 		With a little advanced set up, instructors can save the history of their 
 		classroom \R\ use and students can load those history files into their own
-		workspace.
+		environment.
 		\marginnote{\RStudio\ is like Facebook for statistics.}%
 	\item
 		\RStudio\ provides support for reproducible research.
@@ -71,7 +71,7 @@ interface to \R\ that has several advantages over other the default \R\ interfac
 		 \RStudio\ provides some useful functionality via a graphical user interface.
 
 		 \RStudio\ is not a GUI for \R, but it does provide a GUI that simplifies things
-		 like installing and updating packages; monitoring, saving and loading workspaces;
+		 like installing and updating packages; monitoring, saving and loading environments;
 		 importing and exporting data; browsing and exporting graphics; and browsing files and 
 		 documentation.
 
@@ -153,12 +153,11 @@ can be customized by the user.
 \marginnote[-2in]{We find it convenient to put the console in the upper left rather than the default 
 location (lower right) so that students can see it better when we project or \R\ session in class.}
 
-\section{Using R as a Calculator}
+\section{Using R as a Calculator in the Console}
 \R\ can do much more than a simple calculator, and we will introduce 
 additional features in due time.  But performing simple calculations in \R\ is a
 good way to begin learning the features of \RStudio.
 
-\subsection{Calculating in the Console Tab}
 Commands entered in the \tab{Console} tab are immediately executed by \R.
 A good way to familiarize yourself with the console is to do some simple 
 calculator-like computations.  Most of this will work just like you would 
@@ -170,6 +169,56 @@ Try typing the following commands in the console panel.
 15.3 * 23.4
 sqrt(16)                  # square root
 @
+
+
+This last example demonstrates how functions are called within \R\ as
+well as the use of comments.
+Comments are prefaced with the \verb!#! character.
+Comments can be very helpful when writing scripts 
+with multiple commands or to annotate example code for your students.
+
+You can save values to named variables for later reuse.
+
+<<rs-variables1a,tidy=FALSE>>=
+product = 15.3 * 23.4       # save result
+product                     # display the result
+product <- 15.3 * 23.4      # <- can be used instead of =
+product                     
+@
+
+\TeachingTip{It's probably best to settle on using 
+one or the other of the right-to-left assignment operators rather than to switch
+back and forth.  The authors have different preferences:
+two of us find the equal sign to be simpler for students and more 
+intuitive, while the other prefers the arrow operator because it
+represents visually what is happening in an assignment, because it
+can also be used in a left to right manner, and because it makes 
+a clear distinction between the assignment operator, the use of \code{=}
+to provide values to arguments of functions, and the use of \code{==} to test
+for equality.}%
+
+Once variables are defined, they can be referenced in other operations
+and functions.
+
+<<rs-variables2,tidy=FALSE>>=
+0.5 * product               # half of the product
+log(product)                # (natural) log of the product
+log10(product)              # base 10 log of the product
+log2(product)               # base 2 log of the product
+log(product, base=2)        # base 2 log of the product, another way
+@
+\authNote{can we come up with a better (e.g. less mathematical) example?}
+
+The semi-colon can be used to place multiple commands on one line.  
+One frequent use of this is to save and print a value all in one go:
+
+<<rs-variables-semi,tidy=FALSE>>=
+product <- 15.3 * 23.4; product    # save result and show it
+@
+
+
+
+\section{Working with Files}
 
 \subsection{Working with \R\ Script Files}
 As an alternative, \R\ commands can be stored in a file.  \RStudio\ provides
@@ -187,17 +236,18 @@ For those who do not already know \LaTeX, the simpler RMarkdown system provides 
 entry into the world of reproducible research methods.  It also provides a good facility
 for students to create homework and reports that include text, \R\ code, \R\ output, and graphics.
 
-To create a new RMardown file, select \tab{File}, then \tab{New File}, then \tab{RMarkdown}.
+To create a new RMarkdown file, select \tab{File}, then \tab{New File}, then \tab{RMarkdown}.
 The file will be opened with a short template document that illustrates the mark up language.
 Click on \tab{Compile HTML} to convert this to an HTML file.  There is a button the 
-provides a brief description of the mark commands supported, and the \RStudio\ web site includes more
-extensive tutorials on using RMarkdown.
+provides a brief description of the mark commands supported, and the \RStudio\ web site 
+includes more extensive tutorials on using RMarkdown.
 
-\Caution{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console workspace, 
-so the code in them must be self-contained.}%
-It is important remember that unlike \R\ scripts, which are executed in the
-console and have access to the console workspace,  RMarkdown and \pkg{knitr}/\LaTeX\
-files do not have access to the console workspace.  This is a good feature because it forces
+\Caution{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console environment, 
+so the code in them must be self-contained.}
+%
+It is important to remember that unlike \R\ scripts, which are executed in the
+console and have access to the console environment,  RMarkdown and \pkg{knitr}/\LaTeX\
+files do not have access to the console environment  This is a good feature because it forces
 the files to be self-contained, which makes them transferable and respects good
 reproducible research practices.  But beginners, especially if they adopt a
 strategy of trying things out in the console and copying and pasting successful
@@ -227,11 +277,24 @@ that you don't want saved to spare your students repeating all of your typing er
 An alternative is to produce RMarkdown files in class and make those available.  This provides
 a better mechanism for adding additional comments or instructions.
 
+\subsection{Communication between tabs}
+
+\RStudio\ provides several ways to move \R\ code between tabs.  Pressing the \tab{Run} button
+in the editing panel for an \R\ script or RMarkdown or other file will copy lines of code
+into the Console and run them.
 \subsection{The Files Tab}
 The \tab{Files} tab provides a simple file manager.  It can be navigated in familiar ways
 and used to open, move, rename, and delete files.  In the browser version of \RStudio, 
 the \tab{Files} tab also provides a file upload utility for moving files from the local
 machine to the server.
+In RMarkdown and knitr files one can also run the code in a particular chunk or in all of the 
+chunks in a file.  Each of these features makes it easy to try out code ``live'' while 
+creating a document that keeps a record of the code.
+
+In the reverse direction, code from the history can be copied either back into the console
+to run them again (perhaps after editing) or into one of the file editing tabs for inclusion
+in a file.
+
 
 \subsection{The Help Tab}
 The \tab{Help} tab is where \RStudio\ displays \R\ help files.  These can be searched and navigated
@@ -242,11 +305,14 @@ For example
 @
 Will provide the help file for the logarithm function.
 
-\subsection{The Workspace Tab}
-The \tab{Workspace} tab shows the objects available to the console.  These are
+\subsection{The Environment Tab}
+The \tab{Environment} tab shows the objects available to the console.  These are
 subdivided into data, values (non-data frame, non-function objects) and
-functions.  Clicking on a data frame will open it a data viewer.  Clicking on
-other objects will open them in a small editor so you can ``fix'' them.
+functions.  
+The broom icon can be used to remove all objects from the environment, and it is good
+to do this from time to time, especially when running in RStudio server or if you 
+choose to save the environment when shutting down \RStudio\, since in these cases objects 
+can stay in the environment essentially indefinitely.
 
 \subsection{The Plots Tab}
 Plots created in the console are displayed in the \tab{Plots} tab.  For example,
