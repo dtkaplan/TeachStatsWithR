@@ -212,15 +212,15 @@ and to develop collaborations to refine and develop them.
 A schedule of future M-casts and recordings of past M-casts are available
 at the Project MOSAIC web site, \url{http://mosaic-web.org}.
 
-\item[The development of a ``concept inventory" to support teaching modeling.] 
-It is somewhat rare in today's curriculum for modeling to be taught. 
-College and university catalogs are filled with descriptions of courses 
-in statistics, computation, and calculus. There are many textbooks in 
-these areas and most new faculty teaching statistics, computation, 
-and calculus have a solid idea of what should be included. 
-But modeling is different. It's generally recognized
-as important, but few if instructors have a clear view of the essential
-concepts.
+%\item[The development of a ``concept inventory" to support teaching modeling.] 
+%It is somewhat rare in today's curriculum for modeling to be taught. 
+%College and university catalogs are filled with descriptions of courses 
+%in statistics, computation, and calculus. There are many textbooks in 
+%these areas and most new faculty teaching statistics, computation, 
+%and calculus have a solid idea of what should be included. 
+%But modeling is different. It's generally recognized
+%as important, but few if instructors have a clear view of the essential
+%concepts.
 
 \item[The construction of syllabi and materials] 
 for courses that teach the MOSAIC topics in a better integrated way. Such
@@ -231,7 +231,7 @@ connections between the MOSAIC topics.
 
 We welcome and encourage your participation in all of these initiatives.
 
-\chapter*{Statistical Computation and Computational Statistics}
+\chapter*{Statistical Computation, Computational Statistics, and Data Science}
 
 There are at least two ways in which statistical software
 can be introduced into a statistics course.  In the first approach, the course
@@ -248,8 +248,12 @@ introduction of the computer.  Some new topics are covered, some old topics are
 omitted.  Some old topics are treated in very different ways, and perhaps at
 different points in the course.  We will refer to this approach as
 \term{computational statistics} because the availability of computation is
-shaping how statistics is done and taught.
+shaping how statistics is done and taught.  This is a key capacity of 
+\term{data science}, as defined as the ability to use data to answer statistical questions
+and communicate those results.
 
+\FoodForThought{Our students need to see aspects of computation and data science early and often
+to develop deeper skills.  Establishing precursors in introductory courses will help them get started.}%
 In practice, most courses will incorporate elements of both 
 statistical computation and computational statistics, but the relative 
 proportions may differ dramatically from course to course.
@@ -260,6 +264,7 @@ the availability of technology for student use,
 the perspective of the text book used,
 and the comfort-level 
 of the instructor with both statistics and computation.
+
 
 Among the various statistical software packages available, \R\ is becoming
 increasingly popular.  The recent addition of \RStudio\ had made \R\ both
