@@ -831,7 +831,8 @@ might be interested in the association of homeless status and age for each of th
 <<tidy=FALSE>>=
 mymod1 = glm(homeless=="homeless" ~ age + substance, family=binomial, 
   data=HELPrct)
-mymod2 = glm(homeless=="homeless" ~ age, family=binomial, data=HELPrct)
+mymod2 = glm(homeless=="homeless" ~ age, family=binomial, 
+  data=HELPrct)
 summary(mymod1)
 exp(coef(mymod1))
 anova(mymod2, mymod1, test="Chisq")
@@ -943,7 +944,7 @@ lm1fun = makeFun(lm1)
 @
 We can now plot this function for a range of values for MCS (mental component score), along
 with the observed data for 36 year olds.  
-<<plotFUN,tidy=FALSE>>=
+<<plotFUN,tidy=FALSE,fig.keep='last'>>=
 xyplot(cesd ~ mcs, groups=sex, auto.key=TRUE, 
   data=subset(HELPrct, age==36))
 plotFun(lm1fun(mcs, age=36, sex="male") ~ mcs, 
@@ -953,12 +954,21 @@ plotFun(lm1fun(mcs, age=36, sex="female") ~ mcs,
 @
 
 
+\subsection{Coefficient plots}
+
+It is sometimes useful to display a plot of the coefficients for a multiple regression model (along with their associated
+confidence intervals).
+
+<<>>=
+mplot(lm1, which=7, multiplot=FALSE)
+@
 
 \subsection{Residual diagnostics}
 
 It's straightforward to undertake residual diagnostics for this model.  We begin by adding the
 fitted values and residuals to the dataset.
 \Caution{Be careful when fitting regression models with missing values (see also section \ref{sec:miss}).}
+\TeachingTip{The \function{mplot} function can also be used to create these graphs.}
 <<>>=
 HELPrct = transform(HELPrct, residuals = resid(lm1))
 HELPrct = transform(HELPrct, pred = fitted(lm1))
@@ -1413,8 +1423,8 @@ names(CPS85)
 CPS1 <- subset(CPS85, select = -workforce.years)
 names(CPS1)
 @
-Any number of variables can be dropped or kept in this manner by supplying a vectors
-of variables names.
+Any number of variables can be dropped or kept in this manner by supplying a vector
+of variable names.
 <<>>=
 CPS1 <- subset(CPS85, select = -c(workforce.years, exper))
 @
@@ -1634,6 +1644,15 @@ HELPrct = transform(HELPrct, cesdcut = cut(cesd,
   breaks=c(0, 20, 40, 60), include.lowest=TRUE))
 bwplot(cesd ~ cesdcut, data=HELPrct)
 @
+
+It might be preferable to give better labels.
+<<tidy=FALSE>>=
+HELPrct = transform(HELPrct, cesdcut = cut(cesd, 
+  labels=c("low", "medium", "high"),
+  breaks=c(0, 20, 40, 60), include.lowest=TRUE))
+bwplot(cesd ~ cesdcut, data=HELPrct)
+@
+
 
 \subsection{Reordering factors}
 By default R uses the first level in lexicographic order as the reference group for modeling.  This 
