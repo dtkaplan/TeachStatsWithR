@@ -144,7 +144,7 @@ provides a nice solution for mixing the two.
 We used this system to produce this book.  We also use it 
 for our own research and to introduce upper level students to 
 reproducible analysis methods.
-For beginners, we introduce \pkg{knitr} with RMardown,
+For beginners, we introduce \pkg{knitr} with RMarkdown,
 which produces HTML using a simpler syntax.}
 
 This document was created on
