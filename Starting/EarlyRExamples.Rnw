@@ -9,15 +9,18 @@ set.seed(123)
 \label{chap:EarlyR}
 This chapter includes some of our favorite activities for early 
 in the course.  These activities simultaneously provide the 
-students with an introduction to \R\ and to major themes of the course.
-
+students with a first glimpse of \R\ and an introduction to 
+some major themes of the course.  Used this way, it is not 
+necessary for students to understand the details of the \R\ code.
+Instead have them focus on the questions being asked on how the
+results presented shed light on the answers to these questions.
 
 \section{Coins and Cups: The Lady Tasting Tea}
 \label{sec:lady-tasting-tea}
 
-\marginnote{This section is a slightly modified version of a handout R. Pruim
-has given Intro Stats students on Day 1 \underline{after} going through
-the activity as a class discussion.}
+\marginnote{This section is a slightly modified version of a handout 
+one of the authors has given Intro Stats students on Day 1 \underline{after} 
+going through the activity as a class discussion.}
 
 There is a famous story about a lady who claimed that
 tea with milk tasted different depending on whether the milk was 
@@ -358,8 +361,9 @@ tally(~ M, data=results, format="prop")
 tally(~ M, data=results, format="perc")
 @
 
-\subsection{Births by Day}
+\section{Births by Day}
 
+\label{sec:Births78Intro}
 The \dataframe{Births78} data set contains the number of births in the United States for 
 each day of 1978.  
 \marginnote{The use of the phrase ``depends on'' is intentional.  
@@ -420,9 +424,17 @@ xyplot(sat ~ expend, data=SAT)
 
 The problem is that expenditures are confounded with the proportion of students who take the exam,
 and scores are higher in states where fewer students take the exam.
-<<>>=
+<<out.width=".47\\textwidth">>=
 xyplot(expend ~ frac, data=SAT)
 xyplot(sat ~ frac, data=SAT)
+@
+
+It is interesting to look at the original plot if we place the states into two groups
+depending on whether more or fewer than 40\% of students take the SAT:
+<<out.width=".47\\textwidth">>=
+SAT <- mutate(SAT, fracGroup = derivedFactor( hi = (frac > 40), lo = (frac <=40) ))
+xyplot( sat ~ expend | fracGroup , data=SAT, type=c("p","r") )
+xyplot( sat ~ expend, groups = fracGroup , data=SAT, type=c("p","r") )
 @
 
 This example can be used to warn against interpreting relationships causally and 
