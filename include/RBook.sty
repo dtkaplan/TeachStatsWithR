@@ -95,6 +95,10 @@
 \tikzNote[#1]{\centerline{More Info}}{#2}{}
 }
 
+\newcommand{\Note}[2][0pt]{%
+\tikzNote[#1]{\centerline{Note}}{#2}{}
+}
+
 \newcounter{examplenum}[chapter]
 \newenvironment{example}[1][\relax]{
 \refstepcounter{examplenum}
