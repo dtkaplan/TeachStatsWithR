@@ -12,62 +12,39 @@ set.seed(123)
 \label{chap:RForStudents}
 
 
-\section{Using R as a Calculator}
-Most students are familiar and comfortable with their hand-held calculators, so it
-is natural to begin an introduction to \R\ by showing them how \R\ can be used
-to perform typical calculator operations.
-
-Try typing the following commands in the console panel.
-<<rs-arithmetic>>=
-5 + 3
-15.3 * 23.4
-sqrt(16)  # square root function
-@
-
-This last example demonstrates how functions are called within \R\ as
-well as the use of comments.
-Comments are prefaced with the \verb!#! character.
-Comments can be very helpful when writing scripts 
-with multiple commands or to annotate example code for your students.
-
-You can save values to named variables for later reuse.
-
-<<rs-variables1a,tidy=FALSE>>=
-product = 15.3 * 23.4       # save result
-product                     # display the result
-product <- 15.3 * 23.4      # <- can be used instead of =
-product                     
-@
-
-\TeachingTip{It's probably best to settle on using 
-one or the other of the right-to-left assignment operators rather than to switch
-back and forth.  The authors have different preferences:
-two of us find the equal sign to be simpler for students and more 
-intuitive, while the other prefers the arrow operator because it
-represents visually what is happening in an assignment, because it
-can also be used in a left to right manner, and because it makes 
-a clear distinction between the assignment operator, the use of \code{=}
-to provide values to arguments of functions, and the use of \code{==} to test
-for equality.}%
-
-Once variables are defined, they can be referenced in other operations
-and functions.
-
-<<rs-variables2,tidy=FALSE>>=
-0.5 * product               # half of the product
-log(product)                # (natural) log of the product
-log10(product)              # base 10 log of the product
-log(product, base=2)        # base 2 log of the product
-@
-\authNote{can we come up with a better (e.g. less mathematical) example?}
+In Chapter~\ref{chap:RStudio}, we give a brief orientation to the \RStudio\ IDE
+and what happens in each of its tabs and panels.
+In Chapter~\ref{chap:Template}, we show how to make use of a common template
+for graphical summaries, numerical summaries, and modeling.
+In this chapter we cover some additional things that are important for 
+students to know about the \R\ language.
 
 
-The semi-colon can be used to place multiple commands on one line.  
-One frequent use of this is to save and print a value all in one go:
+\section{Two Questions}
 
-<<rs-variables-semi,tidy=FALSE>>=
-15.3 * 23.4 -> product; product    # save result and show it
-@
+When we introduced the formula template in Chapter~\ref{chap:Template}, we presented two
+important questions to ask before constructing an \R\ command.  
+These questions are useful in contexts beyond the formula template, and indeed for 
+computer systems beyond \R, so we repeat them here.  
+
+\TeachingTip{When students have difficulty accomplishing a task in \R, make sure
+they can answer these questions before you show them what to do.  If they cannot 
+answer these questions, then the primary problem is not with \R.  If you do this
+consistently, eventually, you will find your students presenting their \R\ questions 
+to you by answering these two questions and then asking ``So how do I get \R\ to do that?"
+More likely, once they have answered these two questions, they will already know how
+to get \R\ to do what they want -- unless they are asking about functionality that
+you have not yet presented.}
+%
+\begin{enumerate}
+	\item What do you want \R\ to do?  
+
+This will generally determine which \R\ function to use.
+
+	\item What must \R\ know to do that?  
+
+		This will determine the inputs to the function.  
+\end{enumerate}
 
 
 \section{Four Things to Know About \R}
@@ -170,20 +147,35 @@ For example, to use the \pkg{mosaic} package, we must first install it:
 <<eval=FALSE,tidy=FALSE>>=
 install.packages("mosaic") # fetch package from CRAN 
 @
-and then load it:
+Once the package has been installed it must be \emph{loaded} to make it available in
+the current session or file using
 <<>>=
-require(mosaic)            # load the package before use.
+library(mosaic)           # load the package before use
 @
+or 
+\TeachingTip{Although the use of \function{library()} is more common
+in this situation, we find that students remember the word \function{require()}
+better.  For their purposes, the two are essentially the same.  The biggest
+difference is how they respond when a package cannot be loaded (usually because
+it has not been installed).  \function{require()} generates a warning message 
+and returns a logical value that can be used when programming. 
+\function{library()} generates an error when the package cannot be loaded.}
+<<>>=
+require(mosaic)            # alternative way to load
+@
+\Pointer{Although the command is called \function{library()}, the thing
+loaded is a \emph{package}, not a library.}
+
 
 \Caution{Remember that in RMarkdown and Rnw files, any
-packages you use must be loaded within the file.}
+packages you use must be loaded \emph{within the file.}}
 \noindent
 The \tab{Packages} tab in \RStudio\ makes installing and loading packages
 particularly easy and avoids the need for \function{install.packages()}
 for packages on CRAN, and makes loading packages into the console as easy
-as selecting a check box.  The \function{require()} function is still
-needed to load packages within RMarkdown, \pkg{knitr}/\LaTeX, and script 
-files.
+as selecting a check box.  The \function{require()} (or \function{library()})
+function is still needed to load packages within RMarkdown, \pkg{knitr}/\LaTeX, 
+and script files.
 
 If you are running on a machine where you don't have privileges to
 write to the default library location, you can install a personal 
@@ -206,10 +198,22 @@ install.packages("mosaic", lib="~/R/library")
 
 %\subsection{Installing other packages}
 
+
+CRAN is not the only repository of \R\ packages.  Bioconductor is another
+large and popular repository, especially for biological applications, and increasingly
+authors are making packages available via github.  For example, you can also
+install the mosaic package using
+<<eval=FALSE>>=
+install.packages("devtools")     # if you haven't already installed this package
+require(devtools)
+install_github("mosaic", "rpruim")
+@
+
 Occasionally you might find a package of interest that is not available via
-a repository like \cran.  
+a repository like \cran{} or Bioconductor.  
 Typically, if you find such a package, you will also find instructions
-on how to install it.  If not, you can usually install directly from the 
+on how to install it.  
+If not, you can usually install directly from the 
 zipped up package file.
 
 <<eval=FALSE,echo=TRUE>>=
@@ -217,7 +221,7 @@ zipped up package file.
 install.packages('some-package.tar.gz', repos=NULL)           
 @
 
-
+\authNote{Should this box be placed in an earlier chapter?}
 \begin{boxedText}
 	From this point on, we will assume that the \pkg{mosaic}
 	package has been installed and loaded.
@@ -292,44 +296,6 @@ demo(package='mosaic')     # just demos from mosaic package
 %To be able to undertake analyses, you will need to
 %load data sets into \R\ and \RStudio\ for analysis.
 
-\subsection{Data in Packages}
-Data sets in \R\ packages are the easiest to deal with.
-\TeachingTip{Start out using data in packages and show students
-how to import their own data once they understand how to work with
-data.}%
-In section \ref{sec:usingdata},
-we'll describe how to load your own data into \R\ and \RStudio,
-but we recommend starting with data in packages, 
-and that is what we will do here, too.  Once students know 
-how to work with data and what data in \R\ are supposed to look
-like, they will be better prepared to import their own data sets.
-
-Many packages contain data sets.  
-You can see a list of all data sets in all loaded packages
-using 
-
-<<rs-data-list,eval=FALSE,results="hide">>=
-data()
-@
-You can optionally choose to restrict the list to a single package:
-<<rs-data-package-list,eval=FALSE,results="hide">>=
-data(package="mosaic")
-@
-
-Typically (provided the author of the package allowed for lazy loading of data) 
-you can use data sets by simply typing their names.  But if you have already
-used that name for something or need to refresh the data after making some changes you no longer
-want, you can explicitly load the data using the \function{data()} function with the name of the 
-data set you want.
-
-<<rs-data-load>>=
-data(Births78)
-@
-
-There is no visible effect of this command, but the \dataframe{Births78} data frame
-has now been reloaded from the \pkg{mosaic} package and is ready for use.  Anything you
-may have previously stored in a variable with this same name is no longer available.
-
 \subsection{Data Frames}
 
 Data sets are usually stored in a special structure called a \term{data frame}.
@@ -383,18 +349,21 @@ View(Births78)
 \authNote{add pointer to fetchData()?}
 
 %\subsection{Getting at the Variables}
-We can gain access to a single variable in a data frame using the \code{\$} operator using
-the syntax
+We can gain access to a single variable in a data frame using the \code{\$} operator or using
+the \function{with()} function.
 \marginnote{An alternative is to use the \function{with()} function.
 }
 <<rs-dollar-sign,eval=FALSE>>=
 dataframe$variable
+with(dataframe, variable)
 @
-For example,
+For example, either of 
 <<rs-Births78-births,eval=FALSE>>=
 Births78$births
+with(Births78, births)
 @
-shows the contents of the \variable{births} variable in \dataframe{Births78} data set.
+will show the contents of the \variable{births} variable in \dataframe{Births78} data set.
+
 \marginnote{As we will see, 
 there are relatively few instances where one needs to use the \texttt{\$} operator.}
 Listing the entire set of values for a particular variable
@@ -419,580 +388,103 @@ variables using the \code{\$} syntax or to use functions that allow you to
 avoid the \code{\$} operator.
 
 
-\section{Graphical Summaries of Data}
+\subsection{Data in Packages}
+Data sets in \R\ packages are the easiest to deal with.
+\TeachingTip{Start out using data in packages and show students
+how to import their own data once they understand how to work with
+data.}%
+In section \ref{sec:usingdata},
+we'll describe how to load your own data into \R\ and \RStudio,
+but we recommend starting with data in packages, 
+and that is what we will do here, too.  Once students know 
+how to work with data and what data in \R\ are supposed to look
+like, they will be better prepared to import their own data sets.
 
-After introducing students to the calculator functions of the \R\ console and
-teaching them how to inspect a data frame, we like to get them making graphical
-summaries of data.  This gives the students access to functionality where \R\
-really shines (and is certainly much better than a hand-held calculator). It also 
-begins to develop their ability to interpret graphical representations of
-data, to think about distributions, and to pose statistical questions.
+Many packages contain data sets.  
+You can see a list of all data sets in all loaded packages
+using 
 
-\subsection{Lattice Graphics}
-
-There are several ways to make graphs in \R.  One approach is a system called
-\pkg{lattice} graphics.   Whenever the \pkg{mosaic} package is loaded, the \pkg{lattice}
-package is also loaded.  One of the attractive aspects of 
-\pkg{lattice} plots is that they make use of a \term{formula interface} 
-similar to that used for numerical summaries (using \pkg{mosaic}) and modeling.
-
-All the plots we need can be created with essentially the same syntactic structure:
-
-\TeachingTip{Emphasize repeatedly the commonalities between the various commands that
-use this formula interface.}
-<<rs-formula-interface, eval=FALSE, echo=TRUE, tidy=FALSE>>=
-plotname( y ~ x | z, data=dataframe, 
-                     groups=grouping_variable, ...)
+<<rs-data-list,eval=FALSE,results="hide">>=
+data()
 @
-\begin{itemize}
-\item
-Here are the names of several \pkg{lattice} plots:
-\begin{itemize}
-	\item \function{dotPlot()} (notice the capital P)
-\footnote{\texttt{dotPlot()} is in the \pkg{mosaic} package and 
-was created because \texttt{dotplot()} in
-the \texttt{lattice} package makes something different from what we call a dot plot.}
-\item \function{histogram()} or \function{histogram()}  (for histograms)
-	\footnote{\function{histogram()} is a \pkg{mosaic} function that adds some 
-	extra functionality to \function{histogram()}.}
-\item \function{densityplot()}  (for density plots)
-\item \function{freqpolygon()}  (for frequency polygons)
-\item \function{bwplot()}  (for boxplots)
-\item \function{xyplot()}  (for scatter plots)
-\item \function{qqmath()}  (for quantile-quantile plots)
-\end{itemize}
-\item
-\variable{x} is the name of the variable that is plotted along the horizontal 
-($x$) axis.
-\item
-\Caution{Even when \variable{y} is missing, the \texttt{\~} is still mandatory.}%
-\variable{y} is the name of the variable that is plotted along the vertical ($y$) 
-axis.  (For some plots, such as histograms, this slot is empty because \R\ computes 
-these values from the values of \variable{x}.)
-\item
-\variable{z} is a conditioning variable used to split the plot into 
-multiple subplots called \term{panels}.
-\item
-\variable{grouping_variable} is used to display different groups differently
-(different colors or symbols, for example) within the same panel.
-\item
-\variable{...} There are many additional arguments to these functions that let you
-control just how the plots look.  (But we'll focus on the basics for now.)
-\end{itemize}
-
-%\subsection*{Some Examples}
-
-\subsection{The shape of a distribution: Histograms and their kin}
-
-A number of plots can be used to visualize the ``shape'' of a distribution, including
-dot plots, histograms, density plots and frequency polygons.  Of these, the histogram
-is probably the most commonly used, but there are situations when one of the others
-is a better alternative.  Each can be created in \R\ using a simple command structure
-<<eval=FALSE>>=
-plotname(~ x, data = ...)
-@
-Since for each of these plots the values along the $y$ axis are computed rather than
-provided in the data, the \variable{y} slot in the formula is empty.
-
-\medskip
-\subsubsection{Dot plots: \texttt{dotPlot()}}
-
-A \term{dot plot} represents each value of a quantitative variable with a dot.  The values
-are rounded a bit so that the dots line up neatly, and dots are stacked up into little
-towers when the data values cluster near each other.  Dot plots are primarily used with 
-modestly sized data sets and can be used as a bridge to the other plots, where there is
-no longer a direct connection between a component of the plot and an individual observation.
-
-Here is an example using the sepal lengths recorded in the \dataframe{iris} data set.
-<<rs-dotPlot,cache=FALSE,fig.width=5,fig.height=3.0>>=
-# n = 30 gives approx 30 columns
-dotPlot(~ Sepal.Length, data=iris, n=30)    
-@
-We can use a conditional variable to give us separate dot plots for each of the three
-species in this data set.
-<<rs-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width="\\textwidth",fig.width=6>>=
-dotPlot(~ Sepal.Length | Species, data=iris, n=20, 
-         cex=.6,        # cex used to shrink the dots a bit
-         layout=c(3,1)) 
+You can optionally choose to restrict the list to a single package:
+<<rs-data-package-list,eval=FALSE,results="hide">>=
+data(package="mosaic")
 @
 
-\medskip
-\subsubsection{Histograms: \texttt{histogram()}}
+Typically (provided the author of the package allowed for lazy loading of data) 
+you can use data sets by simply typing their names.  But if you have already
+used that name for something or need to refresh the data after making some changes you no longer
+want, you can explicitly load the data using the \function{data()} function with the name of the 
+data set you want.
 
-\term{Histograms} are a lot like dot plots, but the towers of dots are replaced by vertical bars.
-Again the \variable{y} component of the formula is empty since we let \R\
-compute the heights of the bars
-<<rs-iris-histogram,cache=TRUE,fig.width=6,out.width=".9\\textwidth">>=
-# n= 20 gives approx. 20 bars
-histogram(~ Sepal.Length, data=iris, n=20)       
-@
-We can use a conditional variable to give us separate histograms for each species.
-\marginnote{This reveals the true story of the data -- the distribution of sepal
-length is different for the different species of iris.}
-
-<<rs-iris-histogram-cond,cache=TRUE,tidy=FALSE,fig.width=6,out.width=".9\\textwidth">>=
-histogram(~ Sepal.Length | Species, data=iris, n=20, 
-		   layout=c(3,1))  # 3 columns (x) and 1 row (y) 
-@
-In lattice lingo, the three subplots are called \term{panels} and the labels at the
-top are called strips.  
-%(Strips can be placed on the left side if you prefer.)
-
-\medskip
-\subsubsection{Frequency polygons: \texttt{freqpolygon()}}
-
-\term{Frequency polygons} and \term{density plots} provide alternatives to histograms
-that make it easier to overlay the representations of multiple subsets of the data.
-A frequency polygon is created from the same data summary (bins and counts) as a histogram, 
-but instead of representing each bin with a bar, it is represented by a point 
-(at the center of the where the top of the histogram bar would have been).  
-\Caution{The \dataframe{faithful} data set contains similar data, but the 
-variable names in that data frame are 
-poorly chosen.  The \dataframe{geyser} data set in the \pkg{MASS}
-package has better names and more data.}
-These points are then connected with line segments.
-Here is an example that shows the distribution of Old Faithful eruptions times
-from a sequence of observations 
-
-<<>>=
-require(MASS)
-freqpolygon( ~ duration, data=geyser, n=15)
-@
-\TeachingTip[-1.5in]{Point out that an interesting feature of this distribution is its clear 
-bimodality.
-In particular, the mean and median eruption time are not a good measures of the duration of a  
-``typical'' eruption since almost none of the eruption durations are near the mean and median.}
-Numerically, the data are being summarized and  represented in exactly the same way as for 
-histograms, but visually the horizontal and vertical line segments of the histogram are 
-replaced by sloped line segments.  
-<<echo=FALSE>>=
-histogram( ~ duration, data=geyser, n=15, col="lightskyblue")
-ladd( panel.freqpolygon(geyser$duration, n=15) )
-@
-This may give a more accurate visual representation in some 
-situations (since the distribution can ``taper off'' better).  More importantly, it makes 
-it much easier to overlay multiple distributions.
-<<>>=
-freqpolygon( ~ Sepal.Length, data=iris, groups=Species )
+<<rs-data-load>>=
+data(Births78)
 @
 
-\medskip
-\subsubsection{Density plots: \texttt{densityplot()}}
+There is no visible effect of this command, but the \dataframe{Births78} data frame
+has now been reloaded from the \pkg{mosaic} package and is ready for use.  Anything you
+may have previously stored in a variable with this same name is no longer available.
 
-\term{Density plots} are similar to frequency polygons, but the piecewise linear
-representation is replaced by a smooth curve.  
-<<>>=
-densityplot( ~ Sepal.Length, data=iris, groups=Species)
-@
-Beginners do not need to know the details
-of how that smooth curve is generated, but should be introduced to the \option{adjust}
-argument which controls the degree of smoothing.  It is roughly equivalent to choosing 
-wider or narrower bins for a histogram or frequency polygon.  The default value is 1.
-Higher values smooth more heavily; lower values, less so.
+
+\subsection{Using Your Own Data}
+\label{sec:usingdata}
+\TeachingTip{Start out using data from packages and focusing on what \R\ can
+do with the data.  Later, once students are familiar 
+with \R\ and understand the format required for data,
+teach students how to import their own data.}
+Eventually, students will want to move from using example data sets in \R\ packages
+to using data they find or collect themselves.  When this happens will depend on 
+the type of students you have and the type of course you are teaching.
+
+\R\ provides the functions \function{read.csv()} (for comma separated values files),
+\function{read.table()} (for white space delimited files) 
+and \function{load()} (for loading data in \R's native format).
+The \pkg{mosaic} package includes a function called \function{read.file()} that uses 
+slightly different default settings and infers whether it should use \function{read.csv()},
+\function{read.table()}, or \function{load()} based on the file name.  
+
+Since most software packages can export to csv format, this has become a 
+sort of \emph{lingua fraca} for moving data between packages.  Data in excel, for example,
+can be exported as a csv file for subsequent reading in \R.  
+\Caution{There is a conflict between the \function{resample()} functions in
+\pkg{gdata} and \pkg{mosaic}.  If you want to use \pkg{mosaic}'s \function{resample()},
+be sure to load \pkg{mosaic} \emph{after} you load \pkg{gdata}.}
+If you have python installed on your system, you can also use
+\function{read.xls()} from the \pkg{gdata} package to read read directly from
+Excel files without this extra step.
+
+Each of these functions accepts a URL as well as a file name, which provides an
+easy way to distribute data via the Internet:
+\authNote{Should we change URLs to something at mosaic-web.org?}
 <<tidy=FALSE>>=
-densityplot( ~ Sepal.Length, data=iris, groups=Species, 
-             adjust=3)
-densityplot( ~ Sepal.Length, data=iris, groups=Species, 
-             adjust=1/3)
+births <- 
+  read.table('http://www.calvin.edu/~rpruim/data/births.txt', 
+              header=TRUE)
+head(births) # live births in the US each day of 1978.
 @
-
-\medskip
-\subsubsection{The Density Scale}
-
-There are three scales that can be used for the plots in the preceding section: 
-\code{count}, 
-\code{percent}, 
-and \code{density}.  
-Beginning students will be most familiar with the \code{count} scale and perhaps also 
-the \code{percent} scale, but most will not have seen the \code{density} scale.
-The density scale captures the most important aspect of all of these plots
-
-\begin{boxedText}
-	\centerline{Area is proportional to frequency.}
-\end{boxedText}
-
-\noindent
-The density scale is chosen so that the constant of proportionality is 1, in which case we have
-\begin{boxedText}
-	\centerline{Area equals proportion.}
-\end{boxedText}
-\TeachingTip{Create some histograms or frequency polygons with a density scale and see
-if your students can determine what the scale is.  Choosing convenient bin widths (but not 1)
-and comparing plots with multiple bin widths and multiple scale types can help them
-reach a good conjecture about the density scale.}
-This is the only scale available for \function{densityplot()} and is the most suitable 
-scale if one is primarily interested in the \emph{shape} of the distribution.  The vertical scale
-is affected very little by the choice of bin widths or \option{adjust} multipliers.
-It is also the appropriate scale to use when overlaying a density function.
-<<fig.width=6,out.width="\\textwidth", tidy=FALSE>>=
-histogram( ~ Sepal.Length | Species, data=iris, 
-                                      fit="normal" )
+We can omit the \option{header=TRUE} if we use \function{read.file()}
+<<tidy=FALSE>>=
+births <- 
+  read.file('http://www.calvin.edu/~rpruim/data/births.txt')
 @
+%\Rstudio\ will help you import your own data.  To do so use the ``Import Dataset" 
+%button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
+%google spreadsheets.   
 
-The other scales
-are primarily of use when one wants to be able to read off bin counts or percents from the plot.
+\subsection{Importing Data in \RStudio}
+\InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
+will want to know how to use functions like \function{read.csv()} for working
+in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
+The \RStudio\ interface provides some GUI tools for loading data.
+If you are using the \RStudio\ server, you will first need to upload the data
+to the server (in the \tab{Files} tab), and then import the data into your \R\ 
+session (in the \tab{Workspace} tab).  
+\TeachingTip{Remind students that the 2-step process (upload, then import)
+works much like images in Facebook.  First you upload them to Facebook, and once 
+they are there you can include them in posts, etc.}%
+If you are running the desktop version, the upload step is not needed.
 
-
-
-\medskip
-\subsection{Boxplots: \texttt{bwplot()}}
-
-Boxplots are constructed in much the same manner as the plots in the previous section:
-<<rs-iris-bwplot>>=
-bwplot(~ Sepal.Length, data=iris)
-@
-
-As we did for histograms, we can use conditioning to 
-show boxplots for multiple groups within the data set:
-\Caution[.2in]{This is not a particularly good plot for displaying this information.
-We'll illustrate a better way in a moment.}
-<<rs-iris-bwplot-cond,cache=TRUE,fig.width=7,fig.height=2,out.width=".9\\textwidth">>=
-bwplot(~ Sepal.Length | Species, data=iris, layout=c(3,1))
-@
-But there are better ways to do this.
-\InstructorNote{The boxplots are vertical when the categorical variable is on the 
-right hand side of the \tilde.}
-<<label="rs-iris-bwplot-2d">>=
-bwplot(Sepal.Length ~ Species, data=iris)
-@
-\InstructorNote{The boxplots are horizontal when the categorical variable is on the 
-left hand side of the \tilde.}
-<<label="rs-iris-bwplot-2dmore">>=
-bwplot(Species ~ Sepal.Length, data=iris)
-@
-%\vspace{-12mm}
-\Caution[-1in]{If numbers are used to label the categories 
-of a categorical variable, \R\ will consider the data to be quantitative.
-You can convert numerical values into a categorical factor by
-wrapping it in the function \function{factor()}, e.g., \code{factor(x)}.
-}
-
-
-\subsection{Scatterplots: \texttt{xyplot()}}
-
-Scatterplots are made with \function{xyplot()}.  The formula and modeling interface is used in the same manner as before.
-Just remember that the ``$y$ variable'' comes first.  (Its label is also farther left on 
-the plot, if that helps you remember.)
-<<rs-iris-xyplot,cache=TRUE>>=
-xyplot(Sepal.Length ~ Sepal.Width, data=iris)
-@
-Again, we can use conditioning to make a panel for each species.
-<<rs-iris-xyplot-cond,tidy=FALSE,cache=TRUE,fig.width=6,out.width=".8\\textwidth">>=
-xyplot(Sepal.Length ~ Sepal.Width | Species, data=iris,
-  layout=c(3,1)) # layout controls number of columns and rows
-@
-Even better (for this example), we can use the \option{groups} argument to indicate the 
-different species using different symbols on the same panel.
-<<rs-iris-xyplot-groups,cache=TRUE,tidy=FALSE>>=
-xyplot(Sepal.Length ~ Sepal.Width, groups=Species, 
-  auto.key=TRUE, data=iris)
-@
-
-\subsection{Saving Your Plots}
-
-There are several ways to save plots in \RStudio, but the easiest is probably the following:
-\marginnote{You can save all of this exporting and copying and pasting if you use RMardown, 
-or \pkg{knitr}/\LaTeX\ to prepare your documents.}
-\begin{enumerate}
-\item
-In the \tab{Plots} tab, click the ``Export'' button.
-\item
-Copy the image to the clipboard using right click.
-\item
-Go to your document (e.g. Microsoft Word) and paste in the image.
-\item
-Resize or reposition your image as needed.
-\end{enumerate}
-The \function{pdf()} function can be used to save plots as pdf files.  See 
-the documentation of this function for details and links to functions that 
-can be used to save graphics in other file formats.
-
-
-\section{Numerical Summaries}
-Numerical summaries are computed using a syntax that matches the 
-\pkg{lattice} graphics syntax.
-Most of the numerical summaries already familiar to you have obvious names.  
-Here are a few examples.  
-\authNote{add iqr() once an aggregating version is in the package}%
-\authNote{NH wants a discussion of \function{with()} and the use of 
-\texttt{\$} here.  RJP says keep it simple.}%
-\marginnote{In the current version of the \pkg{mosaic} package,
-the \tilde\ can be omited in the one-variable numerical summary functions.  This is 
-not true for the \pkg{lattice} plots, so we recommend that you use the \tilde\ and
-be consistent across multiple functions.}
-
-<<rs-numerical-summaries>>=
-mean(~ births, data=Births78)
-median(~ births, data=Births78)
-sd(~ births, data=Births78)
-max(~ births, data=Births78)
-min(~ births, data=Births78)
-@
-The \function{favstats()} function in the \pkg{mosaic} package computes several numerical 
-summaries all at once.
-<<>>=
-favstats(~ births, data=Births78)
-@
-
-The formula interface for these functions provided by the \pkg{mosaic} package
-\begin{itemize}
-	\item
-		Removes the need for the \code{\$} operator.
-
-	\item
-		Simplifies computing summary statistics separately in each of several groups.  For
-		example,
-<<>>=
-# these are equivalent
-mean( length ~ sex, data=KidsFeet )
-mean( ~ length | sex, data=KidsFeet )
-@
-
-	\item
-		Makes computing numerical summaries syntactically identical to creating 
-		graphical summaries with \pkg{lattice} or fitting linear models.
-\end{itemize}
-
-\begin{problem}
-What is the average (mean) \emph{width} of the sepals in the \dataframe{iris} data set?
-\end{problem}
-\begin{solution}
-<<>>=
-mean(Sepal.Width, data=iris)
-@
-\end{solution}
-
-\begin{problem}
-Determine the average (mean) sepal width for each of the three species in the \dataframe{iris} data set.
-\end{problem}
-\begin{solution}
-<<>>=
-mean(Sepal.Width ~ Species, data=iris)
-@
-\end{solution}
-
-
-\subsection{Tabulating Categorical Data}
-The Current Population Survey (CPS) is used to supplement census information
-between census years. The \dataframe{CPS85} data set consists of a random
-sample of persons from the CPS, with information on wages and other
-characteristics of the workers, including sex, number of years of education,
-years of work experience, occupational status, region of residence and union
-membership.
-
-\begin{widestuff}
-<<include=FALSE>>=
-oldOpts <- options(width=100)
-@
-<<>>=
-head(CPS85, 3)
-@
-\end{widestuff}
-
-%\newthought{Frequency and Contingency Tables}
-\begin{widestuff}
-Categorical variables are  often summarized in a table.  
-\R\ can make a table for a categorical variable using \function{tally()}.
-\end{widestuff}
-
-\begin{widestuff}
-<<rs-table1>>=
-tally(~ race, CPS85)
-tally(~ sector, CPS85)
-@
-\end{widestuff}
-
-\begin{widestuff}
-If we prefer to have the results presented as proportions or percents, we 
-just have to ask.
-\end{widestuff}
-
-\begin{widestuff}
-<<rs-table2>>=
-tally( ~ sector, CPS85, format='perc')
-tally( ~ sector, CPS85, format='prop')
-@
-\end{widestuff}
-%Alternatively, we can use \verb!table()!, \verb!proptable()!, and
-%\verb!perctable()!  to make tables of counts, proportions, or percentages,
-%respectively.
-
-%\newthought{Cross-Tabulation with \texttt{xtabs()}}
-\begin{widestuff}
-We can make a \term{cross-table} 
-(also called a \term{contingency table} or a \term{two-way table}) 
-summarizing this data with \function{tally()}.  
-This often provides a useful display of the relationship between
-two categorical variables.
-\end{widestuff}
-
-\begin{widestuff}
-<<rs-xtabs>>=
-tally(~ race + sector, CPS85)   # 2-way cross-table
-@
-\end{widestuff}
-
-\begin{widestuff}
-Alternatively, we can select one of our categorical variables to be 
-a conditional variable.  The report is then done using proportions by default.
-\end{widestuff}
-
-\begin{widestuff}
-<<>>=
-tally(~ race | sector, CPS85)   # conditional on sector
-tally(~ sector | race, CPS85)   # conditional on race
-@
-\end{widestuff}
-
-<<include=FALSE>>=
-options(oldOpts)
-@
-
-\subsection{Graphing Categorical Data}
-
-The \pkg{mosaic} function \function{bargraph()} can 
-display these tables as bar graphs.
-<<rs-bargraph1a,tidy=FALSE>>=
-bargraph(~ sector, data=CPS85, 
-                   scales=list(x=list(rot=45)))
-@
-<<rs-bargraph2a>>=
-# horizontal bars
-bargraph(~ sector, data=CPS85, horizontal=TRUE)  
-@
-
-As with the other lattice plots, we can add grouping or conditioning to 
-our plot.
-<<rs-bargraph3a,tidy=FALSE>>=
-bargraph(~ sector, data=CPS85, groups=race, 
-                   scales=list(x=list(rot=45)))
-@
-<<rs-bargraph3amore,tidy=FALSE>>=
-bargraph(~ sector | race, data=CPS85, 
-                          scales=list(x=list(rot=45)))
-@
-
-
-Bar graphs can also be used to display two-way tables.  
-<<rs-barchart3aa,tidy=FALSE>>=
-bargraph( ~ sector, groups=race, data=CPS85,
-                    scales=list(x=list(rot=45)))
-@
-
-
-
-\iffalse
-Just as bar charts are used to display the distribution of one categorical
-variable,  \pkg{mosaic} plots can do the same for cross tables.
-The \function{mosaic()} function (from the \pkg{vcd} package) is not a \pkg{lattice} plot, 
-but it does use a similar formula interface.  
-
-<<rs-mosaic1,fig.width=4,fig.height=2>>=
-require(vcd)                         # load the visualizing categorical data package
-mosaic(~ sex + union, CPS85)
-@
-We see that there are more non-union women than we would expect just from
-the marginal distribution of union status and gender.
-
-\Caution{The \function{mosaic()} function has nothing to do with 
-the \pkg{mosaic} package, they just happen to share the same name.}%
-
-Alternatively, we can send \function{mosaic()} the output of \function{xtabs()}:
-<<rs-mosaic2,fig.keep="none">>=
-mosaic(xtabs(~ sex + union, CPS85))  # non-whites are more likely to be unionized
-@
-\FoodForThought{Neither \function{mosaic()} nor the similar \function{mosaicplot()}
-are as clever as one could hope.  In particular, without some extra customization,
-both tend to look bad if the levels of the variables have long names.
-\function{mosaic()} plots also always stay square.}
-
-
-Alternatively,
-we can send our own hand-made table (although the output isn't quite as nice without some
-extra effort we won't discuss just now):
-<<rs-mosaic3,fig.width=6,fig.height=2.5>>=
-mosaic(mycrosstable)
-@
-\fi
-
-
-
-\begin{problem}
-The \dataframe{Utilities2} data set in the \pkg{mosaic} package contains information
-about the bills for various utilities at a residence in Minnesota collected over a number of years.
-Since the number of days in a billing cycle varies from month to month, variables 
-like \vn{gasbillpday} (\dataframe{elecbillpday}, etc.) contain the gas bill (electric bill, etc.) 
-divided by the number of days in the billing cycle.
-\begin{enumerate}
-\item Use the documentation to determine what the \vn{kwh} variables contains.
-\item
-Make a scatter plot of \dataframe{gasbillpday} vs. \dataframe{monthsSinceY2K} using the command
-<<rs-gasbill,fig.keep="none", tidy=FALSE>>=
-xyplot(gasbillpday ~ monthsSinceY2K, data=Utilities2, 
-                     type='l')        # the letter l
-@
-\item[]
-What pattern(s) do you see?
-\item
-What does \option{type='l'} do?  Make your plot with and without it.  Which is easier to read
-in this situation?
-\item
-What happens if we replace 
-\option{type='l'} with 
-\option{type='b'}?
-\item
-Make a scatter plot of \vn{gasbillpday} by \vn{month}.   
-What do you notice?
-
-\item
-Make side-by-side boxplots of \vn{gasbillpday} by \vn{month} using the \dataframe{Utilities2}
-data frame.   
-What do you notice?
-
-Your first try probably won't give you what you expect.  The reason is that month is coded
-using numbers, so \R\ treats it as numerical data.  We want to treat it as categorical data.
-To do this in \R\, use \variable{factor(month)} in place of \variable{month}.  
-\R\ calls categorical data a \term{factor}.
-
-\item
-Make any other plot you like using this data.  Include both a copy of your plot and a 
-discussion of what you can learn from it.
-\end{enumerate}
-\end{problem}
-
-\begin{problem}
-The table below is from a study of nighttime lighting in infancy and 
-eyesight (later in life).  
-% latex table generated in R 2.12.1 by xtable 1.5-6 package
-% Fri Feb  4 15:46:48 2011
-\begin{center}
-\begin{tabular}{rrrr}
-  \hline
- & no myopia & myopia & high myopia \\ 
-  \hline
-darkness & 155 & 15 & 2 \\ 
-  nightlight & 153 & 72 & 7 \\ 
-  full light & 34 & 36 & 3 \\ 
-   \hline
-\end{tabular}
-\end{center}
-
-\begin{enumerate}
-%\item
-%Do you think this was an experiment or an observational study?  Why?
-\item
-Recreate the table in \R. %Copy and paste the results into your Word document.
-\item
-What percent of the subjects slept with a nightlight as infants?
-
-There are several ways to do this.  You could use \R\ as a calculator to do the arithmetic.
-You can save some typing if you use the function \function{tally()}.  See
-\code{?tally} for documentation.
-%If you just want row and column totals added to the table, see \verb!mar_table()!
-%in the \verb!vcd! package.
-\item Create a graphical representation of the data.  What does this plot reveal?
-\end{enumerate}
-\end{problem}
 
 \subsection{Working with Pretabulated Data}
 
@@ -1058,66 +550,6 @@ barchart( Freq ~ sector, groups=race,
           scales=list(x=list(rot=45))
 		  )
 @
-
-
-\section{Using Your Own Data}
-\label{sec:usingdata}
-\TeachingTip{Start out using data from packages and focusing on what \R\ can
-do with the data.  Later, once students are familiar 
-with \R\ and understand the format required for data,
-teach students how to import their own data.}
-Eventually, students will want to move from using example data sets in \R\ packages
-to using data they find or collect themselves.  When this happens will depend on 
-the type of students you have and the type of course you are teaching.
-
-\R\ provides the functions \function{read.csv()} (for comma separated values files),
-\function{read.table()} (for white space delimited files) 
-and \function{load()} (for loading data in \R's native format).
-The \pkg{mosaic} package includes a function called \function{read.file()} that uses 
-slightly different default settings and infers whether it should use \function{read.csv()},
-\function{read.table()}, or \function{load()} based on the file name.  
-
-Since most software packages can export to csv format, this has become a 
-sort of \emph{lingua fraca} for moving data between packages.  Data in excel, for example,
-can be exported as a csv file for subsequent reading in \R.  
-\Caution{There is a conflict between the \function{resample()} functions in
-\pkg{gdata} and \pkg{mosaic}.  If you want to use \pkg{mosaic}'s \function{resample()},
-be sure to load \pkg{mosaic} \emph{after} you load \pkg{gdata}.}
-If you have python installed on your system, you can also use
-\function{read.xls()} from the \pkg{gdata} package to read read directly from
-Excel files without this extra step.
-
-Each of these functions accepts a URL as well as a file name, which provides an
-easy way to distribute data via the Internet:
-\authNote{Should we change URLs to something at mosaic-web.org?}
-<<tidy=FALSE>>=
-births <- 
-  read.table('http://www.calvin.edu/~rpruim/data/births.txt', 
-              header=TRUE)
-head(births) # live births in the US each day of 1978.
-@
-We can omit the \option{header=TRUE} if we use \function{read.file()}
-<<tidy=FALSE>>=
-births <- 
-  read.file('http://www.calvin.edu/~rpruim/data/births.txt')
-@
-%\Rstudio\ will help you import your own data.  To do so use the ``Import Dataset" 
-%button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
-%google spreadsheets.   
-
-\subsection{Importing Data in \RStudio}
-\InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
-will want to know how to use functions like \function{read.csv()} for working
-in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
-The \RStudio\ interface provides some GUI tools for loading data.
-If you are using the \RStudio\ server, you will first need to upload the data
-to the server (in the \tab{Files} tab), and then import the data into your \R\ 
-session (in the \tab{Workspace} tab).  
-\TeachingTip{Remind students that the 2-step process (upload, then import)
-works much like images in Facebook.  First you upload them to Facebook, and once 
-they are there you can include them in posts, etc.}%
-If you are running the desktop version, the upload step is not needed.
-
 
 
 \subsection{Developing Good Data Habits}
@@ -1216,6 +648,5 @@ qqmath( ~ age | sex, data=CPS85 )                          # quantile-quantile p
 %For these problems, create a single Word document containing all of your work.
 
 \shipoutProblems
-
 
 
