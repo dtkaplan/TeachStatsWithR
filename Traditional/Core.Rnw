@@ -34,13 +34,14 @@ material is reviewed in chapter \ref{sec:manipulatingData}.
 
 
 This work leverages initiatives undertaken by Project MOSAIC (\url{http://www.mosaic-web.org}), an NSF-funded effort to improve the teaching of statistics, calculus, science and computing in the undergraduate curriculum. In particular, we utilize the
-\pkg{mosaic} package, which was written to simplify the use of R for introductory statistics courses. A short summary of the R needed to teach introductory statistics can be found in the mosaic package vignette (\url{http://cran.r-project.org/web/packages/mosaic/vignettes/MinimalR.pdf}).
+\pkg{mosaic} package, which was written to simplify the use of R for introductory statistics courses. A short summary of the R needed to teach introductory statistics can be found in the mosaic package vignette (\url{http://cran.r-project.org/web/packages/mosaic/vignettes/mosaic-resources.pdf}).
 
 Other related resources from Project MOSAIC may be helpful, including an annotated set of examples
 from the 
 sixth edition of
-Moore, McCabe and Craig's \emph{Introduction to the Practice of Statistics}\cite{moor:mcca:2007} (see \url{http://www.amherst.edu/~nhorton/ips6e}) as well as
-the second edition of the \emph{Statistical Sleuth}\cite{Sleuth2} (see \url{http://www.amherst.edu/~nhorton/sleuth}).
+Moore, McCabe and Craig's \emph{Introduction to the Practice of Statistics}\cite{moor:mcca:2007} (see \url{http://www.amherst.edu/~nhorton/ips6e}),
+the second and third editions of the \emph{Statistical Sleuth}\cite{Sleuth2} (see \url{http://www.amherst.edu/~nhorton/sleuth}), 
+and \emph{Statistics: Unlocking the Power of Data} by Lock et al (see \url{https://github.com/rpruim/Lock5withR}).
 
 To use a package within R, it must be installed (one time), and loaded (each session). The 
 \pkg{mosaic} package can be installed using the following command:
@@ -145,8 +146,8 @@ It is straightforward to restrict our attention to just those subjects.
 If we are going to do many things with a subset of our data, it may be easiest
 to make a new data frame containing only the cases we are interested in.
 The \function{subset()} function can generate a new data frame containing
-just the women or just the men  (see also section \ref{sec:subsets}).  Once this is created, we
-used the \function{stem()} function to create a stem and leaf plot.
+just the women or just the men  (see also section \ref{sec:subsets}).  Once this is created, the
+the \function{stem()} function is used to create a stem and leaf plot.
 \Caution{Note that the equality operator is \emph{two} equal signs}
 <<cesd-stem>>=
 female <- subset(HELPrct, sex=='female')
@@ -214,11 +215,11 @@ dotPlot(~ cesd, xlab="CESD score",
 
 \section{Density curves}
 
-One disadvantage of histograms is that they can be sensitive to the choice of the
-number of bins.  Another display to consider is a density curve.
 \FoodForThought{Density plots are also sensitive to certain choices.  If your density plot
 is too jagged or too smooth, try adjusting the \option{adjust} argument (larger than 1 for
 smoother plots, less than 1 for more jagged plots).}
+One disadvantage of histograms is that they can be sensitive to the choice of the
+number of bins.  Another display to consider is a density curve.
 
 Here we adorn a density plot with some gratuitous additions to 
 demonstrate how to build up a graphic for pedagogical purposes.
@@ -227,26 +228,36 @@ a vertical line. A variety of line types can be specified,
 as well as line widths.
 
 \begin{center}
-<<dens1,tidy=FALSE>>=
+<<dens1,tidy=FALSE,fig.keep="last">>=
 densityplot(~ cesd, data=female)
 ladd(grid.text(x=0.2, y=0.8, 'only females'))
-with(female, ladd(panel.mathdensity(args=
-  list(mean=mean(cesd), sd=sd(cesd)), col="red")))
+ladd(panel.mathdensity(args=list(mean=mean(cesd), 
+  sd=sd(cesd)), col="red"), data=female)
 ladd(panel.abline(v=60, lty=2, lwd=2, col="grey"))
 @
 \end{center}
 \DiggingDeeper{The \function{plotFun()} function can also be used to annotate plots (see
 section \ref{sec:plotFun}).}
 
+\section{Frequency polygons}
+
+A third option is a frequency polygon, where  the graph is created by joining the midpoints of the top of the bars of a histogram.
+\begin{center}
+<<poly,tidy=FALSE,fig.keep="last">>=
+freqpolygon(~ cesd, data=female)
+@
+\end{center}
+
 
 \section{Normal distributions}
 
+\FoodForThought{\code{x} is for eXtra.}%
 The most famous density curve is a normal distribution.  The \function{xpnorm()} function
 displays the probability that a random variable is less than the first argument, for a 
 normal distribution with mean given by the second argument and standard deviation by the 
-third.  More information about probability distributions can 
+third.  
+More information about probability distributions can 
 be found in section \ref{sec:probability}.
-\FoodForThought{\code{x} is for eXtra.}
 \begin{center}
 <<norm1,fig.width=5,fig.height=2.4>>=
 xpnorm(1.96, mean=0, sd=1)
@@ -263,8 +274,9 @@ t.test(~ cesd, data=female)
 confint(t.test(~ cesd, data=female))
 @
 
-But it's also straightforward to calculate this using a bootstrap 
-(using the approach described in the \pkg{mosaic} package Resampling Vignette).
+\DiggingDeeper{More details and examples can be found in the 
+\pkg{mosaic} package Resampling Vignette.}
+But it's also straightforward to calculate this using a bootstrap.
 The statistic that we want to resample is the mean.  
 <<calculuatemean>>=
 mean(~ cesd, data=female)
@@ -384,7 +396,7 @@ expected <- total*p; expected
 
 We can also calculate this quantity manually, in terms of observed and expected values.
 
-\TeachingTip{We don't encourage much manual calculations in our courses.}
+\TeachingTip{We don't have students do  much if any manual calculations in our courses.}
 <<gof2,tidy=FALSE>>=
 chisq <- sum((observed - expected)^2/(expected)); chisq
 1 - pchisq(chisq, df=2)
@@ -434,6 +446,14 @@ By default, Pearson correlations are provided, other variants (e.g. Spearman) ca
 cor(cesd, mcs, method="spearman", data=HELPrct)
 @
 
+\section{Pairs plots}
+
+A pairs plot can be calculated for each pair of a set of variables.
+\TeachingTip{The \pkg{GGally} package has support for more elaborate pairs plots.}
+<<fig.height=3>>=
+splom(smallHELP)
+@
+
 \section{Simple linear regression}
 
 \InstructorNote{We tend to introduce linear regression
@@ -450,6 +470,7 @@ and predictors.  Here we consider fitting the model \model{\variable{cesd}}{\var
 model <- lm(cesd ~ mcs, data=HELPrct)
 coef(model)
 @
+
 To simplify the output, we turn off the option to display significance stars.
 <<>>=
 options(show.signif.stars=FALSE)
@@ -472,6 +493,7 @@ vector of the residuals.
 \function{resid()}.  Another useful function is \function{fitted()}, which 
 returns a vector of predicted values.}
 
+
 \begin{center}
 <<lmhist>>=
 histogram(~ residuals(model), density=TRUE)
@@ -488,13 +510,44 @@ xyplot(resid(model) ~ fitted(model), type=c("p", "smooth", "r"), alpha=0.5, cex=
 @
 \end{center}
 
+The \function{mplot()} can facilitate creating a variety of useful plots, including residuals vs. fitted:
+<<>>=
+mplot(model, which=1, multiplot=FALSE)
+@
+
+normal quantile-quantile,
+<<>>=
+mplot(model, which=2, multiplot=FALSE)
+@
+
+scale vs.\,location,
+<<>>=
+mplot(model, which=3, multiplot=FALSE)
+@
+
+Cook's distance,
+<<>>=
+mplot(model, which=4, multiplot=FALSE)
+@
+
+residuals vs.\,leverage, and
+<<>>=
+mplot(model, which=5, multiplot=FALSE)
+@
+
+Cook's distance vs. leverage.
+<<>>=
+mplot(model, which=6, multiplot=FALSE)
+@
+
 Prediction bands can be added to a plot using the \function{panel.lmbands()} function.
 \begin{center}
-<<HELPrct-pred-plot,tidy=FALSE>>=
-xyplot(cesd ~ mcs, panel=panel.lmbands, cex=0.2, 
-  band.lwd=2, data=HELPrct)
+<<>>=
+xyplot(cesd ~ mcs, panel=panel.lmbands, cex=0.2, band.lwd=2, data=HELPrct)
 @
 \end{center}
+% XX Randy, any idea what's going on here with the panel.lmbands example?
+
 \begin{problem}
 Using the \dataframe{HELPrct} dataset, fit a simple linear regression model 
 predicting the number of drinks per day as a function of the mental
@@ -518,6 +571,12 @@ and sex.
 
 <<homeless-sex>>=
 tally(~ homeless + sex, margins=FALSE, data=HELPrct)     
+@
+
+We can also calculate column percentages:
+<<homeless-sex-row,tidy=FALSE>>=
+tally(~ sex | homeless, margins=TRUE, format="percent", 
+  data=HELPrct)     
 @
 
 We can calculate the odds ratio directly from the table:
@@ -562,8 +621,9 @@ population.
 
 When a student finds a significant association, 
 it's important for them to be able to interpret this in the context of the problem. 
-The \function{xchisq.test()} function provides additional details to help with this process.
+The \function{xchisq.test()} function provides additional details (observed, expected, contribution to statistic, and residual) to help with this process.
 \FoodForThought{\code{x} is for eXtra.}
+
 <<chisq2,tidy=FALSE>>=
 xchisq.test(tally(~homeless + sex, margins=FALSE,
   data=HELPrct), correct=FALSE)
@@ -633,7 +693,7 @@ xyplot(sex ~ length, KidsFeet, alpha=.6, cex=1.4)
 
 \section{A dichotomous predictor: two-sample t}
 
-The Student's two sample t-test can be run without or with an equal variance assumption.
+The Student's two sample t-test can be run without (default) or with an equal variance assumption.
 <<HELPrct-nonpar,tidy=FALSE>>=
 t.test(cesd ~ sex, var.equal=FALSE, data=HELPrct)
 @
@@ -670,13 +730,14 @@ do(1) * compareMean(age ~ shuffle(sex), data=HELPrct)
 do(3) * compareMean(age ~ shuffle(sex), data=HELPrct)
 @
 
-<<permute-HELPrct,tidy=FALSE>>=
+<<permute-HELPrct,fig.keep='last', tidy=FALSE>>=
 rtest.stats = do(500) * compareMean(age ~ shuffle(sex), 
   data=HELPrct)
+favstats(~ result, data=rtest.stats)
 histogram(~ result, n=40, xlim=c(-6, 6),
   groups=result >= test.stat, pch=16, cex=.8, 
   data=rtest.stats)
-ladd(panel.abline(v=test.stat))
+ladd(panel.abline(v=test.stat, lwd=3, col="red"))
 @
 
 Here we don't see much evidence to contradict the null hypothesis that men and 
@@ -740,7 +801,7 @@ compare <- TukeyHSD(mod, "subgrp")
 compare
 @
 <<help-hsd3,fig.height=3.5,fig.width=6>>=
-plot(compare,cex.lab=0.5)
+mplot(compare)
 @
 
 Again, we see that the cocaine group has significantly lower CESD scores
@@ -765,7 +826,22 @@ exp(coef(logitmod))
 exp(confint(logitmod))
 @
 
-\authNote{Add a plot with logistic fit overlaid?}
+A comparison of two models can be undertaken (for multiple degree of freedom tests).  For example, we
+might be interested in the association of homeless status and age for each of the three substance groups.
+<<tidy=FALSE>>=
+mymod1 = glm(homeless=="homeless" ~ age + substance, family=binomial, 
+  data=HELPrct)
+mymod2 = glm(homeless=="homeless" ~ age, family=binomial, 
+  data=HELPrct)
+summary(mymod1)
+exp(coef(mymod1))
+anova(mymod2, mymod1, test="Chisq")
+@
+We observe that the cocaine and heroin groups are significantly less likely to be homeless than alcohol involved subjects, after controlling for age.  (A similar result is seen when considering just homelessless and substance.)
+
+<<>>=
+tally(~ homeless | substance, format="percent", data=HELPrct)
+@
 
 \chapter{Survival Time Outcomes}
 
@@ -868,7 +944,7 @@ lm1fun = makeFun(lm1)
 @
 We can now plot this function for a range of values for MCS (mental component score), along
 with the observed data for 36 year olds.  
-<<plotFUN,tidy=FALSE>>=
+<<plotFUN,tidy=FALSE,fig.keep='last'>>=
 xyplot(cesd ~ mcs, groups=sex, auto.key=TRUE, 
   data=subset(HELPrct, age==36))
 plotFun(lm1fun(mcs, age=36, sex="male") ~ mcs, 
@@ -878,12 +954,21 @@ plotFun(lm1fun(mcs, age=36, sex="female") ~ mcs,
 @
 
 
+\subsection{Coefficient plots}
+
+It is sometimes useful to display a plot of the coefficients for a multiple regression model (along with their associated
+confidence intervals).
+
+<<>>=
+mplot(lm1, which=7, multiplot=FALSE)
+@
 
 \subsection{Residual diagnostics}
 
 It's straightforward to undertake residual diagnostics for this model.  We begin by adding the
 fitted values and residuals to the dataset.
 \Caution{Be careful when fitting regression models with missing values (see also section \ref{sec:miss}).}
+\TeachingTip{The \function{mplot} function can also be used to create these graphs.}
 <<>>=
 HELPrct = transform(HELPrct, residuals = resid(lm1))
 HELPrct = transform(HELPrct, pred = fitted(lm1))
@@ -1338,8 +1423,8 @@ names(CPS85)
 CPS1 <- subset(CPS85, select = -workforce.years)
 names(CPS1)
 @
-Any number of variables can be dropped or kept in this manner by supplying a vectors
-of variables names.
+Any number of variables can be dropped or kept in this manner by supplying a vector
+of variable names.
 <<>>=
 CPS1 <- subset(CPS85, select = -c(workforce.years, exper))
 @
@@ -1559,6 +1644,15 @@ HELPrct = transform(HELPrct, cesdcut = cut(cesd,
   breaks=c(0, 20, 40, 60), include.lowest=TRUE))
 bwplot(cesd ~ cesdcut, data=HELPrct)
 @
+
+It might be preferable to give better labels.
+<<tidy=FALSE>>=
+HELPrct = transform(HELPrct, cesdcut = cut(cesd, 
+  labels=c("low", "medium", "high"),
+  breaks=c(0, 20, 40, 60), include.lowest=TRUE))
+bwplot(cesd ~ cesdcut, data=HELPrct)
+@
+
 
 \subsection{Reordering factors}
 By default R uses the first level in lexicographic order as the reference group for modeling.  This 
