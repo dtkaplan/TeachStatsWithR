@@ -33,7 +33,7 @@ demonstrate key concepts in statistics and modeling
 while also supporting the core material of more traditional courses.
 
 \subsection*{A Work in Progress}
-\Caution{Despite your best efforts, you WILL find bugs both in this document and in our code.
+\Caution{Despite our best efforts, you WILL find bugs both in this document and in our code.
 Please let us know when you encounter them so we can call in the exterminators.}%
 Consider these notes to be a work in progress.  
 %\SuggestionBox{Sometimes we will mark
