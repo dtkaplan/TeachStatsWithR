@@ -11,8 +11,9 @@ set.seed(123)
 \RStudio\ is an integrated development environment (IDE) for \R\ that provides an alternative
 interface to \R\ that has several advantages over other the default \R\ interfaces:
 \begin{itemize}
-	\item \RStudio\ runs on Mac, PC, and Linux machines \emph{and looks and feels
-		identical on all of them.}
+	\item \RStudio\ runs on Mac, PC, and Linux machines and provides 
+	  a simplified interface that 
+	  \emph{looks and feels identical on all of them.}
 
 		The default interfaces for \R\ are quite different on the various platforms.  This
 		is a distractor for students and adds an extra layer of support responsibility
@@ -27,7 +28,7 @@ interface to \R\ that has several advantages over other the default \R\ interfac
 		simply opening a website from a browser and logging in.  No additional 
 		installation or configuration is required.
 
-		The web interface is nearly identical to the desktop version. 
+		The web interface is nearly identical to the desktop version.% 
 		\Caution{The desktop and server version of \RStudio\ are so similar
 		that if you run them both, you will have to pay careful attention to make 
 		sure you are working in the one you intend to be working in.}
@@ -37,8 +38,11 @@ interface to \R\ that has several advantages over other the default \R\ interfac
 		right where they left off.
 		With a little advanced set up, instructors can save the history of their 
 		classroom \R\ use and students can load those history files into their own
-		environment.
-		\marginnote{\RStudio\ is like Facebook for statistics.}%
+		environment.%
+		\Note{Using \RStudio\ in a browser is like Facebook for statistics.
+		Each time the user returns, the previous session is restored and they
+		can resume work where they left off.  Users can login from any device 
+		with internet access.}%
 	\item
 		\RStudio\ provides support for reproducible research.
 
@@ -135,6 +139,7 @@ the \Rstudio\ stand-alone version, you also need to install \R\ this way first.)
 All the instructions for downloading and installing are on CRAN.  Just 
 follow the appropriate instructions for your platform.
 
+\subsection{Running RStudio the first time}
 Once you have launched the desktop version of \RStudio\ or logged in to an \RStudio\ server, 
 you will see something like Figure~\ref{fig:Rstudio-bigview}.
 \authNote{Get updated screen shot?}
@@ -151,7 +156,8 @@ Notice that \Rstudio\ divides its world into four panels.  Several of the panels
 are further subdivided into multiple tabs.  Which tabs appear in which panels
 can be customized by the user.
 \marginnote[-2in]{We find it convenient to put the console in the upper left rather than the default 
-location (lower right) so that students can see it better when we project or \R\ session in class.}
+location (lower right) so that students can see it better when we project our \R\ 
+session in class.}
 
 \section{Using R as a Calculator in the Console}
 \R\ can do much more than a simple calculator, and we will introduce 
@@ -178,14 +184,6 @@ Comments can be very helpful when writing scripts
 with multiple commands or to annotate example code for your students.
 
 You can save values to named variables for later reuse.
-
-<<rs-variables1a,tidy=FALSE>>=
-product = 15.3 * 23.4       # save result
-product                     # display the result
-product <- 15.3 * 23.4      # <- can be used instead of =
-product                     
-@
-
 \TeachingTip{It's probably best to settle on using 
 one or the other of the right-to-left assignment operators rather than to switch
 back and forth.  The authors have different preferences:
@@ -196,6 +194,14 @@ can also be used in a left to right manner, and because it makes
 a clear distinction between the assignment operator, the use of \code{=}
 to provide values to arguments of functions, and the use of \code{==} to test
 for equality.}%
+
+<<rs-variables1a,tidy=FALSE>>=
+product = 15.3 * 23.4       # save result
+product                     # display the result
+product <- 15.3 * 23.4      # <- can be used instead of =
+product                     
+@
+
 
 Once variables are defined, they can be referenced in other operations
 and functions.
