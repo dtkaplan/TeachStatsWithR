@@ -213,7 +213,8 @@ thinks were prepared each way.
 
 It is easy to give her a score (9 out of 10, or 7 out of 10, or whatever
 it happens to be).  
-\marginnote{The score is setting up the idea of a test statistic for later.}
+\TeachingTip{The score is setting up the idea of a test statistic for later, 
+but there is no need to introduce that terminology on day 1.}
 It is trickier to figure out what to do with her score.
 Even if she is just guessing and has no idea, she could get lucky and 
 get quite a few correct -- maybe even all 10.  But how likely is that?
@@ -290,6 +291,15 @@ set.seed(123)
 @
 and make a table of the results.
 
+\TeachingTip{There is always the question of how many simulations to perform.
+This is a trade-off between speed and accuracy.  For simple things, one can easily
+perform 10,000 or more simulations live in class.  For more complicated things (that 
+might require fitting a model and extracting information from it at each iteration)
+you might prefer a smaller number for live demonstrations.  
+
+When you cover 
+inference for a proportion, it is a good idea to use those methods to revisit
+the question of how many replications are required in that context.}
 <<lady-dolots,cache=TRUE>>=
 # store the results of 10000 simulated ladies
 random.ladies <- do(10000) * rflip(10)
@@ -303,10 +313,10 @@ tally(~heads, data=random.ladies, format="prop")
 
 We can display this table graphically using a plot called a \term{histogram}
 with bins of width~1.
-\marginnote{\function{histogram()} adds some additional
-features to \pkg{lattice} \function{histogram()}.  In particular, the 
-\option{width} and \option{center} arguments make it easier to control
-the bins.}
+\marginnote{The \pkg{mosaic} package adds some additional
+features to \function{histogram()}.  In particular, the 
+\option{width} and \option{center} arguments, which make it easier to control
+the bins, are only available if you are using the \pkg{mosaic} package.}
 
 <<lady-hist,fig.width=3,fig.height=1.6>>=
 histogram(~ heads, data=random.ladies, width=1)  
@@ -405,7 +415,7 @@ A discussion of this or some other data set that can be explored through graphic
 is a good way to demonstrate ``statistical curiosity", to illustrate the power of \R\ 
 for creating graphs, and to introduce the importance of covariates in statistical analysis.
 \marginnote{Visualization has been called the ``gateway drug'' to statistics.  It can be 
-a great way to lure students into statisticcs -- and away from their graphing calculuators.}
+a great way to lure students into statisticcs -- and away from their graphing calculators.}
 
 %We'll return to this data set later to see ways it can be used for more formal analyses.
 \authNote{rjp: Restore comment about returning to this data only if we do return to it.}
@@ -446,6 +456,7 @@ to illustrate the importance of considering covariates.
 \label{sec:mites}
 
 \emph{This example shows how to build up to statistical inference from first principles.}
+\authNote{NH wants to add reference and perhaps revise this example once more}%
 
 
 Researchers suspect
@@ -496,7 +507,7 @@ Now we can set up a randomization simulation using some cards.
 	\centerline{\textbf{Physical Simulation}}
 
 \begin{enumerate}
-  \item Select 47 cards from your deck, 26 red (mites!) and 21 black
+  \item Select 47 cards from your deck: 26 red (mites!) and 21 black
   \item Shuffle the cards well
   \item Deal out 19 cards, these represent the 19 plants without Wilt disease.
   \item Count the number of black cards among those 19.  What do these represent?
