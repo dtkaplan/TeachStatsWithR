@@ -50,15 +50,15 @@
 \parbox{1.2in}{\begin{tikzpicture}
 \node at (0,0) [#3]
 {\parbox{1.05in}{\footnotesize {\sc #1 }{\raggedright #2}}};
-\end{tikzpicture}}}
-}
+\end{tikzpicture}}}\ignorespaces
+}%
 
 \renewcommand{\tikzNote}[4][0pt]{
 \marginnote[#1]{
 \textsc{#2}
 
 \noindent #3
-}
+}%
 }
 
 %\newcommand{\InstructorNote}[3][]{%
@@ -66,38 +66,44 @@
 %}
 
 \newcommand{\InstructorNote}[2][0pt]{%
-  \tikzNote[#1]{}{#2}{tape,fill=blue!10,draw=blue,thick}
+  \tikzNote[#1]{}{#2}{tape,fill=blue!10,draw=blue,thick}%
 }
 
 \newcommand{\DiggingDeeper}[2][0pt]{%
-\tikzNote[#1]{\centerline{Digging Deeper}}{#2}{tape,fill=blue!10,draw=blue,thick}
+\tikzNote[#1]{\centerline{Digging Deeper}}{#2}{tape,fill=blue!10,draw=blue,thick}%
 }
 
 
 \newcommand{\TeachingTip}[2][0pt]{%
-\tikzNote[#1]{\centerline{Teaching Tip}}{#2}{tape,fill=blue!10,draw=blue,thick}
+\tikzNote[#1]{\centerline{Teaching Tip}}{#2}{tape,fill=blue!10,draw=blue,thick}%
 }
 
 
 \newcommand{\FoodForThought}[2][0pt]{%
-\tikzNote[#1]{}{#2}{rectangle,fill=green!10,draw=green,thick}
+\tikzNote[#1]{}{#2}{rectangle,fill=green!10,draw=green,thick}%
 }
 
 \newcommand{\SuggestionBox}[2][0pt]{%
-  \tikzNote[#1]{\centerline{Suggestion Box}}{#2}{rectangle,fill=green!10,draw=green,thick}
+  \tikzNote[#1]{\centerline{Suggestion Box}}{#2}{rectangle,fill=green!10,draw=green,thick}%
 }
 
 \newcommand{\Caution}[2][0pt]{%
-  \tikzNote[#1]{\centerline{Caution!}}{#2}{chamfered rectangle,fill=red!10,draw=red,thick}
+  \tikzNote[#1]{\centerline{Caution!}}{#2}{chamfered rectangle,fill=red!10,draw=red,thick}%
 }
 
 \newcommand{\Pointer}[2][0pt]{%
-\tikzNote[#1]{\centerline{More Info}}{#2}{}
+\tikzNote[#1]{\centerline{More Info}}{#2}{}%
 }
 
 \newcommand{\Note}[2][0pt]{%
-\tikzNote[#1]{\centerline{Note}}{#2}{}
+\tikzNote[#1]{\centerline{Note}}{#2}{}%
 }
+
+\newcommand{\BlankNote}[1][0pt]{%
+\tikzNote[#1]{}{}{}%
+}
+
+
 
 \newcounter{examplenum}[chapter]
 \newenvironment{example}[1][\relax]{
