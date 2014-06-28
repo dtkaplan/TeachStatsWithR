@@ -9,6 +9,7 @@
 %\usepackage[shownotes]{authNote}
 \usepackage[hidenotes]{authNote}
 \usepackage{language}
+\usepackage{hyperref}
 
 \def\tilde{\texttt{\~}}
 
