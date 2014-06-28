@@ -329,18 +329,33 @@ There are several ways we can get some idea about what is in the \dataframe{Birt
 data frame.
 
 <<rs-Births78-head>>=
-head(Births78)
+head(Births78)            # show the first few rows
 @
 
-<<rs-Births78-summary>>=
-summary(Births78)
+<<rs-Births78-sample>>=
+sample(Births78, 4)       # show 4 randomly selected rows
 @
+
+
+<<rs-Births78-summary>>=
+summary(Births78)         # provide summary info about each variable
+@
+
+\begin{widestuff}
+<<rs-Births78-str>>=
+str(Births78)             # show the structure of the data frame
+@
+\end{widestuff}
+
+\noindent
+The output from \function{str()} is also available in the \tab{Environment} tab.
+
 In interactive mode, you can also try
 <<rs-view2,eval=FALSE,tidy=FALSE>>=
 ?Births78
 @
 to access the documentation for the data set.  This is also available in the \tab{Help} tab.
-Finally, the \tab{Workspace} tab provides a list of data in the workspace.  Clicking on
+Finally, the \tab{Environment} tab provides a list of data in the workspace.  Clicking on
 one of the data sets brings up the same data viewer as 
 <<rs-view1,eval=FALSE,tidy=FALSE>>=
 View(Births78)
@@ -612,40 +627,22 @@ require(mosaic)                        # load the mosaic package
 answer <- 42                           # store the number 42 in a variable named answer
 log(123); log10(123); sqrt(123)        # some standard numerical functions
 x <- c(1,2,3)                          # make a vector containing 1, 2, 3 (in that order)
+
 data(iris)                             # (re)load the iris data set
 names(iris)                            # see the names of the variables in the iris data
+head(iris)                             # first few rows of the iris data set
+sample(iris, 3)                        # 3 randomly selected rows of the iris data set
 summary(iris)                          # summarize each variables in the iris data set
 str(iris)                              # show the structure of the iris data set
-head(iris)                             # first few rows of the iris data set
 
 mydata <- read.table("file.txt")       # read data from a text file
 mydata <- read.csv("file.csv")         # read data from a csv file
 mydata <- read.file("file.txt")        # read data from a text or csv file
-
-tally( ~ sector, data=CPS85 )          # frequency table
-tally( ~ sector + race, data=CPS85 )   # cross tabulation of sector by race   
-mean( ~ age, data = HELPrct )          # mean age of HELPrct subjects
-mean( ~ age | sex, data = HELPrct )    # mean age of male and female HELPrct subjects
-mean( age ~ sex, data = HELPrct )      # mean age of male and female HELPrct subjects
-median(x); var(x); sd(x);              # more numerical summaries
-quantile(x); sum(x); cumsum(x)         # still more summaries
-favstats( ~ Sepal.Length, data=iris )  # compute favorite numerical summaries
-
-dotPlot( ~ Sepal.Length | Species, data=iris )             # dot plots for each species
-histogram( ~ Sepal.Length | Species, data=iris )          # histograms (with eXtra features)
-densityplot( ~ Sepal.Length, groups = Species, data=iris ) # overlaid densityplots
-freqpolygon( ~ Sepal.Length, groups = Species, data=iris ) # overlaid frequency polygons
-bwplot( Sepal.Length ~ Species, data = iris )              # side-by-side boxplots
-xyplot( Sepal.Length ~ Sepal.Width | Species, data=iris )  # scatter plots for each species
-bargraph( ~ sector, data=CPS85 )                           # bar graph
-qqmath( ~ age | sex, data=CPS85 )                          # quantile-quantile plots
 @
 
 \end{widestuff}
 \newpage
 \section{Exercises}
-
-%For these problems, create a single Word document containing all of your work.
 
 \shipoutProblems
 
