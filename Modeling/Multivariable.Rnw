@@ -1,10 +1,7 @@
 
 <<echo=FALSE,include=FALSE>>=
-source('../include/setup.R')
 opts_chunk$set( fig.path="figures/Multivariable-" ) 
-if (!exists("..makingMaster..")) {
-	set_parent('Master-Modeling.Rnw')
-}
+set_parent('Master-Modeling.Rnw')
 set.seed(123)
 # for nicer printing for lm.
 print.lm <- function(x,digits=4) {print(coef(x),digits=digits)} 
@@ -51,36 +48,44 @@ options(na.rm=TRUE)
 
 \chapter{Graphics \& Formulas}
 
-\marginnote{\texttt{require(mosaic)}\\
-The R system provides a way for the software development community to add new functionality.  "Packages" are the standard way to deliver such software.  
-The statement \texttt{require(mosaic)} loads in the \pkg{mosaic} package, which itself includes several other packages.  
+\marginnote{%
+\code{require(mosaic)}
+
+The R system provides a way for the software development community to add new functionality.  
+``Packages" are the standard way to deliver such software.  
+The statement \code{require(mosaic)} loads in the \pkg{mosaic} package, which itself 
+includes several other packages.  
 
 The \pkg{mosaic} package provides many of the commands that are used in this book.
 
 Once the package is loaded, it remains loaded for the rest of the R session.  
 
-As you teach, you may find other packages, such as \pkg{fastR}, that give useful data sets or other capabilities.  These can be loaded using \function{require} in the same way.}
+As you teach, you may find other packages, such as \pkg{fastR}, that give useful data sets or other capabilities.  These can be loaded using \function{require} in the same way.
+}
 
 
 
-\marginnote{The \texttt{trebuchet} data set was collected by a high-school student, Andrew Pruim, as part of a Science Olympiad competition.  These data are included in the \pkg{fastR} package.  
+\marginnote{%
+The \dataframe{trebuchet} data set was collected by a high-school student, Andrew Pruim, 
+as part of a Science Olympiad competition.  These data are included in the \pkg{fastR} package.
+}
 
 A trebuchet is a device used for throwing projectiles. A heavy counter-weight pulls down the short end of the arm, rapidly accelerating a projectile hanging in a sack at the long end of the arm.  Introduced in medieval times, trebuchets were used as a siege weapons to destroy fortifications. 
 
-\includegraphics[width=2in]{images/Trebuchet2.png}}
+\includegraphics[width=2in]{images/Trebuchet2.png}
 
 Visualization is sometimes called the gateway drug to statistics.  Since being a statistics addict is a good thing, it's worthwhile to start a statistics course with graphics:  scatterplots, box-and-whisker plots, histograms, etc.  In addition to conveying lay ideas of variation, graphics are close to the data themselves, compelling, and motivating.  Students see the advantage of using software; they couldn't make such graphics by hand.
 
-As always in these notes, you'll be using, among other things, functions from the \texttt{mosaic} package.  You need to load this into R:
+As always in these notes, you'll be using, among other things, functions from the \pkg{mosaic} package.  You need to load this into R:
 <<>>=
 require(mosaic)
 @
-This will also load allied packages, such as \texttt{lattice} graphics.  Often, you will encounter methods or data that you want to use in others of the many packages available for R.  For instance, the next example involves a data set about a toy trebuchet available in the \pkg{fastR} package:
+This will also load allied packages, such as \pkg{lattice} graphics.  Often, you will encounter methods or data that you want to use in others of the many packages available for R.  For instance, the next example involves a data set about a toy trebuchet available in the \pkg{fastR} package:
 <<>>=
 require(fastR)
 @
 
-\authNote{I'm simplifying the trebuchet data a bit, considering only \texttt{form=='a'}.}
+\authNote{I'm simplifying the trebuchet data a bit, considering only \code{form=='a'}.}
 <<>>=
 trebuchet = droplevels(subset(trebuchet, form=="a", drop=TRUE))
 @
@@ -104,9 +109,9 @@ There's more going on here than just identifying which variable gets plotted on 
 \section{Formulas \& Basic Statistics}
 
 
-
-
-\marginnote{It's tempting to show students shortcuts for looking at a data set, such as \function{summary}.
+\authNote{What is the point of this marginal note?}
+\marginnote{It's tempting to show students shortcuts for looking at a data set, 
+such as \function{summary}.}
 <<eval=FALSE>>=
 summary(trebuchet)
 @
@@ -128,7 +133,7 @@ Eventually, the formula will be used to guide students to thinking about using e
 
 \chapter{From Means to Models}
 
-\marginnote{Remember to load the \texttt{mosaic} package:
+\marginnote{Remember to load the \pkg{mosaic} package:
 <<eval=FALSE>>=
 require(mosaic)
 @
@@ -144,7 +149,7 @@ The syntax for constructing the model is very much the same as for \function{mea
 
 It helps to have some vocabulary:
 \begin{itemize}
-\item A model of this sort links inputs, called ``explanatory variables,'' to an output, or ``response variable". \sidenote{Depending on the field, these may be called ``independent'' and ``dependent'' variables respectively.  You may want to avoid this nomenclature, since those terms are confusingly similar in pronunciation and are often mistaken to confer special status on the quantities themselves rather than their role in a model.} In the example above, \VN{distance} is the response variable while \VN{projectileWt} an the explanatory variable.
+\item A model of this sort links inputs, called ``explanatory variables,'' to an output, or ``response variable". \sidenote{Depending on the field, these may be called ``independent'' and ``dependent'' variables respectively.  You may want to avoid this nomenclature, since those terms are confusingly similar in pronunciation and are often mistaken to confer special status on the quantities themselves rather than their role in a model.} In the example above, \variable{distance} is the response variable while \variable{projectileWt} an the explanatory variable.
 \item The model corresponds to a function, a mathematical representation of a relationship between an input and an output. 
 \item The purpose of \function{lm} is to construct a function that is as close to the data as possible.  That is, \function{lm} finds the model that ``best'' fits the data.
 \end{itemize}
@@ -153,7 +158,7 @@ It helps to have some vocabulary:
 $$ y = 4 x + 2 .$$
 Such notation doesn't emphasize the idea that $y$ is a function of $x$, that $x$ is the input and $y$ is the output. Indeed, there's nothing explicit to say that $y$ is a function at all; usually it's understood to be a variable.
 
-To introduce students to a notation that makes such relationships explicit, \pkg{mosaic} provides \function{makeFun}:\marginnote{Math students get used to the convention of writing functions as $f(x)$ or $g(x)$.  You'll have to take care to remind them that $f$ is the function and $x$ is the name of the input. In these notes, we tend to use names like \texttt{f1} and \texttt{f2} for functions, and \texttt{mod1} and \texttt{mod2} for the statistical models.}
+To introduce students to a notation that makes such relationships explicit, \pkg{mosaic} provides \function{makeFun}:\marginnote{Math students get used to the convention of writing functions as $f(x)$ or $g(x)$.  You'll have to take care to remind them that $f$ is the function and $x$ is the name of the input. In these notes, we tend to use names like \variable{f1} and \variable{f2} for functions, and \variable{mod1} and \variable{mod2} for the statistical models.}
 <<>>=
 f = makeFun(4*x + 2 ~ x)
 @
@@ -168,20 +173,20 @@ Of course, functions such as this can be plotted in the ordinary way:
 plotFun( f(x)~x, x.lim=range(-2,2))
 @
 
-The model, \texttt{mod1}, created earlier, is not exactly a function.\marginnote{You can see what's in \texttt{mod1} by giving it as a command, 
+The model, \variable{mod1}, created earlier, is not exactly a function.\marginnote{You can see what's in \variable{mod1} by giving it as a command, 
 <<eval=FALSE>>=
 mod1
 @
-This displays the model coefficients.  In addition to \function{makeFun}, you can use such operations as \function{rsquared}, \function{fitted}, and \function{resid}.} It's set up this way because there are several different types of information one might want to get from a model, not just the model function.  You can use \function{makeFun} to extract the model function from \texttt{mod1}: 
+This displays the model coefficients.  In addition to \function{makeFun}, you can use such operations as \function{rsquared}, \function{fitted}, and \function{resid}.} It's set up this way because there are several different types of information one might want to get from a model, not just the model function.  You can use \function{makeFun} to extract the model function from \variable{mod1}: 
 <<>>=
 f1 = makeFun(mod1)
 @
-This use of \function{makeFun} reformats the information that's already in \texttt{mod1}  as a mathematical function in R. Once that's done, the function can be evaluated in the ordinary way, by specifying the inputs.
+This use of \function{makeFun} reformats the information that's already in \variable{mod1}  as a mathematical function in R. Once that's done, the function can be evaluated in the ordinary way, by specifying the inputs.
 
-The function \texttt{f1} attempts to describe the relationship between the explanatory and response variables: between \VN{distance} and \VN{projectileWt}.
+The function \variable{f1} attempts to describe the relationship between the explanatory and response variables: between \variable{distance} and \variable{projectileWt}.
 
 
-There are, of course, other possible functions that could be used to describe the relationship between \VN{distance} and \VN{projectileWt}.  Taking some measurements off the scatter plot, one might reasonably try a simple function, perhaps $y = 1900 - 30*x$.  No reason to use the names $y$ and $x$, however.  You can define the proposed function using the names in the data set:
+There are, of course, other possible functions that could be used to describe the relationship between \variable{distance} and \variable{projectileWt}.  Taking some measurements off the scatter plot, one might reasonably try a simple function, perhaps $y = 1900 - 30*x$.  No reason to use the names $y$ and $x$, however.  You can define the proposed function using the names in the data set:
 <<>>=
 f2 = makeFun( 1900 - 30*weight ~ weight)
 @
@@ -193,7 +198,7 @@ plotFun(f1(projectileWt)~projectileWt, add=TRUE)
 plotFun(f2(projectileWt)~projectileWt, add=TRUE, lwd=3)
 @
 
-\newthought{The usual way} to quantify how close each function comes to the data involves the residuals: the difference between the value as given by the model function and the actual data value.  For instance, for a \VN{projectileWt} of 60, the function values are:\marginnote{For models created fitted with \function{lm}, you can access the fitted values or residuals directly from the model structure, without needing to construct the function and evaluate it.  Use
+\newthought{The usual way} to quantify how close each function comes to the data involves the residuals: the difference between the value as given by the model function and the actual data value.  For instance, for a \variable{projectileWt} of 60, the function values are:\marginnote{For models created fitted with \function{lm}, you can access the fitted values or residuals directly from the model structure, without needing to construct the function and evaluate it.  Use
 <<eval=FALSE>>=
 fitted(mod1)
 resid(mod1)
@@ -222,11 +227,11 @@ It appears that the residuals from \function{f1} are smaller.
 
 \marginnote{Instructor Note: It's a good exercise to try out many different alternatives.  You won't be able to find any whose sum of square residuals are smaller than those produced by \function{f1}.  In this sense, \function{f1}, from the model constructed by \function{lm}, is the best of all possible straight-line models of the data.}
 
-There are several ways to see the effect of \VN{projectileWt} on \VN{distance}.  The coefficients carry this information, but students need to be taught how to interpret them:
+There are several ways to see the effect of \variable{projectileWt} on \variable{distance}.  The coefficients carry this information, but students need to be taught how to interpret them:
 <<>>=
 coef(mod1)
 @
-This says that for every 1 gm increase in the weight of the projectile, the predicted distance flown decreases by 14.3 cm.  (The units of the variables are given in the help file for the data, \texttt{help(trebuchet)}.)
+This says that for every 1 gm increase in the weight of the projectile, the predicted distance flown decreases by 14.3 cm.  (The units of the variables are given in the help file for the data, \code{help(trebuchet)}.)
 
 Another way to see this same thing, perhaps a bit more obvious to the introductory student, is to evaluate the model function at two different weights, for instance:
 <<>>=
@@ -250,14 +255,15 @@ Consider why one might build a model of a trebuchet.  A practical application, i
 
 A competent trebuchet technician will tell you that there's another issue: How heavy is the counter-weight on the trebuchet?  You have the option of adding or taking away weight from the counter-weight in order to get your projectile on target.  
 
-Fitting a relevant model is a matter of including the counter-weight (\VN{counterWt}) in the set of explanatory variables.  (It's also important that student Andrew Pruim collected the experimental data over a range of counter-weights.)  Here's a simple model:
+Fitting a relevant model is a matter of including the counter-weight (\variable{counterWt}) in the set of explanatory variables.  (It's also important that student Andrew Pruim collected the experimental data over a range of counter-weights.)  Here's a simple model:
 <<tidy=FALSE>>=
 mod2 = lm( distance~projectileWt+counterWt, data=trebuchet)
 @
 
-\marginnote{Once students understand that the name assigned to a function should be in the format $f$ rather than $f(x)$, you may want to start assigning more descriptive names to functions.  Notice that in writing about functions, we use the typographical notation \function{f} rather than the bare name \texttt{f}.  But remember than in assigning a name to a function not to use the parentheses after the function name.}
+\marginnote{Once students understand that the name assigned to a function should be in the format $f$ rather than $f(x)$, you may want to start assigning more descriptive names to functions.  Notice that in writing about functions, we use the typographical notation \function{f} rather than the bare 
+name \bariable{f}.  But remember than in assigning a name to a function not to use the parentheses after the function name.}
 
-To extract the corresponding function, which will be a function of both \VN{projectileWt} and \VN{counterWt}, use \function{makeFun}.  We'll call the function \function{ballistic}:
+To extract the corresponding function, which will be a function of both \variable{projectileWt} and \variable{counterWt}, use \function{makeFun}.  We'll call the function \function{ballistic}:
 <<>>=
 ballistic = makeFun(mod2)
 @
@@ -304,11 +310,11 @@ ballistic(projectileWt=50,counterWt=2) - ballistic(projectileWt=50,counterWt=1)
 
 Show your students the points on the contour plot corresponding to these finite differences.\marginnote{Practice is important here.  The time invested will pay off handsomely.}  This helps them to understand why each input variable can be associated with a different connection to the output.  Once students understand this, it's easier for them to generalize to functions of more than two variables.  The key thing is to move away from functions of a single variable.
 
-It's well worth observing that the two models, \texttt{mod1} and \texttt{mod2}, give different answers to the question of how the distance changes with a change in the projectile weight.  For \text{mod1} (translated into function \function{f1}) the answer is
+It's well worth observing that the two models, \variable{mod1} and \variable{mod2}, give different answers to the question of how the distance changes with a change in the projectile weight.  For \text{mod1} (translated into function \function{f1}) the answer is
 <<>>=
 f1(projectileWt=51)-f1(projectileWt=50)
 @
-But for \texttt{mod2} (translated into function \function{ballistic}) the change in distance is much less, as already seen:
+But for \variable{mod2} (translated into function \function{ballistic}) the change in distance is much less, as already seen:
 
 \begin{widestuff}
 <<tidy=FALSE>>=
@@ -316,7 +322,7 @@ ballistic(projectileWt=51,counterWt=1) - ballistic(projectileWt=50,counterWt=1)
 @
 \end{widestuff}
 
-That the two functions give different answers can be confusing to students.  The difference comes about because the \function{ballistic} function allows you to hold the counter-weight constant while changing the projectile weight.  This is, of course, completely natural --- you can change the projectile weight without changing the counter-weight.  But the experiment happened to be done in such a way that only the lightest projectiles were used with the heaviest counterweights. \marginnote{Tip: The imbalance in this design --- that not all the levels of \VN{counterWt} were used for each level of \VN{projectileWt} --- is the norm for many observational studies.    Modeling makes it clear that imbalance introduces ambiguities that are related to covariation and can be dealt with in the same way.}
+That the two functions give different answers can be confusing to students.  The difference comes about because the \function{ballistic} function allows you to hold the counter-weight constant while changing the projectile weight.  This is, of course, completely natural --- you can change the projectile weight without changing the counter-weight.  But the experiment happened to be done in such a way that only the lightest projectiles were used with the heaviest counterweights. \marginnote{Tip: The imbalance in this design --- that not all the levels of \variable{counterWt} were used for each level of \variable{projectileWt} --- is the norm for many observational studies.    Modeling makes it clear that imbalance introduces ambiguities that are related to covariation and can be dealt with in the same way.}
 <<>>=
 tally( ~ projectileWt + counterWt, data=trebuchet)
 @
@@ -351,7 +357,7 @@ See the mosaic package resampling vignette for more information.}
 
 
 \chapter{Functions with Categorical Variables}
-\marginnote{Remember to load the \texttt{mosaic} package:
+\marginnote{Remember to load the \pkg{mosaic} package:
 <<>>=
 require(mosaic)
 @
@@ -364,13 +370,13 @@ vals = mean(distance~object,data=trebuchet)
 mod  =   lm(distance~object,data=trebuchet)
 @
 
-The first calculates the groupwise means of \VN{distance}, with the groups defined by \VN{object}.
+The first calculates the groupwise means of \variable{distance}, with the groups defined by \variable{object}.
 <<>>=
 vals = mean(distance~object,data=trebuchet)
 vals
 @
 
-The second statement fits a model that accounts for the variation in \VN{distance} by the variation in \VN{object}:
+The second statement fits a model that accounts for the variation in \variable{distance} by the variation in \variable{object}:
 
 \begin{widestuff}
 <<echo=FALSE>>=
@@ -382,7 +388,7 @@ coef(mod3)
 @
 \end{widestuff}
 
-\noindent As it happens, the model values from \texttt{mod} coincide directly with the values produced by \function{mean}. To see this, extract the function from the model:
+\noindent As it happens, the model values from \variable{mod} coincide directly with the values produced by \function{mean}. To see this, extract the function from the model:
 
 \begin{widestuff}
 <<>>=
@@ -403,7 +409,7 @@ g1("tennis ball")
 
 It may seem odd to your students that a word (or \term{character string}) can be used as the input to a function.  Remind them that a function is a machine that takes one or more inputs and produces an output.  There's no requirement that the inputs be numbers.
 
-The function \function{g1} can be used to calculate a model value for each case in the \texttt{trebuchet} data and, from that, the residuals:
+The function \function{g1} can be used to calculate a model value for each case in the \dataframe{trebuchet} data and, from that, the residuals:
 
 \begin{widestuff}
 <<tidy=FALSE>>=
@@ -428,7 +434,7 @@ g2 = makeFun(
      )
 @
 \end{widestuff}
-This is not the traditional form for a function.  The function \texttt{g2} takes an input \texttt{object} and compares it to the names of the different kinds of balls.  It returns the associated value (or \texttt{NA} if there is no associated value), for instance:
+This is not the traditional form for a function.  The function \variable{g2} takes an input \variable{object} and compares it to the names of the different kinds of balls.  It returns the associated value (or \variable{NA} if there is no associated value), for instance:
 
 \begin{widestuff}
 \begin{multicols}{3}
@@ -463,7 +469,7 @@ sd(g2resids,data=trebuchet)
 
 \chapter{From $r$ to $R^2$}
 
-\marginnote{Remember to load the \texttt{mosaic} package:
+\marginnote{Remember to load the \pkg{mosaic} package:
 <<>>=
 require(mosaic)
 @
@@ -476,11 +482,11 @@ $r$ is not as useful as its prominence suggests.  It doesn't handle multiple exp
 
 On the other hand, $R^2$ is much more generally useful.  If you are teaching modeling, it makes  sense to introduce $R^2$ as early as possible.  The way to do this is {\bf not} to treat $R^2$ as the square of $r$.  Such a development inherits all the deficiencies of $r$.  Instead, go back to a basic question: How does the model account for the variation in the response variable.
 
-Earlier, the standard deviation was used as a way to quantify the size of residuals.  Let's use it now to quantify the size of variation in the response variable.  For the \VN{distance} variable in the \texttt{trebuchet} data, this is:
+Earlier, the standard deviation was used as a way to quantify the size of residuals.  Let's use it now to quantify the size of variation in the response variable.  For the \variable{distance} variable in the \dataframe{trebuchet} data, this is:
 <<>>=
 sd( distance,data=trebuchet)
 @
-Now consider the size of the variation in the model values from the various models we have fitted --- \texttt{mod1}, \texttt{mod2}, and \texttt{mod3} from which were extracted the model functions \function{f1}, \function{ballistic}, and \function{g2}:
+Now consider the size of the variation in the model values from the various models we have fitted --- \variable{mod1}, \variable{mod2}, and \variable{mod3} from which were extracted the model functions \function{f1}, \function{ballistic}, and \function{g2}:
 <<>>=
 sd( f1(projectileWt),data=trebuchet)
 sd( ballistic(projectileWt,counterWt),data=trebuchet)
@@ -488,7 +494,7 @@ sd( g1(object),data=trebuchet)
 @
 In every case, the size of variation in the fitted model values is {\bf less} than the size of the response variables.  Where's the rest of the variation?  In the residuals.
 
-A fitted model \term{partitions} variation between that accounted for by the model and that which remains unaccounted for.  Measure the variation accounted for using the variation in the fitted model values; measure the rest of the variation using the residuals.  For instance, for \texttt{mod1}:
+A fitted model \term{partitions} variation between that accounted for by the model and that which remains unaccounted for.  Measure the variation accounted for using the variation in the fitted model values; measure the rest of the variation using the residuals.  For instance, for \variable{mod1}:
 <<>>=
 sd(fitted(mod1))
 sd(resid(mod2))
@@ -521,15 +527,15 @@ For convenience, you can extract the $R^2$ statistic directly from the model, ju
 rsquared(mod1)
 @
 
-An important question is whether $R^2$ can be used to compare different model designs to decide which is best.  For instance, $R^2$ from the groupwise-mean model \texttt{mod3} is somewhat larger than for \texttt{mod1}:
+An important question is whether $R^2$ can be used to compare different model designs to decide which is best.  For instance, $R^2$ from the groupwise-mean model \variable{mod3} is somewhat larger than for \variable{mod1}:
 <<>>=
 rsquared(mod3)
 @
-Does this mean that \texttt{mod3} is better than \texttt{mod1}?  That will turn out to be a productive route to studying statistical inference.  But before heading in that direction, let's expand the set of models that students can build and interpret.
+Does this mean that \variable{mod3} is better than \variable{mod1}?  That will turn out to be a productive route to studying statistical inference.  But before heading in that direction, let's expand the set of models that students can build and interpret.
 
 \chapter{Combinations of categorical and quantitative variables}
 
-\marginnote{Remember to load the \texttt{mosaic} package:
+\marginnote{Remember to load the \pkg{mosaic} package:
 <<>>=
 require(mosaic)
 @
@@ -556,7 +562,7 @@ xyplot(time ~ year | sex, data=SwimRecords)
 
 It's evident from the data that, for both sexes the records are improving over time. (How could they not?  That's the nature of a world record.)  The pattern is so clear that one hardly needs a model to interpret it.  But, to display the syntax of models, let's do so anyways.
 
-The record \VN{time} depends on both \VN{sex} and \VN{year}, but it's your choice what explanatory variables to include in a model.  Here are three plausible models:
+The record \variable{time} depends on both \variable{sex} and \variable{year}, but it's your choice what explanatory variables to include in a model.  Here are three plausible models:
 <<>>=
 swim1 = lm(time~sex,data=SwimRecords)
 swim2 = lm(time~year,data=SwimRecords)
@@ -569,7 +575,7 @@ s2 = makeFun(swim2)
 s3 = makeFun(swim3)
 @
 
-The first model doesn't include \VN{year}.  Still, to graph the model function on the axes, you need to include \VN{year} in the plotting statement. 
+The first model doesn't include \variable{year}.  Still, to graph the model function on the axes, you need to include \variable{year} in the plotting statement. 
 
 \begin{widestuff}
 <<fig.width=6>>=
@@ -579,7 +585,7 @@ plotFun(s1(sex="M")~year,add=TRUE,lty="dotdash")
 @
 \end{widestuff}
 
-The function \function{s1} doesn't depend on \VN{year}, so the graphs of the function are flat with respect to \VN{year}.  The function does have \VN{sex} as an input and you can see in the graph how the function values for females (thick line) differ from those for males (thin line).
+The function \function{s1} doesn't depend on \variable{year}, so the graphs of the function are flat with respect to \variable{year}.  The function does have \variable{sex} as an input and you can see in the graph how the function values for females (thick line) differ from those for males (thin line).
 
 Now consider \function{s2}, which depends on \function{year} but not \function{sex}.
 
@@ -593,7 +599,7 @@ plotFun(s2(year)~year,add=TRUE,lty="dotdash")
 
 The functions are the same for males and females, of course, so they overlie one another on the graph.
 
-Including both \VN{sex} and \VN{year} in the model produces a function that depends on both variables:
+Including both \variable{sex} and \variable{year} in the model produces a function that depends on both variables:
 
 \begin{widestuff}
 <<fig.width=6>>=
@@ -603,9 +609,9 @@ plotFun(s3(year=year,sex="M")~year,add=TRUE,lty="dotdash")
 @
 \end{widestuff}
 
-You might be surprised to see that the graph of the function for males is parallel to that for females.  That's because there was nothing in the model design that produces a different slope with respect to \VN{year} for females and males: the two lines must therefore be parallel. 
+You might be surprised to see that the graph of the function for males is parallel to that for females.  That's because there was nothing in the model design that produces a different slope with respect to \variable{year} for females and males: the two lines must therefore be parallel. 
 
-Including such a difference in a model is a matter of including an \term{interaction term} between \VN{sex} and \VN{year}:
+Including such a difference in a model is a matter of including an \term{interaction term} between \variable{sex} and \variable{year}:
 
 \begin{widestuff}
 <<fig.width=6>>=
@@ -617,9 +623,9 @@ plotFun(s4(year=year,sex="M")~year,add=TRUE,lty="dotdash")
 @
 \end{widestuff}
 
-\newthought{Interactions are confusing}; they imply a ``difference of differences.'' \marginnote{For students who have been exposed to the algebra of functions of two variables, it may be helpful to point out that the model $x + y + x:y$ corresponds to the polynomial $f(x,y) = a_0 + a_1 x + a_2 y + a_3 x y$.  The coefficient on the interaction term is $a_0$.  This corresponds to the mixed partial derivative, $\partial^2 f/\partial x \partial y$.  This is the calculus equivalent of ``difference of differences.''} Students tend to want to interpret the word ``interaction'' as meaning that one variable affects the other.  This is not quite right.  An interaction describes how the effect of one variable on the response is modulated by the other variable.  For example, the interaction between \VN{sex} and \VN{year} tells how the relationship between \VN{year} and world-record \VN{time} differs for the two sexes.  You see that interaction in the graph as different slopes for the fitted lines for the two sexes.
+\newthought{Interactions are confusing}; they imply a ``difference of differences.'' \marginnote{For students who have been exposed to the algebra of functions of two variables, it may be helpful to point out that the model $x + y + x:y$ corresponds to the polynomial $f(x,y) = a_0 + a_1 x + a_2 y + a_3 x y$.  The coefficient on the interaction term is $a_0$.  This corresponds to the mixed partial derivative, $\partial^2 f/\partial x \partial y$.  This is the calculus equivalent of ``difference of differences.''} Students tend to want to interpret the word ``interaction'' as meaning that one variable affects the other.  This is not quite right.  An interaction describes how the effect of one variable on the response is modulated by the other variable.  For example, the interaction between \variable{sex} and \variable{year} tells how the relationship between \variable{year} and world-record \variable{time} differs for the two sexes.  You see that interaction in the graph as different slopes for the fitted lines for the two sexes.
 
-Another, way to describe the interaction is that the relationship between \VN{sex} and world-record \VN{time} is changing over the years.  You can see that from the changing vertical distance between the lines for females and males. Both these ways of describing the interaction --- how the relationship between \VN{sex} and \VN{time} is modulated over the years, and how the relationship between \VN{year} and \VN{time} is different for the two sexes --- are equivalent.  Given that the slopes of the two lines is different, the vertical distance between the two lines is going to change.
+Another, way to describe the interaction is that the relationship between \variable{sex} and world-record \variable{time} is changing over the years.  You can see that from the changing vertical distance between the lines for females and males. Both these ways of describing the interaction --- how the relationship between \variable{sex} and \variable{time} is modulated over the years, and how the relationship between \variable{year} and \variable{time} is different for the two sexes --- are equivalent.  Given that the slopes of the two lines is different, the vertical distance between the two lines is going to change.
 
 \newpage
 
@@ -677,7 +683,7 @@ The dotted and dot-dashed lines show the mother+father model values for two diff
 
 \section{Partial Change}
 
-``All things being equal'' is an everyday phrase.   In the Galton height data, for instance, one can examine the association of \VN{mother}'s height with child's \VN{height}, holding the other things constant, e.g., the \VN{father}'s height and the child's \VN{sex}.  Given a model function, this \term{partial change} is easy to calculate: look at the difference in child's model height for two different values of the mother's height, while holding \VN{father} and \VN{sex} constant.  For instance,
+``All things being equal'' is an everyday phrase.   In the Galton height data, for instance, one can examine the association of \variable{mother}'s height with child's \variable{height}, holding the other things constant, e.g., the \variable{father}'s height and the child's \variable{sex}.  Given a model function, this \term{partial change} is easy to calculate: look at the difference in child's model height for two different values of the mother's height, while holding \variable{father} and \variable{sex} constant.  For instance,
 
 \begin{widestuff}
 <<tidy=FALSE>>=
@@ -685,7 +691,7 @@ h2(mother=66,father=68,sex="F") - h2(mother=65,father=68,sex="F")
 @
 \end{widestuff}
 
-Similarly, one can examine the partial change with respect to \VN{father} and with respect to \VN{sex}:
+Similarly, one can examine the partial change with respect to \variable{father} and with respect to \variable{sex}:
 
 \begin{widestuff}
 <<tidy=FALSE>>=
@@ -696,11 +702,11 @@ h2(mother=66,father=68,sex="F") - h2(mother=66,father=68,sex="M")
 
 \newthought{The reason to call these differences ``partial'' change} is by analogy with partial derivatives in calculus: the change with respect to one variable holding the other constant.
 
-Of course, for the continuous variables --- \VN{mother} and \VN{father} --- one can calculate the partial derivative itself.  This would be appropriate for students who are familiar with derivatives, but it is not essential that one consider any sort of limiting process as in calculus.  The important point is that the change in model output can be considered with respect to each of the input variables individually.
+Of course, for the continuous variables --- \variable{mother} and \variable{father} --- one can calculate the partial derivative itself.  This would be appropriate for students who are familiar with derivatives, but it is not essential that one consider any sort of limiting process as in calculus.  The important point is that the change in model output can be considered with respect to each of the input variables individually.
 
-The partial change is a straightforward measure of \term{effect size}.  The intellectual question is what quantities to hold constant.  Answering this requires some expert knowledge.  Students have considerable expertise, even if it's just about common sense matters.  For instance, it's a form of expert knowledge to know that the mother's height doesn't affect the sex of the child.  So in considering the effect size of mother's \VN{height}, it's sensible to hold \VN{sex} constant. 
+The partial change is a straightforward measure of \term{effect size}.  The intellectual question is what quantities to hold constant.  Answering this requires some expert knowledge.  Students have considerable expertise, even if it's just about common sense matters.  For instance, it's a form of expert knowledge to know that the mother's height doesn't affect the sex of the child.  So in considering the effect size of mother's \variable{height}, it's sensible to hold \variable{sex} constant. 
 
-Occasionally, it makes sense to consider the change while varying two or more variables simultaneously.  As an example with a simple mechanism, consider trying to predict a person's wage based on their education and job experience.  The \texttt{CPS85} data contains information from the Current Population Survey that can be used for this purpose.  First, build a model with both education and experience as explanatory variables (and whatever covariates you think appropriate), e.g.,
+Occasionally, it makes sense to consider the change while varying two or more variables simultaneously.  As an example with a simple mechanism, consider trying to predict a person's wage based on their education and job experience.  The \dataframe{CPS85} data contains information from the Current Population Survey that can be used for this purpose.  First, build a model with both education and experience as explanatory variables (and whatever covariates you think appropriate), e.g.,
 <<>>=
 wmod = lm(wage~educ+exper,data=CPS85)
 @
@@ -774,13 +780,13 @@ The fact that the quality of schools correlates more positively with the quality
 
 What's wrong here is the idea of the ``crucial variable.''  Teachers' unions are understandably concerned with education appropriations, just as editorial columnists are with the structure of families.  That these variables are ``crucial'' reflects the interests of the modelers --- it's perfectly feasible for a model to include both variables.  Rather than identifying a single variable as crucial and looking for an association with that variable to the exclusion of all other explanatory variables, it's more appropriate to construct a model with multiple variables.  The issue is confounding, not cruciality. 
 
-Returning to the SAT data, consider one simple confounder, \VN{frac}, the proportion of students in each state who take the SAT.  In upper Mid-west states like North Dakota, many college-bound students take the ACT rather than the SAT; SATs tend to be taken by students heading out of state, who are often higher-scoring.  In many states, only a small fraction of students take the SAT, and these students also tend to be higher-scoring. So use \VN{frac} as a covariate: \marginnote{Confounding occurs any time a covariate is correlated with an explanatory variable.  The term \term{Simpson's paradox} is used to identify situations when the coefficient on the explanatory variable of interest changes sign when a covariate is introduced into a model.  It's called a ``paradox'' because the sign change isn't anticipated by intuition.  But a change in coefficient is an inevitable result of the correlation of a covariate with an explanatory variable.  ``Paradox'' shouldn't be interpreted as ``rare'' or ``unlikely.''  Confounding is a perfectly ordinary situation.}  
+Returning to the SAT data, consider one simple confounder, \variable{frac}, the proportion of students in each state who take the SAT.  In upper Mid-west states like North Dakota, many college-bound students take the ACT rather than the SAT; SATs tend to be taken by students heading out of state, who are often higher-scoring.  In many states, only a small fraction of students take the SAT, and these students also tend to be higher-scoring. So use \variable{frac} as a covariate: \marginnote{Confounding occurs any time a covariate is correlated with an explanatory variable.  The term \term{Simpson's paradox} is used to identify situations when the coefficient on the explanatory variable of interest changes sign when a covariate is introduced into a model.  It's called a ``paradox'' because the sign change isn't anticipated by intuition.  But a change in coefficient is an inevitable result of the correlation of a covariate with an explanatory variable.  ``Paradox'' shouldn't be interpreted as ``rare'' or ``unlikely.''  Confounding is a perfectly ordinary situation.}  
 <<>>=
 mod2 = lm(sat ~ expend+frac,data=SAT)
 summary(mod2)
 @
 
-Taking into account the covariate \VN{frac}, the relationship between expenditures and test scores is positive and statistically significant. Such a substantial change in the value of a coefficient when including a covariate is a sign of confounding.
+Taking into account the covariate \variable{frac}, the relationship between expenditures and test scores is positive and statistically significant. Such a substantial change in the value of a coefficient when including a covariate is a sign of confounding.
 
 More than one covariate can be included in a model, of course.  The models themselves won't sort out what causes what, but they provide a framework for having such a debate.  
 
@@ -796,7 +802,7 @@ Houses with a fireplace are about \$70,000$\pm$9000 more expensive than houses w
 <<>>=
 summary(lm(Living.Area ~ Fireplace, data=houses))
 @
-It seems sensible to build a model that takes such confounding into account by including \VN{Living.Area} as a covariate:
+It seems sensible to build a model that takes such confounding into account by including \variable{Living.Area} as a covariate:
 <<>>=
 summary(lm(Price ~ Fireplace+Living.Area, data=houses))
 @
@@ -805,7 +811,7 @@ This model puts the value of a fireplace at about \$10,000$\pm$8000.  Notice tha
 
 \chapter{Statistical Inference}
 
-\marginnote{Remember to load the \texttt{mosaic} package:
+\marginnote{Remember to load the \pkg{mosaic} package:
 <<>>=
 require(mosaic)
 @
@@ -910,7 +916,7 @@ This also provides a new context for conducting hypothesis tests:  ``Does includ
 
 \section{Confidence Intervals}
 
-Cobb's randomize and repeat logic of statistical inference applies to the construction of confidence intervals as well.  In this setting, rather than shuffling variables, resample with replacement on a case-by-case basis, so that each individual case preserves the authentic relationship among its variables.  To illustrate, here's a resampling based calculation of the standard error on a model of the coefficient on \VN{projectileWt} in a model of the trebuchet throw-distance:
+Cobb's randomize and repeat logic of statistical inference applies to the construction of confidence intervals as well.  In this setting, rather than shuffling variables, resample with replacement on a case-by-case basis, so that each individual case preserves the authentic relationship among its variables.  To illustrate, here's a resampling based calculation of the standard error on a model of the coefficient on \variable{projectileWt} in a model of the trebuchet throw-distance:
 <<tidy=FALSE>>=
 tmod = lm(distance~projectileWt+counterWt,data=trebuchet)
 s = do(1000)*lm(distance~projectileWt+counterWt,
@@ -932,7 +938,7 @@ Of course, the confidence intervals depend on the structure of the model.  Add i
 
 \chapter{Keeping Models in Proportion}
 
-\marginnote{Remember to load the \texttt{mosaic} package:
+\marginnote{Remember to load the \pkg{mosaic} package:
 <<>>=
 require(mosaic)
 @
@@ -940,7 +946,7 @@ require(mosaic)
 
 A conventional introduction to statistics has methods relating to means (t-tests, one-way and two-way ANOVA) and to proportions (p-tests) and to counts ($\chi^2$ tests).  Quantities such as $\sqrt{p(1-p)/N}$ and $\sum \frac{(obs-exp)^2}{exp}$ are almost iconic.  The modeling approach might at first seem to have nothing to do with proportions and counts, but that's not true.  Indeed, proportions and counts fit in well with the modeling framework.  Modeling unifies seemingly disparate methods under one roof.
 
-To illustrate, consider a simple set of data about the health effects of smoking: \texttt{Whickham}.  The data are from a survey of women in Whickhamshire, UK.  The women were surveyed to find (among other things) their ages and whether they smoke.  A follow-up was conducted 20 years later, at which time it was recorded whether the woman was still alive.
+To illustrate, consider a simple set of data about the health effects of smoking: \dataframe{Whickham}.  The data are from a survey of women in Whickhamshire, UK.  The women were surveyed to find (among other things) their ages and whether they smoke.  A follow-up was conducted 20 years later, at which time it was recorded whether the woman was still alive.
 
 Here's the count of women, broken down by the alive/dead outcome:
 <<>>=
@@ -975,7 +981,7 @@ tally(~outcome|smoker, data=Whickham, format="proportion")
 @
 It looks like the smokers are a little {\em less} likely to have died.
 
-In modeling language, we're interested in whether the outcome depends on the explanatory variable \VN{smoker}:
+In modeling language, we're interested in whether the outcome depends on the explanatory variable \variable{smoker}:
 <<>>=
 mod1 = lm(outcome=="Dead" ~ smoker, data=Whickham)
 summary(mod1)
@@ -994,14 +1000,14 @@ The p-value is similar to that from regression.  This is not to say that the $\c
 fisher.test(counts)
 @
 
-Should you be concerned about the differences between 0.0025 and 0.0030?  There's no practical meaning to the difference.  However, there is a very large practical importance to the covariate \VN{age}, which has not been included in the analysis to this point.
+Should you be concerned about the differences between 0.0025 and 0.0030?  There's no practical meaning to the difference.  However, there is a very large practical importance to the covariate \variable{age}, which has not been included in the analysis to this point.
 
-It's easy enough to build a model that incorporates \VN{age}:
+It's easy enough to build a model that incorporates \variable{age}:
 <<>>=
 mod2 = lm(outcome=="Dead" ~ smoker+ age, data=Whickham)
 summary(mod2)
 @
-This model suggests that the null hypothesis cannot be rejected.  The p-value on \VN{smoker} is about 0.6.  There is little point in worrying about the second significant digit of a p-value on the difference of counts or proportions when the first digit of the p-value depends on a covariate.
+This model suggests that the null hypothesis cannot be rejected.  The p-value on \variable{smoker} is about 0.6.  There is little point in worrying about the second significant digit of a p-value on the difference of counts or proportions when the first digit of the p-value depends on a covariate.
 
 It's worth mentioning that a linear model, while reasonable, is not the right sort of model to build to model proportions.  Better to use a logistic regression model.  This involves a few new concepts (odds, log-odds) and a new R command, but the similarities of logistic regression to linear modeling are larger than the differences.  For reference, here's the logistic regression version of just-smoker model and the age-adjusted model:
 <<tidy=FALSE>>=
@@ -1024,7 +1030,7 @@ These are just sketches for exercises.  Where to deploy them?
 
 \paragraph{Two}. Do the grand mean.  It's not so easy to think about what the input is.  There is no input.  In this sense, groupwise means are easier to conceive of than grand means.
 
-\paragraph{Three}. Show that \VN{object} gives a perfect prediction of \VN{projectileWt} in the \texttt{trebuchet} data. Does \VN{object} contribute anything beyond \VN{projectileWt} in explaining \VN{distance}?
+\paragraph{Three}. Show that \variable{object} gives a perfect prediction of \variable{projectileWt} in the \dataframe{trebuchet} data. Does \variable{object} contribute anything beyond \variable{projectileWt} in explaining \variable{distance}?
 
 \shipoutProblems
 
