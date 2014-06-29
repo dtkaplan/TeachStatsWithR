@@ -80,7 +80,7 @@ This will also load allied packages, such as \texttt{lattice} graphics.  Often, 
 require(fastR)
 @
 
-\authNote{I'm simplifying the trebuchet data a bit, considering only \texttt{form=='a'}.
+\authNote{I'm simplifying the trebuchet data a bit, considering only \texttt{form=='a'}.}
 <<>>=
 trebuchet = droplevels(subset(trebuchet, form=="a", drop=TRUE))
 @
