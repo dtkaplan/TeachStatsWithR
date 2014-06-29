@@ -16,6 +16,40 @@
 \renewenvironment{knitrout}{\relax}{\noindent}
 \begin{document}
 
+<<include=FALSE>>=
+#setCacheDir("cache")
+require(MASS)
+require(grDevices) 
+require(datasets) 
+require(stats) 
+require(lattice)
+require(grid) 
+# require(fastR)	# commented out by NH on 7/12/2012
+require(mosaic) 
+trellis.par.set(theme=col.mosaic(bw=FALSE))
+trellis.par.set(fontsize=list(text=9))
+options(keep.blank.line=FALSE) 
+options(width=60)
+require(vcd)
+require(knitr)
+opts_chunk$set(  tidy=TRUE,
+			     size='small',
+                 dev="pdf",
+                 fig.path="figures/fig-",  
+                 fig.width=3, fig.height=2,
+                 fig.align="center",
+                 fig.show="hold",
+                 comment=NA)
+@
+
+<<include=FALSE>>=
+knit_hooks$set(document = function(x) { 
+			   sub('\\usepackage[]{color}', '\\usepackage[]{xcolor}', 
+			   x, fixed = TRUE) 
+}) 
+@
+
+
 
 %\maketitle
 
@@ -27,9 +61,6 @@
 
 \newpage
 
-<<include=FALSE>>=
-..makingMaster.. <- TRUE
-@
 
 <<child='../Starting/FrontMatter.Rnw', eval=TRUE>>=
 @
