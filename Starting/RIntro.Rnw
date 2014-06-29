@@ -885,8 +885,8 @@ species?  Refer to your \R\ output as you answer this question.
 %\subsection{Bar Charts and Pie Charts}
 \subsection{Tabulating Categorical Data}
 The Current Population Survey (CPS) is used to supplement census information
-between census years. These \dfn{CPS85} data frame consist of a random sample of persons from the
-CPS, with information on wages and other characteristics of the workers,
+between census years. These \dataframe{CPS85} data frame consist of a random sample of 
+persons from the 1985 CPS, with information on wages and other characteristics of the workers,
 including sex, number of years of education, years of work experience,
 occupational status, region of residence and union membership.
 
@@ -900,8 +900,8 @@ Categorical variables are  often summarized in a table.
 \R\ can make a table for a categorical variable using \function{tally()}.
 
 <<intro-table1>>=
-tally(~ race, CPS85)
-tally(~ sector, CPS85)
+tally(~ race, CPS85, margins=TRUE)
+tally(~ sector, CPS85, margins=TRUE)
 @
 
 If we prefer to have the results presented as proportions or percents, we 
@@ -924,7 +924,7 @@ data with two categorical variables.
 
 
 <<intro-xtabs>>=
-tally(~ race & sector, CPS85)   # 2-way cross-table
+tally(~ race & sector, CPS85, margins=TRUE)   # 2-way cross-table
 @
 Alternatively, we can select one of our categorical variables to be 
 a conditional variable.  The report is then done using proportions by default.
@@ -973,9 +973,12 @@ bargraph(~ sector, CPS85, horizontal=TRUE)  # horizontal bars
 
 As with the other lattice plots, we can add grouping or conditioning to 
 our plot.
-<<intro-bargraph3a>>=
-bargraph(~ sector, CPS85, groups=race, scales=list(x=list(rot=45)))
-bargraph(~ sector | race, CPS85, scales=list(x=list(rot=45)))
+<<intro-bargraph3a, tidy=FALSE, out.width=".47\\textwidth">>=
+bargraph(~ sector, CPS85, groups=race, 
+		 scales=list(x=list(rot=45)),
+		 auto.key=list(space="right"))
+bargraph(~ sector | race, CPS85, 
+		 scales=list(x=list(rot=45)))
 @
 
 Just as bar charts are used to display the distribution
@@ -1014,14 +1017,14 @@ mosaic(mycrosstable)
 
 
 \begin{problem}
-The \dfn{Utilities2} data set in the \verb!mosaic! package contains a number of variables
+The \dataframe{Utilities2} data set in the \verb!mosaic! package contains a number of variables
 about the utilities bills at a residence in Minnesota over a number of years.
 Since the number of days in a billing cycle varies from month to month, variables 
-like \vn{gasbillpday} (\dfn{elecbillpday}, etc.) contain the gas bill (electric bill, etc.) 
+like \vn{gasbillpday} (\dataframe{elecbillpday}, etc.) contain the gas bill (electric bill, etc.) 
 divided by the number of days in the billing cycle.
 \begin{enumerate}
 \item
-Make a scatter plot of \dfn{gasbillpday} vs. \dfn{monthsSinceY2K} using the command
+Make a scatter plot of \dataframe{gasbillpday} vs. \dataframe{monthsSinceY2K} using the command
 <<intro-gasbill,fig.keep="none">>=
 xyplot(gasbillpday ~ monthsSinceY2K, data=Utilities2, type='l')   # the letter l
 @
@@ -1039,13 +1042,13 @@ Make a scatter plot of \vn{gasbillpday} by \vn{month}.
 What do you notice?
 
 \item
-Make side-by-side boxplots of \vn{gasbillpday} by \vn{month} using the \dfn{Utilities2}
+Make side-by-side boxplots of \vn{gasbillpday} by \vn{month} using the \dataframe{Utilities2}
 data frame.   
 What do you notice?
 
 Your first try probably won't give you what you expect.  The reason is that month is coded
 using numbers, so \R\ treats it as numerical data.  We want to treat it as categorical data.
-To do this in \R\, use \verb!factor(month)! in place of \dfn{month}.  
+To do this in \R\, use \verb!factor(month)! in place of \dataframe{month}.  
 \R\ calls categorical data a \term{factor}.
 
 \item

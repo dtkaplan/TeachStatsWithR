@@ -49,7 +49,7 @@ less error-prone.
   It can be tempting to do everything in the console. But the console is ephemeral. 
   It is better to get into the habit of storing code in files.
   Get in the habit (and get your students in the habit) of working with \R\
-  scripts, RMarkdown files, and Rnw files.
+  scripts and especially RMarkdown files.  
 
 You can execute all the code in an \R\ script file using 
 \Pointer{\R\ can be used to create executable scripts.  Option parsing and 
@@ -60,7 +60,7 @@ source("file.R")
 @
 
 \Rstudio\ has additional options for executing some or all lines in a file. 
-See the buttons in the tab for any \R\ script, RMardown or Rnw file.  
+See the buttons in the tab for any \R\ script, RMarkdown or Rnw file.  
 (You can create a new file in the main \tab{File} menu.)
 
 If you work at the console's interactive prompt and later wish you had 
@@ -116,7 +116,7 @@ lm( length ~ width, data=KidsFeet ) -> footModel; footModel
 \Rindex{\#}%
 \myindex{comment character in R@comment character in {\sf R} (\texttt{\#})}%
 It's amazing what you can forget.  The comment character in \R\ is \texttt{\#}.
-If you are working in RMardown or Rnw files, you can also include nicely
+If you are working in RMarkdown or Rnw files, you can also include nicely
 formatted text to describe what you are doing and why.
 \end{itemize}
 
@@ -1680,6 +1680,8 @@ For sharing data, it's best if this site is public, that is, it does not require
 That rules out most ``course support'' systems such as Moodle or
 Blackboard.  
 
+\authNote{Need to check whether Dropbox workflow is still correct. --rjp 2014-06-28}
+\index{Dropbox}
 The Dropbox service for storing files in the ``cloud'' provides a very
 convenient way to distribute files over the web.  (Go to
 \texttt{dropbox.com} for information and to sign up for a free account.)
@@ -1713,7 +1715,7 @@ can be done with the \function{read.csv} function, by giving it the
 quoted URL:
 \begin{figure*}
 <<read-quoted-URL>>=
-a <- read.csv("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
+a <- read.file("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
 @ 
 
 %\InstructorNote{The history feature in \RStudio\ can be used to 
@@ -1769,6 +1771,8 @@ by giving files names known only to your students, e.g.,
 
 
 \subsection{GoogleDocs}
+\autNote{NH wants to add something about RMarkdown in this section, but I'm not 
+sure what he wants to add --rjp  2014--6-28}
 
 The Dropbox technique (or any other system of posting files to the Internet)
 is excellent for broadcasting: taking files you
@@ -1901,6 +1905,8 @@ elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en
 head(elev)
 @ 
 
+\TeachingTip{Another options is to get shorter URLs using 
+a service like \url{tinyurl.com} or \url{bitly.com}.}
 Of course, you'd never want your students to type that URL by hand;
 you should provide it in a copy-able form on a web site or within a
 course support system.

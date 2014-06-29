@@ -149,10 +149,6 @@ install.packages("mosaic") # fetch package from CRAN
 @
 Once the package has been installed it must be \emph{loaded} to make it available in
 the current session or file using
-<<>>=
-library(mosaic)           # load the package before use
-@
-or 
 \TeachingTip{Although the use of \function{library()} is more common
 in this situation, we find that students remember the word \function{require()}
 better.  For their purposes, the two are essentially the same.  The biggest
@@ -160,6 +156,10 @@ difference is how they respond when a package cannot be loaded (usually because
 it has not been installed).  \function{require()} generates a warning message 
 and returns a logical value that can be used when programming. 
 \function{library()} generates an error when the package cannot be loaded.}
+<<>>=
+library(mosaic)           # load the package before use
+@
+or 
 <<>>=
 require(mosaic)            # alternative way to load
 @
@@ -204,7 +204,8 @@ large and popular repository, especially for biological applications, and increa
 authors are making packages available via github.  For example, you can also
 install the mosaic package using
 <<eval=FALSE>>=
-install.packages("devtools")     # if you haven't already installed this package
+# if you haven't already installed this package
+install.packages("devtools")     
 require(devtools)
 install_github("mosaic", "rpruim")
 @
@@ -281,7 +282,7 @@ To see how demos work, give this a try:
 <<rs-demo,eval=FALSE,results="hide">>=
 demo(lattice)
 @
-Demos are intended to illustrate a concept, a method, or some such thing, and are 
+Demos are intended to illustrate a concept or a method and are 
 independent of any particular function or data set.
 
 You can get a list of available demos using
@@ -404,7 +405,7 @@ avoid the \code{\$} operator.
 
 
 \subsection{Data in Packages}
-Data sets in \R\ packages are the easiest to deal with.
+Data sets in \R\ packages are the easiest to deal with.%
 \TeachingTip{Start out using data in packages and show students
 how to import their own data once they understand how to work with
 data.}%
@@ -427,19 +428,29 @@ You can optionally choose to restrict the list to a single package:
 data(package="mosaic")
 @
 
-Typically (provided the author of the package allowed for lazy loading of data) 
+Typically%
+\Note{This depends on the package.  Most package authors
+set up their packages with ``lazy loading'' of data.  If they do not,
+then you need to use \function{data()} explicitly.}%
 you can use data sets by simply typing their names.  But if you have already
-used that name for something or need to refresh the data after making some changes you no longer
-want, you can explicitly load the data using the \function{data()} function with the name of the 
-data set you want.
+used that name for something or need to refresh the data after making some
+changes you no longer want, you can explicitly load the data using the
+\function{data()} function with the name of the data set you want.
 
 <<rs-data-load>>=
 data(Births78)
 @
-
+%
+\Caution{If two packages include data sets with the same name, you may need to
+specify which package you want the data from like this:
+<<>>=
+data(Births78, packag="mosaic")
+@
+}%
 There is no visible effect of this command, but the \dataframe{Births78} data frame
 has now been reloaded from the \pkg{mosaic} package and is ready for use.  Anything you
-may have previously stored in a variable with this same name is no longer available.
+may have previously stored in a variable with this same name is replaced by
+the version of the data set stored with in the \pkg{mosaic} package.
 
 
 \subsection{Using Your Own Data}
@@ -460,8 +471,8 @@ slightly different default settings and infers whether it should use \function{r
 \function{read.table()}, or \function{load()} based on the file name.  
 
 Since most software packages can export to csv format, this has become a 
-sort of \emph{lingua fraca} for moving data between packages.  Data in excel, for example,
-can be exported as a csv file for subsequent reading in \R.  
+sort of \emph{lingua franca} for moving data between packages.  Data in excel, for example,
+can be exported as a csv file for subsequent reading in \R.%
 \Caution{There is a conflict between the \function{resample()} functions in
 \pkg{gdata} and \pkg{mosaic}.  If you want to use \pkg{mosaic}'s \function{resample()},
 be sure to load \pkg{mosaic} \emph{after} you load \pkg{gdata}.}
@@ -494,7 +505,7 @@ in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
 The \RStudio\ interface provides some GUI tools for loading data.
 If you are using the \RStudio\ server, you will first need to upload the data
 to the server (in the \tab{Files} tab), and then import the data into your \R\ 
-session (in the \tab{Workspace} tab).  
+session (in the \tab{Workspace} tab).%
 \TeachingTip{Remind students that the 2-step process (upload, then import)
 works much like images in Facebook.  First you upload them to Facebook, and once 
 they are there you can include them in posts, etc.}%
@@ -576,11 +587,13 @@ be trained to follow good data organization practices:
 \item Use each subsequent row for one observational unit.
 \item Give the resulting data frame a good name.
 \end{itemize}
-Scientists may be disappointed that \R\ data frames dont' keep track of additional information, 
-like the units in which the observations are recorded.  This sort of information should be 
-recorded, along with a description of the protocols used to collect the data, observations
-made during the data recording process, etc.  This information should be maintained in a 
-lab notebook or a \term{codebook}.
+Scientists may be disappointed that \R\ data frames don't keep track of additional 
+information, like the units in which the observations are recorded.  
+This sort of information should be recorded, 
+along with a description of the protocols used to collect the data, observations
+made during the data recording process, etc.  
+This information should be maintained in a lab notebook or a \term{codebook}.
+\authNote{NH wants a pointer to wisdom of good data habits.}%
 
 
 
