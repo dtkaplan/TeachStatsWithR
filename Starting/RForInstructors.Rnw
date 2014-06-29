@@ -1771,7 +1771,7 @@ by giving files names known only to your students, e.g.,
 
 
 \subsection{GoogleDocs}
-\autNote{NH wants to add something about RMarkdown in this section, but I'm not 
+\authNote{NH wants to add something about RMarkdown in this section, but I'm not 
 sure what he wants to add --rjp  2014--6-28}
 
 The Dropbox technique (or any other system of posting files to the Internet)
