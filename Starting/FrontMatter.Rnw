@@ -9,10 +9,10 @@ set.seed(123)
 
 These materials were initially created for a workshop entitled 
 \emph{Teaching Statistics Using R} prior to the 2011 United States Conference 
-on Teaching Statistics and revised for the 2013 USCOTS.  
+on Teaching Statistics and revised for USCOTS 2011 and eCOTS 2014.  
 We organized these workshops to help instructors integrate \R\ (as well as some 
 related technologies) into their statistics courses at all levels.
-We got great feedback and many wonderful ideas from the participants and those
+We received great feedback and many wonderful ideas from the participants and those
 that we've shared this with since the workshops.  
 
 We present an approach to teaching introductory and intermediate
@@ -21,12 +21,13 @@ statistics courses that is tightly coupled with computing generally and with
 These activities and examples are intended to highlight a modern
 approach to statistical education that focuses on modeling, resampling based
 inference, and multivariate graphical techniques.  A secondary goal is to
-facilitate computing with data through use of small simulation studies, data
-scraping from the internet and appropriate statistical analysis workflow.
+facilitate computing with data through use of small simulation studies 
+%data scraping from the internet 
+and appropriate statistical analysis workflow.
 This follows the
 philosophy outlined by Nolan and Temple Lang\cite{nola:temp:2010}.
 
-Throughout this book, we
+Throughout this book (and its companion volumes), we
 introduce multiple activities, some
 appropriate for an introductory course, others suitable for higher levels, that
 demonstrate key concepts in statistics and modeling
@@ -65,26 +66,26 @@ these audiences more clearly at the forefront.  This means that
 \begin{enumerate}
 \item Some of the materials can be used essentially as is with students.
 \item Some of the materials aim to equip instructors to develop their own
-expertise in \R\ and \RStudio\ for their own teaching materials.
+expertise in \R\ and \RStudio\ to develop their own teaching materials.
 \end{enumerate}
 
 Although the distinction can get blurry, and what works ``as is" in one setting may 
-not work ``as is" in another,  we'll try to indicate which parts of this 
-book fit into each category as we go along.
+not work ``as is" in another,  we'll try to indicate which parts 
+fit into each category as we go along.
 
 \subsection*{R, RStudio and R Packages}
 
 \R\ can be obtained from \url{http://cran.r-project.org/}.  
-Download and installation are pretty straightforward for Mac, PC, or linux machines.
+Download and installation are quite straightforward for Mac, PC, or linux machines.
 
 \RStudio\ is an integrated development environment (IDE) that facilitates use of \R\ for
-novice and expert users.  We have adopted it as our standard teaching environment
+both novice and expert users.  We have adopted it as our standard teaching environment
 because it dramatically simplifies the use of \R\ for instructors and for students.
 There are several things we use that can only be done in \RStudio\ 
 (mainly things that make use \function{manipulate()} or \RStudio's support for 
 reproducible research).  \RStudio\ is available from \url{http://www.rstudio.org/}.
 \RStudio\ can be installed as a desktop (laptop) application or as a server application
-that is accessible to others via the Internet.
+that is accessible to users via the Internet.
 
 In addition to \R\ and \RStudio, we will make use of several packages that need to be installed
 and loaded separately. The \pkg{mosaic} package (and its dependencies) will be used throughout.  
@@ -145,7 +146,7 @@ We used this system to produce this book.  We also use it
 for our own research and to introduce upper level students to 
 reproducible analysis methods.
 For beginners, we introduce \pkg{knitr} with RMarkdown,
-which produces HTML using a simpler syntax.}
+which produces PDF, HTML, or Word files using a simpler syntax.}
 
 This document was created on
 \today, using \pkg{knitr} and 
@@ -209,7 +210,7 @@ AMS PREP workshops offered in 2012 and 2013.
 a series of regularly scheduled webinars, delivered via the Internet, 
 that provide a forum for instructors to share their insights and innovations 
 and to develop collaborations to refine and develop them.
-A schedule of future M-casts and recordings of past M-casts are available
+Recordings of M-casts are available
 at the Project MOSAIC web site, \url{http://mosaic-web.org}.
 
 %\item[The development of a ``concept inventory" to support teaching modeling.] 
@@ -249,7 +250,7 @@ omitted.  Some old topics are treated in very different ways, and perhaps at
 different points in the course.  We will refer to this approach as
 \term{computational statistics} because the availability of computation is
 shaping how statistics is done and taught.  This is a key capacity of 
-\term{data science}, as defined as the ability to use data to answer statistical questions
+\term{data science}, defined as the ability to use data to answer questions
 and communicate those results.
 
 \FoodForThought{Our students need to see aspects of computation and data science early and often
@@ -267,11 +268,11 @@ of the instructor with both statistics and computation.
 
 
 Among the various statistical software packages available, \R\ is becoming
-increasingly popular.  The recent addition of \RStudio\ had made \R\ both
+increasingly popular.  The recent addition of \RStudio\ has made \R\ both
 more powerful and more accessible.
 Because \R\ and \RStudio\ are free, they
 have become widely
-used in research and industry. Training in \R\ and \RStudio\ are often seen as an 
+used in research and industry. Training in \R\ and \RStudio\ is often seen as an 
 important additional skill that a statistics course can develop.  Furthermore,
 an increasing number of instructors are using \R\ for their own statistical
 work, so it is natural for them to use it in their teaching as well.
@@ -284,7 +285,7 @@ for teaching are often cautious about using it with students.  If you are
 in that category, then this book is for you.  Our goal is to reveal some of 
 what we have learned teaching with \R\ and to make teaching statistics with
 \R\ as rewarding and easy as possible -- for both students and faculty.
-We will cover both technical aspects of \R\ and \RStudio\ (e.g. how do I get \R\ to do thus and such?) as well as some perspectives on how to use computation to teach statistics.
+We will cover both technical aspects of \R\ and \RStudio\ (e.g., how do I get \R\ to do thus and such?) as well as some perspectives on how to use computation to teach statistics.
 The latter will be illustrated in \R\ but would be equally applicable with
 other statistical software.
 

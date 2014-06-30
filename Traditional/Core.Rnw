@@ -1396,7 +1396,8 @@ iris <- transform(iris, Length = cut(Sepal.Length, 4:8))
 <<"mr-adding-variable2-again">>=
 head(iris)
 @
-%\Rindex{summary()}
+\Rindex{head()}%
+\myindex{display first few rows}%
 
 
 The \dataframe{CPS85} data frame contains data from a Current Population Survey (current in 1985, that is).
