@@ -2,7 +2,6 @@
 
 \documentclass[openany,12pt]{tufte-book}
 
-\def\cplabel{^X} 
 
 \usepackage{RBook}
 \usepackage{pdfpages}
@@ -11,13 +10,18 @@
 \usepackage{language}
 \usepackage{hyperref}
 
-\def\tilde{\texttt{\~}}
 
 \title{Start Teaching with R}
 \author{Randall Pruim, Nicholas J. Horton, and Daniel Kaplan}
 \date{DRAFT: \today}
 
-\renewenvironment{knitrout}{}{\par\noindent\ignorespaces}
+\begin{document}
+\def\cplabel{^X} 
+
+\def\tilde{\texttt{\~}}
+% stupid hack to get rid of unwanted space before next line when there is not
+% a blank line following an R chunk.
+\renewenvironment{knitrout}{}{\noindent\ignorespaces\!\!}
 
 <<include=FALSE>>=
 #setCacheDir("cache")
@@ -55,7 +59,6 @@ knit_hooks$set(document = function(x) {
 #  gsub('(\\\\end\\{knitrout\\})\n', '\\1', x) 
 #}) 
 @
-\begin{document}
 
 %\maketitle
 \includepdf{USCOTS-cover}
