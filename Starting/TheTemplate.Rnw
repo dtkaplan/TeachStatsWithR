@@ -16,8 +16,6 @@ set.seed(123)
 
 
 
-
-
 \begin{quote}
 A lot of times you end up putting in a lot more volume, because you are
 teaching fundamentals  and you are teaching concepts that you need to put in,
@@ -68,7 +66,7 @@ In our experience, this has made \R\ much more approachable and enjoyable for st
 and their instructors.
 
 
-\section{The \texttt{mosaic} package and the formula temaplate}
+\section{The \texttt{mosaic} package and the formula template}
 
 Much of the early work on the \pkg{mosaic} package centered on producing a minimal
 set of \R\ commands that could provide students with everything need for introductory 
@@ -111,6 +109,9 @@ goal ( formula , data=mydata )
 The template can be applied to create numerical summaries, graphical summaries, or model fits
 by answering two questions and using the answers to fill in the slots of the template:
 
+\myindex{two questions|see{questions!two}}
+\myindex{questions!two}
+
 \begin{enumerate}
 	\item What do you want \R\ to do?  
 
@@ -137,6 +138,9 @@ begins to develop their ability to interpret graphical representations of
 data, to think about distributions, and to pose statistical questions.
 
 
+\Rindex{gplot2}
+\Rindex{lattice}
+\Rindex{ggvis}
 \Pointer{We are often asked about the other graphics systems, especially 
 \pkg{ggplot2} graphics.  In our experience, \pkg{lattice} makes it easier for
 beginners to create a wide variety of more or less ``standard'' plots -- including
@@ -170,6 +174,8 @@ number of births in the United States for each day in 1978.
 early in a course.  Ask students to conjecture explanations for
 the patterns they observe in the plots.  Their answers will reveal
 whether they are interpreting the plot correctly.}
+\myindex{scatter plot|see{\texttt{xyplot()}}}
+\Rindex{xyplot()}
 
 <<scatter-births, echo=FALSE>>=
 xyplot( births ~ dayofyear, data=Births78) 
@@ -186,6 +192,7 @@ xyplot( births ~ dayofyear, data=Births78)
 
 		\R\ needs to know which variable goes where and where to find the variables.
 		In this case, the data are stored in the \dataframe{Births78} data frame:
+\Rindex{Births78}
 <<>>=
 head(Births78)
 @
@@ -203,6 +210,8 @@ Putting this all together, we get the following command
 
 \subsubsection{Another Example: Boxplots}
 
+\myindex{boxplot|see{\texttt{bwplot()}}}
+\Rindex{bwplot()}
 Now let's create this plot, which shows boxplots
 of age for each of three substances abused by participants in the 
 \emph{Health Evaluation and Linkage to Primary Care} randomized
@@ -214,6 +223,7 @@ clinical trial.
 @
 }
 
+\Rindex{HELPrct}
 <<bwplot-example1, echo=FALSE>>=
 bwplot( age ~ substance, data=HELPrct)
 @
@@ -246,6 +256,8 @@ of one categorical variable.
 Another plot that can be used to display two (or more) categorical variables is a 
 mosaic plot.  The \pkg{lattice} package does not include mosaic plots, but the
 \pkg{vcd} package provides a \function{mosaic()} function that creates mosaic plots.}
+\Rindex{vcd}
+\myindex{mosaic plot}
 
 
 \subsection{Graphical summaries of one variable}
@@ -253,6 +265,7 @@ mosaic plot.  The \pkg{lattice} package does not include mosaic plots, but the
 If we want to make a plot that involves only one variable, we simply omit 
 the \variable{y}-part of the formula.
 For example, a histogram like
+\Rindex{histogram()}
 
 <<historam-example1, echo=FALSE>>=
 histogram( ~ age, data=HELPrct) 
@@ -295,13 +308,15 @@ which edge is included in the bin.
 histogram( ~ age, data=HELPrct, width=1) 
 @
 Additional plots of a single quantitative variable are illustrated in 
-Section~{sec:paletteOfPlot}.
+Section~{sec:paletteOfPlots}.
 
+\Rindex{bargraph()}
 For a single categorical variable,
 we can make a bar graph for a categorical variable using 
 \function{bargraph()} in place of \function{histogram()}.
 Since formulas are required to have a right-hand side,
 horizontal bar graphs are produced using \option{horizontal = TRUE}.
+\Rindex{barchart()}
 \Pointer{The \function{bargraph()} function is not in the \pkg{lattice} package 
 but in the \pkg{mosaic} package.  The \pkg{lattice} function \function{barchart()}
 creates bar graphs from \emph{summarized} data; \pkg{bargraph()} takes care of 
@@ -317,6 +332,10 @@ bargraph( ~ substance, data=HELPrct, horizontal=TRUE )
 The power of the template is that we can now make many different kinds of plots
 by mimicking the examples above but replacing the goal.
 
+\Rindex{densityplot()}
+\Rindex{freqpolygon()}
+\Rindex{dotPlot()}
+\Rindex{qqmath()}
 <<one-var-plots, eval=FALSE, tidy=FALSE, out.width=".3\\textwidth">>=
   histogram( ~age, data=HELPrct ) 
 densityplot( ~age, data=HELPrct ) 
@@ -343,6 +362,7 @@ chart.}
 @
 
 
+\Rindex{plotPoints()}
 <<two-var-plots, eval=FALSE, tidy=FALSE>>=
     xyplot( width ~ length, data=KidsFeet )  # 2 quantitative vars
 plotPoints( width ~ length, data=KidsFeet )  # mosaic alternative
@@ -362,6 +382,8 @@ The \pkg{lattice} package also provides the \function{stripplot()} and
 \function{dotplot()} functions which can be used for one-dimensional scatter plots.
 These work reasonably well for small data sets but are of limited utility 
 for larger data sets.
+\Rindex{dotplot()}
+\Rindex{stripplot()}
 <<out.width=".47\\textwidth">>=
 stripplot( ~length, data=KidsFeet )
   dotplot( ~length, data=KidsFeet )
@@ -399,6 +421,9 @@ densityplot( ~ age | sex, data=HELPrct,
                groups=substance,  
                auto.key=TRUE)   
 @
+\myindex{legends}
+\myindex{facets|see{conditional plots}}
+\myindex{conditional plots}
 \code{auto.key=TRUE} adds a simple legend so we can tell which of the overlaid curves is
 which.
 
@@ -415,6 +440,7 @@ Nothing else changes; a mean and a histogram each summarise a single
 variable, so exchanging \function{histogram()} for \function{mean()} 
 gives us the numerical summary we desire.
 
+\Rindex{mean()}
 <<>>=
 histogram( ~ age, data=HELPrct )
      mean( ~ age, data=HELPrct )
@@ -426,6 +452,14 @@ numerical summary functions, use
 ?favstats
 @
 }
+\Rindex{sd()}
+\Rindex{var()}
+\Rindex{median()}
+\Rindex{min()}
+\Rindex{max()}
+\Rindex{sum()}
+\Rindex{IQR()}
+\Rindex{favstats()}
 The \pkg{mosaic} package includes formula-aware versions of several
 numerical summaries, including 
 \function{mean()},
@@ -440,6 +474,7 @@ our favorite statistics all at once:
 <<>>=
 favstats( ~ age, data=HELPrct )
 @
+\Rindex{tally()}
 And the \function{tally()} function can be used to tally counts.
 
 
@@ -485,6 +520,8 @@ tally( ~ sex + substance, data=HELPrct, margins=TRUE )
 @
 
 \section{Linear models}
+\myindex{linear models|seealso{\texttt{lm()}}}
+\Rindex{lm()}
 
 Although we have not mentioned linear models yet, they are an important motivation
 for the template approach to graphical and numerical summaries.  The \pkg{lattice}
@@ -520,6 +557,7 @@ the core topics of a traditional introductory statistics course,
 see \emph{A Compendium of Commands to Teach Statistics with R}.
 }
 \authNote{We could use better examples here.  -- rjp 2014-06-21}%
+\Rindex{t.test()}
 <<tidy=FALSE>>=
 t.test( ~ length, data=KidsFeet )
 @
@@ -531,10 +569,14 @@ This function is a little different in that it operates on tabulated data
 of the sort produced by \function{tally()} rather than on the 
 data itself.  So the use of the template happens inside \function{tally()}
 rather than in \function{chisq.test()}.}
+\Rindex{pval()}
+\Rindex{confint()}
 <<>>=
 pval( t.test( ~ length, data=KidsFeet ) )
 confint( t.test( ~ length, data=KidsFeet ) )
 @
+\Rindex{binom.test()}
+\Rindex{prop.test()}
 <<>>=
 confint(t.test( length ~ sex, data=KidsFeet ))
 # using Binomial distribution
@@ -591,6 +633,13 @@ one of the fundamental ``container types'' in \R.  We will
 have more to say about them in Chapter~\ref{chap:containers}.}%
 From this we can be quite certain that 1978 began on a Sunday.
 %
+\Rindex{auto.key}
+\myindex{labels!axis}
+\Rindex{xlab}
+\Rindex{ylab}
+\Rindex{main}
+\myindex{titles (plots)}
+\Rindex{par.settings}
 <<fig.width=4, tidy=FALSE>>=
 xyplot( births ~ dayofyear, data=Births78,  
         groups=dayofyear %% 7, 
@@ -605,6 +654,13 @@ xyplot( births ~ dayofyear, data=Births78,
 
 \noindent
 Here we have used
+\Rindex{pch}
+\Rindex{cex}
+\Rindex{alpha}
+\myindex{plot symbol!shape|see{\texttt{pch}}}
+\myindex{plot symbol!size|see{\texttt{cex}}}
+\myindex{transparency|see{\texttt{alpha}}}
+\myindex{opacity|see{\texttt{alpha}}}
 \begin{itemize}
 	\item
 		\option{auto.key} to control the layout of the legend (4 columns instead of 1)
@@ -632,11 +688,16 @@ xyplot( births ~ dayofyear, data=Births78,
 @
 
 \subsection{Themes}
+\Rindex{theme.mosaic()}
 Settings that are used repeatedly can be collected into a theme.  The mosaic 
 package provides such a theme called \function{theme.mosaic()}.  
 The \function{show.settings()} function displays the settings of the 
 currently active theme.
 
+\Rindex{trellis.par.set()}
+\Rindex{show.settings()}
+\myindex{\texttt{lattice} settings}
+\myindex{themes!\texttt{lattice}|see{\texttt{trellis.par.set()}}}
 \begin{widestuff}
 <<out.width=".9\\textwidth", fig.width=10, fig.height=6>>=
 trellis.par.set(col.whitebg())
@@ -695,12 +756,14 @@ is useful for testing purposes since probabilities can be easily estimated by co
 dots -- especially if the total number of dots is chosen to be something simple like 1000.}
 
 
+\Rindex{dotPlot()}
 Here is an example using the sepal lengths recorded in the \dataframe{iris} data set.
 <<rs2-dotPlot,cache=FALSE,fig.width=4,fig.height=3.0, tidy=FALSE>>=
 dotPlot(~ Sepal.Length, data=iris, 
 		n=30,      # approx. 30 bins/columns
 		alpha=.6)  # partially transparent
 @
+\myindex{conditional plots}
 We can use a conditional variable to give us separate dot plots for each of the three
 species in this data set.
 <<rs2-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width="\\textwidth",fig.width=6>>=
@@ -711,6 +774,7 @@ dotPlot(~ Sepal.Length | Species, data=iris, n=20,
 
 The connection between histograms and dot plots can be visualized by overlaying one on 
 top of the other
+\Rindex{histogram()}
 <<echo=FALSE,fig.height=2.5>>=
 histogram(~ Sepal.Length, data=iris, n=25, 
 		  panel=function(x,...) {
@@ -722,6 +786,8 @@ histogram(~ Sepal.Length, data=iris, n=25,
 
 \medskip
 \subsection{Frequency polygons: \texttt{freqpolygon()}}
+\Rindex{freqpolygon()}
+\myindex{frequency polygon|see{\texttt{freqpolygon()}}}
 
 \term{Frequency polygons} and \term{density plots} provide alternatives to histograms
 that make it easier to overlay the representations of multiple subsets of the data.
@@ -736,6 +802,8 @@ These points are then connected with line segments.
 Here is an example that shows the distribution of Old Faithful eruptions times
 from a sequence of observations 
 
+\Rindex{MASS}
+\Rindex{geyser}
 <<>>=
 require(MASS)
 freqpolygon( ~ duration, data=geyser, n=15)
@@ -747,6 +815,7 @@ In particular, the mean and median eruption time are not a good measures of the 
 Numerically, the data are being summarized and  represented in exactly the same way as for 
 histograms, but visually the horizontal and vertical line segments of the histogram are 
 replaced by sloped line segments.  
+\Rindex{ladd()}
 <<echo=FALSE>>=
 histogram( ~ duration, data=geyser, n=15, col="lightskyblue")
 ladd( panel.freqpolygon(geyser$duration, n=15) )
@@ -763,6 +832,8 @@ freqpolygon( ~ Sepal.Length, data=iris,
 
 %\medskip
 \subsection{Density plots: \texttt{densityplot()}}
+\Rindex{densityplot()}
+
 
 \term{Density plots} are similar to frequency polygons, but the piecewise linear
 representation is replaced by a smooth curve.  
@@ -782,6 +853,7 @@ densityplot( ~ Sepal.Length, data=iris, groups=Species,
 @
 
 \subsection{The Density Scale}
+\myindex{density scale}
 
 There are three scales that can be used for the plots in the preceding section: 
 \code{count}, 
@@ -821,6 +893,9 @@ are primarily of use when one wants to be able to read off bin counts or percent
 
 \subsection{Groups or panels?}
 
+\myindex{conditional plots}
+\Rindex{iris}
+\Rindex{xyplot}
 The following examples using the \dataframe{iris} data set provide a comparison of 
 using groups or panels to separate subsets of the data.  First we put the three
 species into three separate panels.
@@ -832,6 +907,7 @@ xyplot(Sepal.Length ~ Sepal.Width | Species, data=iris,
 Alternatively, 
 we can use the \option{groups} argument to indicate the 
 different species using different symbols on the same panel.
+\Rindex{auto.key}
 <<rs2-iris-xyplot-groups,cache=TRUE,tidy=FALSE>>=
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, 
   auto.key=list(columns=3), data=iris)
@@ -848,11 +924,15 @@ xyplot(Sepal.Length ~ Sepal.Width | Species, groups=Species,
 
 Suppose we want to display the following table (based on data from the 
 \emph{1985 Current Population Survey}) using bar graph.
+\Rindex{CPS85}
+\myindex{Current Population Survey|see{\texttt{CPS85}}}
+\Rindex{tally()}
 <<>>=
 tally( ~sector, data=CPS85 )
 @
 The \pkg{mosaic} function \function{bargraph()} can 
 display these tables as bar graphs, but there isn't enough room for the labels.
+\Rindex{bargraph()}
 <<rs2-bargraph1,tidy=FALSE>>=
 bargraph(~ sector, data=CPS85)
 @
@@ -915,6 +995,7 @@ mosaic(mycrosstable)
 
 
 \begin{problem}
+\Rindex{Utilities2}
 The \dataframe{Utilities2} data set in the \pkg{mosaic} package contains information
 about the bills for various utilities at a residence in Minnesota collected over a number of years.
 Since the number of days in a billing cycle varies from month to month, variables 
@@ -994,7 +1075,7 @@ You can save some typing if you use the function \function{tally()}.  See
 \section{Saving Your Plots}
 
 There are several ways to save plots in \RStudio, but the easiest is probably the following:
-\marginnote{You can save all of this exporting and copying and pasting if you use RMardown, 
+\marginnote{You can save all of this exporting and copying and pasting if you use RMarkdown, 
 or \pkg{knitr}/\LaTeX\ to prepare your documents.}
 \begin{enumerate}
 \item
@@ -1006,16 +1087,22 @@ Go to your document (e.g. Microsoft Word) and paste in the image.
 \item
 Resize or reposition your image as needed.
 \end{enumerate}
+\Rindex{pdf()}
 The \function{pdf()} function can be used to save plots as pdf files.  See 
 the documentation of this function for details and links to functions that 
 can be used to save graphics in other file formats.
 
 \section{\texttt{mplot()}}
+\Rindex{mplot()}
 
 The \function{mplot()} function does a number of different things, depending on what 
 information it is provided.
+\Rindex{print()}
+\Rindex{plot()}
+\Rindex{summary()}
+\myindex{generic functions}
 \Pointer{\function{mplot()} is a \emph{generic} function.  \R\ includes many generic 
-functions (like \function{print()} and \function{plot()} and \function{summary}).  These 
+functions (like \function{print()} and \function{plot()} and \function{summary()}).  These 
 functions inspect the objects passed as arguments (at least the first one) and decide
 what to do based on the class of the argument(s).}%
 %
@@ -1024,8 +1111,10 @@ controls that allow the user to select variables and create plots of various sor
 \begin{center}
 	\includegraphics[width=.9\textwidth]{images/mplot-HELPrct}
 \end{center}
-The
-plots can be made using \pkg{lattice} or \pkg{ggplot2}, and there is a ``Show expression''
+\Rindex{lattice}
+\Rindex{ggplot2}
+\Rindex{manipulate}
+The plots can be made using \pkg{lattice} or \pkg{ggplot2}, and there is a ``Show expression''
 button that displays the code used to create the plot.  This can be used to learn how to 
 make the plot and can be copied and pasted into the console or documents.
 \Caution{This feature of \function{mplot()} only works within \RStudio{} because it
@@ -1047,6 +1136,25 @@ Here is a brief summary of the commands introduced in this chapter.
 <<include=FALSE>>=
 x <- 1:10
 @
+\Rindex{tally()}
+\Rindex{mean()}
+\Rindex{median()}
+\Rindex{var()}
+\Rindex{sd()}
+\Rindex{favstats()}
+\Rindex{quantile()}
+\Rindex{sum()}
+\Rindex{cumsum()}
+\Rindex{histogram()}
+\Rindex{dotPlot()}
+\Rindex{freqpolygon()}
+\Rindex{densityplot()}
+\Rindex{qqmath()}
+\Rindex{bwplot()}
+\Rindex{xyplot()}
+\Rindex{bargraph()}
+\Rindex{mplot()}
+\myindex{quantile-quantile plots|see{\texttt{qqmath}}}
 <<tidy=FALSE,results='hide',fig.keep="none",warning=FALSE>>=
 require(mosaic)                        # load the mosaic package
 
