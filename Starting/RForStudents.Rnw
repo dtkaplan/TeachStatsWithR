@@ -21,6 +21,8 @@ students to know about the \R\ language.
 
 
 \section{Two Questions}
+\myindex{questions!two}
+\myindex{template!the}
 
 When we introduced the formula template in Chapter~\ref{chap:Template}, we presented two
 important questions to ask before constructing an \R\ command.  
@@ -111,6 +113,9 @@ press the escape key and start the command fresh.
 
 \section{Installing and Using Packages}
 \label{sec:installingPackages}
+\myindex{package!installing}
+\myindex{package!installing|seealso{\texttt{install.packages()}}}
+\myindex{package!installing|seealso{\texttt{install_github()}}}
 
 \TeachingTip{If you set up an \RStudio\ server, you can install all
 of the packages you want to use.  You can even configure the server to 
@@ -128,12 +133,16 @@ you will want to select a few packages that support the way you want
 to teach your course.
 
 %\subsection{Installing packages from \cran}
+\myindex{CRAN (Comprehensive R Archive Network}
 If you need to install a package, most likely it will be on \cran, 
 the Comprehensive R Archive Network.
 Before a package can be used, it must be \term{installed} 
 (once per computer or account)
 and
 \term{loaded} (once per \R\ session).  
+\myindex{package!loading}
+\myindex{package!loading|seealso{\texttt{require()}}}
+\myindex{package!loading|seealso{\texttt{library()}}}
 Installing downloads the package software and prepares it for use
 by compiling (if necessary) and putting its components in the proper
 location for future use.
@@ -142,6 +151,7 @@ in an \R\ session.
 
 \Rindex{install.packages()}%
 \Rindex{require()}%
+\Rindex{library()}%
 
 For example, to use the \pkg{mosaic} package, we must first install it:
 <<eval=FALSE,tidy=FALSE>>=
@@ -199,10 +209,14 @@ install.packages("mosaic", lib="~/R/library")
 %\subsection{Installing other packages}
 
 
+\myindex{Bioconductor}
+\myindex{github}
 CRAN is not the only repository of \R\ packages.  Bioconductor is another
 large and popular repository, especially for biological applications, and increasingly
 authors are making packages available via github.  For example, you can also
 install the mosaic package using
+\Rindex{install_github()}
+\Rindex{devtools}
 <<eval=FALSE>>=
 # if you haven't already installed this package
 install.packages("devtools")     
@@ -234,6 +248,7 @@ install.packages('some-package.tar.gz', repos=NULL)
 If something doesn't go quite right, or if you can't remember something, it's good to know
 where to turn for help.  In addition to asking your friends and neighbors, you can use
 the \R\ help system.
+\Rindex{?}
 
 \subsection{?}
 
@@ -249,6 +264,7 @@ To get help on a specific function or data set, simply precede its name with a \
 This will give you the documentation for the object you are interested in.
 
 \subsection{\texttt{apropos()}}
+\Rindex{apropos()}
 If you don't know the exact name of a function, you can give part of the name and 
 \R\ will find all functions that match.  Quotation marks are mandatory here.
 
@@ -257,6 +273,8 @@ apropos('tally')            # must include quotes.  single or double.
 @
 
 \subsection{\texttt{??} and \texttt{help.search()}}
+\Rindex{??}
+\Rindex{help.search()}
 If that fails, you can do a broader search using \code{??} or \function{help.search()}, 
 which will find matches not only in the names of functions and data sets, 
 but also in the documentation for them.  Quotation marks are optional here.
@@ -268,6 +286,7 @@ Many functions and data sets in \R\ include example code demonstrating typical u
 For example,
 \marginnote{Not all package authors are equally skilled at creating examples.  
 Some of the examples are nonexistent or next to useless, others are excellent.}%
+\Rindex{example()}
 <<rs-example-histogram,eval=FALSE,results="hide">>=
 example(histogram)
 @
@@ -279,6 +298,7 @@ The \pkg{mosaic} package (and some other packages as well) also includes demos.
 Demos are bits of \R\ code that can be executed using the \function{demo()} command
 with the name of the demo.
 To see how demos work, give this a try:
+\Rindex{demo()}
 <<rs-demo,eval=FALSE,results="hide">>=
 demo(lattice)
 @
@@ -299,6 +319,9 @@ demo(package='mosaic')     # just demos from mosaic package
 
 \subsection{Data Frames}
 
+\myindex{data frame}
+\myindex{variable}
+\myindex{observational unit}
 Data sets are usually stored in a special structure called a \term{data frame}.
 
 \TeachingTip{Students who collect their own data, especially if they 
@@ -324,24 +347,31 @@ frames in the \pkg{mosaic} package are capitalized and variables (usually) are
 not.  This convention has worked well, and you may wish to adopt it for your
 data sets as well.}
 
+\pkg{Births78}
 The \dataframe{Births78} data frame contains three variables measured for each
 day in 1978.  
 There are several ways we can get some idea about what is in the \dataframe{Births78} 
 data frame.
 
+\Rindex{head()}
+\Rindex{sample()}
+\Rindex{summary()}
 <<rs-Births78-head>>=
 head(Births78)            # show the first few rows
 @
 
+\Rindex{sample()}
 <<rs-Births78-sample>>=
 sample(Births78, 4)       # show 4 randomly selected rows
 @
 
 
+\Rindex{summary()}
 <<rs-Births78-summary>>=
 summary(Births78)         # provide summary info about each variable
 @
 
+\Rindex{str}
 \begin{widestuff}
 <<rs-Births78-str>>=
 str(Births78)             # show the structure of the data frame
@@ -349,6 +379,7 @@ str(Births78)             # show the structure of the data frame
 \end{widestuff}
 
 \noindent
+\myindex{evironments!R}
 The output from \function{str()} is also available in the \tab{Environment} tab.
 
 In interactive mode, you can also try
@@ -358,6 +389,7 @@ In interactive mode, you can also try
 to access the documentation for the data set.  This is also available in the \tab{Help} tab.
 Finally, the \tab{Environment} tab provides a list of data in the workspace.  Clicking on
 one of the data sets brings up the same data viewer as 
+\Rindex{View()}
 <<rs-view1,eval=FALSE,tidy=FALSE>>=
 View(Births78)
 @
@@ -369,6 +401,8 @@ We can gain access to a single variable in a data frame using the \code{\$} oper
 the \function{with()} function.
 \marginnote{An alternative is to use the \function{with()} function.
 }
+\Rindex{\$}
+\Rindex{with()}
 <<rs-dollar-sign,eval=FALSE>>=
 dataframe$variable
 with(dataframe, variable)
@@ -387,10 +421,12 @@ isn't very useful for a large data set.
 We would prefer to compute numerical or graphical summaries.  We'll do that shortly.
 
 \subsection{The Perils of attach()}
+\myindex{attach@\texttt{attach()}!avoid}
 \Caution{Avoid the use of \function{attach()}.}
 The \function{attach()} function in R can be used to make objects within data frames
 accessible in \R\ with fewer keystrokes, but we strongly discourage its use, as
 it often leads to name conflicts and other complications.  
+\myindex{Google}
 The Google R Style Guide\footnote{
 \url{http://google-styleguide.googlecode.com/svn/trunk/google-r-style.html}}
 echoes this advice, stating that 
@@ -420,6 +456,7 @@ Many packages contain data sets.
 You can see a list of all data sets in all loaded packages
 using 
 
+\Rindex{data()}
 <<rs-data-list,eval=FALSE,results="hide">>=
 data()
 @
@@ -437,6 +474,7 @@ used that name for something or need to refresh the data after making some
 changes you no longer want, you can explicitly load the data using the
 \function{data()} function with the name of the data set you want.
 
+\Rindex{Births78}
 <<rs-data-load>>=
 data(Births78)
 @
@@ -463,6 +501,10 @@ Eventually, students will want to move from using example data sets in \R\ packa
 to using data they find or collect themselves.  When this happens will depend on 
 the type of students you have and the type of course you are teaching.
 
+\Rindex{read.csv()}
+\Rindex{read.file()}
+\Rindex{read.table()}
+\Rindex{load()}
 \R\ provides the functions \function{read.csv()} (for comma separated values files),
 \function{read.table()} (for white space delimited files) 
 and \function{load()} (for loading data in \R's native format).
@@ -470,9 +512,13 @@ The \pkg{mosaic} package includes a function called \function{read.file()} that 
 slightly different default settings and infers whether it should use \function{read.csv()},
 \function{read.table()}, or \function{load()} based on the file name.  
 
+\myindex{Excel}
 Since most software packages can export to csv format, this has become a 
 sort of \emph{lingua franca} for moving data between packages.  Data in excel, for example,
 can be exported as a csv file for subsequent reading in \R.%
+\Rindex{resample()}
+\Rindex{gdata}
+\Rindex{read.xls()}
 \Caution{There is a conflict between the \function{resample()} functions in
 \pkg{gdata} and \pkg{mosaic}.  If you want to use \pkg{mosaic}'s \function{resample()},
 be sure to load \pkg{mosaic} \emph{after} you load \pkg{gdata}.}
@@ -483,6 +529,8 @@ Excel files without this extra step.
 Each of these functions accepts a URL as well as a file name, which provides an
 easy way to distribute data via the Internet:
 \authNote{Should we change URLs to something at mosaic-web.org?}
+\Rindex{read.table()}
+\Rindex{head()}
 <<tidy=FALSE>>=
 births <- 
   read.table('http://www.calvin.edu/~rpruim/data/births.txt', 
@@ -490,6 +538,7 @@ births <-
 head(births) # live births in the US each day of 1978.
 @
 We can omit the \option{header=TRUE} if we use \function{read.file()}
+\Rindex{read.file()}
 <<tidy=FALSE>>=
 births <- 
   read.file('http://www.calvin.edu/~rpruim/data/births.txt')
@@ -499,6 +548,7 @@ births <-
 %google spreadsheets.   
 
 \subsection{Importing Data in \RStudio}
+\myindex{data!importing into RStudio}
 \InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
 will want to know how to use functions like \function{read.csv()} for working
 in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
@@ -513,11 +563,15 @@ If you are running the desktop version, the upload step is not needed.
 
 
 \subsection{Working with Pretabulated Data}
+\myindex{data!pretabulated}
 
 Because categorical data is so easy to summarize in a table, 
 often the frequency or contingency tables are given instead.
 You can enter these tables manually using a combination
 of \function{c()}, \function{rbind()} and \function{cbind()}:
+\Rindex{c()}
+\Rindex{cbind()}
+\Rindex{rbind()}
 \TeachingTip{This is an important technique if you use a text book
 that presents categorical data in tables.}
 
@@ -556,8 +610,12 @@ names(dimnames(mycrosstable)) <- c('race', 'sector')
 mycrosstable
 @
 
+\Rindex{barchart()}
+\Rindex{bargraph()}
 We can use \function{barchart()} instead of \function{bargraph()} to plot data 
 already tabulated in this way, but first we need yet one more transformation.
+\Rindex{head()}
+\Rindex{as.data.frame()}
 <<>>=
 head(as.data.frame(mycrosstable))
 @
@@ -634,7 +692,20 @@ abdData(2)               # all data sets in chapter 2
 
 \begin{widestuff}
 Here is a brief summary of the commands introduced in this chapter.
-
+\Rindex{require()}
+\Rindex{log()}
+\Rindex{log10()}
+\Rindex{sqrt()}
+\Rindex{c()}
+\Rindex{data()}
+\Rindex{names()}
+\Rindex{head()}
+\Rindex{str()}
+\Rindex{summary()}
+\Rindex{sample()}
+\Rindex{read.table()}
+\Rindex{read.csv()}
+\Rindex{read.file()}
 <<tidy=FALSE,results='hide',fig.keep="none">>=
 require(mosaic)                        # load the mosaic package
 answer <- 42                           # store the number 42 in a variable named answer
