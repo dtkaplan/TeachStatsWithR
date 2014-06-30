@@ -55,6 +55,7 @@ You can execute all the code in an \R\ script file using
 \Pointer{\R\ can be used to create executable scripts.  Option parsing and 
 handling is supported with the \pkg{optparse} package.}
 
+\Rindex{source()}
 <<mr-source,eval=FALSE>>=
 source("file.R") 
 @
@@ -66,6 +67,7 @@ See the buttons in the tab for any \R\ script, RMarkdown or Rnw file.
 If you work at the console's interactive prompt and later wish you had 
 been putting your commands into a file, you can save your past commands with
 
+\Rindex{savehistory()}
 <<eval=FALSE,echo=TRUE>>=
 savehistory("someRCommandsIalmostLost.R")
 @
@@ -132,6 +134,8 @@ taxonomy here, but will instead focus on a few important features and examples.
 
 
 \subsection{Objects and Classes} % Modes and other attributes} %factors, numeric, character, etc.}
+\myindex{object}
+\myindex{class}
 In \R, data are stored in objects.  Each \rterm{object} 
 has a \emph{name}, \emph{contents}, and a \emph{class}.
 The class of an object tells what kind of a thing it is.
