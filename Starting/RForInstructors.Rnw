@@ -157,6 +157,7 @@ class(KidsFeet$sex)
 str(KidsFeet)                  # show the class for each variable
 @
 
+\Rindex{KidsFeet}
 From this we see that \dataframe{KidsFeet} is a data frame and that
 the variables are of different types (integer, numeric, and factor).  These
 are the kinds of variables you are most likely to encounter, although
@@ -186,7 +187,7 @@ for variables in a data frame are called \term{vectors}.
 %There are important ways that \R\ has 
 %been optimized to work with vectors since they correspond to variables 
 %(in the sense of statistics).
-\index{vector}%
+\myindex{vector}%
 The items in a vector are ordered (starting with 1) and must all be of the 
 same type.  
 \DiggingDeeper{In fact, they must all be of the same \emph{atomic} type.  
@@ -194,6 +195,7 @@ Atomic types are are the basic building blocks for \R.  It is not possible
 to store more complicated objects (like data frames) in a vector.}
 
 Vectors can be created using the \function{c()} function:
+\Rindex{c()}
 <<>>=
 c(2, 3, 5, 7)
 c("Abe", "Betty", "Chan")
@@ -228,6 +230,7 @@ distinction between ordered and unordered factors has to do with
 whether this order is meaningful or arbitrary.}%
 %
 Factors can be created by wrapping a vector with \function{factor()}:
+\Rindex{factor()}
 <<tidy=FALSE>>=
 w <- factor(x); w
 class(w)
@@ -240,6 +243,7 @@ and some plots.
 
 Patterned integer or numeric vectors can be created using the \code{:} 
 operator or the \function{seq()} function.
+\Rindex{seq()}
 <<>>=
 1:10
 seq(1, 10, by=0.5)
@@ -269,7 +273,8 @@ q
 elements in a vector.
 \Pointer{\variable{letters} is a built-in character vector containing the
 lower case letters.  \variable{LETTERS} contains capitals.}%
-\Rindex{letters[]}%
+\Rindex{letters[ ]}%
+\Rindex{LETTERS[ ]}%
 <<>>=
 letters                       # alphabet
 x <- letters[1:10]; x         # first 10 letters
@@ -293,6 +298,8 @@ y[ c(TRUE,FALSE,FALSE) ]    # every third
 @
 %If the recycling doesn't come out even, a warning is displayed.
 
+\myindex{matrix}
+\myindex{array}
 A \rterm{matrix} is a 2-dimensional table of values that all have the 
 same type.
 As with vectors,
@@ -309,6 +316,7 @@ The dimensions of an array, matrix or data frame can be obtained using
 \Rindex{dim()}%
 \Rindex{nrow()}%
 \Rindex{ncol()}%
+\Rindex{matrix()}%
 <<>>=
 dim(M)
 dim(KidsFeet)
@@ -316,6 +324,7 @@ nrow(KidsFeet)
 ncol(KidsFeet)
 @
 
+\myindex{list}
 Another commonly used container in \R\ is a list.  We have already seen a 
 few examples of lists used as arguments to \pkg{lattice} plotting functions.
 Lists are also ordered, but the items in a list can be objects of any type (they
@@ -345,6 +354,8 @@ l[1]
 Both vectors and lists can be named.  The names can be created when the vector 
 or list is created or they can be added later.  Elements of vectors and lists can
 be accessed by name as well as by position.
+\Rindex{list()}
+\Rindex{names()}
 <<>>=
 x <- c(one=1, two=2, three=3); x
 y <- list(a=1, b=2, c=3); y
@@ -390,6 +401,7 @@ ddd <- data.frame(number=1:5, letter=letters[1:5])
 
 \subsection{Vectorized functions}
 
+\myindex{vectorized functions}
 Vectors are so important in \R\ that they deserve some additional discussion.
 Many \R\ functions and operations are ``vectorized'' and can be applied
 not just to an individual value but to an entire vector, in which case
@@ -448,6 +460,13 @@ c(sum=sum(x), prod=prod(x))   # sums and products
 
 Still other functions return vectors that are derived from
 the original vector, but not as a componentwise transformation.
+\Rindex{sort()}
+\Rindex{rank()}
+\Rindex{diff()}
+\Rindex{ediff()}
+\Rindex{cumsum()}
+\Rindex{cumprod()}
+\Rindex{order()}
 <<vectors02a, tidy=FALSE>>=
 z <- rnorm(5); z
 sort(z); rank(z); order(z)              
@@ -627,6 +646,7 @@ data within \R.   But first we discuss a few more details regarding importing da
 
 
 \subsection{Finer control over data import}
+\myindex{data!importing}
 
 \marginnote{Even if you primarily use the \RStudio\ 
 interface to import data, it is good to know about the 
@@ -637,6 +657,7 @@ codes for missing values.
 The following can be useful, for example:
 \Pointer{The function{read.file()} function in the \pkg{mosaic} package
 uses this as its default for \option{na.trings}.}
+\Rindex{na.strings}
 <<tidy=FALSE>>=
 someData <- read.csv('file.csv', 
   na.strings=c('NA','','.','-','na'))
@@ -645,6 +666,10 @@ because SAS uses a period (\verb!.!) to code missing data, and some csv
 exporters use `\texttt{-}'.  By default \R\ reads these as string data, 
 which forces the entire variable to be of character type instead of numeric.
 
+\Rindex{read.file()}
+\Rindex{read.csv()}
+\Rindex{read.table()}
+\Rindex{stringsAsFactors}
 By default, \R\ will recode character data as a factor.  If you prefer to leave
 such variables in character format, you can use
 \Pointer{This works with \function{read.csv()} and \function{read.table()}
@@ -666,6 +691,7 @@ someData <- read.file('file.csv',
 
 \subsection{Manually entering data}
 
+\Rindex{c()}
 We have already seen that the \function{c()} function can be used to combine 
 elements into a single vector.
 <<label="c-function",tidy=FALSE>>=
@@ -695,6 +721,7 @@ The arguments to the function specify the size of the sample desired and any
 parameter values required for the distribution.
 For example, to simulate selecting a sample of size 12 from a normal population 
 with mean 100 and standard deviation 10, we would use
+\Rindex{rnorm()}
 <<>>=
 rnorm(12, mean=100, sd=10)
 @
@@ -717,11 +744,14 @@ sample(x, size=5)
 # random sample of size 5 from x (with replacement)
 resample(x, size=5)         
 @
+\Rindex{resample()}
 Using \function{resample()} makes it easy to simulate small discrete distributions.
 For example, to simulate rolling 20 dice, we could use
 <<>>=
 resample(1:6, size=20)
 @
+\Rindex{Cards}
+\Rindex{deal()}
 For working with cards, the \pkg{mosaic} package provides a vector named \variable{Cards}
 and \function{deal()} as an alternative name for \function{sample()}.
 <<>>=
@@ -730,6 +760,8 @@ deal( Cards, 13 )   # bridge, anyone?
 @
 If you want to sort the hands nicely, you can create a factor from \variable{Cards}
 first:
+\Rindex{sort()}
+\Rindex{factor()}
 <<>>=
 hand <- deal( factor(Cards, levels=Cards), 13 ) 
 sort(hand)       # sorted by suit, then by denomination
