@@ -17,7 +17,7 @@ to analyze data from introductory and second courses in statistics.  This is int
 the \emph{Start Teaching with R} and \emph{Start Modeling with R} books.
 
 Most of our examples will use data from the HELP (Health Evaluation and Linkage to Primary 
-Care) study: a randomized trial of a novel 
+Care) study: a randomized clinical trial of a novel 
 way to link at-risk subjects with primary care.  More information on the
 dataset can be found in chapter \ref{sec:help}.
 
@@ -32,9 +32,9 @@ to give your students to help them keep straight ``what to do when".
 Some data management is needed by students (and more by instructors).  This
 material is reviewed in chapter \ref{sec:manipulatingData}.
 
-
+\myindex{vignettes}%
 This work leverages initiatives undertaken by Project MOSAIC (\url{http://www.mosaic-web.org}), an NSF-funded effort to improve the teaching of statistics, calculus, science and computing in the undergraduate curriculum. In particular, we utilize the
-\pkg{mosaic} package, which was written to simplify the use of R for introductory statistics courses. A short summary of the R needed to teach introductory statistics can be found in the mosaic package vignette (\url{http://cran.r-project.org/web/packages/mosaic/vignettes/mosaic-resources.pdf}).
+\pkg{mosaic} package, which was written to simplify the use of \R for introductory statistics courses. A short summary of the \R\ commands needed to teach introductory statistics can be found in the mosaic package vignette (\url{http://cran.r-project.org/web/packages/mosaic/vignettes/mosaic-resources.pdf}).
 
 Other related resources from Project MOSAIC may be helpful, including an annotated set of examples
 from the 
@@ -43,6 +43,8 @@ Moore, McCabe and Craig's \emph{Introduction to the Practice of Statistics}\cite
 the second and third editions of the \emph{Statistical Sleuth}\cite{Sleuth2} (see \url{http://www.amherst.edu/~nhorton/sleuth}), 
 and \emph{Statistics: Unlocking the Power of Data} by Lock et al (see \url{https://github.com/rpruim/Lock5withR}).
 
+\myindex{installing packages}%
+\Rindex{install.packages()}%
 To use a package within R, it must be installed (one time), and loaded (each session). The 
 \pkg{mosaic} package can be installed using the following command:
 <<install_mosaic,eval=FALSE>>=
@@ -51,6 +53,8 @@ install.packages('mosaic')               # note the quotation marks
 The {\tt \#} character is a comment in R, and all text after that on the
 current line is ignored.
 
+\myindex{loading packages}%
+\Rindex{require()}%
 Once the package is installed (one time only), it can be loaded by running the command:
 <<load_mosaic,eval=FALSE>>=
 require(mosaic)
@@ -63,7 +67,7 @@ require(mosaic)
 
 \R\ includes a number of commands to numerically summarize variables.
 These include the capability of calculating the mean, standard deviation,
-variance, median, five number summary, intra-quartile range (IQR) as well as arbitrary quantiles.  We will
+variance, median, five number summary, interquartile range (IQR) as well as arbitrary quantiles.  We will
 illustrate these using the CESD (Center for Epidemiologic Studies--Depression)
 measure of depressive symptoms (which takes on values between 0 and 60, with higher
 scores indicating more depressive symptoms).  
@@ -72,25 +76,35 @@ To improve the legibility of output,
 we will also set the default number of digits to display to a more reasonable
 level (see \function{?options} for more configuration possibilities).
 
+\Rindex{options()}%
+\Rindex{require()}%
+\Rindex{mosaic package}%
 <<cesd1,cache=FALSE>>=
 require(mosaic)
 options(digits=3)
-@
-Note that the \function{mean()} function in the \pkg{mosaic} package supports a modeling language
-common to \pkg{lattice} graphics and linear models (e.g. \function{lm()}).  We will use
-this modeling language commands throughout this document.
-\DiggingDeeper{The \emph{Start Modeling with R} book will be helpful if you are unfamiliar with the 
-modeling language.}
-<<>>=
 mean(~ cesd, data=HELPrct)
 @
 
+\myindex{Start Teaching with R@\emph{Start Teaching with R}}%
+\myindex{Teaching with R@\emph{Teaching with R}}%
+\myindex{Start Modeling with R@\emph{Start Modeling with R}}%
+\myindex{Modeling with R@\emph{Modeling with R}}%
+Note that the \function{mean()} function in the \pkg{mosaic} package supports a modeling language
+common to \pkg{lattice} graphics and linear models (e.g. \function{lm()}).  We will use
+this commands using this modeling language throughout this document.  Those already familiar with \R\ may be surprised by the form of this command.
+\DiggingDeeper{The \emph{Start Modeling with R} book will be helpful if you are unfamiliar with the 
+modeling language.  The \emph{Start Teaching with R} also provides useful guidance in getting started.}
+
+\Rindex{with()}%
+\Rindex{mean()}%
 The same output could be 
 created using the following commands (though we will use the MOSAIC versions when available).
 <<>>=
 with(HELPrct, mean(cesd))
 mean(HELPrct$cesd)
 @
+\Rindex{sd()}%
+\Rindex{var()}%
 Similar functionality exists for other summary statistics.
 <<cesd2,cache=FALSE>>=
 sd(~ cesd, data=HELPrct)
@@ -102,6 +116,8 @@ var(~ cesd, data=HELPrct)
 
 It is also straightforward to calculate quantiles of the distribution.
 
+\myindex{quantiles}%
+\Rindex{median()}%
 <<cesd3>>=
 median(~ cesd, data=HELPrct)
 @
@@ -109,13 +125,14 @@ median(~ cesd, data=HELPrct)
 By default, the 
 \function{quantile()} function displays the quartiles, but can be given
 a vector of quantiles to display.  
-\Caution{Not all commands (including \function{quantile()}) have been upgraded to
-support the formula interface. These must be accessed using \function{with()} or the \$ operator.}
+\Caution{Not all commands have been upgraded to
+support the formula interface. For these functions, variables within data frames must be accessed using \function{with()} or the \$ operator.}
 <<cesd4>>=
 with(HELPrct, quantile(cesd))
 with(HELPrct, quantile(cesd, c(.025, .975)))
 @
 
+\Rindex{favstats()}%
 Finally, the \function{favstats()}
 function in the \pkg{mosaic} package provides a concise summary of 
 many useful statistics.
@@ -125,10 +142,10 @@ favstats(~ cesd, data=HELPrct)
 
 \section{Graphical summaries}
 The \function{histogram()} function is used to create a histogram.
-\FoodForThought{\code{x} is for eXtra.}%
 Here we use the formula interface (as discussed in the \emph{Start Modeling with R} book) to
 specify that we want a histogram of the CESD scores.
 
+\Rindex{histogram()}%
 \vspace{-4mm}
 \begin{center}
 <<cesd-hist>>=
@@ -137,18 +154,23 @@ histogram(~ cesd, data=HELPrct)
 \end{center}
 
 
+\Rindex{tally()}%
+\Rindex{format option}%
 In the \variable{HELPrct} dataset, approximately one quarter of the subjects are female.  
 <<>>=
 tally(~ sex, data=HELPrct)
 tally(~ sex, format="percent", data=HELPrct)
 @
-It is straightforward to restrict our attention to just those subjects.
+
+It is straightforward to restrict our attention to just the female subjects.
 If we are going to do many things with a subset of our data, it may be easiest
 to make a new data frame containing only the cases we are interested in.
 The \function{subset()} function can generate a new data frame containing
 just the women or just the men  (see also section \ref{sec:subsets}).  Once this is created, the
 the \function{stem()} function is used to create a stem and leaf plot.
-\Caution{Note that the equality operator is \emph{two} equal signs}
+\Caution{Note that the tests for equality use \emph{two} equal signs}
+\Rindex{stem()}%
+\Rindex{subset()}%
 <<cesd-stem>>=
 female <- subset(HELPrct, sex=='female')
 male <- subset(HELPrct, sex=='male')
@@ -157,7 +179,8 @@ with(female, stem(cesd))
 
 Subsets can also be generated and used ``on the fly" (this time including
 an overlaid normal density):
-<<women-cesd-hist,tidy=FALSE>>=
+\Rindex{fit option}%
+<<women-cesd-hist,tidy=FALSE,message=FALSE>>=
 histogram(~ cesd, fit="normal",
   data=subset(HELPrct, sex=='female'))  
 @
@@ -168,6 +191,7 @@ histogram(~ cesd | sex, data=HELPrct)
 @
 
 The layout can be rearranged.
+\Rindex{layout option}%
 \begin{center}
 <<cesd-dotlayout>>=
 histogram(~ cesd | sex, layout=c(1, 2), data=HELPrct)   
@@ -175,23 +199,25 @@ histogram(~ cesd | sex, layout=c(1, 2), data=HELPrct)
 \end{center}
 \begin{problem}
 Using the \dataframe{HELPrct} dataset, 
-create side-by-side boxplots of the CESD scores by substance abuse
+create side-by-side histograms of the CESD scores by substance abuse
 group, just for the male subjects, with an overlaid normal density.
 \end{problem}%
 \begin{solution}
 <<subsmale, tidy=FALSE>>=
-bwplot(cesd ~ substance, fit="normal", 
+histogram(~ cesd | substance, fit="normal", 
   data=subset(HELPrct, sex=='male'))
 @
 \end{solution}%
 We can control the number of bins in a number of ways.  These can be specified 
 as the total number.
+\Rindex{nint option}%
 \begin{center}
 <<cesd-dot,fig.height=1.8>>=
 histogram(~ cesd, nint=20, data=female)   
 @
 \end{center}
 Or the width can be specified.
+\Rindex{width option}%
 \begin{center}
 <<cesd-dotwidth,fig.height=1.8>>=
 histogram(~ cesd, width=1, data=female)   
@@ -204,9 +230,10 @@ histogram(~ cesd, data=HELPrct, subset=(sex=='female'))
 @
 \end{center}
 
-The \function{dotPlot()} function is used to create a dotplot (a la Fathom)
+The \function{dotPlot()} function is used to create a dotplot
 for a smaller subset of subjects (homeless females).  We also demonstrate
 how to change the x-axis label.
+\Rindex{dotPlot()}%
 <<cesd-dot4,tidy=FALSE>>=
 dotPlot(~ cesd, xlab="CESD score", 
   data=subset(HELPrct, sex=="female" & homeless=="homeless"))
@@ -224,10 +251,18 @@ number of bins.  Another display to consider is a density curve.
 Here we adorn a density plot with some gratuitous additions to 
 demonstrate how to build up a graphic for pedagogical purposes.
 We add some text, a superimposed normal density as well as
-a vertical line. A variety of line types can be specified, 
+a vertical line. A variety of line types and colors can be specified, 
 as well as line widths.
 
 \begin{center}
+\Rindex{densityplot()}%
+\Rindex{ladd()}%
+\Rindex{panel.mathdensity()}%
+\Rindex{panel.abline()}%
+\Rindex{col option}%
+\Rindex{grid.text()}%
+\Rindex{lty option}%
+\Rindex{lwd option}%
 <<dens1,tidy=FALSE,fig.keep="last">>=
 densityplot(~ cesd, data=female)
 ladd(grid.text(x=0.2, y=0.8, 'only females'))
@@ -286,28 +321,34 @@ One resampling trial can be carried out:
 <<resamplemean>>=
 mean(~ cesd, data=resample(female))
 @
+\TeachingTip{Even though a single trial is of little use, it's smart have
+students do the calculation to show that they are (usually!) getting a different
+result than without resampling.}
+
 Another will yield different results:
 <<>>=
 mean(~ cesd, data=resample(female))
 @
-\TeachingTip{Even though a single trial is of little use, it's smart have
-students do the calculation to show that they are (usually!) getting a different
-result than without resampling.}
 
 Now conduct 1000 resampling trials, saving the results in an object
 called \texttt{trials}:
 <<bootint>>=
 trials = do(1000) * mean(~ cesd, data=resample(female))
-with(trials, quantile(result, c(.025, .975)))
+qdata(c(.025, .975), ~ result, data=trials)
 @
 
 \chapter{One Categorical Variable}
 
 \section{Numerical summaries}
 
+\myindex{categorical variables}
+\myindex{contingency tables}
+\myindex{tables}
 The \function{tally()} function can be used to calculate
 counts, percentages and proportions for a categorical variable.
 
+\Rindex{tally()}%
+\Rindex{margins option}%
 <<homeless-table>>=
 tally(~ homeless, data=HELPrct)      
 tally(~ homeless, margins=TRUE, data=HELPrct)      
@@ -317,6 +358,8 @@ tally(~ homeless, format="proportion", data=HELPrct)
 
 \section{The binomial test}
 
+\myindex{binomial test}%
+\Rindex{binom.test()}%
 An exact confidence interval for a proportion (as well as a test of the null 
 hypothesis that the population proportion is equal to a particular value [by default 0.5]) can be calculated
 using the \function{binom.test()} function.
@@ -935,6 +978,8 @@ this from the model.
 \subsection{Visualizing the results from the regression}
 
 \label{sec:plotFun}
+\Rindex{plotFun()}%
+\Rindex{makeFun()}%
 The \function{makeFun()} and \function{plotFun()} functions from the \pkg{mosaic} package 
 can be used to display the results from a regression model.  For this example, we might 
 display the predicted CESD values for a range of MCS values a 36 year old male and female subject from the parallel
@@ -942,6 +987,10 @@ slopes model.
 <<makeFUN>>=
 lm1fun = makeFun(lm1)
 @
+\Rindex{xyplot()}%
+\Rindex{auto.key option}%
+\Rindex{ylab option}%
+\Rindex{add option}%
 We can now plot this function for a range of values for MCS (mental component score), along
 with the observed data for 36 year olds.  
 <<plotFUN,tidy=FALSE,fig.keep='last'>>=
@@ -956,19 +1005,26 @@ plotFun(lm1fun(mcs, age=36, sex="female") ~ mcs,
 
 \subsection{Coefficient plots}
 
+\myindex{coefficient plots}%
 It is sometimes useful to display a plot of the coefficients for a multiple regression model (along with their associated
 confidence intervals).
 
+\Rindex{mplot()}%
 <<>>=
 mplot(lm1, which=7, multiplot=FALSE)
 @
 
 \subsection{Residual diagnostics}
+\myindex{residual diagnostics}
+\myindex{regression diagnostics}
 
 It's straightforward to undertake residual diagnostics for this model.  We begin by adding the
 fitted values and residuals to the dataset.
 \Caution{Be careful when fitting regression models with missing values (see also section \ref{sec:miss}).}
 \TeachingTip{The \function{mplot} function can also be used to create these graphs.}
+\Rindex{resid()}%
+\Rindex{fitted()}%
+\Rindex{abs()}%
 <<>>=
 HELPrct = transform(HELPrct, residuals = resid(lm1))
 HELPrct = transform(HELPrct, pred = fitted(lm1))
@@ -982,6 +1038,8 @@ We can display observations with extremely large residuals.
 subset(HELPrct, abs(residuals) > 25)
 @
 
+\Rindex{cex option}%
+\Rindex{type option}%
 <<tidy=FALSE>>=
 xyplot(residuals ~ pred, ylab="residuals", cex=0.3,
   xlab="predicted values", main="predicted vs. residuals",
@@ -1373,6 +1431,7 @@ power.t.test(delta=.25, sd=1, sig.level=alpha, power=0.90)
 
 \chapter{Data Management}
 \label{sec:manipulatingData}%
+\myindex{data management}%
 
 Data management is a key capacity to allow students (and instructors) to ``compute with data'' or  
 as Diane Lambert has stated, ``think with data''.
@@ -1382,12 +1441,16 @@ undertake substantive projects, data management is more important.  This chapter
 some key data management tasks.
 
 \section{Adding new variables to a data frame}
-We can add additional variables to an existing data frame by simple assignment.
+\myindex{data frame}%
+We can add additional variables to an existing data frame (name for a dataset in \R) by simple assignment.
 
 <<mr-adding-variable2>>=
 head(iris)
 @
 
+\myindex{adding variables}%
+\Rindex{transform()}%
+\Rindex{cut()}%
 <<mr-adding-variable>>=
 # cut places data into bins
 iris <- transform(iris, Length = cut(Sepal.Length, 4:8))    
@@ -1399,7 +1462,7 @@ head(iris)
 \Rindex{head()}%
 \myindex{display first few rows}%
 
-
+\myindex{CPS85 dataset}%
 The \dataframe{CPS85} data frame contains data from a Current Population Survey (current in 1985, that is).
 Two of the variables in this data frame are \variable{age} and \variable{educ}.  We can estimate
 the number of years a worker has been in the workforce if we assume they have been in the workforce
@@ -1417,6 +1480,9 @@ with(CPS85, table(exper - workforce.years))
 @
 
 \section{Dropping variables}
+\myindex{dropping variables}%
+\Rindex{subset()}%
+\Rindex{select option}%
 Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
 Notice the clever use of the minus sign.
 <<>>=
@@ -1439,6 +1505,8 @@ head(CPSsmall,2)
 @
 
 \section{Renaming variables}
+\myindex{renaming variables}%
+\Rindex{row.names()}%
 Both the column (variable) names and the row names of a data frames can be changed by
 simple assignment using \function{names()} or \function{row.names()}.
 <<>>=
@@ -1454,6 +1522,8 @@ row.names(ddd)[2] <- "Bette"
 row.names(ddd)
 @
 
+\Rindex{names()}%
+\myindex{faithful dataset}%
 The \dataframe{faithful} data set (in the \pkg{datasets} package, which is always available)
 has very unfortunate names.
 \TeachingTip{It's a good idea to start teach good practices for choice of variable names from day one.}
@@ -1513,7 +1583,7 @@ xyplot( time.til.next ~ duration, data=faithfulLong )
 
 Of course, if all we want to do is produce a graph, there is no reason to create 
 a new data frame.  The plot above could also be made with:
-\Caution{Unfortunately, not all functions in R support the \function{subset=} or
+\Caution{Unfortunately, not all functions in R (e.g., \function{stem()}) support the \function{subset=} or
 \option{data=} options.}
 <<eval=FALSE,tidy=FALSE>>=
 xyplot(time.til.next ~ duration, subset=duration > 3, 
@@ -1523,6 +1593,8 @@ xyplot(time.til.next ~ duration, subset=duration > 3,
 
 
 \section{Sorting data frames}
+\myindex{sorting data frames}%
+\Rindex{order()}%
 
 Data frames can be sorted using the \function{order()} function.
 <<>>=
@@ -1656,6 +1728,12 @@ bwplot(cesd ~ cesdcut, data=HELPrct)
 
 
 \subsection{Reordering factors}
+\myindex{reordering factors}%
+\myindex{factor reordering}%
+\Rindex{relevel()}%
+\Rindex{transform()}%
+\Rindex{coef()}%
+\Rindex{tally()}%
 By default R uses the first level in lexicographic order as the reference group for modeling.  This 
 can be overriden using the \function{relevel()} function (see also \function{reorder()}).
 <<tidy=FALSE>>=
@@ -1669,6 +1747,12 @@ coef(lm(cesd ~ subnew, data=HELPrct))
 \section{Accounting for missing data}
 \label{sec:miss}
 
+\myindex{missing data}%
+\Rindex{subset()}%
+\Rindex{na.omit()}%
+\Rindex{favstats()}%
+\Rindex{dim()}%
+\Rindex{select option}%
 Missing values arise in almost all real world investigations.  R uses the \variable{NA} character as an 
 indicator for missing data.  The \dataframe{HELPmiss} dataframe within the \pkg{mosaic} package includes all 
 $n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some missing data who 
@@ -1689,6 +1773,8 @@ favstats(~ mcs, data=nomiss)
 
 \label{sec:help}
 
+\myindex{HELP study}%
+\myindex{Health Evaluation and Linkage to Primary Care study}%
 Many of the examples in this guide utilize data from the HELP study,
 a randomized clinical trial for adult inpatients recruited from a detoxification unit.
 Patients with no primary care physician were randomized to receive a multidisciplinary assessment and a brief motivational intervention or usual care,
