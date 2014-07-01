@@ -894,7 +894,7 @@ formats, see the
 
 
 
-\section{Manipulating Data Frames}
+\section{Manipulating Data Frames with \texttt{dplyr}}
 \label{sec:manipulatingData}%
 
 There are several ways to manipulate data frames in \R.  The approach illustrated
@@ -1275,7 +1275,7 @@ have in your final data frame.
 \end{problem}
 
 
-\subsection{Getting data from mySQL data bases}
+\section{Getting data from mySQL data bases}
 
 \Rindex{RMySQL}%
 \myindex{SQL}%
@@ -1337,7 +1337,7 @@ histogram( ~length, data=Chrom1df, xlab="gene length (kb)" )
 %There is an \href{http://csg.sph.umich.edu/docs/R/rsql.html}{online document}
 %describing this type of manipulation.
 
-\subsection{Reshaping data}
+\section{Reshaping data}
 \authNote{NH to expand}
 \authNote{Hadley is working on a new package for tidying data that will replace this.}
 
