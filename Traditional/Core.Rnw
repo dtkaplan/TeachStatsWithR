@@ -76,6 +76,7 @@ To improve the legibility of output,
 we will also set the default number of digits to display to a more reasonable
 level (see \function{?options} for more configuration possibilities).
 
+\myindex{HELPrct dataset}%
 \Rindex{options()}%
 \Rindex{require()}%
 \Rindex{mosaic package}%
@@ -276,8 +277,10 @@ ladd(panel.abline(v=60, lty=2, lwd=2, col="grey"))
 section \ref{sec:plotFun}).}
 
 \section{Frequency polygons}
+\myindex{polygons}%
 
 A third option is a frequency polygon, where  the graph is created by joining the midpoints of the top of the bars of a histogram.
+\Rindex{freqpolygon()}%
 \begin{center}
 <<poly,tidy=FALSE,fig.keep="last">>=
 freqpolygon(~ cesd, data=female)
@@ -486,7 +489,7 @@ of the CESD (a measure of depressive symptoms, higher scores indicate more sympt
 with a lowess (locally weighted scatterplot smoother) line, using a circle
 as the plotting character and slightly thicker line.
 
-\InstructorNote{The lowess line can help to assess linearity of a relationship.}
+\InstructorNote{The lowess line can help to assess linearity of a relationship. This is added by specifying both points (using `p') and a lowess smoother.}
 \Rindex{xyplot()}%
 \Rindex{pch option}%
 \Rindex{cex option}%
@@ -494,7 +497,7 @@ as the plotting character and slightly thicker line.
 \Rindex{type option}%
 \begin{center}
 <<HELPrct-xyplot,fig.height=3,tidy=FALSE>>=
-xyplot(cesd ~ mcs, type=c('p','smooth'), pch=1, cex=0.6,
+xyplot(cesd ~ mcs, type=c("p","smooth"), pch=1, cex=0.6,
   lwd=3, data=HELPrct)
 @
 \end{center}
@@ -961,7 +964,7 @@ a variety of
 link functions and distributional forms for generalized linear models, including logistic regression.
 \FoodForThought{The \function{glm()} function has argument \option{family}, which can take an option 
 \option{link}.  The \code{logit} link is the default link for the binomial family,
-so we don't need to specify it here. The more verbose usage would be {\tt family=binomial(link=logit)}.}%
+so we don't need to specify it here. The more verbose usage would be \code{family=binomial(link=logit)}.}%
 \Rindex{glm()}%
 \Rindex{family option}%
 \Rindex{exp()}%
@@ -1079,19 +1082,20 @@ regularly.  The motivation for this is described at length in the companion volu
 Here we consider a model (parallel slopes) for depressive symptoms as a function of Mental Component Score (MCS),
 age (in years) and sex of the subject.
 <<help-multreg>>=
-lm1 <- lm(cesd ~ mcs + age + sex, data=HELPrct)
-summary(lm1)
+lmnointeract <- lm(cesd ~ mcs + age + sex, data=HELPrct)
+summary(lmnointeract)
 @
 \myindex{interactions}%
 We can also fit a model that includes an interaction between MCS and sex.
 <<help-multreg2>>=
-lm2 <- lm(cesd ~ mcs + age + sex + mcs:sex, data=HELPrct)
-summary(lm2)
-anova(lm2)
+lminteract <- lm(cesd ~ mcs + age + sex + mcs:sex, data=HELPrct)
+summary(lminteract)
+anova(lminteract)
 @
 <<help-multreg3>>=
-anova(lm1, lm2)
+anova(lmnointeract, lminteract)
 @
+
 There is little evidence for an interaction effect, so we drop
 this from the model.
 
@@ -1103,23 +1107,24 @@ this from the model.
 The \function{makeFun()} and \function{plotFun()} functions from the \pkg{mosaic} package 
 can be used to display the results from a regression model.  For this example, we might 
 display the predicted CESD values for a range of MCS values a 36 year old male and female subject from the parallel
-slopes model.
+slopes (no interaction) model.
 <<makeFUN>>=
-lm1fun = makeFun(lm1)
+lmfunction = makeFun(lmnointeract)
 @
+
 \Rindex{xyplot()}%
 \Rindex{auto.key option}%
 \Rindex{ylab option}%
 \Rindex{groups option}%
 \Rindex{add option}%
-We can now plot this function for a range of values for MCS (mental component score), along
+We can now plot this function for male and female subjects over a range of MCS (mental component score) values, along
 with the observed data for 36 year olds.  
 <<plotFUN,tidy=FALSE,fig.keep='last'>>=
 xyplot(cesd ~ mcs, groups=sex, auto.key=TRUE, 
   data=subset(HELPrct, age==36))
-plotFun(lm1fun(mcs, age=36, sex="male") ~ mcs, 
+plotFun(lmfunction(mcs, age=36, sex="male") ~ mcs, 
   xlim=c(0,60), lwd=2, ylab="predicted CESD", add=TRUE)
-plotFun(lm1fun(mcs, age=36, sex="female") ~ mcs, 
+plotFun(lmfunction(mcs, age=36, sex="female") ~ mcs, 
   xlim=c(0,60), lty=2, lwd=3, add=TRUE)
 @
 
@@ -1132,8 +1137,11 @@ confidence intervals).
 
 \Rindex{mplot()}%
 <<>>=
-mplot(lm1, which=7, multiplot=FALSE)
+mplot(lmnointeract, which=7, multiplot=FALSE)
 @
+
+\TeachingTip{Darker dots indicate regression coefficients where the 95\% confidence interval does not include the null hypothesis value of zero.}
+
 
 \subsection{Residual diagnostics}
 \myindex{residual diagnostics}
@@ -1147,14 +1155,17 @@ fitted values and residuals to the dataset.
 \Rindex{fitted()}%
 \Rindex{abs()}%
 <<>>=
-HELPrct = transform(HELPrct, residuals = resid(lm1))
-HELPrct = transform(HELPrct, pred = fitted(lm1))
+HELPrct = transform(HELPrct, residuals = resid(lmnointeract))
+HELPrct = transform(HELPrct, pred = fitted(lmnointeract))
 @
 <<tidy=FALSE>>=
 histogram(~ residuals, xlab="residuals", fit="normal", 
   data=HELPrct)
 @
-We can display observations with extremely large residuals.
+
+We can identify the subset of observations with extremely large residuals.
+
+\Rindex{abs()}%
 <<>>=
 subset(HELPrct, abs(residuals) > 25)
 @
@@ -1171,6 +1182,7 @@ xyplot(residuals ~ mcs, xlab="mental component score",
   ylab="residuals", cex=0.3,
   type=c("p", "r", "smooth"), data=HELPrct)
 @
+
 The assumptions of normality, linearity and homoscedasticity seem reasonable here.
 \begin{problem}
 The \dataframe{RailTrail} dataset within the \pkg{mosaic} package includes the counts 
@@ -1358,14 +1370,21 @@ of the residuals increases with larger fitted values.
 
 \label{sec:DiscreteDistributions}
 \label{sec:probability}
+\myindex{random variables}%
 
 \R\ can calculate quantities related to probability distributions of all types.  
 It is straightforward to generate
-random variables from these distributions, which can be used 
-for simulation and analysis.
+random samples from these distributions, which can be used 
+for simulation and exploration.
 <<probdist,fig.height=4,fig.width=6>>=
 xpnorm(1.96, mean=0, sd=1)    # P(Z < 1.96)
 @
+\Rindex{qnorm()}%
+\Rindex{dnorm()}%
+\Rindex{pnorm()}%
+\Rindex{xpnorm()}%
+\Rindex{rnorm()}%
+\Rindex{integrate()}%
 <<>>=
 # value which satisfies P(Z < z) = 0.975
 qnorm(.975, mean=0, sd=1)   
@@ -1375,13 +1394,13 @@ The following table displays the basenames for probability distributions
 available within base \R.  These functions can be prefixed by {\tt d} to 
 find the density function for the distribution, {\tt p} to find the 
 cumulative distribution function, {\tt q} to find quantiles, and {\tt r} to 
-generate random draws. For example, to find the density function of a binomial
-random variable, use the command \function{dbinom()}.
+generate random draws. For example, to find the density function of an exponential
+random variable, use the command \function{dexp()}.
 The \function{qDIST()} function is the inverse of the 
 \function{pDIST()} function, for a given basename {\tt DIST}. 
 \begin{center}
 \begin{tabular}{|c|c|c|} \hline
-Distribution   & NAME                 \\ \hline
+Distribution   & Basename                 \\ \hline
 Beta           &  {\tt beta}        \\
 binomial       &  {\tt binom}    \\
 Cauchy         &  {\tt cauchy}   \\
@@ -1402,18 +1421,16 @@ Weibull        &  {\tt weibull}   \\ \hline
 \end{tabular}
 \end{center}
 \DiggingDeeper{The \function{fitdistr()} within the \pkg{MASS} package facilitates estimation
-of parameter for many distributions.}
+of parameters for many distributions.}
 The \function{plotDist()} can be used to display distributions in a variety of ways.
 <<tidy=FALSE>>=
-plotDist('norm', params=list(mean=100, sd=10), 
-  kind='cdf')
+plotDist('norm', mean=100, sd=10, kind='cdf')
 @
 <<tidy=FALSE>>=
-plotDist('exp', kind='histogram')
+plotDist('exp', kind='histogram', xlab="x")
 @
 <<tidy=FALSE>>=
-plotDist('binom', params=list(size=25, prob=0.25), 
-  xlim=c(-1,26))
+plotDist('binom', size=25, prob=0.25, xlim=c(-1,26))
 @
 \begin{problem}
 Generate a sample of 1000 exponential random variables with rate parameter
@@ -1447,8 +1464,9 @@ We consider a simple problem with two tests (t-test and
 sign test) of
 a one-sided comparison.
 
-Let $X_1, ..., X_{25}$ be i.i.d. $N(0.3, 1)$ (this is the alternate that we wish to calculate power for).  Consider testing the null hypothesis $H_0: \mu=0$ versus $H_A: \mu>0$ at significance level $\alpha=.05$.  We will compare the power of the sign test and the power of the test based on normal theory (one sample one sided t-test) assuming that $\sigma$ 
+We will compare the power of the sign test and the power of the test based on normal theory (one sample one sided t-test) assuming that $\sigma$ 
 is known.
+Let $X_1, ..., X_{25}$ be i.i.d. $N(0.3, 1)$ (this is the alternate that we wish to calculate power for).  Consider testing the null hypothesis $H_0: \mu=0$ versus $H_A: \mu>0$ at significance level $\alpha=.05$.  
 
 \section{Sign test}
 
@@ -1456,17 +1474,18 @@ We start by calculating the Type I error rate for the sign test.  Here we want t
 reject when the number of positive values is large.  Under the null hypothesis, this is
 distributed as a Binomial random variable with n=25 trials and p=0.5 probability of being
 a positive value.  Let's consider values between 15 and 19.
+
 <<pbinom>>=
-qbinom(.95, size=25, prob=0.5)
 xvals <- 15:19
 probs <- 1 - pbinom(xvals, size=25, prob=0.5)
 cbind(xvals, probs)
+qbinom(.95, size=25, prob=0.5)
 @
 So we see that if we decide to reject when the number of positive values is
 17 or larger, we will have an $\alpha$ level of \Sexpr{round(1-pbinom(16, 25, 0.5), 3)},
 which is near the nominal value in the problem.
 
-We calculate the power of the sign test as follows. The probability that $X > 0$, given that $H_A$ is true is given by:
+We calculate the power of the sign test as follows. The probability that $X_i > 0$, given that $H_A$ is true is given by:
 <<pnorm1>>=
 1 - pnorm(0, mean=0.3, sd=1)
 @
@@ -1478,6 +1497,8 @@ xpnorm(0, mean=0.3, sd=1, lower.tail=FALSE)
 \end{center}
 The power under the alternative is equal to the probability of getting 17 or more positive values,
 given that $p=0.6179$:
+
+\Rindex{pbinom()}%
 <<pbinom2>>=
 1 - pbinom(16, size=25, prob=0.6179)
 @
@@ -1487,10 +1508,13 @@ The power is modest at best.
 
 We next calculate the power of the test based on normal theory.  To keep the comparison
 fair, we will set our $\alpha$ level equal to 0.05388.
-First we find the rejection region.  
 
 <<tidy=FALSE>>=
 alpha <- 1-pbinom(16, size=25, prob=0.5); alpha
+@
+
+First we find the rejection region.  
+<<tidy=FALSE>>=
 n <- 25; sigma <- 1 # given
 stderr <- sigma/sqrt(n)
 zstar <- qnorm(1-alpha, mean=0, sd=1)
@@ -1498,16 +1522,21 @@ zstar
 crit <- zstar*stderr
 crit
 @
+
+
+\noindent
 Therefore, we reject for observed means greater than \Sexpr{round(crit,3)}.  
 
 To calculate the power of this one-sided test we find the probability
 under the alternative hypothesis 
-to the right of this cutoff:
+to the right of this cutoff.
+
 <<>>=
 power <- 1 - pnorm(crit, mean=0.3, sd=stderr)
 power
 @
-Thus, the power of the test based on normal theory is \Sexpr{round(power,3)}.
+
+The power of the test based on normal theory is \Sexpr{round(power,3)}.
 To provide a check (or for future calculations of this sort) we can use the 
 \function{power.t.test()} function.
 <<>>=
@@ -1515,7 +1544,8 @@ power.t.test(n=25, delta=.3, sd=1, sig.level=alpha, alternative="one.sided",
 type="one.sample")$power
 @
 
-This yields a similar estimate to the value that we calculated directly.  
+This analytic (formula-based approach) yields a similar estimate to the value that we calculated directly.  
+
 Overall, we see that the t-test has higher power than the sign test, if the underlying
 data are truly normal.  \TeachingTip{It's useful to have students calculate power empirically, 
 to demonstrate the power of simulations.}
@@ -1553,9 +1583,10 @@ power.t.test(delta=.25, sd=1, sig.level=alpha, power=0.90)
 \chapter{Data Management}
 \label{sec:manipulatingData}%
 \myindex{data management}%
+\myindex{thinking with data}%
 
 Data management is a key capacity to allow students (and instructors) to ``compute with data'' or  
-as Diane Lambert has stated, ``think with data''.
+as Diane Lambert of Google has stated, ``think with data''.
 We tend to keep student data management to a minimum during the early part of an introductory
 statistics course, then gradually introduce topics as needed.  For courses where students
 undertake substantive projects, data management is more important.  This chapter describes 
@@ -1590,6 +1621,7 @@ the number of years a worker has been in the workforce if we assume they have be
 since completing their education and that their age at graduation is 6 more than the number
 of years of education obtained.  We can this as a new variable in the data frame simply
 by assigning to it:
+\myindex{CPS85 dataset}%
 <<>>=
 CPS85 <- transform(CPS85, workforce.years = age - 6 - educ)
 favstats(~ workforce.years, data=CPS85)
@@ -1597,7 +1629,7 @@ favstats(~ workforce.years, data=CPS85)
 In fact this is what was done for all but one of the cases to create the \variable{exper} 
 variable that is already in the \dataframe{CPS85} data.
 <<>>=
-with(CPS85, table(exper - workforce.years))
+tally(~ (exper - workforce.years), data=CPS85)
 @
 
 \section{Dropping variables}
@@ -1611,6 +1643,7 @@ names(CPS85)
 CPS1 <- subset(CPS85, select = -workforce.years)
 names(CPS1)
 @
+
 Any number of variables can be dropped or kept in this manner by supplying a vector
 of variable names.
 <<>>=
@@ -1657,6 +1690,7 @@ so let's give it some better names.
 names(faithful) <- c('duration', 'time.til.next')
 head(faithful, 3)
 @
+\myindex{faithful dataset}%
 \begin{center}
 <<"mr-faithful-xy">>=
 xyplot(time.til.next ~ duration, alpha=0.5, data=faithful)
@@ -1664,6 +1698,7 @@ xyplot(time.til.next ~ duration, alpha=0.5, data=faithful)
 \end{center}
 If the variable containing a data frame is modified or used to store a different object,
 the original data from the package can be recovered using \function{data()}.
+\Rindex{data()}%
 <<>>=
 data(faithful)
 head(faithful, 3)
@@ -1689,8 +1724,10 @@ CPS85[1,1:4]
 @
 
 \section{Creating subsets}
+\myindex{creating subsets}%
+\myindex{subsets of data frames}%
 \label{sec:subsets}
-We can also use \function{subset()} to reduce the size of a data set by selecting 
+We can also use \function{subset()} to reduce the size of a data frame by selecting 
 only certain rows.
 \begin{center}
 <<"mr-faithful-long-xy">>=
@@ -1727,6 +1764,7 @@ head(sorted, 3)
 
 
 \section{Merging datasets}
+\myindex{merging data frames}%
 
 The \dataframe{fusion1} data frame in the \pkg{fastR} package contains 
 genotype information for a SNP (single nucleotide polymorphism) in the gene
@@ -1736,7 +1774,6 @@ The \dataframe{pheno} data frame contains phenotypes
 We can merge these together to explore the association between
 genotypes and phenotypes using \verb!merge()!.
 
-%\Rindex{merge()}%
 <<>>=
 require(fastR)
 fusion1 = fusion1[order(fusion1$id),]
@@ -1744,6 +1781,9 @@ head(fusion1,3)
 head(pheno,3)
 @
 
+\Rindex{merge()}%
+\Rindex{all.x option}%
+\Rindex{by.x option}%
 <<tidy=FALSE>>=
 # merge fusion1 and pheno keeping only id's that are in both
 fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id', 
@@ -1758,6 +1798,7 @@ The second indicates whether cases in one data frame that do not appear in the o
 should be kept (\code{TRUE}) or dropped 
 (filling in \code{NA} as needed) or dropped from the merged data frame.
 
+\myindex{fusion1 dataset}%
 Now we are ready to begin our analysis.
 <<"mr-fusion1-xtabs">>=
 tally(~t2d + genotype, data=fusion1m)
@@ -1781,6 +1822,9 @@ have in your final data frame.
 \end{problem}
 
 \section{Slicing and dicing}
+\myindex{reshaping data frames}%
+\myindex{transforming data frames}%
+\myindex{transposing data frames}%
 
 The \function{reshape()} function provides a flexible way to change the arrangement of data.  
 \Rindex{reshape()}%
@@ -1798,6 +1842,8 @@ traffic
 We can reformat this so that each row contains a measurement for a 
 single state in one year.
 
+\Rindex{reshape()}%
+\Rindex{varying option}%
 <<tidy=FALSE>>=
 longTraffic <-
   reshape(traffic[,-2], idvar="year", 
@@ -1824,6 +1870,7 @@ to \function{reshape()}.
 \Rindex{unstack()}%
 
 \section{Derived variable creation}
+\myindex{derived variables}
 
 A number of functions help facilitate the creation or recoding of variables.
 
@@ -1832,12 +1879,18 @@ A number of functions help facilitate the creation or recoding of variables.
 Next we demonstrate how to 
 create a three-level categorical variable
 with cuts at 20 and 40 for the CESD scale (which ranges from 0 to 60 points).
+
+\Rindex{cut()}%
+\Rindex{include.lowest option}%
+\Rindex{breaks option}%
 <<tidy=FALSE>>=
 favstats(~ cesd, data=HELPrct)
 HELPrct = transform(HELPrct, cesdcut = cut(cesd, 
   breaks=c(0, 20, 40, 60), include.lowest=TRUE))
 bwplot(cesd ~ cesdcut, data=HELPrct)
 @
+\Rindex{ntiles()}%
+\TeachingTip{The \function{ntiles} function can be used to automate creation of groups in this manner.}
 
 It might be preferable to give better labels.
 <<tidy=FALSE>>=
@@ -1864,25 +1917,35 @@ HELPrct = transform(HELPrct, subnew = relevel(substance,
   ref="heroin"))
 coef(lm(cesd ~ subnew, data=HELPrct))
 @
+\Caution{It is usually better to make new datasets rather than modifying the original.}
 
 \section{Accounting for missing data}
 \label{sec:miss}
 
 \myindex{missing data}%
+\myindex{incomplete data}%
 \Rindex{subset()}%
-\Rindex{na.omit()}%
-\Rindex{favstats()}%
 \Rindex{dim()}%
 \Rindex{select option}%
+\Rindex{NA character}%
 Missing values arise in almost all real world investigations.  R uses the \variable{NA} character as an 
 indicator for missing data.  The \dataframe{HELPmiss} dataframe within the \pkg{mosaic} package includes all 
 $n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some missing data who 
 were not included in \dataframe{HELPrct}).  
+\myindex{HELPmiss dataset}%
 <<tidy=FALSE>>=
 smaller = subset(HELPmiss, select=c("cesd", "drugrisk", 
   "indtot", "mcs", "pcs", "substance"))
 dim(smaller)
 summary(smaller)
+@
+
+Of the 470 subjects in the 6 variable data frame, only the \code{drugrisk}, \code{indtot}, \code{mcs}, and \code{pcs} variables have missing values.  
+
+\Rindex{with()}%
+\Rindex{na.omit()}%
+\Rindex{favstats()}%
+<<tidy=FALSE>>=
 favstats(~ mcs, data=smaller)
 with(smaller, sum(is.na(mcs)))
 nomiss = na.omit(smaller)
