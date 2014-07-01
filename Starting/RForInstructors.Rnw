@@ -782,42 +782,7 @@ myDataFrame <- data.frame(col=color, num=number)
 myDataFrame
 @
 \fi
-
-\subsection{Getting data from mySQL data bases}
-
-\Rindex{RMySQL}%
-\myindex{SQL}%
-The \pkg{RMySQL} package allows direct access to data in MySQL data bases.
-This can be convenient when dealing with subsets of very large data sets.
-The example below queries a the UCSC genome browser to find all the known genes
-on chromosome~1.
-
-\begin{widestuff}
-<<ucsc-sql,tidy=FALSE>>=
-require(RMySQL)
  
-# Set up a connection to the public MySQL server 
-# for the UCSC genome browser (no password)
-ucscData <- dbConnect(MySQL(), 
-                      user="genome", 
-                      host="genome-mysql.cse.ucsc.edu")
- 
-# Function to make it easier to query 
-query <- function(...) dbGetQuery(ucscData, ...)
- 
-# Get the UCSC gene name, start and end sites for genes on Chromosome 1
-chrom1 <- 
-  query("SELECT name, chrom, txStart, txEnd FROM mm9.knownGene WHERE chrom='chr1';")
-dim(chrom1)
-head(chrom1,2)
-@
-
-\end{widestuff}
-
-%A great example of this is the 12 gigabytes of data from the Airline on-time
-%performance dataset included in the 2009 Data Expo (\url{http://stat-computing.org/dataexpo/2009}).
-%There is an \href{http://csg.sph.umich.edu/docs/R/rsql.html}{online document}
-%describing this type of manipulation. 
 
 \iffalse
 \subsection{Generating data}
@@ -954,9 +919,6 @@ Additional functions
 \function{left_join()}
 can be used to combine data from multiple data frames.
 
-One of the advantages to learning the \pkg{dplyr} system is that it scales well.  The 
-same commands that can be applied to relatively small data frames can also be applied
-to very large data sets and even to data stored in a data base.
 
 \subsection{Adding new variables to a data frame}
 
@@ -964,13 +926,7 @@ The \function{mutate()} function can be used to add or modify variables in a dat
 \Note{\function{mutate()} is evaluated in such a way that you have direct 
 access to the other variables in the data frame, including one created earlier
 in the same \function{mutate()} command.}
-<<tidy=FALSE>>=
-head(chrom1, 2)
-chrom1 <- mutate(chrom1, length=(txEnd - txStart)/1000)
-head(chrom1, 2)
-histogram( ~log10(length), data=chrom1, 
-            xlab="gene length (kb)" )
-@
+
 
 Here we show how to modify the \dataframe{Births78} data frame so 
 that it contains a new variable \variable{day} that is an ordered factor.
@@ -1318,9 +1274,72 @@ Tidy up your data frame by dropping any columns that are redundant or that you j
 have in your final data frame.
 \end{problem}
 
-\iffalse
-\subsection{Slicing and dicing}
+
+\subsection{Getting data from mySQL data bases}
+
+\Rindex{RMySQL}%
+\myindex{SQL}%
+The \pkg{RMySQL} package allows direct access to data in MySQL data bases
+and the \pkg{dplyr} package facilitates processing this data in the same
+way as for data in a data frame..
+This makes it easy to work with very large data sets stored
+in public databases.
+The example below queries a the UCSC genome browser to find all the known genes
+on chromosome~1.
+
+<<tidy=FALSE>>=
+# connect to a UCSC database
+UCSCdata <- src_mysql(
+  host="genome-mysql.cse.ucsc.edu",
+  user="genome",
+  dbname="mm9")
+# grab one of the many tables in the database
+KnownGene <- tbl(UCSCdata, "knownGene")
+
+# Get the gene name, chromosome, start and end sites for genes on Chromosome 1
+Chrom1 <-
+  KnownGene %>% 
+  select( name, chrom, txStart, txEnd ) %>%
+  filter( chrom == "chr1" )
+@
+\Rindex{src_mysql}
+\Rindex{tbl}
+The resulting \dataframe{Chrom1} is not a data frame, but behaves much like one.
+<<>>=
+class(Chrom1)
+@
+\Rindex{mutate()}
+<<>>=
+Chrom1 %>% mutate(length=(txEnd - txStart)/1000) -> Chrom1l
+Chrom1l
+@
+\Caution{The arithmetic operations in this \function{mutate()} command are being 
+executed in SQL, not in \R, and the palette of allowable functions is much smaller.
+It is not possible, for example, to compute the logarithm of the length here using
+\function{log()}.  For that we must first collect the data into a real data frame.}
+For efficiency, the full data are not pulled from the database until needed (or until we
+request this using \function{collect()}).  This allows us, for example, to inspect the first 
+few rows of a potentially large pull from the database without actually having done all of 
+the work required to pull that data.
+
+But certain things do not work unless we collect the results from the data based into an
+actual data frame.  To plot the data using \pkg{lattice} or \pkg{ggplot2}, for example, 
+we must first \function{collect()} it into a data frame.
+\Rindex{collect()}
+<<tidy=FALSE>>=
+Chrom1df <- collect(Chrom1l)       # collect into a data frame
+histogram( ~length, data=Chrom1df, xlab="gene length (kb)" )
+@
+
+
+%A great example of this is the 12 gigabytes of data from the Airline on-time
+%performance dataset included in the 2009 Data Expo (\url{http://stat-computing.org/dataexpo/2009}).
+%There is an \href{http://csg.sph.umich.edu/docs/R/rsql.html}{online document}
+%describing this type of manipulation.
+
+\subsection{Reshaping data}
 \authNote{NH to expand}
+\authNote{Hadley is working on a new package for tidying data that will replace this.}
 
 
 \function{reshape()} provides a flexible way to change the arrangement of data.  
@@ -1376,7 +1395,6 @@ to \verb!reshape()!.
 %\label{example:fusion1-glm1}%
 %\myindex{FUSION|exampleidx}%
 %\myindex{logistic regression}%
-\fi
 
 \section{Functions in \R} %{An introduction to writing functions}
 \label{sec:writingFunctions}
@@ -1541,6 +1559,8 @@ quartiles, mean, standard, deviation, sample size and number of missing observat
 favstats(Sepal.Length ~ Species, data=iris)
 @
 
+\authNote{rjp to add a section here showing how to start with a code chunk 
+and make it reusable by wrapping it up into a function.}
 
 \iffalse
 \section{A Few Graphical Bells and Whistles}
@@ -1712,12 +1732,22 @@ not difficult to do.
 
 You may already have a web site.  We have in mind a place where you
 can place files and have them accessed directly from the Internet.
-For sharing data, it's best if this site is public, that is, it does not require a login.
-That rules out most ``course support'' systems such as Moodle or
-Blackboard.  
+For sharing data, it's best if this site is public, that is, 
+it does not require a login.  In this case, \function{read.file()}
+can read the data into \R\ directly from the URL:
+<<>>=
+Fires <- read.csv("http://www.calvin.edu/~rpruim/data/Fires.csv")
+dim(Fires)
+head(Fires)
+xyplot( Acres ~ Year, data=Fires, type=c("p","smooth") )
+xyplot( Acres/Fires ~ Year, data=Fires, ylab="acres per fire",
+        type=c("p","smooth"))
+@
 
 \authNote{Need to check whether Dropbox workflow is still correct. --rjp 2014-06-28}
 \index{Dropbox}
+Unfortunately, most ``course support'' systems such as Moodle or
+Blackboard do not provide such easy access to data.  
 The Dropbox service for storing files in the ``cloud'' provides a very
 convenient way to distribute files over the web.  (Go to
 \texttt{dropbox.com} for information and to sign up for a free account.)
@@ -1750,7 +1780,7 @@ students.  For a csv file, reading the contents of the file into \R\
 can be done with the \function{read.csv} function, by giving it the
 quoted URL:
 \begin{figure*}
-<<read-quoted-URL>>=
+<<read-quoted-URL, eval=FALSE>>=
 a <- read.file("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
 @ 
 
