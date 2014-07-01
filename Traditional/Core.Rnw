@@ -898,7 +898,7 @@ women
 have the same mean age in the population.
 
 \section{One-way ANOVA}
-\myindex{One-way ANOVA}%
+\myindex{one-way ANOVA}%
 \myindex{analysis of variance}%
 
 Earlier comparisons were between two groups. We can also consider testing differences between
@@ -1616,11 +1616,14 @@ We tend to keep student data management to a minimum during the early part of an
 statistics course, then gradually introduce topics as needed.  For courses where students
 undertake substantive projects, data management is more important.  This chapter describes 
 some key data management tasks.
+\myindex{read.file()}%
+\TeachingTip{The \emph{Start Teaching with R} book features an extensive section on data management, including use of the \function{read.file()} function to load data into \R\ and \RStudio.}
 
 \section{Adding new variables to a data frame}
 \myindex{data frame}%
 We can add additional variables to an existing data frame (name for a dataset in \R) by simple assignment.
 
+\myindex{iris dataset}%
 <<mr-adding-variable2>>=
 head(iris)
 @
