@@ -50,6 +50,7 @@ To use a package within R, it must be installed (one time), and loaded (each ses
 <<install_mosaic,eval=FALSE>>=
 install.packages('mosaic')               # note the quotation marks
 @
+\TeachingTip{\Rstudio\ features a simplified package installation tab (on the bottom right panel).}
 The {\tt \#} character is a comment in R, and all text after that on the
 current line is ignored.
 
@@ -59,6 +60,28 @@ Once the package is installed (one time only), it can be loaded by running the c
 <<load_mosaic,eval=FALSE>>=
 require(mosaic)
 @
+
+\myindex{reproducible analysis}%
+\myindex{markdown}%
+\myindex{knitr}%
+\marginnote{Using Markdown or \pkg{knitr}/\LaTeX\ requires that
+the \pkg{markdown} package be installed on your system.}%
+The RMarkdown system provides a simple markup language and renders the
+results in PDF, Word, or HTML.  
+This allows students to undertake their analyses using a workflow that
+facilitates ``reproducibility'' and avoids cut and paste errors.
+
+We typically introduce students to RMarkdown very early,
+requiring students to use it for assignments and reports\cite{baum:2014}.
+\TeachingTip{The \pkg{knitr}/\LaTeX\ system
+allows users to combine \R\ and \LaTeX\ in the same document.  The
+reward for learning this more complicated system is much finer control
+over the output format.}%
+
+Depending on the level of the course, students can use either of these for homework and projects.
+
+
+
 
 
 \chapter{One Quantitative Variable}
@@ -218,7 +241,7 @@ as the total number.
 histogram(~ cesd, nint=20, data=female)   
 @
 \end{center}
-Or the width can be specified.
+The width of the bins can be specified.
 \Rindex{width option}%
 \begin{center}
 <<cesd-dotwidth,fig.height=1.8>>=
@@ -485,7 +508,7 @@ rm(observed, p, total, chisq)
 
 We always encourage students to start any analysis by graphing their data.  
 Here we augment a scatterplot
-of the CESD (a measure of depressive symptoms, higher scores indicate more symptoms) and the MCS (mental component score from the SF-36, where higher scores indicate better functioning)
+of the CESD (a measure of depressive symptoms, higher scores indicate more symptoms) and the MCS (mental component score from the SF-36, where higher scores indicate better functioning) for female subjects
 with a lowess (locally weighted scatterplot smoother) line, using a circle
 as the plotting character and slightly thicker line.
 
@@ -497,8 +520,9 @@ as the plotting character and slightly thicker line.
 \Rindex{type option}%
 \begin{center}
 <<HELPrct-xyplot,fig.height=3,tidy=FALSE>>=
+females = subset(HELPrct, female==1)
 xyplot(cesd ~ mcs, type=c("p","smooth"), pch=1, cex=0.6,
-  lwd=3, data=HELPrct)
+  lwd=3, data=females)
 @
 \end{center}
 
@@ -509,8 +533,8 @@ Correlations can be calculated for a pair of variables, or for a matrix of varia
 \myindex{correlation}%
 \Rindex{cor()}%
 <<>>=
-cor(cesd, mcs, data=HELPrct)
-smallHELP = subset(HELPrct, select=c(cesd, mcs, pcs))
+cor(cesd, mcs, data=females)
+smallHELP = subset(females, select=c(cesd, mcs, pcs))
 cor(smallHELP)
 @
 \myindex{Pearson correlation}%
@@ -519,7 +543,7 @@ cor(smallHELP)
 By default, Pearson correlations are provided. Other variants (e.g., Spearman) can be specified using the
 \option{method} option.
 <<>>=
-cor(cesd, mcs, method="spearman", data=HELPrct)
+cor(cesd, mcs, method="spearman", data=females)
 @
 
 \section{Pairs plots}
@@ -550,7 +574,7 @@ and predictors.  Here we consider fitting the model \model{\variable{cesd}}{\var
 \Rindex{lm()}%
 \Rindex{coef()}%
 <<>>=
-model <- lm(cesd ~ mcs, data=HELPrct)
+model <- lm(cesd ~ mcs, data=females)
 coef(model)
 @
 
@@ -604,7 +628,7 @@ xyplot(resid(model) ~ fitted(model), type=c("p", "smooth", "r"), alpha=0.5, cex=
 @
 \end{center}
 
-The \function{mplot()} can facilitate creating a variety of useful plots, including residuals vs. fitted:
+The \function{mplot()} function can facilitate creating a variety of useful plots, including the same residuals vs. fitted scatterplots, by specifying the \option{which=1} option.
 \Rindex{mplot()}%
 \Rindex{multiplot option}%
 \Rindex{which option}%
@@ -612,7 +636,8 @@ The \function{mplot()} can facilitate creating a variety of useful plots, includ
 mplot(model, which=1, multiplot=FALSE)
 @
 
-normal quantile-quantile,
+It can also generate a 
+normal quantile-quantile plot (\option{which=2}),
 <<>>=
 mplot(model, which=2, multiplot=FALSE)
 @
@@ -624,7 +649,7 @@ mplot(model, which=3, multiplot=FALSE)
 @
 
 \myindex{Cook's distance}%
-Cook's distance,
+Cook's distance by observation number,
 <<>>=
 mplot(model, which=4, multiplot=FALSE)
 @

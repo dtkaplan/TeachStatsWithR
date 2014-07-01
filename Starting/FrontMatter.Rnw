@@ -173,6 +173,8 @@ diverse aspects of quantitative work that students in science,
 technology, and engineering will need in their professional lives, but which
 are today usually taught in isolation, if at all.  
 
+\vspace{.1in}
+
 In particular, we focus on:
 \begin{description}
 	\item[Modeling] The ability to create, manipulate and investigate useful
@@ -199,11 +201,11 @@ including:
 \begin{description}
 \item
 [Faculty development and training opportunities,] 
-such as the USCOTS 2011 and 2013 workshops on 
+such as the USCOTS 2011, USCOTS 2013, eCOTS 2014, and ICOTS 9 workshops on 
 \emph{Teaching Statistics Using \R\ and \RStudio}, our 2010 
 Project MOSAIC kickoff workshop at the Institute for Mathematics
 and its Applications, and our \emph{Modeling: Early and Often in Undergraduate Calculus}
-AMS PREP workshops offered in 2012 and 2013.
+AMS PREP workshops offered in 2012,  2013, and 2015.
 
 \item
 [M-casts,] 
