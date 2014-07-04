@@ -630,39 +630,38 @@ xyplot(resid(model) ~ fitted(model), type=c("p", "smooth", "r"), alpha=0.5, cex=
 
 The \function{mplot()} function can facilitate creating a variety of useful plots, including the same residuals vs. fitted scatterplots, by specifying the \option{which=1} option.
 \Rindex{mplot()}%
-\Rindex{multiplot option}%
 \Rindex{which option}%
-<<>>=
-mplot(model, which=1, multiplot=FALSE)
+<<results='hide'>>=
+mplot(model, which=1)
 @
 
 It can also generate a 
 normal quantile-quantile plot (\option{which=2}),
-<<>>=
-mplot(model, which=2, multiplot=FALSE)
+<<results='hide'>>=
+mplot(model, which=2)
 @
 
 \myindex{scale versus location}%
 scale vs.\,location,
-<<>>=
-mplot(model, which=3, multiplot=FALSE)
+<<results='hide'>>=
+mplot(model, which=3)
 @
 
 \myindex{Cook's distance}%
 Cook's distance by observation number,
-<<>>=
-mplot(model, which=4, multiplot=FALSE)
+<<results='hide'>>=
+mplot(model, which=4)
 @
 
 \myindex{leverage}%
 residuals vs.\,leverage, and
-<<>>=
-mplot(model, which=5, multiplot=FALSE)
+<<results='hide'>>=
+mplot(model, which=5)
 @
 
 Cook's distance vs. leverage.
-<<>>=
-mplot(model, which=6, multiplot=FALSE)
+<<results='hide'>>=
+mplot(model, which=6)
 @
 
 \myindex{prediction bands}%
@@ -1161,8 +1160,8 @@ It is sometimes useful to display a plot of the coefficients for a multiple regr
 confidence intervals).
 
 \Rindex{mplot()}%
-<<>>=
-mplot(lmnointeract, which=7, multiplot=FALSE)
+<<results='hide'>>=
+mplot(lmnointeract, which=7)
 @
 
 \TeachingTip{Darker dots indicate regression coefficients where the 95\% confidence interval does not include the null hypothesis value of zero.}

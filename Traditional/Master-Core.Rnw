@@ -10,7 +10,7 @@
 \def\tilde{\texttt{\~}}
 
 \title{A Compendium of R Commands to Teach Statistics}
-\author{Nicholas J. Horton,\\Daniel T. Kaplan and\\Randall J. Pruim}
+\author{Nicholas J. Horton,\\Daniel T. Kaplan and\\Randall Pruim}
 \date{DRAFT: \today}
 
 \renewenvironment{knitrout}{\relax}{\noindent}
