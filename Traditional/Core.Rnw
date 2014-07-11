@@ -104,6 +104,7 @@ level (see \function{?options} for more configuration possibilities).
 \Rindex{require()}%
 \Rindex{mosaic package}%
 <<cesd1,cache=FALSE>>=
+require(dplyr)
 require(mosaic)
 options(digits=3)
 mean(~ cesd, data=HELPrct)
@@ -190,15 +191,15 @@ tally(~ sex, format="percent", data=HELPrct)
 It is straightforward to restrict our attention to just the female subjects.
 If we are going to do many things with a subset of our data, it may be easiest
 to make a new data frame containing only the cases we are interested in.
-The \function{subset()} function can generate a new data frame containing
+The \function{filter()} function in the \pkg{dplyr} package can be used to generate a new data frame containing
 just the women or just the men  (see also section \ref{sec:subsets}).  Once this is created, the
 the \function{stem()} function is used to create a stem and leaf plot.
 \Caution{Note that the tests for equality use \emph{two} equal signs}
 \Rindex{stem()}%
-\Rindex{subset()}%
+\Rindex{filter()}%
 <<cesd-stem>>=
-female <- subset(HELPrct, sex=='female')
-male <- subset(HELPrct, sex=='male')
+female <- filter(HELPrct, sex=='female')
+male <- filter(HELPrct, sex=='male')
 with(female, stem(cesd))
 @
 
@@ -207,7 +208,7 @@ an overlaid normal density):
 \Rindex{fit option}%
 <<women-cesd-hist,tidy=FALSE,message=FALSE>>=
 histogram(~ cesd, fit="normal",
-  data=subset(HELPrct, sex=='female'))  
+  data=filter(HELPrct, sex=='female'))  
 @
 
 Alternatively, we can make side-by-side plots to compare multiple subsets.
@@ -230,7 +231,7 @@ group, just for the male subjects, with an overlaid normal density.
 \begin{solution}
 <<subsmale, tidy=FALSE>>=
 histogram(~ cesd | substance, fit="normal", 
-  data=subset(HELPrct, sex=='male'))
+  data=filter(HELPrct, sex=='male'))
 @
 \end{solution}%
 We can control the number of bins in a number of ways.  These can be specified 
@@ -248,12 +249,6 @@ The width of the bins can be specified.
 histogram(~ cesd, width=1, data=female)   
 @
 \end{center}
-We could also have made our subset ``on the fly'', just for the purposes of graphing:
-\begin{center}
-<<cesd-dot2,fig.height=1.8>>=
-histogram(~ cesd, data=HELPrct, subset=(sex=='female'))   
-@
-\end{center}
 
 The \function{dotPlot()} function is used to create a dotplot
 for a smaller subset of subjects (homeless females).  We also demonstrate
@@ -261,7 +256,7 @@ how to change the x-axis label.
 \Rindex{dotPlot()}%
 <<cesd-dot4,tidy=FALSE>>=
 dotPlot(~ cesd, xlab="CESD score", 
-  data=subset(HELPrct, (sex=="female") & (homeless=="homeless")))
+  data=filter(HELPrct, (sex=="female") & (homeless=="homeless")))
 @
 
 
@@ -520,7 +515,7 @@ as the plotting character and slightly thicker line.
 \Rindex{type option}%
 \begin{center}
 <<HELPrct-xyplot,fig.height=3,tidy=FALSE>>=
-females = subset(HELPrct, female==1)
+females = filter(HELPrct, female==1)
 xyplot(cesd ~ mcs, type=c("p","smooth"), pch=1, cex=0.6,
   lwd=3, data=females)
 @
@@ -534,7 +529,7 @@ Correlations can be calculated for a pair of variables, or for a matrix of varia
 \Rindex{cor()}%
 <<>>=
 cor(cesd, mcs, data=females)
-smallHELP = subset(females, select=c(cesd, mcs, pcs))
+smallHELP = filter(females, select=c(cesd, mcs, pcs))
 cor(smallHELP)
 @
 \myindex{Pearson correlation}%
@@ -959,10 +954,10 @@ favstats(cesd ~ substance, data=HELPrct)
 \Rindex{factor()}%
 \Rindex{levels option}%
 \Rindex{labels option}%
-\Rindex{transform()}%
+\Rindex{mutate()}%
 \Rindex{lm()}%
 <<help-hsd2,tidy=FALSE>>=
-HELPrct <- transform(HELPrct, subgrp = factor(substance, 
+HELPrct <- mutate(HELPrct, subgrp = factor(substance, 
   levels=c("alcohol", "cocaine", "heroin"),
   labels=c("A", "C", "H")))
 mod <- lm(cesd ~ subgrp, data=HELPrct)
@@ -1145,7 +1140,7 @@ We can now plot this function for male and female subjects over a range of MCS (
 with the observed data for 36 year olds.  
 <<plotFUN,tidy=FALSE,fig.keep='last'>>=
 xyplot(cesd ~ mcs, groups=sex, auto.key=TRUE, 
-  data=subset(HELPrct, age==36))
+  data=filter(HELPrct, age==36))
 plotFun(lmfunction(mcs, age=36, sex="male") ~ mcs, 
   xlim=c(0,60), lwd=2, ylab="predicted CESD", add=TRUE)
 plotFun(lmfunction(mcs, age=36, sex="female") ~ mcs, 
@@ -1179,8 +1174,8 @@ fitted values and residuals to the dataset.
 \Rindex{fitted()}%
 \Rindex{abs()}%
 <<>>=
-HELPrct = transform(HELPrct, residuals = resid(lmnointeract))
-HELPrct = transform(HELPrct, pred = fitted(lmnointeract))
+HELPrct = mutate(HELPrct, residuals = resid(lmnointeract))
+HELPrct = mutate(HELPrct, pred = fitted(lmnointeract))
 @
 <<tidy=FALSE>>=
 histogram(~ residuals, xlab="residuals", fit="normal", 
@@ -1191,7 +1186,7 @@ We can identify the subset of observations with extremely large residuals.
 
 \Rindex{abs()}%
 <<>>=
-subset(HELPrct, abs(residuals) > 25)
+filter(HELPrct, abs(residuals) > 25)
 @
 
 \Rindex{cex option}%
@@ -1249,7 +1244,7 @@ center, spread and shape.
 <<>>=
 favstats(~ volume, data=RailTrail)
 densityplot(~ volume, xlab="# of crossings", data=RailTrail)
-subset(RailTrail, volume > 700)
+filter(RailTrail, volume > 700)
 @
 The distribution of daily crossings is approximately normally
 distributed with mean 375 crossings  and standard deviation of 127 crossings.
@@ -1280,7 +1275,7 @@ bwplot(volume ~ as.factor(weekday), data=RailTrail)
 @
 or
 <<>>=
-RailTrail = transform(RailTrail, daytype = ifelse(weekday==1, "weekday", "weekend/holiday"))
+RailTrail = mutate(RailTrail, daytype = ifelse(weekday==1, "weekday", "weekend/holiday"))
 bwplot(volume ~ daytype, data=RailTrail)
 @
 We see that the weekend/holidays tend to have more users.
@@ -1628,11 +1623,11 @@ head(iris)
 @
 
 \myindex{adding variables}%
-\Rindex{transform()}%
+\Rindex{mutate()}%
 \Rindex{cut()}%
 <<mr-adding-variable>>=
 # cut places data into bins
-iris <- transform(iris, Length = cut(Sepal.Length, 4:8))    
+iris <- mutate(iris, Length = cut(Sepal.Length, 4:8))    
 @
 
 <<"mr-adding-variable2-again">>=
@@ -1650,7 +1645,7 @@ of years of education obtained.  We can this as a new variable in the data frame
 by assigning to it:
 \myindex{CPS85 dataset}%
 <<>>=
-CPS85 <- transform(CPS85, workforce.years = age - 6 - educ)
+CPS85 <- mutate(CPS85, workforce.years = age - 6 - educ)
 favstats(~ workforce.years, data=CPS85)
 @
 In fact this is what was done for all but one of the cases to create the \variable{exper} 
@@ -1661,46 +1656,34 @@ tally(~ (exper - workforce.years), data=CPS85)
 
 \section{Dropping variables}
 \myindex{dropping variables}%
-\Rindex{subset()}%
+\Rindex{filter()}%
 \Rindex{select option}%
 Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
 Notice the clever use of the minus sign.
 <<>>=
 names(CPS85)
-CPS1 <- subset(CPS85, select = -workforce.years)
+find("select")
+CPS1 <- dplyr::select(CPS85, select = -matches("workforce.years"))
 names(CPS1)
 @
 
 Any number of variables can be dropped or kept in this manner by supplying a vector
 of variable names.
 <<>>=
-CPS1 <- subset(CPS85, select = -c(workforce.years, exper))
+CPS1 <- dplyr::select(CPS85, select = -matches("workforce.years|exper"))
 @
 
-If we only want to work with the first few variables, we can discard the rest in a similar way.
-Columns can be specified by number as well as name (but this can be dangerous if you are wrong 
-about where the columns are):
-<<>>=
-CPSsmall <- subset(CPS85, select=1:4)
-head(CPSsmall,2)
-@
 
 \section{Renaming variables}
 \myindex{renaming variables}%
+\Rindex{names()}%
 \Rindex{row.names()}%
 Both the column (variable) names and the row names of a data frames can be changed by
-simple assignment using \function{names()} or \function{row.names()}.
+simple assignment using \function{names()} or \function{row.names()}, respectively.
 <<>>=
-ddd <- data.frame(number=1:5, letter=letters[1:5])
-row.names(ddd) <- c("Abe","Betty","Claire","Don","Ethel")
-ddd                        # row.names affects how a data.frame prints
-@
-More interestingly, it is possible to reset just individual names with the following
-syntax.
-<<>>=
-# misspelled a name, let's fix it
-row.names(ddd)[2] <- "Bette"         
-row.names(ddd)
+names(CPS85)
+names(CPS85)[names(CPS85)=="workforce.years"] = "workforce"
+names(CPS85)
 @
 
 \Rindex{names()}%
@@ -1714,7 +1697,7 @@ names(faithful)
 The measurements are the duration of an euption and the time until the subsequent eruption,
 so let's give it some better names.
 <<>>=
-names(faithful) <- c('duration', 'time.til.next')
+names(faithful) <- c("duration", "time.til.next")
 head(faithful, 3)
 @
 \myindex{faithful dataset}%
@@ -1750,41 +1733,31 @@ names(CPS85)[names(CPS85) == 'education'] <- 'educ'
 CPS85[1,1:4]
 @
 
-\section{Creating subsets}
+\section{Creating subsets of observations}
 \myindex{creating subsets}%
 \myindex{subsets of data frames}%
 \label{sec:subsets}
-We can also use \function{subset()} to reduce the size of a data frame by selecting 
+We can also use \function{filter()} to reduce the size of a data frame by selecting 
 only certain rows.
 \begin{center}
 <<"mr-faithful-long-xy">>=
 data(faithful)
 names(faithful) <- c('duration', 'time.til.next')
 # any logical can be used to create subsets
-faithfulLong <- subset(faithful, duration > 3)        
+faithfulLong <- filter(faithful, duration > 3)        
 xyplot( time.til.next ~ duration, data=faithfulLong )
 @
 \end{center}
 
-Of course, if all we want to do is produce a graph, there is no reason to create 
-a new data frame.  The plot above could also be made with:
-\Caution{Unfortunately, not all functions in R (e.g., \function{stem()}) support the \function{subset=} or
-\option{data=} options.}
-<<eval=FALSE,tidy=FALSE>>=
-xyplot(time.til.next ~ duration, subset=duration > 3, 
-  data=faithful)
-@
-
-
 
 \section{Sorting data frames}
 \myindex{sorting data frames}%
-\Rindex{order()}%
+\Rindex{arrange()}%
 
-Data frames can be sorted using the \function{order()} function.
+Data frames can be sorted using the \function{arrange()} function.
 <<>>=
 head(faithful, 3)
-sorted = faithful[order(faithful$duration),]
+sorted = arrange(faithful, duration)
 head(sorted, 3)
 @
 
@@ -1792,6 +1765,7 @@ head(sorted, 3)
 
 \section{Merging datasets}
 \myindex{merging data frames}%
+% XX to fix with tidyR
 
 The \dataframe{fusion1} data frame in the \pkg{fastR} package contains 
 genotype information for a SNP (single nucleotide polymorphism) in the gene
@@ -1803,6 +1777,7 @@ genotypes and phenotypes using \verb!merge()!.
 
 <<>>=
 require(fastR)
+require(dplyr)
 fusion1 = fusion1[order(fusion1$id),]
 head(fusion1,3)
 head(pheno,3)
@@ -1853,6 +1828,7 @@ have in your final data frame.
 \myindex{transforming data frames}%
 \myindex{transposing data frames}%
 
+% XX to fix with tidyR?
 The \function{reshape()} function provides a flexible way to change the arrangement of data.  
 \Rindex{reshape()}%
 It was designed for converting between long and wide versions of 
@@ -1908,11 +1884,12 @@ create a three-level categorical variable
 with cuts at 20 and 40 for the CESD scale (which ranges from 0 to 60 points).
 
 \Rindex{cut()}%
+\Rindex{mutate()}%
 \Rindex{include.lowest option}%
 \Rindex{breaks option}%
 <<tidy=FALSE>>=
 favstats(~ cesd, data=HELPrct)
-HELPrct = transform(HELPrct, cesdcut = cut(cesd, 
+HELPrct = mutate(HELPrct, cesdcut = cut(cesd, 
   breaks=c(0, 20, 40, 60), include.lowest=TRUE))
 bwplot(cesd ~ cesdcut, data=HELPrct)
 @
@@ -1921,7 +1898,7 @@ bwplot(cesd ~ cesdcut, data=HELPrct)
 
 It might be preferable to give better labels.
 <<tidy=FALSE>>=
-HELPrct = transform(HELPrct, cesdcut = cut(cesd, 
+HELPrct = mutate(HELPrct, cesdcut = cut(cesd, 
   labels=c("low", "medium", "high"),
   breaks=c(0, 20, 40, 60), include.lowest=TRUE))
 bwplot(cesd ~ cesdcut, data=HELPrct)
@@ -1932,7 +1909,7 @@ bwplot(cesd ~ cesdcut, data=HELPrct)
 \myindex{reordering factors}%
 \myindex{factor reordering}%
 \Rindex{relevel()}%
-\Rindex{transform()}%
+\Rindex{mutate()}%
 \Rindex{coef()}%
 \Rindex{tally()}%
 By default R uses the first level in lexicographic order as the reference group for modeling.  This 
@@ -1940,7 +1917,7 @@ can be overriden using the \function{relevel()} function (see also \function{reo
 <<tidy=FALSE>>=
 tally(~ substance, data=HELPrct)
 coef(lm(cesd ~ substance, data=HELPrct))
-HELPrct = transform(HELPrct, subnew = relevel(substance, 
+HELPrct = mutate(HELPrct, subnew = relevel(substance, 
   ref="heroin"))
 coef(lm(cesd ~ subnew, data=HELPrct))
 @
@@ -1951,9 +1928,8 @@ coef(lm(cesd ~ subnew, data=HELPrct))
 
 \myindex{missing data}%
 \myindex{incomplete data}%
-\Rindex{subset()}%
+\Rindex{select()}%
 \Rindex{dim()}%
-\Rindex{select option}%
 \Rindex{NA character}%
 Missing values arise in almost all real world investigations.  R uses the \variable{NA} character as an 
 indicator for missing data.  The \dataframe{HELPmiss} dataframe within the \pkg{mosaic} package includes all 
@@ -1961,8 +1937,7 @@ $n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some m
 were not included in \dataframe{HELPrct}).  
 \myindex{HELPmiss dataset}%
 <<tidy=FALSE>>=
-smaller = subset(HELPmiss, select=c("cesd", "drugrisk", 
-  "indtot", "mcs", "pcs", "substance"))
+smaller = dplyr::select(HELPmiss, cesd, drugrisk, indtot, mcs, pcs, substance)
 dim(smaller)
 summary(smaller)
 @
@@ -1972,12 +1947,20 @@ Of the 470 subjects in the 6 variable data frame, only the \code{drugrisk}, \cod
 \Rindex{with()}%
 \Rindex{na.omit()}%
 \Rindex{favstats()}%
+\Rindex{is.na()}%
 <<tidy=FALSE>>=
 favstats(~ mcs, data=smaller)
 with(smaller, sum(is.na(mcs)))
 nomiss = na.omit(smaller)
 dim(nomiss)
 favstats(~ mcs, data=nomiss)
+@
+
+Alternatively, we could generate the same dataset using logical conditions.
+<<tidy=FALSE>>=
+nomiss = filter(smaller, 
+  (!is.na(mcs) & !is.na(indtot) & !is.na(drugrisk)))
+dim(nomiss)
 @
 
 \chapter{Health Evaluation and Linkage to Primary Care (HELP) Study}
