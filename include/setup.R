@@ -6,13 +6,13 @@ require(datasets)
 require(stats) 
 require(lattice)
 require(grid) 
-# require(fastR)	# commented out by NH on 7/12/2012
+# require(fastR)	# commented out by NJH on 7/12/2012
 require(mosaic) 
 trellis.par.set(theme=col.mosaic(bw=FALSE))
 trellis.par.set(fontsize=list(text=9))
 options(keep.blank.line=FALSE) 
 options(width=60)
-require(vcd)
+require(vcd)        
 require(knitr)
 opts_chunk$set(  tidy=TRUE,
 			     size='small',

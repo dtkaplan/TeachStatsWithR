@@ -274,6 +274,8 @@ We add some text, a superimposed normal density as well as
 a vertical line. A variety of line types and colors can be specified, 
 as well as line widths.
 
+\DiggingDeeper{The \function{plotFun()} function can also be used to annotate plots (see
+section \ref{sec:plotFun}).}
 \begin{center}
 \Rindex{densityplot()}%
 \Rindex{ladd()}%
@@ -291,8 +293,6 @@ ladd(panel.mathdensity(args=list(mean=mean(cesd),
 ladd(panel.abline(v=60, lty=2, lwd=2, col="grey"))
 @
 \end{center}
-\DiggingDeeper{The \function{plotFun()} function can also be used to annotate plots (see
-section \ref{sec:plotFun}).}
 
 \section{Frequency polygons}
 \myindex{polygons}%
@@ -524,12 +524,17 @@ xyplot(cesd ~ mcs, type=c("p","smooth"), pch=1, cex=0.6,
 
 \section{Correlation}
 
+<<echo=FALSE>>=
+detach(package:MASS)   # where did MASS come from?  (histogram in mosaic XX)
+@
+
+
 Correlations can be calculated for a pair of variables, or for a matrix of variables.
 \myindex{correlation}%
 \Rindex{cor()}%
 <<>>=
 cor(cesd, mcs, data=females)
-smallHELP = filter(females, select=c(cesd, mcs, pcs))
+smallHELP = select(females, cesd, mcs, pcs)
 cor(smallHELP)
 @
 \myindex{Pearson correlation}%
@@ -569,9 +574,13 @@ and predictors.  Here we consider fitting the model \model{\variable{cesd}}{\var
 \Rindex{lm()}%
 \Rindex{coef()}%
 <<>>=
-model <- lm(cesd ~ mcs, data=females)
-coef(model)
+cesdmodel <- lm(cesd ~ mcs, data=females)
+coef(cesdmodel)
 @
+\InstructorNote{It's important to pick good names for modeling
+objects.  Here the output of \function{lm} is saved as \code{cesdmodel},
+which denotes that it is a regression model of depressive symptom
+scores.}
 
 To simplify the output, we turn off the option to display significance stars.
 \myindex{significance stars}%
@@ -581,17 +590,17 @@ To simplify the output, we turn off the option to display significance stars.
 \Rindex{coef()}%
 <<>>=
 options(show.signif.stars=FALSE)
-coef(model)
-summary(model)
-coef(summary(model))
-confint(model)
-rsquared(model)
+coef(cesdmodel)
+summary(cesdmodel)
+coef(summary(cesdmodel))
+confint(cesdmodel)
+rsquared(cesdmodel)
 @
 
 
 \Rindex{class()}%
 <<lmclass>>=
-class(model)
+class(cesdmodel)
 @
 The return value from \function{lm()} is a linear model object.
 A number of functions can operate on these objects, as
@@ -607,19 +616,19 @@ returns a vector of predicted values.}
 \Rindex{density option}%
 \begin{center}
 <<lmhist>>=
-histogram(~ residuals(model), density=TRUE)
+histogram(~ residuals(cesdmodel), density=TRUE)
 @
 \end{center}
 \Rindex{qqmath()}%
 \begin{center}
 <<HELPrct-resid-qq>>=
-qqmath(~ resid(model))
+qqmath(~ resid(cesdmodel))
 @
 \end{center}
 \Rindex{alpha option}%
 \begin{center}
 <<HELPrct-resid-plot>>=
-xyplot(resid(model) ~ fitted(model), type=c("p", "smooth", "r"), alpha=0.5, cex=0.3, pch=20)
+xyplot(resid(cesdmodel) ~ fitted(cesdmodel), type=c("p", "smooth", "r"), alpha=0.5, cex=0.3, pch=20)
 @
 \end{center}
 
@@ -627,36 +636,36 @@ The \function{mplot()} function can facilitate creating a variety of useful plot
 \Rindex{mplot()}%
 \Rindex{which option}%
 <<results='hide'>>=
-mplot(model, which=1)
+mplot(cesdmodel, which=1)
 @
 
 It can also generate a 
 normal quantile-quantile plot (\option{which=2}),
 <<results='hide'>>=
-mplot(model, which=2)
+mplot(cesdmodel, which=2)
 @
 
 \myindex{scale versus location}%
 scale vs.\,location,
 <<results='hide'>>=
-mplot(model, which=3)
+mplot(cesdmodel, which=3)
 @
 
 \myindex{Cook's distance}%
 Cook's distance by observation number,
 <<results='hide'>>=
-mplot(model, which=4)
+mplot(cesdmodel, which=4)
 @
 
 \myindex{leverage}%
 residuals vs.\,leverage, and
 <<results='hide'>>=
-mplot(model, which=5)
+mplot(cesdmodel, which=5)
 @
 
 Cook's distance vs. leverage.
 <<results='hide'>>=
-mplot(model, which=6)
+mplot(cesdmodel, which=6)
 @
 
 \myindex{prediction bands}%
@@ -912,28 +921,28 @@ mean(cesd ~ substance, data=HELPrct)
 @
 \Rindex{aov()}%
 <<help-aov>>=
-mod <- aov(cesd ~ substance, data=HELPrct)
-summary(mod)
+anovamod <- aov(cesd ~ substance, data=HELPrct)
+summary(anovamod)
 @
 While still high (scores of 16 or more are generally considered to be 
 ``severe'' symptoms), the cocaine-involved group tend to have lower 
 scores than those whose primary substances are alcohol or heroin.
 <<help-aovlm>>=
-mod1 <- lm(cesd ~ 1, data=HELPrct)
-mod2 <- lm(cesd ~ substance, data=HELPrct)
+modintercept <- lm(cesd ~ 1, data=HELPrct)
+modsubstance <- lm(cesd ~ substance, data=HELPrct)
 @
 
 The \function{anova()} command can summarize models.
 \Rindex{anova()}%
 <<>>=
-anova(mod2)
+anova(modsubstance)
 @
 
 It can also be used to formally 
 compare two (nested) models.
 \myindex{model comparison}%
 <<help-aov-more>>=
-anova(mod1, mod2)
+anova(modintercept, modsubstance)
 @
 
 
@@ -1000,13 +1009,13 @@ might be interested in the association of homeless status and age for each of th
 \Rindex{anova()}%
 \Rindex{test option}%
 <<tidy=FALSE>>=
-mymod1 = glm((homeless=="homeless") ~ age + substance, family=binomial, 
+mymodsubage = glm((homeless=="homeless") ~ age + substance, 
+  family=binomial, data=HELPrct)
+mymodage = glm((homeless=="homeless") ~ age, family=binomial, 
   data=HELPrct)
-mymod2 = glm((homeless=="homeless") ~ age, family=binomial, 
-  data=HELPrct)
-summary(mymod1)
-exp(coef(mymod1))
-anova(mymod2, mymod1, test="Chisq")
+summary(mymodsubage)
+exp(coef(mymodsubage))
+anova(mymodage, mymodsubage, test="Chisq")
 @
 We observe that the cocaine and heroin groups are significantly less likely to be homeless than alcohol involved subjects, after controlling for age.  (A similar result is seen when considering just homeless status and substance.)
 
@@ -1161,6 +1170,7 @@ mplot(lmnointeract, which=7)
 
 \TeachingTip{Darker dots indicate regression coefficients where the 95\% confidence interval does not include the null hypothesis value of zero.}
 
+\Caution{Be careful when fitting regression models with missing values (see also section \ref{sec:miss}).}
 
 \subsection{Residual diagnostics}
 \myindex{residual diagnostics}
@@ -1168,16 +1178,16 @@ mplot(lmnointeract, which=7)
 
 It's straightforward to undertake residual diagnostics for this model.  We begin by adding the
 fitted values and residuals to the dataset.
-\Caution{Be careful when fitting regression models with missing values (see also section \ref{sec:miss}).}
 \TeachingTip{The \function{mplot} function can also be used to create these graphs.}
 \Rindex{resid()}%
 \Rindex{fitted()}%
 \Rindex{abs()}%
-<<>>=
-HELPrct = mutate(HELPrct, residuals = resid(lmnointeract))
-HELPrct = mutate(HELPrct, pred = fitted(lmnointeract))
-@
+\InstructorNote{Here we are adding two new variables into an existing dataset. It's often a good practice to give the resulting dataframe a new name.}
 <<tidy=FALSE>>=
+HELPrct = mutate(HELPrct, residuals = resid(lmnointeract), 
+  pred = fitted(lmnointeract))
+@
+<<tidy=FALSE, message=FALSE>>=
 histogram(~ residuals, xlab="residuals", fit="normal", 
   data=HELPrct)
 @
@@ -1660,17 +1670,20 @@ tally(~ (exper - workforce.years), data=CPS85)
 \Rindex{select option}%
 Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
 Notice the clever use of the minus sign.
+<<echo=FALSE>>=
+detach(package:MASS)   # where did MASS come from?  (histogram in mosaic XX)
+@
+
 <<>>=
 names(CPS85)
-find("select")
-CPS1 <- dplyr::select(CPS85, select = -matches("workforce.years"))
+CPS1 <- select(CPS85, select = -matches("workforce.years"))
 names(CPS1)
 @
 
 Any number of variables can be dropped or kept in this manner by supplying a vector
 of variable names.
 <<>>=
-CPS1 <- dplyr::select(CPS85, select = -matches("workforce.years|exper"))
+CPS1 <- select(CPS85, select = -matches("workforce.years|exper"))
 @
 
 
@@ -1937,7 +1950,8 @@ $n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some m
 were not included in \dataframe{HELPrct}).  
 \myindex{HELPmiss dataset}%
 <<tidy=FALSE>>=
-smaller = dplyr::select(HELPmiss, cesd, drugrisk, indtot, mcs, pcs, substance)
+smaller = select(HELPmiss, cesd, drugrisk, indtot, mcs, pcs, 
+  substance)
 dim(smaller)
 summary(smaller)
 @
