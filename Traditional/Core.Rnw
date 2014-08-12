@@ -104,7 +104,6 @@ level (see \function{?options} for more configuration possibilities).
 \Rindex{require()}%
 \Rindex{mosaic package}%
 <<cesd1,cache=FALSE>>=
-require(dplyr)
 require(mosaic)
 options(digits=3)
 mean(~ cesd, data=HELPrct)
@@ -197,11 +196,15 @@ the \function{stem()} function is used to create a stem and leaf plot.
 \Caution{Note that the tests for equality use \emph{two} equal signs}
 \Rindex{stem()}%
 \Rindex{filter()}%
+\Rindex{dplyr package}%
 <<cesd-stem>>=
 female <- filter(HELPrct, sex=='female')
 male <- filter(HELPrct, sex=='male')
 with(female, stem(cesd))
 @
+
+\Rindex{dplyr package}%
+\Rindex{tidyr package}%
 
 Subsets can also be generated and used ``on the fly" (this time including
 an overlaid normal density):
@@ -525,7 +528,7 @@ xyplot(cesd ~ mcs, type=c("p","smooth"), pch=1, cex=0.6,
 \section{Correlation}
 
 <<echo=FALSE>>=
-detach(package:MASS)   # where did MASS come from?  (histogram in mosaic XX)
+#detach(package:MASS)   # where did MASS come from?  (histogram in mosaic XX)
 @
 
 
@@ -1089,9 +1092,11 @@ significant main effects terms for \variable{substance} group and
 \variable{sex}.
 
 <<help-interaction,tidy=FALSE>>=
-xyplot(cesd ~ substance, groups=sex, type='a',
+xyplot(cesd ~ substance, groups=sex, 
+  auto.key=list(columns=2, lines=TRUE, points=FALSE), type='a',
   data=HELPrct)
 @
+\Rindex{auto.key option}
 
 
 \section{Multiple regression}
@@ -1165,7 +1170,7 @@ confidence intervals).
 
 \Rindex{mplot()}%
 <<results='hide'>>=
-mplot(lmnointeract, which=7)
+mplot(lmnointeract, rows=-1, which=7)
 @
 
 \TeachingTip{Darker dots indicate regression coefficients where the 95\% confidence interval does not include the null hypothesis value of zero.}
@@ -1614,6 +1619,7 @@ power.t.test(delta=.25, sd=1, sig.level=alpha, power=0.90)
 \myindex{data management}%
 \myindex{thinking with data}%
 
+\TeachingTip{The \emph{Start Teaching with R} book features an extensive section on data management, including use of the \function{read.file()} function to load data into \R\ and \RStudio.}
 Data management is a key capacity to allow students (and instructors) to ``compute with data'' or  
 as Diane Lambert of Google has stated, ``think with data''.
 We tend to keep student data management to a minimum during the early part of an introductory
@@ -1621,8 +1627,15 @@ statistics course, then gradually introduce topics as needed.  For courses where
 undertake substantive projects, data management is more important.  This chapter describes 
 some key data management tasks.
 \myindex{read.file()}%
-\TeachingTip{The \emph{Start Teaching with R} book features an extensive section on data management, including use of the \function{read.file()} function to load data into \R\ and \RStudio.}
 
+\TeachingTip{The \pkg{dplyr} and \pkg{tidyr} packages provide an elegant approach to data management and facilitate the ability of students to compute with data.  Hadley Wickham, author of the packages,
+suggests that there are six key idioms (or verbs) implemented within these packages that allow a large set of tasks to be accomplished: 
+filter (keep rows matching criteria),
+select (pick columns by name),
+arrange (reorder rows),
+mutate (add new variables),
+summarise (reduce variables to values), and
+group by (collapse groups).}
 \section{Adding new variables to a data frame}
 \myindex{data frame}%
 We can add additional variables to an existing data frame (name for a dataset in \R) by simple assignment.
@@ -1773,6 +1786,8 @@ head(faithful, 3)
 sorted = arrange(faithful, duration)
 head(sorted, 3)
 @
+\Caution{It is usually better to make new datasets rather than modifying the original.}
+
 
 
 
@@ -1785,33 +1800,27 @@ genotype information for a SNP (single nucleotide polymorphism) in the gene
 \emph{TCF7L2}.  
 The \dataframe{pheno} data frame contains phenotypes
 (including type 2 diabetes case/control status) for an intersecting set of individuals.
-We can merge these together to explore the association between
+We can join (or merge) these together to explore the association between
 genotypes and phenotypes using \verb!merge()!.
 
+\Rindex{arrange()}%
 <<>>=
 require(fastR)
 require(dplyr)
-fusion1 = fusion1[order(fusion1$id),]
-head(fusion1,3)
-head(pheno,3)
+fusion1 = arrange(fusion1, id)
+head(fusion1, 3)
+head(pheno, 3)
 @
 
-\Rindex{merge()}%
+\Rindex{arrange()}%
 \Rindex{all.x option}%
 \Rindex{by.x option}%
-<<tidy=FALSE>>=
-# merge fusion1 and pheno keeping only id's that are in both
-fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id', 
-  all.x=FALSE, all.y=FALSE)
+<<message=FALSE, tidy=FALSE>>=
+require(tidyr)
+fusion1m <- inner_join(fusion1, pheno, by='id')
 head(fusion1m, 3)
 @
-In this case, since the values are the same for each data frame, we could collapse
-\option{by.x} and \option{by.y} to \option{by} and collapse
-\option{all.x} and \option{all.y} to \option{all}.
-The first of these specifies which column(s) to use to identify matching cases.
-The second indicates whether cases in one data frame that do not appear in the other 
-should be kept (\code{TRUE}) or dropped 
-(filling in \code{NA} as needed) or dropped from the merged data frame.
+\Rindex{tidyr package}%
 
 \myindex{fusion1 dataset}%
 Now we are ready to begin our analysis.
@@ -1840,12 +1849,11 @@ have in your final data frame.
 \myindex{reshaping data frames}%
 \myindex{transforming data frames}%
 \myindex{transposing data frames}%
-
-% XX to fix with tidyR?
-The \function{reshape()} function provides a flexible way to change the arrangement of data.  
-\Rindex{reshape()}%
+The \pkg{tidyr} package provides a flexible way to change the arrangement of data.  
 It was designed for converting between long and wide versions of 
 time series data and its arguments are named with that in mind.
+\TeachingTip{The vignettes that accompany the \pkg{tidyr} and \pkg{dplyr} packages feature a number of useful examples of common data manipulations.}
+
 
 A common situation is when we want to convert from a wide form to a 
 long form because of a change in perspective about what a unit of 
@@ -1858,32 +1866,26 @@ traffic
 We can reformat this so that each row contains a measurement for a 
 single state in one year.
 
-\Rindex{reshape()}%
-\Rindex{varying option}%
+\Rindex{gather()}%
 <<tidy=FALSE>>=
-longTraffic <-
-  reshape(traffic[,-2], idvar="year", 
-  ids=row.names(traffic),
-  times=names(traffic)[3:6], 
-  timevar="state",
-  varying=list(names(traffic)[3:6]),
-  v.names="deathRate",
-  direction="long") 
+longTraffic <- traffic %>% 
+  gather(state, deathRate, ny:ri) 
 head(longTraffic)
 @
-And now we can reformat the other way, this time having all data for a given state 
+
+We can also reformat the other way, this time having all data for a given state 
 form a row in the data frame.
 <<tidy=FALSE>>=
-stateTraffic <- reshape(longTraffic, direction='wide', 
-  v.names="deathRate", idvar="state", timevar="year")
+stateTraffic <- longTraffic %>% 
+  select(year, deathRate, state) %>%
+  mutate(year=paste("deathRate.", year, sep="")) %>%
+  spread(year, deathRate)
 stateTraffic
 @
-
-In simpler cases, \function{stack()} or \function{unstack()} may suffice.
-The \pkg{Hmisc} package also provides \function{reShape()} as an alternative 
-to \function{reshape()}.
-\Rindex{stack()}%
-\Rindex{unstack()}%
+\Rindex{spread()}%
+\Rindex{select()}%
+\Rindex{mutate()}%
+\Rindex{paste()}%
 
 \section{Derived variable creation}
 \myindex{derived variables}
@@ -1934,7 +1936,32 @@ HELPrct = mutate(HELPrct, subnew = relevel(substance,
   ref="heroin"))
 coef(lm(cesd ~ subnew, data=HELPrct))
 @
-\Caution{It is usually better to make new datasets rather than modifying the original.}
+
+\section{Group-wise statistics}
+\label{sec:groupby}
+
+\myindex{group-wise statistics}%
+\Rindex{select()}%
+
+It can often be useful to calculate summary statistics by group, and add
+these into a dataset.  The \function{group_by} function in the \pkg{dplyr} package
+facilitates this process.  Here we demonstrate how to add a variable containing
+the median age of subjects by substance group.
+
+\Rindex{favstats()}%
+\Rindex{group\_by()}%
+\Rindex{left\_join()}%
+\Rindex{summarise()}%
+<<tidy=FALSE>>=
+favstats(age ~ substance, data=HELPrct)
+ageGroup <- HELPrct %>% 
+  group_by(substance) %>%
+  summarise(agebygroup = mean(age))
+ageGroup
+HELPmerged <- left_join(ageGroup, HELPrct, by="substance") 
+favstats(agebygroup ~ substance, data=HELPmerged)
+@
+
 
 \section{Accounting for missing data}
 \label{sec:miss}
