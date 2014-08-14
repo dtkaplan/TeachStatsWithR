@@ -115,8 +115,8 @@ mean(~ cesd, data=HELPrct)
 \myindex{Modeling with R@\emph{Modeling with R}}%
 Note that the \function{mean()} function in the \pkg{mosaic} package supports a modeling language
 common to \pkg{lattice} graphics and linear models (e.g., \function{lm()}).  We will use
-this commands using this modeling language throughout this document.  Those already familiar with \R\ may be surprised by the form of this command.
-\DiggingDeeper{The \emph{Start Modeling with R} book will be helpful if you are unfamiliar with the 
+commands using variants of this modeling language throughout this document.  Those already familiar with \R\ may be surprised by the form of this command.
+\DiggingDeeper{The \emph{Start Modeling with R} companion book will be helpful if you are unfamiliar with the 
 modeling language.  The \emph{Start Teaching with R} also provides useful guidance in getting started.}
 
 \Rindex{with()}%
@@ -390,6 +390,8 @@ tally(~ homeless, margins=TRUE, data=HELPrct)
 tally(~ homeless, format="percent", data=HELPrct)      
 tally(~ homeless, format="proportion", data=HELPrct)  
 @
+\DiggingDeeper{The \emph{Start Modeling with R} companion book will be helpful if you are unfamiliar with the
+modeling language.  The \emph{Start Teaching with R} also provides useful guidance in getting started.}
 
 \section{The binomial test}
 
@@ -518,11 +520,13 @@ as the plotting character and slightly thicker line.
 \Rindex{type option}%
 \begin{center}
 <<HELPrct-xyplot,fig.height=3,tidy=FALSE>>=
-females = filter(HELPrct, female==1)
+females <- filter(HELPrct, female==1)
 xyplot(cesd ~ mcs, type=c("p","smooth"), pch=1, cex=0.6,
   lwd=3, data=females)
 @
 \end{center}
+\DiggingDeeper{The \emph{Start Modeling with R} companion book will be helpful if you are unfamiliar with the
+modeling language.  The \emph{Start Teaching with R} also provides useful guidance in getting started.}
 
 It's straightforward to plot something besides a character in a scatterplot.  
 In this example, the \dataframe{USArrests} can be used to plot the association
@@ -1659,19 +1663,21 @@ We can add additional variables to an existing data frame (name for a dataset in
 
 \myindex{iris dataset}%
 <<mr-adding-variable2>>=
-head(iris)
+irisSmall <- select(iris, Species, Sepal.Length)
 @
 
 \myindex{adding variables}%
 \Rindex{mutate()}%
 \Rindex{cut()}%
-<<mr-adding-variable>>=
+<<mr-adding-variable,tidy=FALSE>>=
 # cut places data into bins
-iris <- mutate(iris, Length = cut(Sepal.Length, 4:8))    
+irisSmall <- mutate(irisSmall, 
+  Length = cut(Sepal.Length, breaks=4:8))    
 @
 
+\TeachingTip{The \function{cut()} function has an option called \option{labels} which can be used to specify more descriptive names for the groups.}
 <<"mr-adding-variable2-again">>=
-head(iris)
+head(irisSmall)
 @
 \Rindex{head()}%
 \myindex{display first few rows}%
@@ -1700,9 +1706,6 @@ tally(~ (exper - workforce.years), data=CPS85)
 \Rindex{select option}%
 Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
 Notice the clever use of the minus sign.
-<<echo=FALSE>>=
-detach(package:MASS)   # where did MASS come from?  (histogram in mosaic XX)
-@
 
 <<>>=
 names(CPS85)
@@ -1710,8 +1713,7 @@ CPS1 <- select(CPS85, select = -matches("workforce.years"))
 names(CPS1)
 @
 
-Any number of variables can be dropped or kept in this manner by supplying a vector
-of variable names.
+Any number of variables can be dropped or kept in a similar manner.
 <<>>=
 CPS1 <- select(CPS85, select = -matches("workforce.years|exper"))
 @
@@ -1719,29 +1721,35 @@ CPS1 <- select(CPS85, select = -matches("workforce.years|exper"))
 
 \section{Renaming variables}
 \myindex{renaming variables}%
-\Rindex{names()}%
+\Rindex{rename()}%
 \Rindex{row.names()}%
-Both the column (variable) names and the row names of a data frames can be changed by
-simple assignment using \function{names()} or \function{row.names()}, respectively.
+The column (variable) names for a dataframe can be changed using the \function{rename()} function in the
+\pkg{dplyr} package.
 <<>>=
 names(CPS85)
-names(CPS85)[names(CPS85)=="workforce.years"] = "workforce"
-names(CPS85)
+CPSnew = rename(CPS85, workforce=workforce.years)
+names(CPSnew)
 @
+
+The row names of a data frames can be changed by
+simple assignment using \function{row.names()}.
 
 \Rindex{names()}%
 \myindex{faithful dataset}%
 The \dataframe{faithful} data set (in the \pkg{datasets} package, which is always available)
 has very unfortunate names.
-\TeachingTip{It's a good idea to start teach good practices for choice of variable names from day one.}
+\TeachingTip{It's a good idea to start teaching good practices for choice of variable names from day one.}
 <<>>=
 names(faithful)
 @
+
 The measurements are the duration of an euption and the time until the subsequent eruption,
 so let's give it some better names.
-<<>>=
-names(faithful) <- c("duration", "time.til.next")
-head(faithful, 3)
+<<tidy=FALSE>>=
+faithful = rename(faithful, 
+  duration = eruptions, 
+  time.til.next=waiting)
+names(faithful)
 @
 \myindex{faithful dataset}%
 \begin{center}
@@ -1758,23 +1766,10 @@ head(faithful, 3)
 @
 
 \begin{problem}
-Using \dataframe{faithful} data frame, make a scatter plot of eruption duration times vs. the time
+Using \dataframe{faithful} data frame, make a scatter plot of eruption duration times vs.\,the time
 since the previous eruption.
 \end{problem}
 
-If we want to rename a variable, we can do this using \function{names()}.
-For example, perhaps we want to rename \variable{educ} (the second column) to \variable{education}.
-<<>>=
-names(CPS85)[2] <- 'education'
-CPS85[1,1:4]
-@
-
-If we don't know the column number (or generally to make our code clearer), a few more 
-keystrokes produces:
-<<>>=
-names(CPS85)[names(CPS85) == 'education'] <- 'educ'
-CPS85[1,1:4]
-@
 
 \section{Creating subsets of observations}
 \myindex{creating subsets}%
@@ -1810,7 +1805,6 @@ head(sorted, 3)
 
 \section{Merging datasets}
 \myindex{merging data frames}%
-% XX to fix with tidyR
 
 The \dataframe{fusion1} data frame in the \pkg{fastR} package contains 
 genotype information for a SNP (single nucleotide polymorphism) in the gene
