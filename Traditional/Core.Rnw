@@ -1704,7 +1704,7 @@ tally(~ (exper - workforce.years), data=CPS85)
 \myindex{dropping variables}%
 \Rindex{filter()}%
 \Rindex{select option}%
-Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
+Since we already have the \variable{exper} variable, there is no reason to keep our new variable.  Let's drop it.
 Notice the clever use of the minus sign.
 
 <<>>=
