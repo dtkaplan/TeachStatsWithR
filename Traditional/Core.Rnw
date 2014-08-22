@@ -158,7 +158,7 @@ By default, the
 a vector of quantiles to display.  
 \Rindex{quantile()}%
 \Caution{Not all commands have been upgraded to
-support the formula interface. For these functions, variables within data frames must be accessed using \function{with()} or the \$ operator.}
+support the formula interface. For these functions, variables within dataframes must be accessed using \function{with()} or the \$ operator.}
 <<cesd4>>=
 with(HELPrct, quantile(cesd))
 with(HELPrct, quantile(cesd, c(.025, .975)))
@@ -196,8 +196,8 @@ tally(~ sex, format="percent", data=HELPrct)
 
 It is straightforward to restrict our attention to just the female subjects.
 If we are going to do many things with a subset of our data, it may be easiest
-to make a new data frame containing only the cases we are interested in.
-The \function{filter()} function in the \pkg{dplyr} package can be used to generate a new data frame containing
+to make a new dataframe containing only the cases we are interested in.
+The \function{filter()} function in the \pkg{dplyr} package can be used to generate a new dataframe containing
 just the women or just the men  (see also section \ref{sec:subsets}).  Once this is created, the
 the \function{stem()} function is used to create a stem and leaf plot.
 \Caution{Note that the tests for equality use \emph{two} equal signs}
@@ -355,8 +355,8 @@ mean(~ cesd, data=female)
 @
 
 One resampling trial can be carried out:
-\TeachingTip{Here we sample with replacement from the original data frame,
-creating a resampled data frame with the same number of rows.}
+\TeachingTip{Here we sample with replacement from the original dataframe,
+creating a resampled dataframe with the same number of rows.}
 \Rindex{resample()}%
 <<resamplemean>>=
 mean(~ cesd, data=resample(female))
@@ -490,7 +490,7 @@ We can also calculate the $\chi^2$ statistic manually, as a function of observed
 chisq <- sum((observed - expected)^2/(expected)); chisq
 1 - pchisq(chisq, df=2)
 @
-\TeachingTip{The \function{pchisq} function calculates the probability that a $chi^2$ random variable with \function{df} degrees is freedom is less than or equal to a given value.  Here we calculate the complement to find the area to the right of the observed Chi-square statistic.}%
+\TeachingTip{The \function{pchisq} function calculates the probability that a $\chi^2$ random variable with \function{df} degrees is freedom is less than or equal to a given value.  Here we calculate the complement to find the area to the right of the observed Chi-square statistic.}%
 
 Alternatively, the \pkg{mosaic} package provides a version of \function{chisq.test()} with
 more verbose output.
@@ -1096,7 +1096,7 @@ summary(coxph(Surv(dayslink, linkstatus) ~ age + substance,
   data=HELPrct))
 @
 
-Neither age, nor substance group was significantly associated with linkage to primary care.
+Neither age or substance group was significantly associated with linkage to primary care.
 
 
 \chapter{More than Two Variables}
@@ -1664,9 +1664,9 @@ arrange (reorder rows),
 mutate (add new variables),
 summarise (reduce variables to values), and
 group by (collapse groups).}
-\section{Adding new variables to a data frame}
-\myindex{data frame}%
-We can add additional variables to an existing data frame (name for a dataset in \R) by simple assignment.
+\section{Adding new variables to a dataframe}
+\myindex{dataframe}%
+We can add additional variables to an existing dataframe (name for a dataset in \R) using \function{mutate()}.  But first we create a smaller version of the \dataframe{iris} dataframe.
 
 \myindex{iris dataset}%
 <<mr-adding-variable2>>=
@@ -1690,13 +1690,14 @@ head(irisSmall)
 \myindex{display first few rows}%
 
 \myindex{CPS85 dataset}%
-The \dataframe{CPS85} data frame contains data from a Current Population Survey (current in 1985, that is).
-Two of the variables in this data frame are \variable{age} and \variable{educ}.  We can estimate
+The \dataframe{CPS85} dataframe contains data from a Current Population Survey (current in 1985, that is).
+Two of the variables in this dataframe are \variable{age} and \variable{educ}.  We can estimate
 the number of years a worker has been in the workforce if we assume they have been in the workforce
 since completing their education and that their age at graduation is 6 more than the number
-of years of education obtained.  We can this as a new variable in the data frame simply
-by assigning to it:
+of years of education obtained.  We can this as a new variable in the dataframe simply
+by calling \function{mutate()}.
 \myindex{CPS85 dataset}%
+\Rindex{mutate()}%
 <<>>=
 CPS85 <- mutate(CPS85, workforce.years = age - 6 - educ)
 favstats(~ workforce.years, data=CPS85)
@@ -1711,7 +1712,7 @@ tally(~ (exper - workforce.years), data=CPS85)
 \myindex{dropping variables}%
 \Rindex{filter()}%
 \Rindex{select option}%
-Since we already have \variable{educ}, there is no reason to keep our new variable.  Let's drop it.
+Since we already have the \variable{exper} variable, there is no reason to keep our new variable.  Let's drop it.
 Notice the clever use of the minus sign.
 
 <<>>=
@@ -1738,7 +1739,7 @@ CPSnew = rename(CPS85, workforce=workforce.years)
 names(CPSnew)
 @
 
-The row names of a data frames can be changed by
+The row names of a dataframes can be changed by
 simple assignment using \function{row.names()}.
 
 \Rindex{names()}%
@@ -1764,7 +1765,7 @@ names(faithful)
 xyplot(time.til.next ~ duration, alpha=0.5, data=faithful)
 @
 \end{center}
-If the variable containing a data frame is modified or used to store a different object,
+If the variable containing a dataframe is modified or used to store a different object,
 the original data from the package can be recovered using \function{data()}.
 \Rindex{data()}%
 <<>>=
@@ -1773,16 +1774,16 @@ head(faithful, 3)
 @
 
 \begin{problem}
-Using \dataframe{faithful} data frame, make a scatter plot of eruption duration times vs.\,the time
+Using \dataframe{faithful} dataframe, make a scatter plot of eruption duration times vs.\,the time
 since the previous eruption.
 \end{problem}
 
 
 \section{Creating subsets of observations}
 \myindex{creating subsets}%
-\myindex{subsets of data frames}%
+\myindex{subsets of dataframes}%
 \label{sec:subsets}
-We can also use \function{filter()} to reduce the size of a data frame by selecting 
+We can also use \function{filter()} to reduce the size of a dataframe by selecting 
 only certain rows.
 \begin{center}
 <<"mr-faithful-long-xy">>=
@@ -1795,8 +1796,8 @@ xyplot( time.til.next ~ duration, data=faithfulLong )
 \end{center}
 
 
-\section{Sorting data frames}
-\myindex{sorting data frames}%
+\section{Sorting dataframes}
+\myindex{sorting dataframes}%
 \Rindex{arrange()}%
 
 Data frames can be sorted using the \function{arrange()} function.
@@ -1811,12 +1812,12 @@ head(sorted, 3)
 
 
 \section{Merging datasets}
-\myindex{merging data frames}%
+\myindex{merging dataframes}%
 
-The \dataframe{fusion1} data frame in the \pkg{fastR} package contains 
+The \dataframe{fusion1} dataframe in the \pkg{fastR} package contains 
 genotype information for a SNP (single nucleotide polymorphism) in the gene
 \emph{TCF7L2}.  
-The \dataframe{pheno} data frame contains phenotypes
+The \dataframe{pheno} dataframe contains phenotypes
 (including type 2 diabetes case/control status) for an intersecting set of individuals.
 We can join (or merge) these together to explore the association between
 genotypes and phenotypes using \verb!merge()!.
@@ -1857,16 +1858,16 @@ names(fusion1)
 names(fusion2)
 @
 You may want to use the \option{suffixes} argument to \function{merge()} or rename the variables
-after you are done merging to make the resulting data frame easier to navigate.
+after you are done merging to make the resulting dataframe easier to navigate.
 
-Tidy up your data frame by dropping any columns that are redundant or that you just don't want to
-have in your final data frame.
+Tidy up your dataframe by dropping any columns that are redundant or that you just don't want to
+have in your final dataframe.
 \end{problem}
 
 \section{Slicing and dicing}
-\myindex{reshaping data frames}%
-\myindex{transforming data frames}%
-\myindex{transposing data frames}%
+\myindex{reshaping dataframes}%
+\myindex{transforming dataframes}%
+\myindex{transposing dataframes}%
 The \pkg{tidyr} package provides a flexible way to change the arrangement of data.  
 It was designed for converting between long and wide versions of 
 time series data and its arguments are named with that in mind.
@@ -1875,7 +1876,7 @@ time series data and its arguments are named with that in mind.
 
 A common situation is when we want to convert from a wide form to a 
 long form because of a change in perspective about what a unit of 
-observation is.  For example, in the \dataframe{traffic} data frame, each 
+observation is.  For example, in the \dataframe{traffic} dataframe, each 
 row is a year, and data for multiple states are provided.
 
 <<"mr-traffic-reshape">>=
@@ -1892,7 +1893,7 @@ head(longTraffic)
 @
 
 We can also reformat the other way, this time having all data for a given state 
-form a row in the data frame.
+form a row in the dataframe.
 <<tidy=FALSE>>=
 stateTraffic <- longTraffic %>% 
   select(year, deathRate, state) %>%
@@ -2001,7 +2002,7 @@ dim(smaller)
 summary(smaller)
 @
 
-Of the 470 subjects in the 6 variable data frame, only the \code{drugrisk}, \code{indtot}, \code{mcs}, and \code{pcs} variables have missing values.  
+Of the 470 subjects in the 6 variable dataframe, only the \code{drugrisk}, \code{indtot}, \code{mcs}, and \code{pcs} variables have missing values.  
 
 \Rindex{with()}%
 \Rindex{na.omit()}%
