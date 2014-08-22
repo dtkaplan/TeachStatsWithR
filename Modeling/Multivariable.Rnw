@@ -41,6 +41,7 @@ We wish to acknowledge the support of the Howard Hughes Medical Institute, the W
 
 <<include=FALSE>>=
 require(mosaic)
+require(mosaicData)
 require(fastR)
 options(na.rm=TRUE)
 @
@@ -57,6 +58,8 @@ The statement \code{require(mosaic)} loads in the \pkg{mosaic} package, which it
 includes several other packages.  
 
 The \pkg{mosaic} package provides many of the commands that are used in this book.
+We will also make use the \pkg{mosaicData} package which contains a number of data sets
+used in examples.
 
 Once the package is loaded, it remains loaded for the rest of the R session.  
 
@@ -76,9 +79,13 @@ A trebuchet is a device used for throwing projectiles. A heavy counter-weight pu
 
 Visualization is sometimes called the gateway drug to statistics.  Since being a statistics addict is a good thing, it's worthwhile to start a statistics course with graphics:  scatterplots, box-and-whisker plots, histograms, etc.  In addition to conveying lay ideas of variation, graphics are close to the data themselves, compelling, and motivating.  Students see the advantage of using software; they couldn't make such graphics by hand.
 
-As always in these notes, you'll be using, among other things, functions from the \pkg{mosaic} package.  You need to load this into R:
+As always in these notes, you'll be using, among other things, 
+functions from the \pkg{mosaic} package and data sets from \pkg{mosaicData}.  
+When working with your own data, the \pkg{mosaicData} package is not required.
+You need to load this into R:
 <<>>=
 require(mosaic)
+require(mosaicData)
 @
 This will also load allied packages, such as \pkg{lattice} graphics.  Often, you will encounter methods or data that you want to use in others of the many packages available for R.  For instance, the next example involves a data set about a toy trebuchet available in the \pkg{fastR} package:
 <<>>=
