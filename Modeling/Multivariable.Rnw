@@ -199,7 +199,7 @@ f2 = makeFun( 1900 - 30*weight ~ weight)
 @
 
 Given these two functions, \function{f1} and \function{f2}, it's natural to ask, ``Which is which is better?''  Graphically, the answer is not so clear.  In the following plot, \function{f2} is drawn as the thicker line:
-<<>>=
+<<fig.keep="last">>=
 xyplot( distance ~ projectileWt, data=trebuchet)
 plotFun(f1(projectileWt)~projectileWt, add=TRUE)
 plotFun(f2(projectileWt)~projectileWt, add=TRUE, lwd=3)
@@ -585,7 +585,7 @@ s3 = makeFun(swim3)
 The first model doesn't include \variable{year}.  Still, to graph the model function on the axes, you need to include \variable{year} in the plotting statement. 
 
 \begin{widestuff}
-<<fig.width=6>>=
+<<fig.width=6, fig.keep="last">>=
 <<swim-data>>
 plotFun(s1(sex="F")~year,add=TRUE)
 plotFun(s1(sex="M")~year,add=TRUE,lty="dotdash")
@@ -597,7 +597,7 @@ The function \function{s1} doesn't depend on \variable{year}, so the graphs of t
 Now consider \function{s2}, which depends on \function{year} but not \function{sex}.
 
 \begin{widestuff}
-<<fig.width=6>>=
+<<fig.width=6, fig.keep="last">>=
 <<swim-data>>
 plotFun(s2(year)~year,add=TRUE)
 plotFun(s2(year)~year,add=TRUE,lty="dotdash")
@@ -609,7 +609,7 @@ The functions are the same for males and females, of course, so they overlie one
 Including both \variable{sex} and \variable{year} in the model produces a function that depends on both variables:
 
 \begin{widestuff}
-<<fig.width=6>>=
+<<fig.width=6, fig.keep="last">>=
 <<swim-data>>
 plotFun(s3(year=year,sex="F")~year,add=TRUE)
 plotFun(s3(year=year,sex="M")~year,add=TRUE,lty="dotdash")
@@ -621,7 +621,7 @@ You might be surprised to see that the graph of the function for males is parall
 Including such a difference in a model is a matter of including an \term{interaction term} between \variable{sex} and \variable{year}:
 
 \begin{widestuff}
-<<fig.width=6>>=
+<<fig.width=6, fig.keep="last">>=
 swim4 = lm(time~year+sex+year:sex,data=SwimRecords)
 s4 = makeFun(swim4)
 <<swim-data>>
@@ -653,7 +653,7 @@ xyplot(height ~ mother | sex, data=Galton)
 From the graph alone, it's obvious that height differ from males to females and there is a slight tendency that a taller mother is associated with taller children.  Here's a model that includes an interaction term between the child's sex and the mother's height:
 
 \begin{widestuff}
-<<fig.width=6>>=
+<<fig.width=6, fig.keep="last">>=
 <<galton-data>>
 hmod1 = lm(height~mother*sex,data=Galton)
 h1 = makeFun(hmod1)
@@ -675,7 +675,7 @@ xyplot(height ~ mother | cut(father,breaks=2) + sex, data=Galton)
 Instead, consider a model that uses both mother's and father's height (and the child's sex) to account for the child's height.  For now, leave off the interaction terms; you can return to those later with some statistical inference tools in hand: 
 
 \begin{widestuff}
-<<fig.width=5,fig.height=5,tidy=FALSE>>=
+<<fig.width=5,fig.height=5,tidy=FALSE, fig.keep="last">>=
 hmod2 = lm(height~mother+father+sex,data=Galton)
 h2 = makeFun(hmod2)
 <<galton-father>>
