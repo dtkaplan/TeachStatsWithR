@@ -1694,8 +1694,8 @@ The \dataframe{CPS85} dataframe contains data from a Current Population Survey (
 Two of the variables in this dataframe are \variable{age} and \variable{educ}.  We can estimate
 the number of years a worker has been in the workforce if we assume they have been in the workforce
 since completing their education and that their age at graduation is 6 more than the number
-of years of education obtained.  We can this as a new variable in the dataframe simply
-by calling \function{mutate()}.
+of years of education obtained.  We can add this as a new variable in the dataframe 
+using \function{mutate()}.
 \myindex{CPS85 dataset}%
 \Rindex{mutate()}%
 <<>>=
