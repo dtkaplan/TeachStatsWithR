@@ -2,6 +2,7 @@
 opts_chunk$set( fig.path="figures/RForStudents-" ) 
 set_parent('Master-Starting.Rnw')
 require(mosaic)
+require(mosaicData)
 set.seed(123)
 @
 
@@ -178,7 +179,7 @@ whether they are interpreting the plot correctly.}
 \Rindex{xyplot()}
 
 <<scatter-births, echo=FALSE>>=
-xyplot( births ~ dayofyear, data=Births78) 
+xyplot( births ~ date, data=Births78) 
 @
 
 \begin{enumerate}
@@ -198,7 +199,7 @@ head(Births78)
 @
 		We want to put 
 		the number of births (\variable{births}) along the $y$-axis and 
-		the day of the year (\variable{dayofyear}) along the $x$-axis.
+		the day of the year (\variable{date}) along the $x$-axis.
 
 \end{enumerate}
 Putting this all together, we get the following command
@@ -632,6 +633,9 @@ on two days of the week and more on the other five.
 one of the fundamental ``container types'' in \R.  We will
 have more to say about them in Chapter~\ref{chap:containers}.}%
 From this we can be quite certain that 1978 began on a Sunday.
+\Pointer{We could also use the \function{wday()} function
+in the \pkg{lubridate} package to compute the weekday directly
+from \variable{date}.}
 %
 \Rindex{auto.key}
 \myindex{labels!axis}
@@ -641,7 +645,7 @@ From this we can be quite certain that 1978 began on a Sunday.
 \myindex{titles (plots)}
 \Rindex{par.settings}
 <<fig.width=4, tidy=FALSE>>=
-xyplot( births ~ dayofyear, data=Births78,  
+xyplot( births ~ date, data=Births78,  
         groups=dayofyear %% 7, 
         auto.key=list(columns=4),
         main="Number of US births each day in 1978",
@@ -678,7 +682,7 @@ Here we have used
 The following plot uses lines instead of points which makes it easier to
 locate the handful of unusual observations.
 <<fig.width=4, tidy=FALSE>>=
-xyplot( births ~ dayofyear, data=Births78,  
+xyplot( births ~ date, data=Births78,  
   groups=dayofyear %% 7, type='l',
   main="Number of US births each day in 1978",
   auto.key=list(columns=4, lines=TRUE, points=FALSE),
@@ -723,7 +727,7 @@ show.settings()
 Themes can also be assigned to \option{par.settings} if we want them to
 affect only one plot:
 <<fig.width=4, tidy=FALSE>>=
-xyplot( births ~ dayofyear, data=Births78,  
+xyplot( births ~ date, data=Births78,  
   groups=dayofyear %% 7, type='l',
   main="Number of US births each day in 1978",
   auto.key=list(columns=4, lines=TRUE, points=FALSE),
@@ -1157,6 +1161,7 @@ x <- 1:10
 \myindex{quantile-quantile plots|see{\texttt{qqmath}}}
 <<tidy=FALSE,results='hide',fig.keep="none",warning=FALSE>>=
 require(mosaic)                        # load the mosaic package
+require(mosaicData)                    # load the mosaic data sets
 
 tally( ~ sector, data=CPS85 )          # frequency table
 tally( ~ sector + race, data=CPS85 )   # cross tabulation of sector by race   

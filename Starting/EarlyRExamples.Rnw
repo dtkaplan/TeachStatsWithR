@@ -381,6 +381,9 @@ Later we will emphasize how \texttt{\~} can often be interpreted as ``depends on
 A scatter plot of births by day of year reveals some interesting patterns.
 Let's see how the number of births depends on the day of the year.
 
+\TeachingTip{The plot could also be made using \variable{date}.  For general 
+purposes, this is probably the better plot to make, but using \variable{dayofyear}
+forces students to think more about what the x-axis means.}
 <<births1,out.width=".8\\textwidth",fig.width=5>>=
 xyplot(births ~ dayofyear, data=Births78)
 @
@@ -407,6 +410,7 @@ trellis.par.set(superpose.symbol=list(pch=16, alpha=.6, cex=.6))
 @
 
 <<births3,fig.width=5,fig.height=3.0,tidy=FALSE>>=
+require(mosaicData)       # load mosaic data sets
 xyplot(births ~ dayofyear, data=Births78, groups=dayofyear%%7, 
        auto.key=list(space="right")) 
 @
@@ -415,7 +419,7 @@ A discussion of this or some other data set that can be explored through graphic
 is a good way to demonstrate ``statistical curiosity", to illustrate the power of \R\ 
 for creating graphs, and to introduce the importance of covariates in statistical analysis.
 \marginnote{Visualization has been called the ``gateway drug'' to statistics.  It can be 
-a great way to lure students into statisticcs -- and away from their graphing calculators.}
+a great way to lure students into statistics -- and away from their graphing calculators.}
 
 %We'll return to this data set later to see ways it can be used for more formal analyses.
 \authNote{rjp: Restore comment about returning to this data only if we do return to it.}

@@ -932,9 +932,10 @@ Here we show how to modify the \dataframe{Births78} data frame so
 that it contains a new variable \variable{day} that is an ordered factor.
 %(Details about some of the functions involved will be presented later 
 %in this chapter).
-\Pointer{For better handling of dates and times in \R, it is best
-to convert them to date or time objects.  The \pkg{lubridate} package
-provides a number of utilities for creating and manipulating such objects.}
+\Pointer{The pkg{lubridate} package provides a 
+\function{wday()} function that can do this more simply
+and directly from the \variable{date} variable as well as
+a number of utilities for creating and manipulating date and time objects.}
 <<Births-make,fig.width=6,out.width=".8\\textwidth", tidy=FALSE>>=
 data(Births78)
 weekdays <- c("Sun", "Mon", "Tue", "Wed", "Thr", "Fri", "Sat") 
@@ -946,7 +947,7 @@ head(Births,3)
 
 \begin{figure*}
 <<Births-plot,fig.width=6,out.width="\\textwidth", tidy=FALSE>>=
-xyplot( births ~ dayofyear, Births, groups=day, auto.key=list(space='right') )
+xyplot( births ~ date, Births, groups=day, auto.key=list(space='right') )
 @
 
 \caption{Number of US births in 1978 colored by day of week.}

@@ -34,7 +34,12 @@ material is reviewed in chapter \ref{sec:manipulatingData}.
 
 \myindex{vignettes}%
 This work leverages initiatives undertaken by Project MOSAIC (\url{http://www.mosaic-web.org}), an NSF-funded effort to improve the teaching of statistics, calculus, science and computing in the undergraduate curriculum. In particular, we utilize the
-\pkg{mosaic} package, which was written to simplify the use of \R for introductory statistics courses. A short summary of the \R\ commands needed to teach introductory statistics can be found in the mosaic package vignette (\url{http://cran.r-project.org/web/packages/mosaic/vignettes/mosaic-resources.pdf}).
+\pkg{mosaic} package, 
+which was written to simplify the use of \R for introductory statistics courses, and the 
+\pkg{mosaicData} package which includes a number of data sets. 
+A short summary of the \R\ commands needed to teach introductory statistics can be found in 
+the mosaic package vignette 
+(\url{http://cran.r-project.org/web/packages/mosaic/vignettes/mosaic-resources.pdf}).
 
 Other related resources from Project MOSAIC may be helpful, including an annotated set of examples
 from the 
@@ -46,9 +51,9 @@ and \emph{Statistics: Unlocking the Power of Data} by Lock et al (see \url{https
 \myindex{installing packages}%
 \Rindex{install.packages()}%
 To use a package within R, it must be installed (one time), and loaded (each session). The 
-\pkg{mosaic} package can be installed using the following command:
+\pkg{mosaic} and \pkg{mosaicData} packages can be installed using the following commands:
 <<install_mosaic,eval=FALSE>>=
-install.packages('mosaic')               # note the quotation marks
+install.packages("mosaic")               # note the quotation marks
 @
 \TeachingTip{\Rstudio\ features a simplified package installation tab (on the bottom right panel).}
 The {\tt \#} character is a comment in R, and all text after that on the
@@ -59,6 +64,7 @@ current line is ignored.
 Once the package is installed (one time only), it can be loaded by running the command:
 <<load_mosaic,eval=FALSE>>=
 require(mosaic)
+require(mosaicData)
 @
 
 \myindex{reproducible analysis}%
@@ -105,6 +111,7 @@ level (see \function{?options} for more configuration possibilities).
 \Rindex{mosaic package}%
 <<cesd1,cache=FALSE>>=
 require(mosaic)
+require(mosaicData)
 options(digits=3)
 mean(~ cesd, data=HELPrct)
 @
@@ -1983,7 +1990,7 @@ favstats(agebygroup ~ substance, data=HELPmerged)
 \Rindex{dim()}%
 \Rindex{NA character}%
 Missing values arise in almost all real world investigations.  R uses the \variable{NA} character as an 
-indicator for missing data.  The \dataframe{HELPmiss} dataframe within the \pkg{mosaic} package includes all 
+indicator for missing data.  The \dataframe{HELPmiss} dataframe within the \pkg{mosaicData} package includes all 
 $n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some missing data who 
 were not included in \dataframe{HELPrct}).  
 \myindex{HELPmiss dataset}%
@@ -2049,7 +2056,7 @@ Boston University Medical Center approved all aspects of the study, including th
 privacy protection was secured by the issuance of a Certificate of
 Confidentiality by the Department of Health and Human Services.
 
-The \pkg{mosaic} package contains several forms of the de-identified HELP dataset.
+The \pkg{mosaicData} package contains several forms of the de-identified HELP dataset.
 We will focus on \pkg{HELPrct}, which contains
 27 variables for the 453 subjects
 with minimal missing data, primarily at baseline.

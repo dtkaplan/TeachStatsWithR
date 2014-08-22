@@ -168,10 +168,12 @@ and returns a logical value that can be used when programming.
 \function{library()} generates an error when the package cannot be loaded.}
 <<>>=
 library(mosaic)           # load the package before use
+library(mosaicData)       # load data sets too 
 @
 or 
 <<>>=
 require(mosaic)            # alternative way to load
+require(mosaicData)        # load data sets too 
 @
 \Pointer{Although the command is called \function{library()}, the thing
 loaded is a \emph{package}, not a library.}
@@ -480,10 +482,10 @@ data(Births78)
 @
 %
 \Caution{If two packages include data sets with the same name, you may need to
-specify which package you want the data from like this:
-<<>>=
-data(Births78, packag="mosaic")
-@
+specify which package you want the data from with
+\code{
+data(Births78, package="mosaic")
+}
 }%
 There is no visible effect of this command, but the \dataframe{Births78} data frame
 has now been reloaded from the \pkg{mosaic} package and is ready for use.  Anything you
@@ -549,20 +551,21 @@ births <-
 
 \subsection{Importing Data in \RStudio}
 \myindex{data!importing into RStudio}
-\InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
-will want to know how to use functions like \function{read.csv()} for working
-in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
+\TeachingTip{Remind students that the 2-step process (upload, then import)
+works much like images in Facebook.  First you upload them to Facebook, and once 
+they are there you can include them in posts, etc.}%
 The \RStudio\ interface provides some GUI tools for loading data.
 If you are using the \RStudio\ server, you will first need to upload the data
 to the server (in the \tab{Files} tab), and then import the data into your \R\ 
 session (in the \tab{Workspace} tab).%
-\TeachingTip{Remind students that the 2-step process (upload, then import)
-works much like images in Facebook.  First you upload them to Facebook, and once 
-they are there you can include them in posts, etc.}%
+
 If you are running the desktop version, the upload step is not needed.
 
 
 \subsection{Working with Pretabulated Data}
+\InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
+will want to know how to use functions like \function{read.csv()} for working
+in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
 \myindex{data!pretabulated}
 
 Because categorical data is so easy to summarize in a table, 
@@ -708,6 +711,7 @@ Here is a brief summary of the commands introduced in this chapter.
 \Rindex{read.file()}
 <<tidy=FALSE,results='hide',fig.keep="none">>=
 require(mosaic)                        # load the mosaic package
+require(mosaicData)                    # load the mosaic data sets
 answer <- 42                           # store the number 42 in a variable named answer
 log(123); log10(123); sqrt(123)        # some standard numerical functions
 x <- c(1,2,3)                          # make a vector containing 1, 2, 3 (in that order)
