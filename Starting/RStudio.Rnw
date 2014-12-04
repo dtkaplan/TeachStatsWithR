@@ -215,6 +215,8 @@ log(product, base=2)        # base 2 log of the product, another way
 @
 \authNote{can we come up with a better (e.g. less mathematical) example?}
 
+\newpage % to remove an orphan
+
 The semi-colon can be used to place multiple commands on one line.  
 One frequent use of this is to save and print a value all in one go:
 
@@ -242,15 +244,17 @@ For those who do not already know \LaTeX, the simpler RMarkdown system provides 
 entry into the world of reproducible research methods.  It also provides a good facility
 for students to create homework and reports that include text, \R\ code, \R\ output, and graphics.
 
+\Caution{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console environment, 
+so the code in them must be self-contained.  That is, the code should be complete enough to run even if the console had not been used at all.}
+%
+
 To create a new RMarkdown file, select \tab{File}, then \tab{New File}, then \tab{RMarkdown}.
 The file will be opened with a short template document that illustrates the mark up language.
 Click on \tab{Compile HTML} to convert this to an HTML file.  There is a button the 
 provides a brief description of the mark commands supported, and the \RStudio\ web site 
 includes more extensive tutorials on using RMarkdown.
 
-\Caution{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console environment, 
-so the code in them must be self-contained.}
-%
+
 It is important to remember that unlike \R\ scripts, which are executed in the
 console and have access to the console environment,  RMarkdown and \pkg{knitr}/\LaTeX\
 files do not have access to the console environment  This is a good feature because it forces

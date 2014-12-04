@@ -34,11 +34,11 @@ team and towards your players.
 Perfection is achieved, not when there is nothing more to add, but when there
 is nothing left to take away. 
 
-\hfill -- Antoine de Saint-Exupery,  writer, poet, pioneering aviator
+\hfill -- Antoine de Saint-Exupery,  writer, poet, aviator
 \end{quote}
 
 
-\bigskip
+\medskip
 
 \noindent
 One key to successfully introducing \R\ is finding a set of commands that is
@@ -127,9 +127,9 @@ This is the goal.
 
 \section{Graphical summaries of data}
 
-\TeachingTip{We recommend showing some plots on the first day and having student
-generate their own graphs before the end of the first week.}
-%
+\TeachingTip{We recommend showing some plots on the first day and having students
+generate their own graphs before the end of the first week.}%
+
 Graphical summaries are an important and eye-catching way to demonstrate the 
 power and flexibility of our template.
 We like to introduce students to graphical summaries early in the course.
@@ -171,16 +171,18 @@ numerical summaries and linear models.
 
 As an example, let's create the following plot, which shows the 
 number of births in the United States for each day in 1978.
-\TeachingTip{This plot can make an interested discussion starter
-early in a course.  Ask students to conjecture explanations for
-the patterns they observe in the plots.  Their answers will reveal
-whether they are interpreting the plot correctly.}
+}
 \myindex{scatter plot|see{\texttt{xyplot()}}}
 \Rindex{xyplot()}
 
 <<scatter-births, echo=FALSE>>=
 xyplot( births ~ date, data=Births78) 
 @
+
+\TeachingTip{This plot can make an effective discussion starter
+early in a course.  Ask students to conjecture explanations for
+the patterns they observe in the plots.  Their answers will reveal
+whether they are interpreting the plot correctly.}
 
 \begin{enumerate}
 	\item What is the goal?
@@ -239,6 +241,14 @@ goal( age ~ substance, data=HELPrct )
 @
 The only additional information we need is the name of the function that creates
 boxplots.  That function is \function{bwplot()}.
+\Pointer{You may be wondering about plots for two categorical variables.
+A commonly used plot for this is a segmented bar graph.  We will treat this
+as a augmented version of a simple bar graph, which is a graphical summary
+of one categorical variable.
+
+Another plot that can be used to display two (or more) categorical variables is a 
+mosaic plot.  The \pkg{lattice} package does not include mosaic plots, but the
+\pkg{vcd} package provides a \function{mosaic()} function that creates mosaic plots.}\Rindex{vcd}%
 So we can create the plot with
 <<eval=FALSE>>=
 <<bwplot-example1>>
@@ -249,15 +259,7 @@ the roles of \variable{age} and \variable{substance}:
 <<>>=
 bwplot( substance ~ age, data=HELPrct )
 @
-\Pointer{You may be wondering about plots for two categorical variables.
-A commonly used plot for this is a segmented bar graph.  We will treat this
-as a augmented version of a simple bar graph, which is a graphical summary
-of one categorical variable.
 
-Another plot that can be used to display two (or more) categorical variables is a 
-mosaic plot.  The \pkg{lattice} package does not include mosaic plots, but the
-\pkg{vcd} package provides a \function{mosaic()} function that creates mosaic plots.}
-\Rindex{vcd}
 \myindex{mosaic plot}
 
 
@@ -280,11 +282,10 @@ the $y$ values, we don't need to provide them.  This isn't exactly
 the reason why things are this way, but it helps them remember.}
 %
 <<eval=FALSE, echo=TRUE>>=
-histogram( ~ age, data=HELPrct) 
+histogram( ~ age, data=HELPrct ) 
 @
 
-\InstructorNote{Introducing \option{width} and \option{center} here is perhaps
-a violation of our usual policy of accepting defaults and saving options for later.
+\InstructorNote{Introducing \option{width} and \option{center} here violates our usual policy of accepting defaults and saving options for later.
 But it is important that histogram bins be chosen appropriately, and no algorithmic
 default works well for all data sets.  We encourage students to make several 
 histograms and to experiment with \option{center} and especially \option{width}.}
@@ -298,15 +299,15 @@ and we can shift the bins left and right by providing a value for \option{center
 get bins with edges ``on the 0's and 5's'', we can set the \option{center} to 
 2.5, regardless of the range of the data.}
 <<out.width=".47\\textwidth">>=
-histogram( ~ age, data=HELPrct, width=5) 
-histogram( ~ age, data=HELPrct, width=5, center=2.5) 
+histogram( ~ age, data=HELPrct, width=5 ) 
+histogram( ~ age, data=HELPrct, width=5, center=2.5 ) 
 @
 There is enough data here to use a bin for each integer if we like.
 Because the default value of \option{center} is 0, setting \option{width} 
 to 1 centers the bins on the integers, avoiding potential confusion about 
 which edge is included in the bin.
 <<>>=
-histogram( ~ age, data=HELPrct, width=1) 
+histogram( ~ age, data=HELPrct, width=1 ) 
 @
 Additional plots of a single quantitative variable are illustrated in 
 Section~{sec:paletteOfPlots}.
@@ -376,23 +377,26 @@ plotPoints( width ~ length, data=KidsFeet )  # mosaic alternative
 
 
 \Caution{Note that \function{dotplot()} produces a very different kind of plot 
-from the plot produced by \function{dotPlot()}, 
-which is what students will more commonly think of as a dot plot.}
+from that produced by \function{dotPlot()}. (Note the capital P in \function{dotPlot()}), 
+\function{dotPlot()} produces what students will more commonly think of as a dot plot.}
 
 The \pkg{lattice} package also provides the \function{stripplot()} and 
-\function{dotplot()} functions which can be used for one-dimensional scatter plots.
-These work reasonably well for small data sets but are of limited utility 
-for larger data sets.
+\function{dotplot()} functions which can be used for one-dimensional scatter plots. \TeachingTip{We generally don't introduce \function{dotplot()} and
+\function{stripplot()} to students but simply use \function{xyplot()}
+or \function{plotPoints()}.} 
 \Rindex{dotplot()}
 \Rindex{stripplot()}
 <<out.width=".47\\textwidth">>=
 stripplot( ~length, data=KidsFeet )
   dotplot( ~length, data=KidsFeet )
 @
-\TeachingTip{We generally don't introduce \function{dotplot()} and
-\function{stripplot()} to students but simply use \function{xyplot()}
-or \function{plotPoints()}.}
-These and \function{xyplot()} or \function{plotPoints()} can also be used with one 
+
+These work reasonably well for small data sets but are of limited utility 
+for larger data sets.
+
+\newpage
+
+The dot-style graphics functions can also be used with one 
 quantitative variable and one categorical variable.
 <<tidy=FALSE, out.width=".47\\textwidth">>=
     xyplot( sex ~ length, data=KidsFeet )
@@ -546,6 +550,10 @@ We'll have more to say about modeling elsewhere.  For now, the important point i
 that our use of the template for graphing and numerical summaries prepares students 
 to ask how does $y$ depend on $x$ and to formalize models of two or more variables
 when the time comes.
+\Pointer{For a more thorough treatment of how to use \R\ for 
+the core topics of a traditional introductory statistics course,
+see \emph{A Compendium of Commands to Teach Statistics with R}.
+}% 
 
 
 \section{A few other tests}
@@ -553,23 +561,24 @@ when the time comes.
 Many introductory statistics classes introduce students to one- and two-sample
 tests for means and proportions.  The \pkg{mosaic} package brings these into
 the template as well.
-\Pointer{For a more thorough treatment of how to use \R\ for 
-the core topics of a traditional introductory statistics course,
-see \emph{A Compendium of Commands to Teach Statistics with R}.
-}
+
 \authNote{We could use better examples here.  -- rjp 2014-06-21}%
 \Rindex{t.test()}
-<<tidy=FALSE>>=
-t.test( ~ length, data=KidsFeet )
-@
-The output from these functions also includes more than we really need.
-The \pkg{mosaic} package provides \function{pval()} and \function{confint()}
-for extracting p-values and confidence intervals:
 \Pointer{Chi-squared tests can be performed using \function{chisq.test()}.
 This function is a little different in that it operates on tabulated data 
 of the sort produced by \function{tally()} rather than on the 
 data itself.  So the use of the template happens inside \function{tally()}
 rather than in \function{chisq.test()}.}
+<<tidy=FALSE>>=
+t.test( ~ length, data=KidsFeet )
+@
+
+\newpage
+
+The output from these functions also includes more than we really need.
+The \pkg{mosaic} package provides \function{pval()} and \function{confint()}
+for extracting p-values and confidence intervals:
+
 \Rindex{pval()}
 \Rindex{confint()}
 <<>>=
@@ -578,6 +587,9 @@ confint( t.test( ~ length, data=KidsFeet ) )
 @
 \Rindex{binom.test()}
 \Rindex{prop.test()}
+<<echo=FALSE>>=
+OLD <- options(digits=3)
+@
 <<>>=
 confint(t.test( length ~ sex, data=KidsFeet ))
 # using Binomial distribution
@@ -586,7 +598,9 @@ confint(binom.test( ~ sex, data=HELPrct ))
 confint(prop.test( ~ sex, data=HELPrct ))    
 confint(prop.test( sex ~ homeless, data=HELPrct ))
 @
-
+<<echo=FALSE>>=
+options( OLD )
+@
 
 
 \section{\texttt{lattice} bells and whistles}
@@ -613,30 +627,27 @@ add or modify
 	\item
 		fonts
 	\end{itemize}
+\Pointer{Some of the arguments here use lists.  Lists are 
+one of the fundamental ``container types'' in \R.  We will
+have more to say about them in Chapter~\ref{chap:containers}.}%
 and many other features of a plot.
 Our advice is to hold off on such bells and whistles until
 students ask or an analysis demands them.  
-
 
 \subsection{Example: Number of births per day}
 We have seen the \dataframe{Births78} data set in
 Section~\ref{sec:Births78Intro}.  The plots below take
 advantage of additional arguments to improve the plot.
-\Note{\texttt{\%\%} performs modular arithmetic, in this 
-case giving seven groups, one for each day of the week.}
-%
-The first plot below illustrates one of the important 
-features of this data set -- there are usually fewer births
-on two days of the week and more on the other five.
-%
-\Pointer{Some of the arguments here use lists.  Lists are 
-one of the fundamental ``container types'' in \R.  We will
-have more to say about them in Chapter~\ref{chap:containers}.}%
-From this we can be quite certain that 1978 began on a Sunday.
-\Pointer{We could also use the \function{wday()} function
+\Pointer{\texttt{\%\%} performs modular arithmetic, in this 
+case giving seven groups, one for each day of the week.
+We could also use the \function{wday()} function
 in the \pkg{lubridate} package to compute the weekday directly
 from \variable{date}.}
-%
+
+The next plot illustrates one of the important 
+features of this data set -- there are usually fewer births
+on two days of the week and more on the other five.
+
 \Rindex{auto.key}
 \myindex{labels!axis}
 \Rindex{xlab}
@@ -652,11 +663,12 @@ xyplot( births ~ date, data=Births78,
         xlab="day of year",
         ylab="# of births",
         par.settings=list(
-          superpose.symbol=list(pch=16, cex=.8, alpha=.8))
-)
+          superpose.symbol=list(pch=16, cex=.8, alpha=.8 ) )
+       )
 @
 
-\noindent
+From this we can be quite certain that 1978 began on a Sunday.
+
 Here we have used
 \Rindex{pch}
 \Rindex{cex}
@@ -1096,6 +1108,11 @@ The \function{pdf()} function can be used to save plots as pdf files.  See
 the documentation of this function for details and links to functions that 
 can be used to save graphics in other file formats.
 
+\Pointer{\function{mplot()} is a \emph{generic} function.  \R\ includes many generic 
+functions (like \function{print()} and \function{plot()} and \function{summary()}).  These 
+functions inspect the objects passed as arguments (at least the first one) and decide
+what to do based on the class of the argument(s).}%
+
 \section{\texttt{mplot()}}
 \Rindex{mplot()}
 
@@ -1105,10 +1122,6 @@ information it is provided.
 \Rindex{plot()}
 \Rindex{summary()}
 \myindex{generic functions}
-\Pointer{\function{mplot()} is a \emph{generic} function.  \R\ includes many generic 
-functions (like \function{print()} and \function{plot()} and \function{summary()}).  These 
-functions inspect the objects passed as arguments (at least the first one) and decide
-what to do based on the class of the argument(s).}%
 %
 When \function{mplot()} is given a data frame in \RStudio, it opens up an interactive plot with 
 controls that allow the user to select variables and create plots of various sorts.  

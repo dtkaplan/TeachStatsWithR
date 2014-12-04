@@ -33,10 +33,21 @@ appropriate for an introductory course, others suitable for higher levels, that
 demonstrate key concepts in statistics and modeling
 while also supporting the core material of more traditional courses.
 
-\subsection*{A Work in Progress}
-\Caution{Despite our best efforts, you WILL find bugs both in this document and in our code.
-Please let us know when you encounter them so we can call in the exterminators.}%
-Consider these notes to be a work in progress.  
+\subsection*{An Evolving Work}
+
+The participants in our workshops often express a preference for these notes in printed rather than electronic form.  We have therefore made a small book containing the notes (which may well be in your hands as you read this).  Despite the ergonomic advantages of the printed form, it's impossible to update and expensive to distribute.
+
+To take advantage of electronic forms, we are making these notes available in electronic forms.
+
+\begin{enumerate}
+\item As a PDF file with the same pagination as the book.  Fans of the fantastic graphics books by Edward Tufte may note that we use a page format reminiscent of Tufte's.  We find this works well both on the printed page and on a tablet computer.
+\item As text files suitable for compilation with \LaTeX\~and \code{knitr} into the print-ready form.  
+\end{enumerate}
+
+Both of these are available via GitHub at \url{https://github.com/dtkaplan/TeachStatsWithR}.
+
+\Caution{Despite our best efforts, you WILL find bugs both in this document and in our code. Please let us know when you encounter them so we can call in the exterminators.}%
+Software is always a work in progress, and so must be any notes based on software.
 %\SuggestionBox{Sometimes we will mark
 %places where we would especially like feedback with one of these suggestion boxes.
 %But we won't do that everywhere we want feedback or there won't be room for 
@@ -45,8 +56,6 @@ We appreciate any feedback you are willing to share as we continue
 to work on these materials and the accompanying \pkg{mosaic} package.  
 Drop us an email at \url{pis@mosaic.org} with any comments, suggestions,
 corrections, etc.
-
-Updated versions will be posted at \url{http://mosaic-web.org}.
 
 \subsection*{What's Ours Is Yours -- To a Point}
 
@@ -59,8 +68,7 @@ More detailed information about the licensing is available at this web page:
 
 \subsection*{Two Audiences}
 
-The primary audience for these materials is instructors of statistics at the college or
-university level.  A secondary audience is the students these instructors teach.  
+The primary audience for these materials is instructors of statistics at the college or university level.  A secondary audience is the students these instructors teach. 
 Some of the sections, examples, and exercises are written with one or the other of 
 these audiences more clearly at the forefront.  This means that 
 \begin{enumerate}
@@ -94,6 +102,8 @@ Other packages appear from time to time as well.
 including
 \begin{multicols}{3}
 \begin{itemize}
+\item
+\pkg{mosaicData}
 \item
 \pkg{fastR}
 \item
@@ -138,15 +148,10 @@ Others provide teaching tips or caution about traps, pitfalls and gotchas.
 
 \section*{Document Creation}
 
+For instructors, as well as their students, we recommend writing with \pkg{knitr} with RMarkdown.  These tools have very little start-up cost and provide a way to write notes and reports with narrative text and traditional mathematical notation integrated with R commands. This works well even with beginning students, but also handles the needs of upper-level students, instructors, and researchers.
 
-
-\DiggingDeeper{If you know \LaTeX\ as well as \R, then \pkg{knitr}
-provides a nice solution for mixing the two. 
-We used this system to produce this book.  We also use it 
-for our own research and to introduce upper level students to 
-reproducible analysis methods.
-For beginners, we introduce \pkg{knitr} with RMarkdown,
-which produces PDF, HTML, or Word files using a simpler syntax.}
+\DiggingDeeper{The \pkg{knitr} package can also be used with the professional-level \LaTeX\ typesetting system. 
+We used this system to produce this book.  }
 
 This document was created on
 \today, using \pkg{knitr} and 
@@ -234,7 +239,7 @@ connections between the MOSAIC topics.
 
 We welcome and encourage your participation in all of these initiatives.
 
-\chapter*{Statistical Computation, Computational Statistics, and Data Science}
+\chapter*{Statistical Computation,\\ Computational Statistics,\\ and Data Science}
 
 There are at least two ways in which statistical software
 can be introduced into a statistics course.  In the first approach, the course
@@ -294,11 +299,9 @@ other statistical software.
 Others have used \R\ in their courses, but have perhaps left the course feeling
 like there must have been better ways to do this or that topic.  If that
 sounds more like you, then this book is for you, too.  As we have been working 
-on this book, we have also been developing the \pkg{mosaic}
+on this book, we developed and update the \pkg{mosaic}
 \R\ package (available on CRAN) to make certain aspects of statistical
 computation and computational statistics simpler for beginners.  
 You will also find here some of our favorite activities, examples, and data
-sets, as well as answers to questions that we have heard frequently from both students
-and faculty colleagues.  We invite you to scavenge from our materials and ideas 
-and modify them to fit your courses and your students.
+sets, as well as answers to questions that we have heard frequently from both students and faculty colleagues.  We invite you to scavenge from our materials and ideas  and modify them to fit your courses and your students.
 
