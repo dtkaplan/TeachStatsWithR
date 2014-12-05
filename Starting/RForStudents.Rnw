@@ -19,6 +19,15 @@ for graphical summaries, numerical summaries, and modeling.
 In this chapter we cover some additional things that are important for 
 students to know about the \R\ language.
 
+\TeachingTip{When students have difficulty accomplishing a task in \R, make sure
+they can answer these questions before you show them what to do.  If they cannot 
+answer these questions, then the primary problem is not with \R.  If you do this
+consistently, eventually, you will find your students presenting their \R\ questions 
+to you by answering these two questions and then asking ``So how do I get \R\ to do that?"
+More likely, once they have answered these two questions, they will already know how
+to get \R\ to do what they want -- unless they are asking about functionality that
+you have not yet presented.}
+%
 
 \section{Two Questions}
 \myindex{questions!two}
@@ -29,15 +38,7 @@ important questions to ask before constructing an \R\ command.
 These questions are useful in contexts beyond the formula template, and indeed for 
 computer systems beyond \R, so we repeat them here.  
 
-\TeachingTip{When students have difficulty accomplishing a task in \R, make sure
-they can answer these questions before you show them what to do.  If they cannot 
-answer these questions, then the primary problem is not with \R.  If you do this
-consistently, eventually, you will find your students presenting their \R\ questions 
-to you by answering these two questions and then asking ``So how do I get \R\ to do that?"
-More likely, once they have answered these two questions, they will already know how
-to get \R\ to do what they want -- unless they are asking about functionality that
-you have not yet presented.}
-%
+
 \begin{enumerate}
 	\item What do you want \R\ to do?  
 
@@ -148,6 +149,13 @@ by compiling (if necessary) and putting its components in the proper
 location for future use.
 Loading makes a previously installed package available for use 
 in an \R\ session.
+\TeachingTip{Although the use of \function{library()} is more common
+in this situation, we find that students remember the word \function{require()}
+better.  For their purposes, the two are essentially the same.  The biggest
+difference is how they respond when a package cannot be loaded (usually because
+it has not been installed).  \function{require()} generates a warning message 
+and returns a logical value that can be used when programming. 
+\function{library()} generates an error when the package cannot be loaded.}
 
 \Rindex{install.packages()}%
 \Rindex{require()}%
@@ -159,13 +167,7 @@ install.packages("mosaic") # fetch package from CRAN
 @
 Once the package has been installed it must be \emph{loaded} to make it available in
 the current session or file using
-\TeachingTip{Although the use of \function{library()} is more common
-in this situation, we find that students remember the word \function{require()}
-better.  For their purposes, the two are essentially the same.  The biggest
-difference is how they respond when a package cannot be loaded (usually because
-it has not been installed).  \function{require()} generates a warning message 
-and returns a logical value that can be used when programming. 
-\function{library()} generates an error when the package cannot be loaded.}
+%
 <<>>=
 library(mosaic)           # load the package before use
 library(mosaicData)       # load data sets too 
@@ -264,6 +266,9 @@ To get help on a specific function or data set, simply precede its name with a \
 ?HELPrct  # help on a data set in the mosaic package
 @
 This will give you the documentation for the object you are interested in.
+
+\Pointer{When typing a function name in the \RStudio\ console, pressing the tab key will produce a drop-down menu with a list of possible completions of the part of the function name you have already typed. Often, typing the first two or three characters of the function name is enough for this "tab-key completion" to be helpful. Similarly, after you have completed the function name and added the opening  parenthesis, pressing tab will show a concise list of the arguments to the function.  This is often enough of a reminder to get you going without using \code{?}.}
+
 
 \subsection{\texttt{apropos()}}
 \Rindex{apropos()}
@@ -528,6 +533,10 @@ If you have python installed on your system, you can also use
 \function{read.xls()} from the \pkg{gdata} package to read read directly from
 Excel files without this extra step.
 
+\TeachingTip{Remind students that the 2-step process (upload, then import)
+works much like images in Facebook.  First you upload them to Facebook, and once 
+they are there you can include them in posts, etc.}%
+
 Each of these functions accepts a URL as well as a file name, which provides an
 easy way to distribute data via the Internet:
 \authNote{Should we change URLs to something at mosaic-web.org?}
@@ -549,12 +558,15 @@ births <-
 %button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
 %google spreadsheets.   
 
+
+
 \subsection{Importing Data in \RStudio}
 \myindex{data!importing into RStudio}
-\TeachingTip{Remind students that the 2-step process (upload, then import)
-works much like images in Facebook.  First you upload them to Facebook, and once 
-they are there you can include them in posts, etc.}%
+
 The \RStudio\ interface provides some GUI tools for loading data.
+\InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
+will want to know how to use functions like \function{read.csv()} for working
+in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}%
 If you are using the \RStudio\ server, you will first need to upload the data
 to the server (in the \tab{Files} tab), and then import the data into your \R\ 
 session (in the \tab{Workspace} tab).%
@@ -562,21 +574,20 @@ session (in the \tab{Workspace} tab).%
 If you are running the desktop version, the upload step is not needed.
 
 
-\subsection{Working with Pretabulated Data}
-\InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
-will want to know how to use functions like \function{read.csv()} for working
-in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
 \myindex{data!pretabulated}
 
+\subsection{Working with Pretabulated Data}
+
+\TeachingTip{Provide students with the commands for re-constructing a tabulation table when they are working with materials from a book that shows only the tabulation, not the case-by-case data behind it.}
+
 Because categorical data is so easy to summarize in a table, 
-often the frequency or contingency tables are given instead.
+books often give only the frequency or contingency tables.
 You can enter these tables manually using a combination
 of \function{c()}, \function{rbind()} and \function{cbind()}:
 \Rindex{c()}
 \Rindex{cbind()}
 \Rindex{rbind()}
-\TeachingTip{This is an important technique if you use a text book
-that presents categorical data in tables.}
+
 
 <<rs-make-table>>=
 myrace <- c( NW=67, W=467 )       # c for combine or concatenate

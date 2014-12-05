@@ -951,14 +951,14 @@ data(faithful)
 names(faithful) <- c('duration', 'time.til.next')
 # any logical can be used to create subsets
 faithfulLong <- subset(faithful, duration > 3)        
-xyplot( time.til.next ~ duration, faithfulLong )
+xyplot(time.til.next ~ duration, faithfulLong)
 @
 \end{center}
 
 Of course, if all we want to do is produce a graph, there is no reason to create 
 a new data frame.  The plot above could also be made with
 <<eval=FALSE>>=
-xyplot( time.til.next ~ duration, faithful, subset=duration > 3 )
+xyplot(time.til.next ~ duration, faithful, subset=duration > 3)
 @
 
 

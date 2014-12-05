@@ -117,7 +117,8 @@ opts_chunk$set(  tidy=FALSE,
 @
 
 <<include=FALSE>>=
-includeChapter <- FALSE
+includeChapter <- FALSE # don't show chapters not yet being paginated.
+showEdited <- FALSE  # displaying chapters already paginated for printing
 knit_hooks$set(document = function(x) { 
 			   sub('\\usepackage[]{color}', '\\usepackage[]{xcolor}', 
 			   x, fixed = TRUE) 
@@ -132,29 +133,29 @@ knit_hooks$set(document = function(x) {
 \includepdf{frontice}
 \newpage
 
-\hspace{2cm}\parbox{8in}{\tableofcontents}
+\hspace{1.3cm}\parbox{8in}{\tableofcontents}
 
 \newpage
 
-<<child='FrontMatter.Rnw', eval=TRUE>>=
+<<child='FrontMatter.Rnw', eval=showEdited>>=
 @
 
-<<child='StartingAdvice.Rnw', eval=TRUE>>=
+<<child='StartingAdvice.Rnw', eval=showEdited>>=
 @
 
-<<child='RStudio.Rnw', eval=TRUE>>=
+<<child='RStudio.Rnw', eval=showEdited>>=
 @
 
-<<child='EarlyRExamples.Rnw', eval=TRUE>>=
+<<child='EarlyRExamples.Rnw', eval=showEdited>>=
 @
 
-<<child='TheTemplate.Rnw', eval=TRUE>>=
+<<child='TheTemplate.Rnw', eval=showEdited>>=
 @
 
-<<child='RForStudents.Rnw', eval=includeChapter>>=
+<<child='RForStudents.Rnw', eval=showEdited>>=
 @
 
-<<child='RForInstructors.Rnw', eval=includeChapter>>=
+<<child='RForInstructors.Rnw', eval=TRUE>>=
 @
 
 % don't need this -- just a stub at moment anyway -- 2014-06-21 rjp
@@ -169,7 +170,7 @@ knit_hooks$set(document = function(x) {
 <<child='MoreR.Rnw', eval=FALSE>>=
 @
 
-<<child='Manipulate.Rnw', eval=includeChapter>>=
+<<child='Manipulate.Rnw', eval=showEdited>>=
 @
 
 % This seems unneeded -- 2014-06-21 rjp
@@ -187,3 +188,4 @@ knit_hooks$set(document = function(x) {
 \printindex
 
 \end{document}
+

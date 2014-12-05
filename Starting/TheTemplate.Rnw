@@ -237,7 +237,7 @@ $y$- and $x$-axes.  According to our template, the command to create this plot h
 the form
 
 <<eval=FALSE>>=
-goal( age ~ substance, data=HELPrct )
+goal(age ~ substance, data=HELPrct)
 @
 The only additional information we need is the name of the function that creates
 boxplots.  That function is \function{bwplot()}.
@@ -257,7 +257,7 @@ So we can create the plot with
 If we want the boxplots to be horizontal instead of vertical, we obtain that by reversing
 the roles of \variable{age} and \variable{substance}:
 <<>>=
-bwplot( substance ~ age, data=HELPrct )
+bwplot(substance ~ age, data=HELPrct)
 @
 
 \myindex{mosaic plot}
@@ -282,7 +282,7 @@ the $y$ values, we don't need to provide them.  This isn't exactly
 the reason why things are this way, but it helps them remember.}
 %
 <<eval=FALSE, echo=TRUE>>=
-histogram( ~ age, data=HELPrct ) 
+histogram( ~ age, data=HELPrct) 
 @
 
 \InstructorNote{Introducing \option{width} and \option{center} here violates our usual policy of accepting defaults and saving options for later.
@@ -299,15 +299,15 @@ and we can shift the bins left and right by providing a value for \option{center
 get bins with edges ``on the 0's and 5's'', we can set the \option{center} to 
 2.5, regardless of the range of the data.}
 <<out.width=".47\\textwidth">>=
-histogram( ~ age, data=HELPrct, width=5 ) 
-histogram( ~ age, data=HELPrct, width=5, center=2.5 ) 
+histogram( ~ age, data=HELPrct, width=5) 
+histogram( ~ age, data=HELPrct, width=5, center=2.5) 
 @
 There is enough data here to use a bin for each integer if we like.
 Because the default value of \option{center} is 0, setting \option{width} 
 to 1 centers the bins on the integers, avoiding potential confusion about 
 which edge is included in the bin.
 <<>>=
-histogram( ~ age, data=HELPrct, width=1 ) 
+histogram( ~ age, data=HELPrct, width=1) 
 @
 Additional plots of a single quantitative variable are illustrated in 
 Section~{sec:paletteOfPlots}.
@@ -325,7 +325,7 @@ creates bar graphs from \emph{summarized} data; \pkg{bargraph()} takes care of
 creating this summary data and then uses \function{barchart()} to create the plot.}
 <<out.width=".47\\textwidth">>=
 bargraph( ~ substance, data=HELPrct ) 
-bargraph( ~ substance, data=HELPrct, horizontal=TRUE ) 
+bargraph( ~ substance, data=HELPrct, horizontal=TRUE) 
 @
 
 
@@ -339,12 +339,12 @@ by mimicking the examples above but replacing the goal.
 \Rindex{dotPlot()}
 \Rindex{qqmath()}
 <<one-var-plots, eval=FALSE, tidy=FALSE, out.width=".3\\textwidth">>=
-  histogram( ~age, data=HELPrct ) 
-densityplot( ~age, data=HELPrct ) 
-freqpolygon( ~age, data=HELPrct ) 
-    dotPlot( ~age, data=HELPrct, width=1 ) 
-     bwplot( ~age, data=HELPrct ) 
-     qqmath( ~age, data=HELPrct ) 
+  histogram( ~age, data=HELPrct) 
+densityplot( ~age, data=HELPrct) 
+freqpolygon( ~age, data=HELPrct) 
+    dotPlot( ~age, data=HELPrct, width=1) 
+     bwplot( ~age, data=HELPrct) 
+     qqmath( ~age, data=HELPrct) 
 @
 
 \begin{widestuff}
@@ -360,16 +360,16 @@ function for creating pie charts.  This is no great loss
 since it is generally harder to make comparisons using a pie 
 chart.}
 <<>>=
-   bargraph( ~sex, data=HELPrct )  # categorical variable
+   bargraph( ~ sex, data=HELPrct)  # categorical variable
 @
 
 
 \Rindex{plotPoints()}
 <<two-var-plots, eval=FALSE, tidy=FALSE>>=
     xyplot( width ~ length, data=KidsFeet )  # 2 quantitative vars
-plotPoints( width ~ length, data=KidsFeet )  # mosaic alternative
-   bwplot( length ~ sex,    data=KidsFeet )  # 1 cat; 1 quant
-      bwplot( sex ~ length, data=KidsFeet )  # reverse roles
+plotPoints( width ~ length, data=KidsFeet)  # mosaic alternative
+   bwplot( length ~ sex,    data=KidsFeet)  # 1 cat; 1 quant
+      bwplot( sex ~ length, data=KidsFeet)  # reverse roles
 @
 <<echo=FALSE, out.width=".47\\textwidth">>=
 <<two-var-plots>>
@@ -387,8 +387,8 @@ or \function{plotPoints()}.}
 \Rindex{dotplot()}
 \Rindex{stripplot()}
 <<out.width=".47\\textwidth">>=
-stripplot( ~length, data=KidsFeet )
-  dotplot( ~length, data=KidsFeet )
+stripplot( ~length, data=KidsFeet)
+  dotplot( ~length, data=KidsFeet)
 @
 
 These work reasonably well for small data sets but are of limited utility 
@@ -399,10 +399,10 @@ for larger data sets.
 The dot-style graphics functions can also be used with one 
 quantitative variable and one categorical variable.
 <<tidy=FALSE, out.width=".47\\textwidth">>=
-    xyplot( sex ~ length, data=KidsFeet )
-plotPoints( sex ~ length, data=KidsFeet )
- stripplot( sex ~ length, data=KidsFeet )
-   dotplot( sex ~ length, data=KidsFeet )
+    xyplot( sex ~ length, data=KidsFeet)
+plotPoints( sex ~ length, data=KidsFeet)
+ stripplot( sex ~ length, data=KidsFeet)
+   dotplot( sex ~ length, data=KidsFeet)
 @
 
 \subsection{Groups and sub-plots}
@@ -447,8 +447,8 @@ gives us the numerical summary we desire.
 
 \Rindex{mean()}
 <<>>=
-histogram( ~ age, data=HELPrct )
-     mean( ~ age, data=HELPrct )
+histogram( ~ age, data=HELPrct)
+     mean( ~ age, data=HELPrct)
 @
 
 \Pointer{To see the full list of these formula-aware
@@ -477,7 +477,7 @@ numerical summaries, including
 In addition, the \function{favstats()} function computes many of 
 our favorite statistics all at once:
 <<>>=
-favstats( ~ age, data=HELPrct )
+favstats( ~ age, data=HELPrct)
 @
 \Rindex{tally()}
 And the \function{tally()} function can be used to tally counts.
@@ -499,29 +499,29 @@ in three ways.  Each of these computes the same value.
 
 <<>>=
 # age dependant on substance
-sd(   age ~ substance, data=HELPrct )
+sd(   age ~ substance, data=HELPrct)
 # age separately for each substance
-sd( ~ age | substance, data=HELPrct )
+sd( ~ age | substance, data=HELPrct)
 # age grouped by substance
-sd( ~ age, groups=substance, data=HELPrct )
+sd( ~ age, groups=substance, data=HELPrct)
 @
 The \function{favstats()} function can compute several numerical summaries for
 each subset
 <<>>=
-favstats( age ~ substance, data=HELPrct )
+favstats(age ~ substance, data=HELPrct)
 @
 
 Similarly, we can create two-way tables that display either as 
 counts or proportions.
 
 <<>>=
-tally( sex ~ substance, data=HELPrct )
-tally( ~ sex + substance, data=HELPrct )
+tally(sex ~ substance, data=HELPrct)
+tally( ~ sex + substance, data=HELPrct)
 @
 Marginal totals can be added with \option{margins=TRUE}
 <<>>=
-tally( sex ~ substance, data=HELPrct, margins=TRUE )
-tally( ~ sex + substance, data=HELPrct, margins=TRUE )
+tally(sex ~ substance, data=HELPrct, margins=TRUE)
+tally( ~ sex + substance, data=HELPrct, margins=TRUE)
 @
 
 \section{Linear models}
@@ -543,8 +543,8 @@ For example, suppose we want to know how the width of kids' feet depends on the
 length of the their feet.  We could make a scatter plot
 and we can construct a linear model using the same template
 <<>>=
-xyplot( width ~ length, data=KidsFeet )
-lm( width ~ length, data=KidsFeet )
+xyplot(width ~ length, data=KidsFeet)
+lm(width ~ length, data=KidsFeet)
 @
 We'll have more to say about modeling elsewhere.  For now, the important point is 
 that our use of the template for graphing and numerical summaries prepares students 
@@ -570,7 +570,7 @@ of the sort produced by \function{tally()} rather than on the
 data itself.  So the use of the template happens inside \function{tally()}
 rather than in \function{chisq.test()}.}
 <<tidy=FALSE>>=
-t.test( ~ length, data=KidsFeet )
+t.test( ~ length, data=KidsFeet)
 @
 
 \newpage
@@ -582,8 +582,8 @@ for extracting p-values and confidence intervals:
 \Rindex{pval()}
 \Rindex{confint()}
 <<>>=
-pval( t.test( ~ length, data=KidsFeet ) )
-confint( t.test( ~ length, data=KidsFeet ) )
+pval( t.test( ~ length, data=KidsFeet) )
+confint( t.test( ~ length, data=KidsFeet) )
 @
 \Rindex{binom.test()}
 \Rindex{prop.test()}
@@ -591,12 +591,12 @@ confint( t.test( ~ length, data=KidsFeet ) )
 OLD <- options(digits=3)
 @
 <<>>=
-confint(t.test( length ~ sex, data=KidsFeet ))
+confint(t.test( length ~ sex, data=KidsFeet))
 # using Binomial distribution
-confint(binom.test( ~ sex, data=HELPrct ))   
+confint(binom.test( ~ sex, data=HELPrct))   
 # using normal approximation to the binomial distribution
-confint(prop.test( ~ sex, data=HELPrct ))    
-confint(prop.test( sex ~ homeless, data=HELPrct ))
+confint(prop.test( ~ sex, data=HELPrct))    
+confint(prop.test(sex ~ homeless, data=HELPrct))
 @
 <<echo=FALSE>>=
 options( OLD )
@@ -656,14 +656,14 @@ on two days of the week and more on the other five.
 \myindex{titles (plots)}
 \Rindex{par.settings}
 <<fig.width=4, tidy=FALSE>>=
-xyplot( births ~ date, data=Births78,  
+xyplot(births ~ date, data=Births78,  
         groups=dayofyear %% 7, 
         auto.key=list(columns=4),
         main="Number of US births each day in 1978",
         xlab="day of year",
         ylab="# of births",
         par.settings=list(
-          superpose.symbol=list(pch=16, cex=.8, alpha=.8 ) )
+          superpose.symbol=list(pch=16, cex=.8, alpha=.8) )
        )
 @
 
@@ -898,7 +898,7 @@ is affected very little by the choice of bin widths or \option{adjust} multiplie
 It is also the appropriate scale to use when overlaying a density function onto a histogram,
 something the \pkg{mosaic} package makes easy to do.
 <<fig.width=6,out.width="\\textwidth", tidy=FALSE>>=
-histogram( ~ Sepal.Length | Species, data=iris, fit="normal" )
+histogram( ~ Sepal.Length | Species, data=iris, fit="normal")
 @
 
 The other scales
@@ -944,7 +944,7 @@ Suppose we want to display the following table (based on data from the
 \myindex{Current Population Survey|see{\texttt{CPS85}}}
 \Rindex{tally()}
 <<>>=
-tally( ~sector, data=CPS85 )
+tally( ~sector, data=CPS85)
 @
 The \pkg{mosaic} function \function{bargraph()} can 
 display these tables as bar graphs, but there isn't enough room for the labels.
@@ -1176,23 +1176,23 @@ x <- 1:10
 require(mosaic)                        # load the mosaic package
 require(mosaicData)                    # load the mosaic data sets
 
-tally( ~ sector, data=CPS85 )          # frequency table
-tally( ~ sector + race, data=CPS85 )   # cross tabulation of sector by race   
-mean( ~ age, data = HELPrct )          # mean age of HELPrct subjects
-mean( ~ age | sex, data = HELPrct )    # mean age of male and female HELPrct subjects
-mean( age ~ sex, data = HELPrct )      # mean age of male and female HELPrct subjects
+tally( ~ sector, data=CPS85)          # frequency table
+tally( ~ sector + race, data=CPS85)   # cross tabulation of sector by race   
+mean( ~ age, data = HELPrct)          # mean age of HELPrct subjects
+mean( ~ age | sex, data = HELPrct)    # mean age of male and female HELPrct subjects
+mean(age ~ sex, data = HELPrct)       # mean age of male and female HELPrct subjects
 median(x); var(x); sd(x);              # more numerical summaries
 quantile(x); sum(x); cumsum(x)         # still more summaries
-favstats( ~ Sepal.Length, data=iris )  # compute favorite numerical summaries
+favstats( ~ Sepal.Length, data=iris)   # compute favorite numerical summaries
 
-histogram( ~ Sepal.Length | Species, data=iris )      # histograms (with extra features)
-dotPlot( ~ Sepal.Length | Species, data=iris )             # dot plots for each species
-freqpolygon( ~ Sepal.Length, groups = Species, data=iris ) # overlaid frequency polygons
-densityplot( ~ Sepal.Length, groups = Species, data=iris ) # overlaid densityplots
-qqmath( ~ age | sex, data=CPS85 )                          # quantile-quantile plots
-bwplot( Sepal.Length ~ Species, data = iris )              # side-by-side boxplots
-xyplot( Sepal.Length ~ Sepal.Width | Species, data=iris )  # scatter plots for each species
-bargraph( ~ sector, data=CPS85 )                           # bar graph
+histogram( ~ Sepal.Length | Species, data=iris)      # histograms (with extra features)
+dotPlot( ~ Sepal.Length | Species, data=iris)             # dot plots for each species
+freqpolygon( ~ Sepal.Length, groups = Species, data=iris) # overlaid frequency polygons
+densityplot( ~ Sepal.Length, groups = Species, data=iris) # overlaid densityplots
+qqmath( ~ age | sex, data=CPS85)                          # quantile-quantile plots
+bwplot( Sepal.Length ~ Species, data = iris)              # side-by-side boxplots
+xyplot( Sepal.Length ~ Sepal.Width | Species, data=iris)  # scatter plots for each species
+bargraph( ~ sector, data=CPS85)                           # bar graph
 @
 <<eval=FALSE>>=
 mplot(HELPrct)                         # interactive plot (RStudio only)
