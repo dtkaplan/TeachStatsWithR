@@ -118,7 +118,7 @@ opts_chunk$set(  tidy=FALSE,
 
 <<include=FALSE>>=
 includeChapter <- FALSE # don't show chapters not yet being paginated.
-showEdited <- FALSE  # displaying chapters already paginated for printing
+showEdited <- TRUE  # displaying chapters already paginated for printing
 knit_hooks$set(document = function(x) { 
 			   sub('\\usepackage[]{color}', '\\usepackage[]{xcolor}', 
 			   x, fixed = TRUE) 

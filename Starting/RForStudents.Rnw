@@ -242,8 +242,8 @@ install.packages('some-package.tar.gz', repos=NULL)
 
 \authNote{Should this box be placed in an earlier chapter?}
 \begin{boxedText}
-	From this point on, we will assume that the \pkg{mosaic}
-	package has been installed and loaded.
+	From this point on, we will assume that the \pkg{mosaic} and \pkg{mosaicData}
+	packages have been installed and loaded.
 \end{boxedText}
 
 
@@ -276,7 +276,7 @@ If you don't know the exact name of a function, you can give part of the name an
 \R\ will find all functions that match.  Quotation marks are mandatory here.
 
 <<rs-apropos>>=
-apropos('tally')            # must include quotes.  single or double.
+apropos('tally')    # search term must be quoted.  
 @
 
 \subsection{\texttt{??} and \texttt{help.search()}}

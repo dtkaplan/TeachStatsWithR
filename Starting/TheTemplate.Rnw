@@ -132,16 +132,6 @@ generate their own graphs before the end of the first week.}%
 
 Graphical summaries are an important and eye-catching way to demonstrate the 
 power and flexibility of our template.
-We like to introduce students to graphical summaries early in the course.
-This gives the students access to functionality where \R\
-really shines (and is certainly much better than a hand-held calculator). It also 
-begins to develop their ability to interpret graphical representations of
-data, to think about distributions, and to pose statistical questions.
-
-
-\Rindex{gplot2}
-\Rindex{lattice}
-\Rindex{ggvis}
 \Pointer{We are often asked about the other graphics systems, especially 
 \pkg{ggplot2} graphics.  In our experience, \pkg{lattice} makes it easier for
 beginners to create a wide variety of more or less ``standard'' plots -- including
@@ -153,7 +143,18 @@ emphasize \pkg{lattice}.
 Coming soon is a new player in the visualization arena: \pkg{ggvis}.  This package,
 by the same author as \pkg{ggplot2} is already available in a developmental version
 and promises to add interactivity and speed to the strengths of \pkg{ggplot2}.
-}
+}%
+We like to introduce students to graphical summaries early in the course.
+This gives the students access to functionality where \R\
+really shines (and is certainly much better than a hand-held calculator). It also 
+begins to develop their ability to interpret graphical representations of
+data, to think about distributions, and to pose statistical questions.
+
+
+\Rindex{gplot2}
+\Rindex{lattice}
+\Rindex{ggvis}
+
 %
 There are several ways to make graphs in \R.  One approach is a system called
 \pkg{lattice} graphics.   Whenever the \pkg{mosaic} package is loaded, the \pkg{lattice}
@@ -445,18 +446,20 @@ Nothing else changes; a mean and a histogram each summarise a single
 variable, so exchanging \function{histogram()} for \function{mean()} 
 gives us the numerical summary we desire.
 
-\Rindex{mean()}
-<<>>=
-histogram( ~ age, data=HELPrct)
-     mean( ~ age, data=HELPrct)
-@
-
 \Pointer{To see the full list of these formula-aware
 numerical summary functions, use
 <<eval=FALSE, tidy=FALSE>>=
 ?favstats
 @
 }
+
+\Rindex{mean()}
+<<>>=
+histogram( ~ age, data=HELPrct)
+     mean( ~ age, data=HELPrct)
+@
+
+
 \Rindex{sd()}
 \Rindex{var()}
 \Rindex{median()}
@@ -810,13 +813,6 @@ that make it easier to overlay the representations of multiple subsets of the da
 A frequency polygon is created from the same data summary (bins and counts) as a histogram, 
 but instead of representing each bin with a bar, it is represented by a point 
 (at the center of the where the top of the histogram bar would have been).  
-\Caution{The \dataframe{faithful} data set contains similar data, but the 
-variable names in that data frame are 
-poorly chosen.  The \dataframe{geyser} data set in the \pkg{MASS}
-package has better names and more data.}
-These points are then connected with line segments.
-Here is an example that shows the distribution of Old Faithful eruptions times
-from a sequence of observations 
 
 \Rindex{MASS}
 \Rindex{geyser}
@@ -830,6 +826,14 @@ In particular, the mean and median eruption time are not a good measures of the 
 ``typical'' eruption since almost none of the eruption durations are near the mean and median.}
 Numerically, the data are being summarized and  represented in exactly the same way as for 
 histograms, but visually the horizontal and vertical line segments of the histogram are 
+\Caution{The \dataframe{faithful} data set contains similar data, but the 
+variable names in that data frame are 
+poorly chosen.  The \dataframe{geyser} data set in the \pkg{MASS}
+package has better names and more data.}
+These points are then connected with line segments.
+Here is an example that shows the distribution of Old Faithful eruptions times
+from a sequence of observations 
+
 replaced by sloped line segments.  
 \Rindex{ladd()}
 <<echo=FALSE>>=
@@ -839,12 +843,15 @@ ladd( panel.freqpolygon(geyser$duration, n=15) )
 This may give a more accurate visual representation in some 
 situations (since the distribution can ``taper off'' better).  More importantly, it makes 
 it much easier to overlay multiple distributions.
+
+\begin{widestuff}
 <<tidy=FALSE>>=
 freqpolygon( ~ Sepal.Length, data=iris, 
 			groups=Species, 
 			ylim=c(0,1.5)   # manually choose the range for the y-axis
 )
 @
+\end{widestuff}
 
 %\medskip
 \subsection{Density plots: \texttt{densityplot()}}
