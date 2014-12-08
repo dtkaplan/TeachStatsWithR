@@ -443,12 +443,15 @@ xyplot(sat ~ frac, data=SAT)
 @
 
 It is interesting to look at the original plot if we place the states into two groups depending on whether more or fewer than 40\% of students take the SAT:
+
+\begin{widestuff}
 <<out.width=".47\\textwidth">>=
 SAT <- mutate(SAT, 
               fracGroup = derivedFactor( hi=(frac > 40), lo=(frac <= 40)))
 xyplot(sat ~ expend | fracGroup , data=SAT, type=c("p","r"))
 xyplot(sat ~ expend, groups=fracGroup , data=SAT, type=c("p","r"))
 @
+\end{widestuff}
 
 This example can be used to warn against interpreting relationships causally and 
 to illustrate the importance of considering covariates.  
@@ -554,6 +557,11 @@ Then have students process the results by answering the following questions.
 
 Once the simulation with cards has been completed, we can use \R\ to do many more
 simulations very quickly.
+
+\hfill
+\newpage
+
+\begin{widestuff}
 \begin{boxedText}
 	\centerline{\textbf{Computational Simulation}}
 
@@ -570,3 +578,4 @@ histogram( ~ result, data=nullDist,
 @
 
 \end{boxedText}
+\end{widestuff}

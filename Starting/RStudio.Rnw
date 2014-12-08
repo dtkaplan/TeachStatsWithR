@@ -141,16 +141,16 @@ follow the appropriate instructions for your platform.
 
 \subsection{Running RStudio the first time}
 Once you have launched the desktop version of \RStudio\ or logged in to an \RStudio\ server, 
-you will see something like Figure~\ref{fig:Rstudio-bigview}.
+you will see something like this:  %Figure~\ref{fig:Rstudio-bigview}.
 \authNote{Get updated screen shot?}
 
-\begin{figure}
+%\begin{figure}
 \begin{center}
 \includegraphics[width=1.0\textwidth]{images/RStudio-bigview}
 \end{center}
-\caption{Welcome to \Rstudio.}
-\label{fig:Rstudio-bigview}%
-\end{figure}
+%\caption{Welcome to \Rstudio.}
+%\label{fig:Rstudio-bigview}%
+%#\end{figure}
 
 Notice that \Rstudio\ divides its world into four panels.  Several of the panels
 are further subdivided into multiple tabs.  Which tabs appear in which panels
@@ -215,8 +215,6 @@ log(product, base=2)        # base 2 log of the product, another way
 @
 \authNote{can we come up with a better (e.g. less mathematical) example?}
 
-\newpage % to remove an orphan
-
 The semi-colon can be used to place multiple commands on one line.  
 One frequent use of this is to save and print a value all in one go:
 
@@ -244,9 +242,6 @@ For those who do not already know \LaTeX, the simpler RMarkdown system provides 
 entry into the world of reproducible research methods.  It also provides a good facility
 for students to create homework and reports that include text, \R\ code, \R\ output, and graphics.
 
-\Caution{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console environment, 
-so the code in them must be self-contained.  That is, the code should be complete enough to run even if the console had not been used at all.}
-%
 
 To create a new RMarkdown file, select \tab{File}, then \tab{New File}, then \tab{RMarkdown}.
 The file will be opened with a short template document that illustrates the mark up language.
@@ -263,6 +258,11 @@ reproducible research practices.  But beginners, especially if they adopt a
 strategy of trying things out in the console and copying and pasting successful
 code from the console to their file, will often create files that are
 incomplete and therefore do not compile correctly.
+
+\Caution{RMarkdown, and \pkg{knitr}/\LaTeX\ files do not have access to the console environment, 
+so the code in them must be self-contained.  That is, the code should be complete enough to run even if the console had not been used at all.}
+%
+
 
 One good strategy for getting student to use RMarkdown is to provide them with a template
 that includes the boiler plate you want them to use, loads any \R\ packages that they will

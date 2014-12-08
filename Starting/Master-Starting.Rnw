@@ -118,7 +118,7 @@ opts_chunk$set(  tidy=FALSE,
 
 <<include=FALSE>>=
 includeChapter <- FALSE # don't show chapters not yet being paginated.
-showEdited <- TRUE  # displaying chapters already paginated for printing
+showEdited <- FALSE  # displaying chapters already paginated for printing
 knit_hooks$set(document = function(x) { 
 			   sub('\\usepackage[]{color}', '\\usepackage[]{xcolor}', 
 			   x, fixed = TRUE) 
@@ -155,7 +155,7 @@ knit_hooks$set(document = function(x) {
 <<child='RForStudents.Rnw', eval=showEdited>>=
 @
 
-<<child='RForInstructors.Rnw', eval=TRUE>>=
+<<child='RForInstructors.Rnw', eval=showEdited>>=
 @
 
 % don't need this -- just a stub at moment anyway -- 2014-06-21 rjp
