@@ -1,1 +1,31 @@
-## Start Modeling Early: Outline
+# Start Modeling Early: Outline of Version 2
+
+## 1. Foundations: Computing
+
+1. Data
+2. Computing template
+
+## 2. Foundations: Functions and relationships
+
+1. Informal from graphics
+#. Formal from fits
+#. What do they mean
+    a. Graphs
+    #. Slopes and effect size
+    #. R^2
+#. Complex models
+    a. You won't need them much, but if you must, try `poly()`
+    #. Multiple variables is often more important than complex forms.
+
+## 3. Multiple Variables
+
+1. Main effects
+#. Interaction
+#. Partial derivatives
+#. Adjustment -- holding covariates constant
+#. R^2 goes up
+
+## 4. Inference
+
+## 5. Proportions
+
