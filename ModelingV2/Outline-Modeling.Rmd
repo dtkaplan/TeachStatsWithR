@@ -26,5 +26,6 @@
     #. Adjustment -- holding covariates constant
     #. R^2 goes up and the problems of inference
 #. Inference
+    1. Equivalence to the t-test and the p-test.
 #. Proportions
 

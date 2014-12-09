@@ -1,0 +1,409 @@
+\begin{itemize}
+\item Main effects
+\item Interaction
+\item Partial derivatives
+\item Adjustment -- holding covariates constant
+\item R^2 goes up and the problems of inference
+\end{itemize}
+
+A competent trebuchet operator will tell you that the counter-weight has a big influence on the throwing distance.  The trebuchet operator has the option of adding or taking away from the counter-weight in order to set the throwing distance.  
+
+Fitting a relevant model is a matter of including the counter-weight (\variable{counterWt}) in the set of explanatory variables.  (It's also important that student Andrew Pruim collected the experimental data over a range of counter-weights.)  Here's a simple model:
+<<tidy=FALSE>>=
+mod2 = lm( distance~projectileWt+counterWt, data=trebuchet)
+@
+
+\marginnote{Once students understand that the name assigned to a function should be in the format $f$ rather than $f(x)$, you may want to start assigning more descriptive names to functions.  Notice that in writing about functions, we use the typographical notation \function{f} rather than the bare 
+name \bariable{f}.  But remember than in assigning a name to a function not to use the parentheses after the function name.}
+
+To extract the corresponding function, which will be a function of both \variable{projectileWt} and \variable{counterWt}, use \function{makeFun}.  We'll call the function \function{ballistic}:
+<<>>=
+ballistic = makeFun(mod2)
+@
+
+There are two input variables here, so an appropriate graphical display is a contour plot
+<<fig.height=4,fig.width=4,tidy=FALSE>>=
+plotFun( ballistic(projectileWt=x,counterWt=y) ~ x&y, 
+        x.lim=range(10,70),y.lim=range(.5,3),
+        xlab="Projectile (gms)",
+        ylab="Counter Weight (kg)",
+        main="Distance Thrown (cm)")
+@
+
+The first two lines of this do all the work, the remaining lines are just for setting labels.  Note that $x$ and $y$ are being used as the plotting variables.  $x$ is assigned to be the value of the projectile weight while $y$ is the value of the counter-weight.  It's helpful to use such explicit names for the input variables just to avoid accidentally reversing the meaning of the variables. With functions of more than one input it's easy to get things wrong.
+
+
+It takes a bit of practice to learn to interpret such graphs, but it's worth the time.  Each contour shows the set of projectile weights and counter weights that can reach a given distance.  For instance, to reach 600 cm distance, the model suggests that one could use a projectile weight of 20 gm and a counterweight of about 1.25 kg, or one could up the projectile weight to 60 gm and increase the counterweight to a bit more than 2 kg.
+
+Adding in the counter-weight as an explanatory variable puts creates a model that might be more useful to a trebuchet operator, but it also has an important meaning in terms of statistics.  The new variable can help account for some of the distance data, and in so doing can make the model a better fit.  
+
+Many students will be unfamiliar with functions of two variables, simply because they don't encounter them in their mathematics classes.\marginnote{Conrad Wolfram offers a compelling critique of the traditional topics and order of math education in a TED talk: ``Teaching kids real math with computers.''}  It's a mistake to think that the standard mathematics curriculum has been designed to teach easy subjects first, and that subjects not encountered in the standard curriculum are somehow more difficult.  But you do have to orient your students to some of the basics of functions of two (or more) variables.
+
+A good place to start is to ask your students to imagine themselves standing on a hillside.  Is the slope the same in all directions?  Many students will respond, ``yes.''  They have an intuitive notion of the gradient and are thinking that, at each point on the hillside, there is just one slope.  But, as skiers know, the hill is steep in some directions and not at all steep in others.  (Indeed, for every point on every hill, there is a direction where the landscape is flat.)  Looking back at the contour plot, ask the students whether the hill is steeper in the East-West direction (that is, along the $x$-axis), or in the North-South diretion (along the $y$ axis).  It's easy to find the slope in each direction, by taking a small step in that direction and finding the change in altitude.
+
+For the trebuchet distance function, you can take such steps by varying one variable while holding the other constant.  For instance, what's the change in distance (according to the model) when changing the projectile weight by one gram while holding the counter-weight constant.  Pick a value for each variable and tweak projectile weight:
+
+\begin{widestuff}
+<<tidy=FALSE>>=
+ballistic(projectileWt=51,counterWt=1) - ballistic(projectileWt=50,counterWt=1)
+@
+\end{widestuff}
+
+This indicates that a 1 gm increase in projectile weight is associated with a decrease of 8.5 cm in the distance flown.  
+
+On the other hand, increasing the counter weight is associated with an increase in distance:
+
+\begin{widestuff}
+<<tidy=FALSE>>=
+ballistic(projectileWt=50,counterWt=2) - ballistic(projectileWt=50,counterWt=1)
+@
+\end{widestuff}
+
+\noindent A 1 kg increase in the counter-weight is associated with an increase of 365 cm in the distance.
+
+Show your students the points on the contour plot corresponding to these finite differences.\marginnote{Practice is important here.  The time invested will pay off handsomely.}  This helps them to understand why each input variable can be associated with a different connection to the output.  Once students understand this, it's easier for them to generalize to functions of more than two variables.  The key thing is to move away from functions of a single variable.
+
+It's well worth observing that the two models, \variable{mod1} and \variable{mod2}, give different answers to the question of how the distance changes with a change in the projectile weight.  For \text{mod1} (translated into function \function{f1}) the answer is
+<<>>=
+f1(projectileWt=51)-f1(projectileWt=50)
+@
+But for \variable{mod2} (translated into function \function{ballistic}) the change in distance is much less, as already seen:
+
+\begin{widestuff}
+<<tidy=FALSE>>=
+ballistic(projectileWt=51,counterWt=1) - ballistic(projectileWt=50,counterWt=1)
+@
+\end{widestuff}
+
+That the two functions give different answers can be confusing to students.  The difference comes about because the \function{ballistic} function allows you to hold the counter-weight constant while changing the projectile weight.  This is, of course, completely natural --- you can change the projectile weight without changing the counter-weight.  But the experiment happened to be done in such a way that only the lightest projectiles were used with the heaviest counterweights. \marginnote{Tip: The imbalance in this design --- that not all the levels of \variable{counterWt} were used for each level of \variable{projectileWt} --- is the norm for many observational studies.    Modeling makes it clear that imbalance introduces ambiguities that are related to covariation and can be dealt with in the same way.}
+<<>>=
+tally( ~ projectileWt + counterWt, data=trebuchet)
+@
+The result is that the light-weight projectiles flew, on average, much further than the heavier projectiles: partly because the projectiles were lighter and partly because the counter-weight was heavier.
+
+If you're thinking, "Well, the experiment should have been done in a balanced way, with the same range of counter-weights used for each projectile," true enough.  But there experiment wasn't done this way and, as a result, counter-weight and projectile weight have been connected to one another.  To disconnect them, given the data, requires that both counter-weight and projectile weight be used to account for distance flown.
+
+\section{More variables give a better fit}
+
+Remember that your students have been raised mathematically in an environment where there is always a correct answer, sometimes easy to find and sometimes hard.  Many students conflate the difficulty of finding the answer with the quality of the fit --- data that show a clear pattern are easier to deal with than data that don't, and of course the fit is better for the data that show a clear pattern.
+
+Your students will naturally think that fitting a function of two inputs is harder to fit than a function of a single input.  That's fair enough.  For a straight-line function of one variable, it's pretty easy to draw a plausible candidate and to use the techniques of high-school algebra to find the parameters: a slope and intercept.   But it's hard to draw a graph of a function of two variables, let alone use the eye to relate data to the parameters of the fitted function.
+
+Given this focus on the difficulty of the problem, it becomes confusing to see that the function of two explanatory variables must fit the response variable better than a function of one variable.  So, take the time to demonstrate this.  A simple way to see that the two-variable model is a better fit than the one-variable model is to look at the size of the residuals.\marginnote{It's worthwhile to ask your students why the mean of the residuals of a fitted model is not a useful way to characterize their size.  Have them look at the mean residual from different models and figure out what's going on.}  As always, the way to quantify residuals is with their standard deviation, or variance, or sum of squares.
+<<>>=
+sd(resid(mod1))
+sd(resid(mod2))
+@
+
+The two-variable model also provides a more reliable prediction:
+<<tidy=FALSE>>=
+f1( projectileWt=50, 
+    interval="prediction")
+ballistic( projectileWt=50,counterWt=2, 
+           interval="prediction")
+@
+Notice how much narrower the prediction interval is for the two-variable model compared to the one-variable model.  
+
+\marginnote{The observation that adding an explanatory variable to a model will reduce the size of the residuals provides a powerful segue to statistical inference.  The null hypothesis is often stated in terms of ``no difference'' or ``no effect.''  Perhaps better to state the null as ``no meaningful information in the explanatory variable(s).'' You can generate such uninformative explanatory variables using random numbers or shuffling. 
+See the mosaic package resampling vignette for more information.}
+\chapter{Combinations of categorical and quantitative variables}
+
+\marginnote{Remember to load the \pkg{mosaic} package:
+<<>>=
+require(mosaic)
+@
+}
+
+So far, you have encountered these sorts of models:
+\begin{itemize}
+\item One quantitative explanatory variable.
+\item One categorical explanatory variable.
+\item Two quantitative explanatory variables.
+\end{itemize}
+
+All of these sorts models were constructed with the same syntax and all of them fit into the same framework: explanatory and response variables, fitted model values, residuals, $R^2$.  The syntax and framework extend to more complicated models.  You can add in more explanatory variables using exactly the same syntax.
+
+You can also add in \term{interactions} among explanatory variables.
+
+To illustrate, consider world records in the 100 meter freestyle swimming event as they have changed over the years.  Plot these separately for the two sexes.
+
+\begin{widestuff}
+<<swim-data,fig.width=6>>=
+xyplot(time ~ year | sex, data=SwimRecords)
+@
+\end{widestuff}
+
+It's evident from the data that, for both sexes the records are improving over time. (How could they not?  That's the nature of a world record.)  The pattern is so clear that one hardly needs a model to interpret it.  But, to display the syntax of models, let's do so anyways.
+
+The record \variable{time} depends on both \variable{sex} and \variable{year}, but it's your choice what explanatory variables to include in a model.  Here are three plausible models:
+<<>>=
+swim1 = lm(time~sex,data=SwimRecords)
+swim2 = lm(time~year,data=SwimRecords)
+swim3 = lm(time~year + sex, data=SwimRecords)
+@
+To plot out the model function, first extract the function from the model:
+<<>>=
+s1 = makeFun(swim1)
+s2 = makeFun(swim2)
+s3 = makeFun(swim3)
+@
+
+The first model doesn't include \variable{year}.  Still, to graph the model function on the axes, you need to include \variable{year} in the plotting statement. 
+
+\begin{widestuff}
+<<fig.width=6, fig.keep="last">>=
+<<swim-data>>
+plotFun(s1(sex="F")~year,add=TRUE)
+plotFun(s1(sex="M")~year,add=TRUE,lty="dotdash")
+@
+\end{widestuff}
+
+The function \function{s1} doesn't depend on \variable{year}, so the graphs of the function are flat with respect to \variable{year}.  The function does have \variable{sex} as an input and you can see in the graph how the function values for females (thick line) differ from those for males (thin line).
+
+Now consider \function{s2}, which depends on \function{year} but not \function{sex}.
+
+\begin{widestuff}
+<<fig.width=6, fig.keep="last">>=
+<<swim-data>>
+plotFun(s2(year)~year,add=TRUE)
+plotFun(s2(year)~year,add=TRUE,lty="dotdash")
+@
+\end{widestuff}
+
+The functions are the same for males and females, of course, so they overlie one another on the graph.
+
+Including both \variable{sex} and \variable{year} in the model produces a function that depends on both variables:
+
+\begin{widestuff}
+<<fig.width=6, fig.keep="last">>=
+<<swim-data>>
+plotFun(s3(year=year,sex="F")~year,add=TRUE)
+plotFun(s3(year=year,sex="M")~year,add=TRUE,lty="dotdash")
+@
+\end{widestuff}
+
+You might be surprised to see that the graph of the function for males is parallel to that for females.  That's because there was nothing in the model design that produces a different slope with respect to \variable{year} for females and males: the two lines must therefore be parallel. 
+
+Including such a difference in a model is a matter of including an \term{interaction term} between \variable{sex} and \variable{year}:
+
+\begin{widestuff}
+<<fig.width=6, fig.keep="last">>=
+swim4 = lm(time~year+sex+year:sex,data=SwimRecords)
+s4 = makeFun(swim4)
+<<swim-data>>
+plotFun(s4(year=year,sex="F")~year,add=TRUE)
+plotFun(s4(year=year,sex="M")~year,add=TRUE,lty="dotdash")
+@
+\end{widestuff}
+
+\newthought{Interactions are confusing}; they imply a ``difference of differences.'' \marginnote{For students who have been exposed to the algebra of functions of two variables, it may be helpful to point out that the model $x + y + x:y$ corresponds to the polynomial $f(x,y) = a_0 + a_1 x + a_2 y + a_3 x y$.  The coefficient on the interaction term is $a_0$.  This corresponds to the mixed partial derivative, $\partial^2 f/\partial x \partial y$.  This is the calculus equivalent of ``difference of differences.''} Students tend to want to interpret the word ``interaction'' as meaning that one variable affects the other.  This is not quite right.  An interaction describes how the effect of one variable on the response is modulated by the other variable.  For example, the interaction between \variable{sex} and \variable{year} tells how the relationship between \variable{year} and world-record \variable{time} differs for the two sexes.  You see that interaction in the graph as different slopes for the fitted lines for the two sexes.
+
+Another, way to describe the interaction is that the relationship between \variable{sex} and world-record \variable{time} is changing over the years.  You can see that from the changing vertical distance between the lines for females and males. Both these ways of describing the interaction --- how the relationship between \variable{sex} and \variable{time} is modulated over the years, and how the relationship between \variable{year} and \variable{time} is different for the two sexes --- are equivalent.  Given that the slopes of the two lines is different, the vertical distance between the two lines is going to change.
+
+\newpage
+
+\section{Example: The Genetic Component of Human Height}
+
+The world-record swim-time data is ordered enough that it's easy to draw a satisfactory functional approximation by hand.  That makes it easier for students to visualize how different model terms set the ``shape'' of the function.  But students may wonder what statistics has to do with it.
+
+\newthought{To place things more firmly in a statistical context},\marginnote{Francis Galton, ``Correlations and their measurement, chiefly from anthropometric data'' (1889) {\em Nature} 39:238, and ``Regression towards mediocrity in hereditary stature'' (1886) {\em Journal of the Anthropological Institute of Great Britain and Ireland} 15:246-263.  For a commentary and access to further background on the data, see James Hanley, `` `Transmutting' Women into men: Galton's family data on human stature'' (2004) {\em American Statistician} 58(3):237-243)} consider the data collected by Francis Galton in 19th century London.  Galton was interested in exploring the heritability of biological traits, in particular the relationship between the heights of parents and their full-grown, adult children.  These data played an important part in the development of the correlation coefficient and regression toward the mean  
+
+A man of his era, Galton focused on the heights of sons.  Here are both sexes of children, plotted out against the mother's height:
+
+\begin{widestuff}
+<<galton-data,fig.width=6>>=
+xyplot(height ~ mother | sex, data=Galton)
+@
+\end{widestuff}
+
+From the graph alone, it's obvious that height differ from males to females and there is a slight tendency that a taller mother is associated with taller children.  Here's a model that includes an interaction term between the child's sex and the mother's height:
+
+\begin{widestuff}
+<<fig.width=6, fig.keep="last">>=
+<<galton-data>>
+hmod1 = lm(height~mother*sex,data=Galton)
+h1 = makeFun(hmod1)
+plotFun(h1(mother=m,sex="F")~m,add=TRUE)
+plotFun(h1(mother=m,sex="M")~m,add=TRUE,lty="dotdash")
+@
+\end{widestuff}
+
+What's new in this example is that a specific line can be judged as the best fit to a cloud of data.  Certainly a student could do this by hand, but they would likely have little confidence that their particular line was best.  Certainly, the precision with which one might draw a line by hand wouldn't justify drawing lines of different slopes for the males and females.  Indeed, it remains to be seen whether the interaction term is contributing much to the model.  That sort of question provides a segue to statistical inference.  (See below.)
+
+What's the father's role in this.  In a scatter plot, it's impossible to use both the father and the mother along on the $x$-axis, one has to choose.  There are some tricks, for example creating panels for different intervals of the father's height, but it's hard to gain much quantitative insight from the graphic.
+
+\begin{widestuff}
+<<galton-father,fig.width=5,fig.height=5,tidy=FALSE>>=
+xyplot(height ~ mother | cut(father,breaks=2) + sex, data=Galton)
+@
+\end{widestuff}
+
+Instead, consider a model that uses both mother's and father's height (and the child's sex) to account for the child's height.  For now, leave off the interaction terms; you can return to those later with some statistical inference tools in hand: 
+
+\begin{widestuff}
+<<fig.width=5,fig.height=5,tidy=FALSE, fig.keep="last">>=
+hmod2 = lm(height~mother+father+sex,data=Galton)
+h2 = makeFun(hmod2)
+<<galton-father>>
+plotFun(h1(mother=m,sex="F")~m,add=TRUE)
+plotFun(h2(mother=m,father=64,sex="F")~m,add=TRUE,lty="dotdash")
+plotFun(h2(mother=m,father=74,sex="F")~m,add=TRUE,lty="dotted")
+@
+\end{widestuff}
+
+The dotted and dot-dashed lines show the mother+father model values for two different heights of father (just for female children).  For comparison, the solid line shows the model with just the mother. That the lines are different for the two different heights of father shows the association between father's height and child's height, for each given mother's height.  
+
+
+\section{Partial Change}
+
+``All things being equal'' is an everyday phrase.   In the Galton height data, for instance, one can examine the association of \variable{mother}'s height with child's \variable{height}, holding the other things constant, e.g., the \variable{father}'s height and the child's \variable{sex}.  Given a model function, this \term{partial change} is easy to calculate: look at the difference in child's model height for two different values of the mother's height, while holding \variable{father} and \variable{sex} constant.  For instance,
+
+\begin{widestuff}
+<<tidy=FALSE>>=
+h2(mother=66,father=68,sex="F") - h2(mother=65,father=68,sex="F")
+@
+\end{widestuff}
+
+Similarly, one can examine the partial change with respect to \variable{father} and with respect to \variable{sex}:
+
+\begin{widestuff}
+<<tidy=FALSE>>=
+h2(mother=66,father=68,sex="F") - h2(mother=66,father=67,sex="F")
+h2(mother=66,father=68,sex="F") - h2(mother=66,father=68,sex="M")
+@
+\end{widestuff}
+
+\newthought{The reason to call these differences ``partial'' change} is by analogy with partial derivatives in calculus: the change with respect to one variable holding the other constant.
+
+Of course, for the continuous variables --- \variable{mother} and \variable{father} --- one can calculate the partial derivative itself.  This would be appropriate for students who are familiar with derivatives, but it is not essential that one consider any sort of limiting process as in calculus.  The important point is that the change in model output can be considered with respect to each of the input variables individually.
+
+The partial change is a straightforward measure of \term{effect size}.  The intellectual question is what quantities to hold constant.  Answering this requires some expert knowledge.  Students have considerable expertise, even if it's just about common sense matters.  For instance, it's a form of expert knowledge to know that the mother's height doesn't affect the sex of the child.  So in considering the effect size of mother's \variable{height}, it's sensible to hold \variable{sex} constant. 
+
+Occasionally, it makes sense to consider the change while varying two or more variables simultaneously.  As an example with a simple mechanism, consider trying to predict a person's wage based on their education and job experience.  The \dataframe{CPS85} data contains information from the Current Population Survey that can be used for this purpose.  First, build a model with both education and experience as explanatory variables (and whatever covariates you think appropriate), e.g.,
+<<>>=
+wmod = lm(wage~educ+exper,data=CPS85)
+@
+Wage here is in dollars per hour (in 1985).  To look at the ``effect'' of a college education, you might examine the partial difference with education varying to 16 years from 12 years while experience is being held constant at, say, 10 years. (Twelve years of education corresponds to a high-school graduate.)
+<<>>=
+w1 = makeFun(wmod)
+w1(educ=16,exper=10)-w1(educ=12,exper=10)
+@
+Judging from this, the four years of extra education is associated with a predicted increase in wage of \$3.70 per hour.  
+
+But hold on.  The four years of extra education comes by decreasing work experience by those four years (if experience is ), so the proper comparison is not a partial change in one variable alone, but a simultaneous, compensatory change in education and experience:
+<<>>=
+w1(educ=16,exper=10)-w1(educ=12,exper=14)
+@
+
+% EXERCISES: From the total versus partial sheets.
+
+\section{Covariates}
+
+Often, the purpose of a model is to describe the relationship between the response and a single explanatory variable, e.g. how does blood pressure respond to a drug versus placebo.  Almost always, though, there are additional explanatory variables in which there is little or no direct interest but which may play an important role in the relationship.  The term \term{covariate} is used to designate such variables.  Of course, in a mathematical sense, covariates are just ordinary explanatory variables.  The word ``covariate'' simply signals the modeler's lack of direct interest in them. 
+
+Other related terms are \term{confounders} or \term{lurking variables}.  These terms properly suggest the vulnerability of the conclusions drawn from a model to unknowns or to known variables not included in a model.  But whenever a variable is known and measured, it should be considered as a candidate to be included in a model.  Unthinkingly to leave a covariate out of a model is burying your head in the sand.  
+
+It's traditional to point to the situation of an experiment.  In one form of experiment, identifiable confounders are held constant by design.  In another form, both identifiable and unidentified conditions are balanced by randomized assignment (since the coin flip of randomization will tend to balance out other factors, on average).  Understandably, statistics textbooks warn about the perils of drawing conclusions about causation from observational data.  Such warnings follow the conventions of a mathematical emphasis on proof. 
+
+There are lessons to be drawn from other fields, however.  In epidemiology, for instance, important conclusions to guide action need to be drawn from imperfect, observational data. 
+
+To illustrate, consider a news story  (``Coffee and Smoking: A Daily Habit Of Green Tea Or Coffee Cuts Stroke Risk", by Allison Aubrey, NPR - March 15, 2013) reporting on research findings published in the American Heart Association journal {\em Stroke}.  The main result: a daily habit of coffee or tea drinking is associated with a decrease of 20\% in stroke risk.  The news story puts this in a historical context: 
+\begin{quotation}
+% ... recent studies have linked a regular coffee habit to a range of benefits — from a reduced risk of Type 2 diabetes to a protective effect against Parkinson's disease.
+
+It's interesting to note how much the thinking about caffeine and coffee has changed.
+
+In the 1980s, surveys found that many Americans were trying to avoid it; caffeine was thought to be harmful, even at moderate doses.
+
+One reason? Meir Stampfer of the Harvard School of Public Health says back then, coffee drinkers also tended to be heavy smokers. And in early studies, it was very tough to disentangle the two habits.
+
+``So it made coffee look bad in terms of health outcomes,'' says Stampfer.
+
+But as newer studies began to separate out the effects of coffee and tea, a new picture emerged suggesting benefits, not risks.
+
+Researchers say there's still a lot to learn here --- they haven't nailed down all the mechanisms by which coffee and tea influence our health. Nor have they ruled out that it may be other lifestyle habits among coffee and tea drinkers that's leading to the reduced risk of disease.
+\end{quotation}
+
+Austin Bradford Hill was an epidemiologist and statistician --- the president of the Royal Statistical Society who succeeded Fisher.  He pioneered randomized clinical trials, taken as the gold standard for inferring causation in medicine. Hill's famously offered nine viewpoints for guiding causal inference.  Number eight is ``Experiment'': \marginnote{AB Hill, ``The environment and disease: association or causation?'' {\em Proceedings of the Royal Society of Medicine} (1965) 58:295-300}
+\begin{quotation}
+Occasionally, it is possible to appeal to experiment, or semi-experimental evidence.  For example, because of an observed association some preventive active is taken.  Does it in fact prevent?  The dust in the workshop is reduced, lubricating oils are changed, persons stop smoking cigarettes.  Is the frequency of the associated events affected?  Here the strongest support for the causation hypothesis may be revealed.
+\end{quotation}
+The prior seven are strength, consistency, specificity, temporality, biological gradient, plausibility, and coherence, each of which garners a longer explanation by Hill than experiment.  Experiment may be the simplest and most compelling, but experiment is not always possible or available.
+
+If students are to operate in a world where causal inferences will be drawn from non-experimental data, they certainly need to be aware of confounding and lurking variables, the ecological fallacy, etc.  But they also need to have the tools to attempt to untangle confounding.  Multivariable modeling provides a straightforward way to do this.
+
+DL Guber \marginnote{Deborah Lynn Guber, ``Getting what you pay for: the debate over equity in public school expenditures'' (1999), {\em Journal of Statistics Education} 7(2).} presents a nice example of untangling confounding in the context of achievement and expenditure in public education.  Drawing on the 1997 {\em Digest of Education Statistics}, Guber assembled a data set of state-by-state averages that can be used to relate school expenditures to SAT.  It's easy to construct a model.
+<<>>=
+mod1 = lm( sat ~ expend, data=SAT)
+summary(mod1)
+@
+
+Judging from this model, expenditures are negatively associated with SAT scores.  The relationship is statistically significant.  Commenting on the association (if not the statistical significance), well-known editorial columnist George Will \marginnote{GF Will, ``Meaningless money factor'' {\em Washington Post}, 12 Sept. 1993} points to Senator Pat Moynihan's humorous observation of a positive correlation between scores on standardized math tests and distance of the states' capitals from the Canadian border, a correlation that's stronger than that seen between test scores and per-pupil expenditures.  Will goes on:
+\begin{quotation}
+In a 1992 study ... Paul Barton argues that a more powerful measure of school quality than the pupil-teacher ratio is the parent-teacher ratio.  ... The proportions of children in single-parent families vary substantially among the states, so some conclusions are suggested by data such as: In a recent year North Dakota had the nation's second-highest proportion of children in two-parent families and the highest math scores.  The District of Columbia ranked last on the family composition scale and next to last in test scores.
+\end{quotation}
+% Full text here: http://www.isds.duke.edu/courses/Spring06/sta101.1/homework.dir/GeorgeWillEditorial.pdf
+
+While Moynihan's distance-from-Canada variable is not meant to be taken seriously, the parent-teacher ratio variable is a serious contender.  It's hardly possible to do an experiment to vary the parent-teacher ratio.  Without experiment, what's left?
+
+Will writes:
+\begin{quotation}
+The fact that the quality of schools correlates more positively with the quality of the families from which children come to school than it does with education appropriations will have no effect on the teachers unions' insistence that money is the crucial variable.
+\end{quotation}
+
+What's wrong here is the idea of the ``crucial variable.''  Teachers' unions are understandably concerned with education appropriations, just as editorial columnists are with the structure of families.  That these variables are ``crucial'' reflects the interests of the modelers --- it's perfectly feasible for a model to include both variables.  Rather than identifying a single variable as crucial and looking for an association with that variable to the exclusion of all other explanatory variables, it's more appropriate to construct a model with multiple variables.  The issue is confounding, not cruciality. 
+
+Returning to the SAT data, consider one simple confounder, \variable{frac}, the proportion of students in each state who take the SAT.  In upper Mid-west states like North Dakota, many college-bound students take the ACT rather than the SAT; SATs tend to be taken by students heading out of state, who are often higher-scoring.  In many states, only a small fraction of students take the SAT, and these students also tend to be higher-scoring. So use \variable{frac} as a covariate: \marginnote{Confounding occurs any time a covariate is correlated with an explanatory variable.  The term \term{Simpson's paradox} is used to identify situations when the coefficient on the explanatory variable of interest changes sign when a covariate is introduced into a model.  It's called a ``paradox'' because the sign change isn't anticipated by intuition.  But a change in coefficient is an inevitable result of the correlation of a covariate with an explanatory variable.  ``Paradox'' shouldn't be interpreted as ``rare'' or ``unlikely.''  Confounding is a perfectly ordinary situation.}  
+<<>>=
+mod2 = lm(sat ~ expend+frac,data=SAT)
+summary(mod2)
+@
+
+Taking into account the covariate \variable{frac}, the relationship between expenditures and test scores is positive and statistically significant. Such a substantial change in the value of a coefficient when including a covariate is a sign of confounding.
+
+More than one covariate can be included in a model, of course.  The models themselves won't sort out what causes what, but they provide a framework for having such a debate.  
+
+\subsection{Example: What's a Fireplace Worth?}
+
+Statistician Richard De Veaux has shared a data set on house prices in Saratoga Springs, NY.  In addition to the sales price of the house, the there is a variable indicating whether or not the house has a fireplace:
+<<message=FALSE>>=
+houses = fetchData("SaratogaHouses.csv")
+median( Price ~ Fireplace, data=houses )
+summary(lm(Price ~ Fireplace, data=houses))
+@
+Houses with a fireplace are about \$70,000$\pm$9000 more expensive than houses without.  But this doesn't mean that a fireplace is worth \$70,000.  Houses with fireplace are have other traits that distinguish them from houses without, for example, they tend to be larger.
+<<>>=
+summary(lm(Living.Area ~ Fireplace, data=houses))
+@
+It seems sensible to build a model that takes such confounding into account by including \variable{Living.Area} as a covariate:
+<<>>=
+summary(lm(Price ~ Fireplace+Living.Area, data=houses))
+@
+This model puts the value of a fireplace at about \$10,000$\pm$8000.  Notice that the difference between estimates made using the different models is much larger than the margin of error for either model.  This illuminates a point that it's often difficult to convey to students: a margin of error has to do with sampling variation, not with proximity to the ``true'' value.
+
+
+
+
+
+
+
+
+\newthought{You might want to try adding more detail} to the model.  There are two basic directions you might go:
+\begin{itemize}
+\item Use a more complicated model form such as a polynomial of weight.
+
+For instance, here's a cubic polynomial fit to the data:
+<<>>=
+mod3 <- lm(dist ~ poly(pwt, 3), data=TrebTrials)
+fun3 <- makeFun(mod3)
+plotFun(fun3(pwt) ~ pwt, pwt.lim=c(20,60))
+@
+\item Use additional variables, such as the counterweight, configuration, etc.
+\end{itemize}
+
+Mathematically oriented people are often tempted to try the complicated model.  Experience tells, however, that adding more variables is, as a rule, a much more productive way to go.  The next chapter shows how to do this.
+
+
+
+
+

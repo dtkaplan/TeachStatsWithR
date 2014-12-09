@@ -77,6 +77,14 @@ knit_hooks$set(document = function(x) {
 <<child='Foundations.Rnw', eval=TRUE>>=
 @
 
+\chapter{Functions and data}
+<<child='FunctionsData.Rnw', eval=TRUE>>=
+@
+
+\chapter{Multiple explanatory variables}
+<<child='MultipleVariables.Rnw', eval=TRUE>>=
+@
+
 
 %\backmatter
 
