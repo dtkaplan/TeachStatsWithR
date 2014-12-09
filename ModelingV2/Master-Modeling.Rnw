@@ -1,0 +1,88 @@
+\documentclass[openany]{tufte-book}
+
+
+\usepackage{RBook}
+\usepackage{pdfpages}
+%\usepackage[shownotes]{authNote}
+\usepackage[hidenotes]{authNote}
+\usepackage{language}
+\usepackage{hyperref}
+
+
+\title{Start Modeling with R}
+\author{Daniel Kaplan, Randall Pruim, and Nicholas J. Horton}
+\date{DRAFT: \today}
+
+\begin{document}
+\def\cplabel{^X} 
+
+\def\tilde{\texttt{\~}}
+% stupid hack to get rid of unwanted space before next line when there is not
+% a blank line following an R chunk.
+\renewenvironment{knitrout}{}{\noindent\ignorespaces\!\!}
+
+<<include=FALSE>>=
+#setCacheDir("cache")
+require(MASS)
+require(grDevices) 
+require(datasets) 
+require(stats) 
+require(lattice)
+require(grid) 
+# require(fastR)	# commented out by NH on 7/12/2012
+require(mosaic) 
+require(mosaicData) 
+trellis.par.set(theme=col.mosaic(bw=FALSE))
+trellis.par.set(fontsize=list(text=9))
+options(keep.blank.line=FALSE) 
+options(width=60)
+require(vcd)
+require(knitr)
+opts_chunk$set(  tidy=TRUE,
+			     size='small',
+                 dev="pdf",
+                 fig.path="figures/fig-",  
+                 fig.width=3, fig.height=2,
+                 fig.align="center",
+                 fig.show="hold",
+                 comment=NA)
+@
+
+<<include=FALSE>>=
+knit_hooks$set(document = function(x) { 
+			   sub('\\usepackage[]{color}', '\\usepackage[]{xcolor}', 
+			   x, fixed = TRUE) 
+}) 
+
+#knit_hooks$set(document = function(x) { 
+#  gsub('(\\\\end\\{knitrout\\})\n', '\\1', x) 
+#}) 
+@
+
+%\maketitle
+\includepdf{prelim-cover}
+\newpage
+
+\chapter*{Preface}
+<<child='Preface.Rnw', eval=TRUE>>=
+@
+
+\tableofcontents
+
+\newpage
+
+
+
+\chapter{Foundations}
+<<child='Foundations.Rnw', eval=TRUE>>=
+@
+
+
+%\backmatter
+
+\bibliographystyle{alpha}
+\bibliography{../include/USCOTS}
+
+\printindex
+
+\end{document}

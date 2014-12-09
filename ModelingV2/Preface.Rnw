@@ -1,0 +1,17 @@
+These notes present a strategy for teaching statistical modeling. Modeling is a way of making sense of the world by building a representation that is easy to explore and manipulate.  Modeling is a key capacity for dealing with complexity that's used in many ways.  Mathematical modeling refers to representations built out of mathematical objects, particularly functions.  Statistical modeling is an adaption of mathematical modeling to the extraction of information from data.
+
+The strategy for teaching modeling is based around notation: a way of writing down forms of relationships among variables.  Coupled with modern computing, the notation comes to life.  The form of a relationship is translated by the computer into a fit that describes the data at hand.
+
+The same notation that can describe simple relationships --- for example, groupwise means, in which a quantitative response variable is averaged separately in groups defined by a categorical explanatory variable --- can be extended to much richer relationships involving multiple explanatory variables.  What's key is to have a notation in which phrases like ``response variable'' and ``explanatory variable'' have a discernible identity.  Starting with that notation puts students in a good place on the road to learning about modeling.
+
+The notes are part of a series on teaching with R, but they are not primarily about R.  Other notes in the series introduce R, discuss how to teach with R, and show how to carry out basic processes of statistical inference using conceptually simple operations implemented transparently in R.
+
+If you don't already know R, we hope that you will think the commands are simple enough that you can use them yourself; that you can learn R by observation.  Our students appear to be able to do that.  
+
+It is possible to implement the strategy presented here using other software.  It might even be possible to present it without using software at all.  But you always need some notation to communicate. The R computer notation is simple and concise, a rival for traditional mathematical notation, even as it extends to include operations not in the algebraic repertoire: sampling, randomization, iteration, etc. 
+
+These notes are meant for teachers; this isn't a textbook for students.  Examples of materials for students, including a textbook \marginnote{DT Kaplan (2011) ``Statistical Modeling: A Fresh Approach'' 2nd ed., {\em Project MOSAIC}} are available at \url{www.mosaic-web.org/StatisticalModeling}.
+
+\bigskip
+
+We wish to acknowledge the support of the Howard Hughes Medical Institute, the W.M. Keck Foundation, and the US National Science Foundation (DUE-0920350).
