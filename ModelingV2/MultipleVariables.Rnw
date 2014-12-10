@@ -6,74 +6,77 @@
 \item R^2 goes up and the problems of inference
 \end{itemize}
 
-A competent trebuchet operator will tell you that the counter-weight has a big influence on the throwing distance.  The trebuchet operator has the option of adding or taking away from the counter-weight in order to set the throwing distance.  
+A competent trebuchet operator will tell you that the counter-weight has a big influence on the throwing distance.  The trebuchet operator has the option of adding or taking away from the counter-weight in order to set the throwing distance.  If throwing distance is a function of both projectile weight (\code{pwt}) and counter-weight (\code{cwt}), it's appropriate to include both variables as inputs.  
 
-Fitting a relevant model is a matter of including the counter-weight (\variable{counterWt}) in the set of explanatory variables.  (It's also important that student Andrew Pruim collected the experimental data over a range of counter-weights.)  Here's a simple model:
-<<tidy=FALSE>>=
-mod2 = lm( distance~projectileWt+counterWt, data=trebuchet)
+A simple way to do this
+<<>>=
+mod2 <- lm( dist ~ pwt + cwt, data=TrebTrials)
+@
+
+As always, \function{makeFun} will extract the model function in a form that can be used to calculate the output for any given inputs.
+<<>>=
+fun2 <- makeFun( mod2 )
+@
+
+For instance, a 50 gm projectile with a 3 kg counterweight gives\Pointer{It's better to use \code{fun2(pwt=50,cwt=3)}, which explicitly identifies which input is being assigned to which number, than \code{fun2(50, 3)}.  After all, can you be sure that you have the 50 and 3 in the right order?  With named inputs, the order doesn't matter.}
+<<>>=
+fun2(pwt=50, cwt=3)
+@
+
+Or, with prediction intervals at the 50\% level often used in ballistics ...\TeachingTip{Again, students can work with confidence intervals even while they are developing an understanding of their meaning.}
+<<>>=
+fun2(pwt=50, cwt=3, interval="prediction", level=0.5)
 @
 
 \marginnote{Once students understand that the name assigned to a function should be in the format $f$ rather than $f(x)$, you may want to start assigning more descriptive names to functions.  Notice that in writing about functions, we use the typographical notation \function{f} rather than the bare 
 name \bariable{f}.  But remember than in assigning a name to a function not to use the parentheses after the function name.}
 
-To extract the corresponding function, which will be a function of both \variable{projectileWt} and \variable{counterWt}, use \function{makeFun}.  We'll call the function \function{ballistic}:
-<<>>=
-ballistic = makeFun(mod2)
-@
-
 There are two input variables here, so an appropriate graphical display is a contour plot
 <<fig.height=4,fig.width=4,tidy=FALSE>>=
-plotFun( ballistic(projectileWt=x,counterWt=y) ~ x&y, 
-        x.lim=range(10,70),y.lim=range(.5,3),
+plotFun( fun2(pwt=P, cwt=C) ~ P & C, 
+        P.lim=range(10,70),C.lim=range(.5,3),
         xlab="Projectile (gms)",
         ylab="Counter Weight (kg)",
         main="Distance Thrown (cm)")
 @
+A trebuchet operator could use this graph as a guide to setting projectile and counterweights to reach a specified distance.  For instance, given a 30 gm projectile and a target at distance 800 cm,  what counter-weight is needed?  \DiggingDeeper{The variables \code{P} and \code{C} are placeholders.  You could replace them with any valid names.  On the other hand, \code{pwt} and \code{cwt} are the names needed to make sure that the input values are assigned to the right place in the calculation.}
 
-The first two lines of this do all the work, the remaining lines are just for setting labels.  Note that $x$ and $y$ are being used as the plotting variables.  $x$ is assigned to be the value of the projectile weight while $y$ is the value of the counter-weight.  It's helpful to use such explicit names for the input variables just to avoid accidentally reversing the meaning of the variables. With functions of more than one input it's easy to get things wrong.
-
-
-It takes a bit of practice to learn to interpret such graphs, but it's worth the time.  Each contour shows the set of projectile weights and counter weights that can reach a given distance.  For instance, to reach 600 cm distance, the model suggests that one could use a projectile weight of 20 gm and a counterweight of about 1.25 kg, or one could up the projectile weight to 60 gm and increase the counterweight to a bit more than 2 kg.
-
-Adding in the counter-weight as an explanatory variable puts creates a model that might be more useful to a trebuchet operator, but it also has an important meaning in terms of statistics.  The new variable can help account for some of the distance data, and in so doing can make the model a better fit.  
-
-Many students will be unfamiliar with functions of two variables, simply because they don't encounter them in their mathematics classes.\marginnote{Conrad Wolfram offers a compelling critique of the traditional topics and order of math education in a TED talk: ``Teaching kids real math with computers.''}  It's a mistake to think that the standard mathematics curriculum has been designed to teach easy subjects first, and that subjects not encountered in the standard curriculum are somehow more difficult.  But you do have to orient your students to some of the basics of functions of two (or more) variables.
-
-A good place to start is to ask your students to imagine themselves standing on a hillside.  Is the slope the same in all directions?  Many students will respond, ``yes.''  They have an intuitive notion of the gradient and are thinking that, at each point on the hillside, there is just one slope.  But, as skiers know, the hill is steep in some directions and not at all steep in others.  (Indeed, for every point on every hill, there is a direction where the landscape is flat.)  Looking back at the contour plot, ask the students whether the hill is steeper in the East-West direction (that is, along the $x$-axis), or in the North-South diretion (along the $y$ axis).  It's easy to find the slope in each direction, by taking a small step in that direction and finding the change in altitude.
-
-For the trebuchet distance function, you can take such steps by varying one variable while holding the other constant.  For instance, what's the change in distance (according to the model) when changing the projectile weight by one gram while holding the counter-weight constant.  Pick a value for each variable and tweak projectile weight:
-
-\begin{widestuff}
-<<tidy=FALSE>>=
-ballistic(projectileWt=51,counterWt=1) - ballistic(projectileWt=50,counterWt=1)
-@
-\end{widestuff}
-
-This indicates that a 1 gm increase in projectile weight is associated with a decrease of 8.5 cm in the distance flown.  
-
-On the other hand, increasing the counter weight is associated with an increase in distance:
-
-\begin{widestuff}
-<<tidy=FALSE>>=
-ballistic(projectileWt=50,counterWt=2) - ballistic(projectileWt=50,counterWt=1)
-@
-\end{widestuff}
-
-\noindent A 1 kg increase in the counter-weight is associated with an increase of 365 cm in the distance.
-
-Show your students the points on the contour plot corresponding to these finite differences.\marginnote{Practice is important here.  The time invested will pay off handsomely.}  This helps them to understand why each input variable can be associated with a different connection to the output.  Once students understand this, it's easier for them to generalize to functions of more than two variables.  The key thing is to move away from functions of a single variable.
-
-It's well worth observing that the two models, \variable{mod1} and \variable{mod2}, give different answers to the question of how the distance changes with a change in the projectile weight.  For \text{mod1} (translated into function \function{f1}) the answer is
+Another helpful way to examine and interpret the model is to look at the effect of changing one variable while holding the other constant.  For instance, for a 30 gm projectile and a 2 kg counter-weight, adding 100 gms to the counterweight changes the distance by this amount:
 <<>>=
-f1(projectileWt=51)-f1(projectileWt=50)
+fun2(cwt=2.1, pwt=30) - fun2(cwt=2, pwt=30)
 @
-But for \variable{mod2} (translated into function \function{ballistic}) the change in distance is much less, as already seen:
+The throw-distance increase per unit increase of the counter-weight is a helpful number for a trebuchet technician to know.  If the previous shot was 60 cm too short, adding 150 gm to the counter-weight looks the right thing to do.
 
-\begin{widestuff}
-<<tidy=FALSE>>=
-ballistic(projectileWt=51,counterWt=1) - ballistic(projectileWt=50,counterWt=1)
+Or, suppose that it is very difficult to change the counter-weight in the field, but a small amount of weight can be added or taken away from the projectile.  The corresponding calculation holds \code{cwt} constant and changes \code{pwt}.
+<<>>
+fun2(cwt=2, pwt=35) - fun2(cwt=2, pwt=30)
 @
-\end{widestuff}
+Adding 5 gms to the projectile reduces the throw distance by about 43 cm.  So, to compensate for a shot that is 60 cm too short, take away about 7.5 gm from the projectile.
+
+
+
+\subsection{Comparing two models}
+
+We've now built two models of the trebuchet throw distance: \code{mod1} (from the previous chapter) and \code{mod2}.  To remind you ...
+<<>>=
+mod1 <- lm(dist ~ pwt, data=TrebTrials)
+mod2 <- lm(dist ~ pwt + cwt, data=TrebTrials)
+@
+Which one is better?
+
+By and large, students will reach into their high-school math experience and translate the question into, ``Which model is right?" Make sure to explain to them that neither model could possibly be ``right."  Each of the models undoubtedly leaves out details that will affect the throw distance: the wind strength, the amount of lubrication on the pivot, swelling of the wood due to changes in humidity.
+
+The point of a model is not to be ``right," but to be useful.  And utility depends on the purpose for which the model will be used.  If you want to adjust the counter-weight to reach a target, \code{mod2} is better simply because it include the counter-weight as an input.  But if the purpose is to adjust the projectile weight, either model could be used.
+
+Another way to think about ``better" is in terms of the quality of the prediction.  A prediction that has a narrower prediction interval will be more useful than a prediction with a wide prediction interval.  For these two models, at the nominal trebuchet setting of counter-weight at 2 kg and projectile at 50 gm, the prediction intervals are:\Pointer{Strictly speaking, there's no need to repeat the \function{makeFun} statements.  \code{fun1} and \code{fun2} have already been made and are still in computer memory.  The repetition is for the human reader, who might otherwise forget the step of extracting the function from the model with \code{makeFun}.}
+<<>>=
+fun1 <- makeFun(mod1)
+fun1(pwt=50, interval="prediction", level=0.5)
+fun2 <- makeFun(mod2)
+fun2(pwt=50, cwt=2, interval="prediction", level=0.5)
+@
+
+The interval for \code{mod2} is $612-484 = 128$ cm.  For \code{mod1}, the interval is $755-334 = 421$ cm.  To judge from this, \code{mod2} is better.
 
 That the two functions give different answers can be confusing to students.  The difference comes about because the \function{ballistic} function allows you to hold the counter-weight constant while changing the projectile weight.  This is, of course, completely natural --- you can change the projectile weight without changing the counter-weight.  But the experiment happened to be done in such a way that only the lightest projectiles were used with the heaviest counterweights. \marginnote{Tip: The imbalance in this design --- that not all the levels of \variable{counterWt} were used for each level of \variable{projectileWt} --- is the norm for many observational studies.    Modeling makes it clear that imbalance introduces ambiguities that are related to covariation and can be dealt with in the same way.}
 <<>>=

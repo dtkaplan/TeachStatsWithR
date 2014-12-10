@@ -1,0 +1,256 @@
+
+<< include=FALSE>>=
+# You can redefine these in a master document.
+if ( !exists(".document.settings.")) {
+  require(mosaic)
+  require(mosaicData)
+  
+}
+@
+
+\def\phbox#1{\fbox{\phantom{g#1l}}}
+\def\ffbox#1{\fbox{\phantom{g}#1\phantom{b}}}
+
+
+
+A model is a representation of something to serve a purpose. Some models are made of clay or balsa wood or legos. Mathematical models are made out of the stuff of mathematics: equations, functions, and so on. Statistical models are a kind of mathematical model where data plays a central role.  The modeler specifies the general structure of the model, for instance $m x+ b$. The data fills in the details to make things specific, e.g. that $m=2.3$ and $b=14.6$.
+
+Another defining characteristic of statistical models is the use of the data to find out how "good" the fitted model is. "Good" can mean different things to different people.  In statistical thinking, "How good?" might mean "How reproducible with new data?" or "What is the error in a prediction likely to be?"  Often it means, "Do the data justify an elaboration on a simpler model?"
+
+This chapter lays some of the foundations for learning about statistical modeling.  If you have previous experience with the R language, you may be already be familiar with how R works.  If not, you may want to refer to one of the many good introductions to computing with R.
+
+\section{Start with a real question}
+
+An important foundation for modeling and for teaching modeling is process.
+
+Often, statistics instructors start with data.  Data are crucial to statistical modeling, but they are not the place to start.
+
+Instead, start with the {\em purpose} for using the data.  For a classroom teacher, it's easy to fall into a triviality, that the purpose is to teach a technique.  That might be true in a classroom, but it is not the case for actual applications of statistics and modeling. Sometimes, there is a "research question" or "research hypothesis" that the modeling is meant to test.  Sometimes the purpose of the model is to predict or classify.  The purpose reflects what you want to do with the model or the sort of conclusion you would like to be able to reach. 
+
+To teach your students that they should think about the purpose of their models, you should demonstrate to them that this is an important part of the modeling process. 
+
+In these notes, a few examples will be used.  Each is a simple setting, with just a few variables.  When you work with an example, make sure to specify the purpose of the model you are building.  It's good practice to start the modeling process with a question: What is the model for?  For instance, 
+
+
+
+\begin{description}
+\item[trebuchet launches] \hfill \\
+How far will a new object be thrown?
+\item[swimming] \hfill \\
+What's a typical difference between men's and women's records and how is this difference changing over time?  
+\item[wages] \hfill \\
+Do variables other than sex account for the differences between men's and women's wages?
+\item[longevity and smoking] \hfill \\
+Does smoking affect lifespan?
+\end{description} 
+ 
+\section{Mathematical frameworks for modeling}
+\label{sec:frameworks}
+
+The most commonly used mathematical framework in statistical modeling is the idea of a {\em function}.  As you may remember, a mathematical function is a relationship between one or more inputs and an output.  For each possible input, there is one, and only one, output.
+
+Sometimes you can represent a function with a graph.  Other times, a function might be given by a formula.  There are more ways than this to represent a function (e.g. smoothers, splines, ...), but graphs and formulas are the most important ones to start with.
+
+What kind of function?  What kind of formula?  Your students studied all sorts of functions in high school: trigonometric functions, polynomials, exponentials and logarithms, etc.  For statistical modeling, the most important and most widely used kind of function is the linear combination of inputs.  Your students will have seen and example of this as the formula $mx + b$ --- the formula for a straight line.  The value of $x$ is the input, $m$ and $b$ are numerical {\em coefficients} (also called {\em parameters}).  The function is $f(x) = mx + b$ --- input $x$ gives output $mx + b$.
+
+Your students will go further.  They will call the coefficient $m$ the ``slope," and the coefficient $b$ the ``intercept."  The intercept is the value of the function when the input is zero.
+
+When there is more than one input, say $x$ and $z$, the linear combination function has the formula $f(x,z) = a + bx + cz$.  Fewer students will be familiar with this form.  You will have to introduce it to them:
+
+\begin{itemize}
+\item Fix the numerical values of the coefficients $a$, $b$, and $c$. Have your students calculate the output for specific values of the inputs $x$ and $y$.
+\item Show them that $a$ is the intercept, the value of the function when the input is zero.
+\item Ask them, "What is the slope?"  Steer them toward understanding that there is more than one slope.  One of the slopes tells how the output changes with $x$, the other tells how the output changes with $z$. You might want to talk about slopes as "rates of change with respect to ... ."  This allows you to emphasize that slopes are always with respect to some variable and that variable must always be specified to speak meaningfully of slopes.
+\item Perhaps better than "slope" is to speak of "sensitivity".  Imagine the function as a machine with control knobs for the inputs.  As you change the settings of the knobs, the output of the machine changes.
+\end{itemize}
+ 
+
+
+\centerline{\includegraphics*[width=4in]{guitar-amp.jpg}}
+% source http://pad1.whstatic.com/images/thumb/b/b3/Choose-a-Beginner-Electric-Guitar-and-Amp-on-a-Budget-Step-7.jpg/670px-Choose-a-Beginner-Electric-Guitar-and-Amp-on-a-Budget-Step-7.jpg 
+\marginnote[-.5in]{Figure XXXXX. A guitar amplifier.  There are several inputs, each of which can influence the output.}
+
+
+The presentation of a function as a graph is also important.  Your students will have spent many hours with graphs like this one:
+
+<< echo=FALSE, fig.keep='last'>>=
+f <- makeFun( 3*x - 2 ~ x)
+plotFun( f(x)~x, x.lim=range(0,5), 
+         xlab="Input (x)", ylab="Output", lwd=2)
+@
+
+\marginnote[-.75in]{Figure XXXXX. Graph of a linear combination function.}
+
+Your students may not be as familiar with the appearance of graphs of functions of two inputs. For instance, consider this contour graph of a function of two inputs: age and wage.
+
+<< echo=FALSE>>=
+g <- makeFun(0.2*x - 3.5*z + x*z ~ x + z)
+plotFun( g(x,y)~ x&y, x.lim=c(0,20), y.lim=c(7,12),
+         xlab="Input: age", ylab="Input: wage")
+@
+
+\marginnote[-.75in]{Figure XXXXX. A contour plot of a function of two inputs.}
+
+The two axes indicate the inputs.  The output value is indicated by the numbers printed along the contours.  In between the contours, the reader infers the numerical value of the output by interpolating between nearby contours.
+
+
+\TeachingTip{Here's a good way to introduce the visualization and interpretation of functions of two variables:  Ask your students to imagine themselves standing on a hillside.  Is the slope the same in all directions?  Many students will respond, ``yes.''  They have an intuitive notion of the gradient and are thinking that, at each point on the hillside, there is just one slope.  But, as skiers know, the hill is steep in some directions and not at all steep in others.  (Indeed, for every point on every hill, there is a direction where the landscape is flat.)  Looking back at the contour plot, ask the students whether the hill is steeper in the East-West direction (that is, along the $x$-axis), or in the North-South diretion (along the $y$ axis).  It's easy to find the slope in each direction, by taking a small step in that direction and finding the change in altitude.
+
+Then, ask the students to answer these questions not for an imaginary hill but for the one that's shown in the contour graph.}
+
+
+
+Another way to present this function has one input along the horizontal axis, with the vertical graph specifying the output.  The value of the other input is represented by the different line types or colors.
+
+<< echo=FALSE, fig.keep="last">>=
+plotFun( g(x=age, z=8) ~ age, age.lim=c(0,20), lwd=2, ylab="Output",
+         xlab="Input: age")
+plotFun( g(x=age, z=10) ~ age, add=TRUE, lty=2, lwd=3)
+@
+
+\marginnote[-1.5in]{Figure XXXXX. Another depiction of a function with two inputs.  Here, one input is assigned to the horizontal axis.  The other input is shown only at two discrete values.}
+
+What about the more complicated functions that show up in mathematics textbooks: polynomials, sines and cosines, exponentials, logs, powers, ... ?  You won't need them.  OK, it's possible that there might be some setting where these functions would be appropriate, but that's rare.
+
+Here are the modeling functions your students need to know:
+
+1. Linear combinations.
+#. Sigmoidal functions, particular the logistic function. (See Chapter XXXXX)
+
+That's a short list!  If you were to add a new form, make it CART. 
+
+Sometimes you will want to create new inputs and outputs that are transformations.  Logarithm and rank transformations lead the list.  But you'll use those transformations in the linear and sigmoidal forms of functions.
+
+The mathematical curriculum traditionally starts with straight line functions, $f(x) = m x + b$, and moves up to quadratics, $g(x) = a + bx + c x^2$, and then up to cubics, $h(x) = a + bx + c x^2 + d x^3$, and so on.  Technically, these are linear combinations of the powers of $x$, but this is not often a productive way to go in statistical modeling. Judging from the literature in many fields, it's much more important in statistical modeling to think about linear combinations of different variables rather than powers of a single variable. 
+
+Your students will be able to learn about statistical models, and build many models relevant to their topics of interest, using {\em just linear combinations}.
+
+
+\section{Organization of data}
+
+Cases, variables
+
+Reading in data (use \function{read.csv} and \function{data})
+
+Looking at the form and the variable names. \function{head}, \function{str}
+
+Best to store data sets on the web and give students the URL.  See Start Teaching with R?????
+
+
+\section{Data manipulation}
+
+Reading, writing, transform(), subset().  Footnote to the dplyr package
+
+
+\section{The data/formula template}
+
+The R functions you saw in the previous section refer to a data table, but don't require that you specify individual variables.  In most modeling operations, however, you'll be interested in specific variables and the relationship between them.
+
+To simplify using these operations, \pkg{mosaic} makes use of a syntax that is the similar for many common operations.\sidenote{Not every possible operation uses the template syntax, but enough do to permit you to teach an entire modeling course.}  We call this syntax the ``data-formula template."
+
+The template looks like this:
+
+\begin{center}
+  \Large
+	\sf
+	\phbox{goal} $\Big($
+	\phbox{y} $\sim$  \phbox{x} , data = \phbox{mydata} $\Big)$
+\end{center}
+The template is turned into a specific command by filling in the boxes.  It helps to give each box a general name:
+\begin{center}
+	\Large
+	\sf
+	\ffbox{goal} $\Big($ 
+	\ffbox{y} $\sim$  \ffbox{x} , data = \ffbox{mydata} $\Big)$
+\end{center}
+
+\begin{description}
+\item[goal] \hfill\\ the name of the operation to be performed.  Examples: \function{mean}, \function{sd}, \function{xyplot}.
+\item[mydata]\hfill\\ the source of the input data, typically the name of a data table.  
+\item[x and y]\hfill\\ specific variables that will be the object of the computation.
+\end{description}
+The part of the template that looks like 
+\begin{center}
+  \Large
+	\sf
+	\ffbox{y} $\sim$  \ffbox{x}
+\end{center}
+is called a {\em formula}.\Pointer{Think of the formula as the description of a relationship.  The word ``formula" is used for consistency with the official nomenclature for R.}  The position of the variables relative to $\sim$ is important.  One way to read \ffbox{y} $\sim$ \ffbox{x} is "variable y broken out by x."  Some other ways to read a formula: ``y versus x," or ``y accounted for by x," or ``y modeled by x."
+
+For instance, here's the calculation of the median wage in the \texttt{CPS85} data broken out by sex:
+<<>>=
+median(wage ~ sex, data=CPS85)
+@
+The ``goal" in the above statement is the median, which in R is calculated by a function called \function{median}.  The formula, \texttt{wage \tilde sex} describes the relationship of interest.  Finally, the data table from which to draw the \texttt{wage} and \texttt{sex} variables is \texttt{CPS85}.
+
+There are several different ``goals" that you will use regularly. \Pointer[-2.5cm]{An informal poll of instructors suggests that the following goals are regularly used in data/formula calculations. Sometimes it's obvious from the name, but for any of them you can see a description using \function{help}, e.g. \texttt{help(var)}.  \\
+\function{mean}\\
+\function{median}\\
+\function{max}\\
+\function{min}\\
+\function{sd}\\
+\function{var}\\
+\function{favstats}\\
+\function{tally}\\
+\function{xyplot}\\
+\function{bwplot}\\
+\function{densityplot}\\
+\noindent along with these which you will encounter in later chapters:\\
+\function{lm}\\
+\function{glm}\\
+\function{qdata}\\
+\function{pdata}\\
+This is a small enough set of functions that you should have your students memorize them.
+}
+Some examples:
+<<>>=
+mean(wage ~ sex, data=CPS85)
+sd(wage ~ sex, data=CPS85)
+bwplot(wage ~ sex, data=CPS85)
+xyplot(wage ~ sex, data=CPS85)
+@
+
+Note that the structure of the command is exactly the same in all the examples.  Just the goal is changing.
+
+\newthought{Sometimes you will want just a simple calculation} on variable y, not broken out by different values of x.  To make this convenient, in such situations you can replace the entire formula with the variable name, e.g.
+<<>>=
+mean(wage, data=CPS85)
+sd(wage, data=CPS85)
+@
+
+Another way to perform these calculations is with a formula, but with the right-hand side indicating that all the cases are in one group.  This ``everybody in the same group" situation is denoted by the special notation $1$ --- simply the character $1$.
+<<>>=
+mean(wage ~ 1, data=CPS85)
+sd(wage ~ 1, data=CPS85)
+@
+At this point, you have no reason to prefer {\texttt wage \tilde\ 1} to the simpler form {\texttt wage}, but later chapters will show an important role for \texttt{1} and why the name \texttt{1} makes sense. \Warning{You might be tempted to denote ``all in the same group'' as \texttt{y ~} without anything on the right side of the \tilde.  Insofar as this looks like ``y broken out by nothing," the notation makes sense.  However, it is illegal in R not to have a right-hand side argument to \tilde.  You are allowed to have nothing on the left-hand side, but there must always be something on the right-hand side.}
+
+In a boxplot (\function{bwplot}) or scatterplot (\function{xyplot}) each axis represents a variable.  For histograms and the like, this is not true.  In a histogram, the vertical axis is not a variable but rather a quantity calculated from the variable displayed on the horizontal axis.  The formula notation uses the variable on the right-hand side, with nothing on the left-hand side:
+
+<<>>=
+histogram( ~ wage, data=CPS85)
+densityplot( ~ wage, data=CPS85)
+@
+Sometimes you will want to compare the densities for different groups.  This can be done by adding a new argument, e.g.
+<<>>=
+densityplot( ~ wage, groups=sex, data=CPS85)
+@
+
+\newthought{The \pkg{mosaic} package uses the formula notation} for specifying functions (goal: \function{makeFun}) and plotting graphs of functions (goal: \function{plotFun}.  For instance:
+
+<<>>=
+f <- makeFun( (3 - 2*x)/(x+1) ~ x )
+plotFun( f(x) ~ x, x.lim=range(0,5))
+@
+
+In later chapters, you'll use \function{makeFun} in another way: to put a model into the form of a function that can be plotted.
+
+\section{R packages}
+
+The R system provides a way for the software development community to add new functionality.  ``Packages" are the standard way to deliver such software.  The statement \code{require(mosaic)} loads in the \pkg{mosaic} package, which itself includes several other packages.  
+
+The \pkg{mosaic} package provides many of the commands that are used in this book. We will also make use the \pkg{mosaicData} package which contains a number of data sets used in examples.
+
+Once the package is loaded, it remains loaded for the rest of the R session.  
+
+As you teach, you may find other packages, such as \pkg{fastR}, that give useful data sets or other capabilities.  These can be loaded using \function{require} in the same way.
