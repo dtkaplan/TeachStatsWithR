@@ -98,8 +98,6 @@ The two axes indicate the inputs.  The output value is indicated by the numbers 
 
 Then, ask the students to answer these questions not for an imaginary hill but for the one that's shown in the contour graph.}
 
-
-
 Another way to present this function has one input along the horizontal axis, with the vertical graph specifying the output.  The value of the other input is represented by the different line types or colors.
 
 << echo=FALSE, fig.keep="last">>=
@@ -110,21 +108,22 @@ plotFun( g(x=age, z=10) ~ age, add=TRUE, lty=2, lwd=3)
 
 \marginnote[-1.5in]{Figure XXXXX. Another depiction of a function with two inputs.  Here, one input is assigned to the horizontal axis.  The other input is shown only at two discrete values.}
 
-What about the more complicated functions that show up in mathematics textbooks: polynomials, sines and cosines, exponentials, logs, powers, ... ?  You won't need them.  OK, it's possible that there might be some setting where these functions would be appropriate, but that's rare.
+\newthought{Many teachers are tempted} to take things to the next level,\marginnote{This section is addressed to teachers to help them select appropriate topics for teaching modeling.} to show some extension or elaboration that will challenge his or her students.  For teachers coming from a mathematical background, one such direction is the more complicated functions that show up in mathematics textbooks: polynomials, sines and cosines, exponentials, logs, powers, ... ?  
+
+You won't need them.  OK, it's possible that there might be some setting where these functions would be appropriate. In practice that's rare.
 
 Here are the modeling functions your students need to know:
 
 1. Linear combinations.
-#. Sigmoidal functions, particular the logistic function. (See Chapter XXXXX)
+#. Sigmoidal functions, particular the logistic function. (See Chapter ref{chap:proportion})
 
-That's a short list!  If you were to add a new form, make it CART. 
+That's a short list!  
 
-Sometimes you will want to create new inputs and outputs that are transformations.  Logarithm and rank transformations lead the list.  But you'll use those transformations in the linear and sigmoidal forms of functions.
+Of course, sometimes you will want to create new inputs and outputs that are transformations.  Logarithm and rank transformations lead the list.  But you'll use those transformations in the linear and sigmoidal forms of functions.
 
-The mathematical curriculum traditionally starts with straight line functions, $f(x) = m x + b$, and moves up to quadratics, $g(x) = a + bx + c x^2$, and then up to cubics, $h(x) = a + bx + c x^2 + d x^3$, and so on.  Technically, these are linear combinations of the powers of $x$, but this is not often a productive way to go in statistical modeling. Judging from the literature in many fields, it's much more important in statistical modeling to think about linear combinations of different variables rather than powers of a single variable. 
+Your students will be able to learn about statistical models, and build many models relevant to their topics of interest, using {\em just linear combinations}. Sigmoidal models are an appropriate extension if you have the time to cover them.
 
-Your students will be able to learn about statistical models, and build many models relevant to their topics of interest, using {\em just linear combinations}.
-
+If you absolutely must go further, use model types that are employed in practice.  After linear and sigmoidal functions, you might want to move in the direction of machine- or statistical-learning methods, such as Classification and Regression Trees (CART). 
 
 \section{Organization of data}
 
@@ -254,3 +253,14 @@ The \pkg{mosaic} package provides many of the commands that are used in this boo
 Once the package is loaded, it remains loaded for the rest of the R session.  
 
 As you teach, you may find other packages, such as \pkg{fastR}, that give useful data sets or other capabilities.  These can be loaded using \function{require} in the same way.
+
+\section{Activities}
+
+The material included in this material might take a week or two to cover in an typical classroom setting.  Work on giving your students solid foundations in interpreting {\em simple} functions of one and two variables, the organization of data, and the use of R.  
+
+Remember that these are foundations for modeling.  Covering foundations over and over until they are mastered is less important than getting a basic competence and then moving on to build on the foundations. Unlike houses, mathematical foundations get stronger by building on top of them rather than by digging deeper. 
+
+Activities for teaching about these foundations include ...
+
+GIVE SOME PROBLEMS FROM APPLIED CALC, entering data (the elevators, a student poll), and the kinds of R statements that will exercise their use of the computer.  (e.g. read in some data, find the mean of such and such.  Make a scatterplot of such and such.)
+

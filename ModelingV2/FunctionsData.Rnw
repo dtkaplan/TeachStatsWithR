@@ -1,0 +1,100 @@
+
+
+\marginnote{Remember to load the \pkg{mosaic} and \pkg{mosaicData} packages:\\
+\code{require(mosaic, mosaicData)}
+}
+
+Let's start by building a statistical model of a trebuchet.
+A trebuchet is a device used for throwing projectiles. A heavy counter-weight pulls down the short end of the arm, rapidly accelerating a projectile hanging in a sack at the long end of the arm.  Introduced in medieval times, trebuchets were used as a siege weapons to destroy fortifications. 
+
+\marginnote{\includegraphics[width=2in]{Trebuchet2.png}\\A trebuchet.}
+
+As always, it's important to know the purpose for which the model is intended.  Imagining ourselves to have been commissioned by a trebuchet operator to construct a model that predicts how far a projectile will be thrown so that the operator can set up the trebuchet to hit a target at a specified distance. In reality, the trebuchet operator is Andrew Pruim in a Science Olympiad competition when he was a high-school student.
+
+To support the predictions, Andrew made many trial throws with his trebuchet.  He tried several different types of projectiles (e.g. a golf ball, a tennis ball), varied the counter-weight and the configuration of the trebuchet's sling, and measured the distance flown by the projectile for each trial. The weight of the projectile likely plays a role, so Andrew weighed each projectile.
+
+The data Andrew collected are in a spreadsheet named \code{TrebTrials.csv}.  You can read that table in to R with this command:
+<<>>=
+TrebTrials <- read.csv( "http://www.mosaic-web.org/go/datasets/TrebTrials.csv" )
+@
+
+To show the layout, here are the first few cases:
+<<>>=
+head(TrebTrials)
+@
+
+\code{proj} is the kind of object used as the projectile, \code{pwt} is the object's mass in grams, \code{cwt} is the counter-weight mass in kg, \code{form} describes the configuration of the trebuchet itself, \code{dist} records how far (in cm) the projectile was thrown. 
+
+There are many different possible relationships among these variables.  Consider this one:
+
+\centerline{\code{dist} $\sim$ \code{proj}}
+
+The formula specifies that \code{dist} is the output of the model and \code{proj} is the input.  Or, in plainer English: account for \code{dist} using \code{proj}.
+
+The variable on the left-hand side of $\sim$ is called the ``response variable." In these notes, each model will have only one response variable.  On the right-hand side of $\sim$ are one or more explanatory variables.\marginnote{Another terminology has the ``independent variable" on the right-hand side and the ``dependent variable" on the left-hand side.}
+
+Deciding what form of relationship to use is one of the primary choices that a modeler makes.  But there are others, such as the mathematical form (specified by the ``goal" in the template).  As indicated in Section \ref{sec:frameworks}, there is one mathematical form that is particularly widely used in modeling: a linear combination of the inputs.  Fitting a linear combination model is done with the \function{lm} function.  The name stands for "linear model."
+
+The command for fitting is
+<<>>=
+mod1 <- lm(dist ~ proj, data=TrebTrials)
+@
+Notice that the syntax is that of the data/formula template.  Here, the fitted model has been stored as \code{mod1} so that we can refer to it later.  
+
+As you'll see, there are several different ways of looking at a model.  For the purpose stated by the trebuchet engineer, the relevant use of the model is as a function: to say what the distance output will be for a given input. Use \function{makeFun} to set up the model in the form of a function.
+<<>>=
+fun1 <- makeFun(mod1)
+@
+
+Once the function is constructed, the output of the function for any valid input can be calculated.
+<<>>=
+fun1("golf")
+fun1("tennis ball")
+@
+
+\TeachingTip{Notice that confidence intervals are being introduced here without anything like a formal definition.  That's intentional.  Let students work with a concept before refining their idea of the concept.  Once students are able to use the concept, they can explore its meaning.  For instance, what affect the level has on the interval.  How are prediction intervals different from confidence intervals? }
+Statisticians and modelers have other ways of looking at a model that can help in evaluating, refining, and interpreting the model.  One of these that the trebuchet engineer might find helpful is the uncertainty in the prediction.  For models constructed with \code{lm}, this uncertainty can be computed along with the prediction itself.  Statisticians often represent prediction uncertainty by a confidence interval:
+<<>>=
+fun1("golf", interval="prediction", level=0.5)
+@
+
+\DiggingDeeper{You can, of course, use whatever confidence level you want.  In many fields, 95\% is typical.  As it happens, in ballistics a different level is used: 50\%.  This corresponds to the ballistics term ``circular error probable," the median distance from the target that projectiles will land.}
+
+Is this a good model?  That depends on what it is to be used for.  Suppose the ballistics engineer tells you, ``Tennis and golf balls, etc. were just for the trial runs.  In actual use, we would use whatever projectile came to hand, such as a rock. The only measurement we can make in the field is the projectile's weight.
+
+With this additional information, another form of model would serve better.\Pointer{Note that \code{mod1} uses the projectile type, \code{prod}, as the explanatory variable while \code{mod2} uses the projectile weight, \code{pw}.}
+<<>>=
+mod2 <- lm(dist ~ pwt, data=TrebTrials)
+@
+
+This model can also be presented as a function which can be used to make predictions about distance knowing only the projectile weight.
+<<>>=
+fun2 <- makeFun(mod2)
+@
+
+For instance, for a projectile weighing 50 gms, the prediction is
+<<>>=
+fun2(pwt=50, interval="prediction", level=0.5)
+@
+
+An important way to display such functions is as a graph:
+<<>>=
+plotFun( fun2(pwt) ~ pwt, pwt.lim=c(20,60))
+@
+This graph indicates that lighter object fly further.  The size of the effect can be presented as a rate: the distance loss produced by adding a unit of weight to the projectile.
+<<>>=
+fun2(pwt=51) - fun2(pwt=50)
+@
+Adding a gram of mass to the projectile will result in a loss of range of about 10 cm.
+
+<<include=FALSE,eval=FALSE>>=
+# BACKGROUND
+# Make the TrebTrials data set from trebuchet in fastR
+require(fastR)
+data( trebuchet )
+TrebTrials <- trebuchet
+names(TrebTrials) <- c("proj", 'pwt', 'cwt', 'dist', 'config')
+write.csv( TrebTrials, file="~/Downloads/TrebTrials.csv", row.names=FALSE)
+# Move to mosaic-web.
+@
+

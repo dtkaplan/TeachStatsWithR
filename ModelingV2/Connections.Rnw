@@ -1,0 +1,8 @@
+Outline of the tests in a traditional textbook and show how the \function{lm} approach corresponds.
+
+
+MORE STUFF comparing things like the t-test to models.
+
+Use Whickham for proportion.
+
+

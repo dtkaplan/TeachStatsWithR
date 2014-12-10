@@ -86,8 +86,12 @@ knit_hooks$set(document = function(x) {
 @
 
 \chapter{Connections to textbook statistics}
+<<child='Connections.Rnw', eval=TRUE>>=
+@
 
-Outline of the tests in a traditional textbook and show how the \function{lm} approach corresponds.
+\chapter{Covariates}
+<<child='Covariates.Rnw', eval=TRUE>>=
+@
 %\backmatter
 
 \bibliographystyle{alpha}
