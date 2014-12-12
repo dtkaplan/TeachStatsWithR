@@ -1,5 +1,7 @@
 Outline of the tests in a traditional textbook and show how the \function{lm} approach corresponds.
 
+The null hypothesis is a kind of model.  One way to think about hypothesis testing is as a comparison between models: the null-hypothesis model and a model with more detail.  The question addressed in a hypothesis test is whether the added detail can be justified by the available data.  
+
 
 MORE STUFF comparing things like the t-test to models.
 

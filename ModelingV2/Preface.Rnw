@@ -1,8 +1,18 @@
 These notes present a strategy for teaching statistical modeling. Modeling is a way of making sense of the world by building a representation that is easy to explore and manipulate.  Modeling is a key capacity for dealing with complexity that's used in many ways.  Mathematical modeling refers to representations built out of mathematical objects, particularly functions.  Statistical modeling is an adaption of mathematical modeling to the extraction of information from data.
 
-The strategy for teaching modeling is based around notation: a way of writing down forms of relationships among variables.  Coupled with modern computing, the notation comes to life.  The form of a relationship is translated by the computer into a fit that describes the data at hand.
+The strategy for introducing modeling is based around notation: a way of writing down forms of relationships among variables.  Coupled with modern computing, the notation comes to life.  The form of a relationship is translated by the computer into a model that describes the data at hand.
 
 The same notation that can describe simple relationships --- for example, groupwise means, in which a quantitative response variable is averaged separately in groups defined by a categorical explanatory variable --- can be extended to much richer relationships involving multiple explanatory variables.  What's key is to have a notation in which phrases like ``response variable'' and ``explanatory variable'' have a discernible identity.  Starting with that notation puts students in a good place on the road to learning about modeling.
+
+In any introduction, careful choices must be made about what topics to include.  There is a limited cognitive budget for all of us; covering too much is counter-productive.  The primary goals of this introduction are to show students that
+
+\begin{itemize}
+\item data can be used to construct models,
+\item decisions made when building a model can be guided by data,
+\item models can be used to deal with complexity.
+\end{itemize}
+
+Those experienced with statistical modeling are familiar with a conventional set of technical representations: coefficients, t-statistics, regression tables, etc.  As important as these are, they are not needed to reach the goals listed above. You won't see those representations very much in these notes.  They are relegated to Chapter \sec{chap:connections} which is about how modeling connects to conventional depictions of statistics.  Introducing convention to students is important.  Students will eventually need to read the literature of their fields and even to write for it.  Those conventions developed historically and are not necessarily needed to developing an understanding of statistics, even if they are necessary for communicating in the literature.
 
 The notes are part of a series on teaching with R, but they are not primarily about R.  Other notes in the series introduce R, discuss how to teach with R, and show how to carry out basic processes of statistical inference using conceptually simple operations implemented transparently in R.
 
@@ -10,7 +20,7 @@ If you don't already know R, we hope that you will think the commands are simple
 
 It is possible to implement the strategy presented here using other software.  It might even be possible to present it without using software at all.  But you always need some notation to communicate. The R computer notation is simple and concise, a rival for traditional mathematical notation, even as it extends to include operations not in the algebraic repertoire: sampling, randomization, iteration, etc. 
 
-These notes are meant for teachers; this isn't a textbook for students.  Examples of materials for students, including a textbook \marginnote{DT Kaplan (2011) ``Statistical Modeling: A Fresh Approach'' 2nd ed., {\em Project MOSAIC}} are available at \url{www.mosaic-web.org/StatisticalModeling}.
+These notes are meant for teachers; this isn't a textbook for students.\marginnote{The notes may also be helpful to someone studying on their own, who already has a familiarity with the basics of statistics.}  Examples of materials for students, including a textbook \marginnote{DT Kaplan (2011) ``Statistical Modeling: A Fresh Approach'' 2nd ed., {\em Project MOSAIC}} are available at \url{www.mosaic-web.org/StatisticalModeling}.
 
 \bigskip
 

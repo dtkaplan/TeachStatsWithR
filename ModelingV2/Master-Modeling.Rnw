@@ -85,6 +85,11 @@ knit_hooks$set(document = function(x) {
 <<child='MultipleVariables.Rnw', eval=TRUE>>=
 @
 
+\chapter{Sampling variation and statistical inference}
+<<child='SamplingVariation.Rnw', eval=TRUE>>=
+@
+
+
 \chapter{Connections to textbook statistics}
 <<child='Connections.Rnw', eval=TRUE>>=
 @
