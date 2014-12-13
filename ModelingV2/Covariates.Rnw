@@ -1,4 +1,6 @@
-A major advantage of using models rather than the conventional approach to teach statistics is the ability to say something sensible about covariates.  Many conventional books treat these as dangerous, calling them ``lurking variables" or ``confounders."  Other than warning students about the dangers, the books do little to help students deal with them.\marginpar{Milo Schield  has called the failure of introductory statistics course to engage covariation ``statistical negligence." REFERENCE}
+THIS NEEDS TO BE TIGHTENED UP CONSIDERABLY.
+
+A methodology based on statistical modeling offers the ability to say something sensible about covariates.  Many conventional books covariates as dangerous, calling them ``lurking variables" or ``confounders."  Other than warning students about the dangers, the books do little to help students deal with them.\marginpar{Milo Schield  has called the failure of introductory statistics course to engage covariation ``statistical negligence." REFERENCE}
 
 
 \section{Covariates}

@@ -2,25 +2,16 @@ These notes present a strategy for teaching statistical modeling. Modeling is a 
 
 The strategy for introducing modeling is based around notation: a way of writing down forms of relationships among variables.  Coupled with modern computing, the notation comes to life.  The form of a relationship is translated by the computer into a model that describes the data at hand.
 
-The same notation that can describe simple relationships --- for example, groupwise means, in which a quantitative response variable is averaged separately in groups defined by a categorical explanatory variable --- can be extended to much richer relationships involving multiple explanatory variables.  What's key is to have a notation in which phrases like ``response variable'' and ``explanatory variable'' have a discernible identity.  Starting with that notation puts students in a good place on the road to learning about modeling.
+One reason for introducing students to modeling is to give them a way to think about ``confounding" or "lurking" variables.  These pejorative names reflect the conventional attitude in introductory statistics, that is, warning students away from situations where covariates play an important role.  For instance, it's often stated in statistics textbooks that one shouldn't draw inferences about causation from observational studies. This ignores the practical need to do so.  There are many situations where an experiment can't be done but where it's important to gain insight based on causal connections.  For instance, you can hardly read a newspaper article about a health-related finding without seeing the words ``after adjusting for," or ``holding constant."
 
-In any introduction, careful choices must be made about what topics to include.  There is a limited cognitive budget for all of us; covering too much is counter-productive.  The primary goals of this introduction are to show students that
+We've assumed in these notes that the students you might be teaching about modeling have already learned a few basic statistical topics, that they will know at least something about confidence intervals and hypothesis testing. As such, an instructor might adopt the strategy here for adding modeling in to a conventional statistics course or as a meaningful follow-up course to an AP-statistics type course.
 
-\begin{itemize}
-\item data can be used to construct models,
-\item decisions made when building a model can be guided by data,
-\item models can be used to deal with complexity.
-\end{itemize}
+In our own teaching, we find that modeling is an excellent way to {\em introduce} students to statistics.  Our objective here, however, is to provide a way for students who have already seen a conventional introduction to learn about modeling.  If you are interested in how modeling can {\em replace} the conventional introduction, materials for students, including a textbook \marginnote{DT Kaplan (2011) ``Statistical Modeling: A Fresh Approach'' 2nd ed., {\em Project MOSAIC}} are available at \url{www.mosaic-web.org/StatisticalModeling}.
 
-Those experienced with statistical modeling are familiar with a conventional set of technical representations: coefficients, t-statistics, regression tables, etc.  As important as these are, they are not needed to reach the goals listed above. You won't see those representations very much in these notes.  They are relegated to Chapter \sec{chap:connections} which is about how modeling connects to conventional depictions of statistics.  Introducing convention to students is important.  Students will eventually need to read the literature of their fields and even to write for it.  Those conventions developed historically and are not necessarily needed to developing an understanding of statistics, even if they are necessary for communicating in the literature.
 
 The notes are part of a series on teaching with R, but they are not primarily about R.  Other notes in the series introduce R, discuss how to teach with R, and show how to carry out basic processes of statistical inference using conceptually simple operations implemented transparently in R.
 
 If you don't already know R, we hope that you will think the commands are simple enough that you can use them yourself; that you can learn R by observation.  Our students appear to be able to do that.  
-
-It is possible to implement the strategy presented here using other software.  It might even be possible to present it without using software at all.  But you always need some notation to communicate. The R computer notation is simple and concise, a rival for traditional mathematical notation, even as it extends to include operations not in the algebraic repertoire: sampling, randomization, iteration, etc. 
-
-These notes are meant for teachers; this isn't a textbook for students.\marginnote{The notes may also be helpful to someone studying on their own, who already has a familiarity with the basics of statistics.}  Examples of materials for students, including a textbook \marginnote{DT Kaplan (2011) ``Statistical Modeling: A Fresh Approach'' 2nd ed., {\em Project MOSAIC}} are available at \url{www.mosaic-web.org/StatisticalModeling}.
 
 \bigskip
 

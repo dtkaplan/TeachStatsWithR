@@ -8,7 +8,13 @@
 
 \marginnote{Remember to load the \pkg{mosaic} and \pkg{mosaicData} packages:
 <<>>=
-require(mosaic, mosaicData)
+require(mosaic)
+require(mosaicData)
+@
+
+For the trebuchet example, you'll also need the \pkg{fastR} package.
+<<>>=
+require(fastR)
 @
 }
 
@@ -131,8 +137,8 @@ Just knowing these properties of R$^2$ are almost enough to let students work pr
 \item The conventional measure of case-to-case variation in a variable is called the variance.  It's the square of the standard deviation.\Pointer{Many people think of the variance as a way-point in calculating a standard deviation.  Actually, the variance is important in its own right.}
 \item R$^2$ is the ratio of the ``size" of the fitted model values to the size of the actual values of the response variable. "Size" is measured with the variance. That is:
 <<>>=
-var(fitted(mod1)) / var(dist)
-var(fitted(mod2)) / var(dist)
+var(fitted(mod1)) / var(dist, data=TrebTrials)
+var(fitted(mod2)) / var(dist, data=TrebTrials)
 @
 \end{itemize}
 
@@ -142,7 +148,10 @@ mod3 <- lm(dist ~ pwt + cwt + config, data=TrebTrials)
 rsquared(mod3)
 @
 
-Evidently, \code{config} accounts for a bit of \code{dist} beyond what \code{pwt} and \code{cwt} have to offer.
+Evidently, \code{config} accounts for a bit of \code{dist} beyond what \code{pwt} and \code{cwt} have to offer.\Pointer{The American Statistical Association {\em Guidelines for Undergraduate Programs in Statistical Science} states:
+``Students need practice developing a unified approach to statistical analysis, which requires integration of multiple methods in an iterative manner."}
+
+A formal hypothesis testing framework for using R$^2$ in deciding what detail is worthwhile will be presented in Chapter \ref{chap:anova}.
 
 \section{Model terms and interactions}
 

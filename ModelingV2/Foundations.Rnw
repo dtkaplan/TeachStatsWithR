@@ -25,7 +25,16 @@ An important foundation for modeling and for teaching modeling is process.
 
 Often, statistics instructors start with data.  Data are crucial to statistical modeling, but they are not the place to start.
 
-Instead, start with the {\em purpose} for using the data.  For a classroom teacher, it's easy to fall into a triviality, that the purpose is to teach a technique.  That might be true in a classroom, but it is not the case for actual applications of statistics and modeling. Sometimes, there is a "research question" or "research hypothesis" that the modeling is meant to test.  Sometimes the purpose of the model is to predict or classify.  The purpose reflects what you want to do with the model or the sort of conclusion you would like to be able to reach. 
+Instead, start with the {\em purpose} for using the data.\Pointer{
+The American Statistical Association
+{\em Guidelines for Undergraduate Programs in Statistical Science} states:
+
+``The approach to teaching ... should model the correct application of statistics
+\begin{itemize}
+\item Emphasize authentic real-world data and substantive applications related to the statistical analysis cycle ; ...
+\item Present problems with a substantive context that is both meaningful to students and true to the motivating research question; ... "
+\end{itemize}}%
+For a classroom teacher, it's easy to fall into a triviality, that the purpose is to teach a technique.  That might be true in a classroom, but it is not the case for actual applications of statistics and modeling. Sometimes, there is a "research question" or "research hypothesis" that the modeling is meant to test.  Sometimes the purpose of the model is to predict or classify.  The purpose reflects what you want to do with the model or the sort of conclusion you would like to be able to reach. 
 
 To teach your students that they should think about the purpose of their models, you should demonstrate to them that this is an important part of the modeling process. 
 

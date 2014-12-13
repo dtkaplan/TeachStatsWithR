@@ -1,0 +1,163 @@
+A question frequently faced by modelers is whether to add more detail to a model.  For instance, suppose you are contemplating adding an interaction term to the running model: \code{net \tilde\ age + sex + age:sex}.  Is doing so justified by the data?
+
+In statistics, ``justified" is often framed in this way: Does the addition of the new term do more than a similar, but entirely random equivalent.  One way such a question is answered involves what's called analysis of variance or {\sc anova} for short. To use {\sc anova}, construct the two models that you want to compare: here \code{net \tilde\ age + sex} and \code{net \tilde\ age + sex + age:sex}.
+<<>>=
+mod1 <- lm(net ~ age + sex, data=TenMileRace)
+mod2 <- lm(net ~ age + sex + age:sex, data=TenMileRace)
+@
+
+
+
+To compare the models using \function{anova}
+<<>>=
+anova(mod1, mod2)
+@
+
+The {\sc anova} report describes the results from a hypothesis test.\TeachingTip{Your students may want to know what is being done in the {\sc anova} test.  A way to show this is in the Activities section of this chapter.}  The Null Hypothesis for this test is that the two models are effectively the same. In other words that \code{age:sex} adds no new information or so little information that it cannot be justified by the data used for fitting the model.
+
+In this case, the p-value\Pointer{Remember, the p-value is a probability that a result as strong as actually observed would happen even if the Null Hypothesis is true.} is 0.40 --- that's so large that there is no reason to reject the Null Hypothesis.  Recall that failing to reject the Null Hypothesis is not the same thing as accepting the Null Hypothesis as true.  The Null Hypothesis might be wrong and still we fail to reject it.  For instance, there is a possibility that we simply didn't collect a big enough sample to see the effect of the interaction term.
+
+\newthought{Sometimes anova is used as a quick screen} of possible model terms.  The modeler builds a series of nested models,\marginnote{Two models are nested when they have the same response variable and every term in the smaller model is contained in the larger model.} for instance
+<<>>=
+mod0 <- lm(net ~ 1, data=TenMileRace)
+mod1 <- lm(net ~ age, data=TenMileRace)
+mod2 <- lm(net ~ age + sex, data=TenMileRace)
+mod3 <- lm(net ~ age + sex + poly(age,2), data=TenMileRace)
+mod4 <- lm(net ~ age + sex + poly(age,2) + age:sex, data=TenMileRace)
+@
+
+Then compare each of the models to the preceeding one:
+<<>>=
+anova(mod0, mod1, mod2, mod3, mod4)
+@
+The report gives a p-value for comparing each of the models to the previous one in the nested series of models.  Here, each of \code{mod1}, \code{mod2}, and \code{mod3} are adding something to the previous model.  But the p-value for the \code{mod4} to \code{mod3} comparison is so large that we can't reject the Null Hypothesis that the new term is no better than random.
+
+This sort of model-to-model comparison is so common that there is a shortcut. Construct the largest model and \function{anova} will generate each of the previous models in the nested series.  For example:
+
+
+\begin{widestuff}
+<<include=FALSE>>=
+OLD <- options(width=90)
+@
+<<>>=
+anova(mod4)
+@
+<<include=FALSE>>=
+options(OLD) 
+@
+\end{widestuff}
+This format of report helpfully shows the term being added in each line and the degrees of freedom for that term.  
+
+
+\newthought{What is {\sc Anova}?} Many statistics instructors think of {\sc Anova} as a way to compare multiple groups.  At least, that's the application that conventional textbooks emphasize.  Comparing groups is indeed one use for {\sc Anova}, but it is more general than that.  
+
+This section gives a description of how {\sc works} in terms that relate simply to models: R$^2$ and the model's degrees of freedom. Put aside for the moment what you may have learned about within-groups and between-groups sums of squares. That's one way to calculate {\sc Anova} on a particularly simple form of model.  Instead, focus on how adding new terms to a model will contribute to the model's ability to account for the response variable.
+
+A model with R$^2=1$ is a ``perfect fit" to the data.  It turns out to be easy to make a model with a perfect fit; it's a matter of having enough terms in the model.  How many is enough? When you are fitting a model to data with $n$ cases, any model with an intercept and $n-1$ independent terms, no matter where they come from, will produce R$^2 = 1$.
+
+To see this, try it out.  The \pkg{mosaic} package provides the convenient function \function{rand} that will generate a set of however many variables that you specify, each variable containing nothing more than random numbers.
+
+For instance, the trebuchet data consists of 163 cases.  Here are some models containing only random ``explanatory" variables. 
+<<>>=
+rsquared( lm(distance ~ rand(2),  data=trebuchet))
+rsquared( lm(distance ~ rand(10), data=trebuchet))
+rsquared( lm(distance ~ rand(80),  data=trebuchet))
+rsquared( lm(distance ~ rand(150), data=trebuchet))
+rsquared( lm(distance ~ rand(161),  data=trebuchet))
+rsquared( lm(distance ~ rand(162), data=trebuchet))
+rsquared( lm(distance ~ rand(163),  data=trebuchet))
+rsquared( lm(distance ~ rand(164), data=trebuchet))
+@
+As more variables are added to the model, R$^2$ increases.  When the number of random variables reaches $n-1$ and above, R$^2 = 1$.
+\DiggingDeeper{Of course, variables formed at random are not able genuinely to explain the response variable.  Still, any additional variable will increase R$^2$ to some extent, up to the limit of R$^2=1$. There's even a proverb: ``With four parameters I can fit an elephant, and with five I can make him wiggle his trunk." --- John von Neumann (1903-1957), a leading mathematician, physicist, a pioneer in the development of modern computing.}
+
+
+Here is $R$^2$ for the nested set of models from the ten-mile race example:
+<<>>=
+rsquared(mod0)
+rsquared(mod1)
+rsquared(mod2)
+rsquared(mod3)
+rsquared(mod4)
+@
+
+Notice that R$^2$ increases in each step moving from a smaller model to a larger model in the nested series.
+
+\marginpar{Note in draft: WHERE TO PUT THIS DEFINITION?? It should go in a previous chapter where degrees of freedom are introduced.  Make that introduction both in terms of data and models.  Then point out that the residual degrees of freedom is the difference between the two.  Remember to take off the intercept!
+
+<<>>=
+degreesOfFreedom <- function( mod ) {
+  length( coef( mod ) ) - 1
+}
+@
+}
+
+Similarly, the degrees of freedom of each model increases from the smaller models before it:
+<<>>=
+degreesOfFreedom(mod0)
+degreesOfFreedom(mod1)
+degreesOfFreedom(mod2)
+degreesOfFreedom(mod3)
+degreesOfFreedom(mod4)
+@
+
+<<include=FALSE>>=
+models <- list(mod0, mod1, mod2, mod3, mod4)
+x <- sapply(models, degreesOfFreedom)
+y <- sapply(models, rsquared)
+Pts <- data.frame( DF=x, R2=y)
+@
+
+Suppose you plot how R$^2$ increases as the degrees of freedom increase.\marginpar{As each new model term is included in the nested series, both the degrees of freedom and R$^2$ increase.}
+<<echo=FALSE,warning=FALSE>>=
+require(ggplot2)
+ggplot( data=Pts, aes(x=DF, y=R2)) + geom_point() + geom_line() + 
+  xlim(0,7) + ylim(0,0.2) + 
+  geom_line(data=data.frame( x=c(5,8686),y=c(0.143125,1)), aes(x=x,y=y))
+@
+
+Of course, R$^2$ goes up as the models become bigger.  The slope of the line segment connecting the points for two models indicates how ``effective" the additional variables are at increasing R$^2$.  
+
+Suppose\marginpar{The material in the next few pages about random ``explanatory" variables may be hard to follow.  This material sets out to motivate the origin and use of the F-distribution.  That's a hard topic and usually is glossed over in conventional statistics texts.  Ask a group of statisticians where the F-distribution comes from, and they are likely to joke, ``From the table at the end of the book."} now that you add some more explanatory variables, but those of the useless, junky random kind.  These will also increase $R^2$.  The slope of the line connecting them is indicative of how ``effective" random, meaningless variables are at increasing R$^2$.  The plot below shows many trials of adding sets of random variables to the ten-mile race model \code{mod4}.  In each trial, the random variables increase R$^2$, although the slopes themselves vary within a distribution.\marginpar{Adding degrees of freedom to a model in the form of random explanatory variables will increase R$^2$.  Here, random degrees of freedom are being added to \code{mod4}.  Note the very narrow scale of R$^2$ on this graph.}
+
+<<echo=FALSE>>=
+startMod <- lm(net ~ age + sex + poly(age,2) + age:sex, data=TenMileRace)
+nlines <- 50
+r2s <- numeric(nlines)
+dfs <- numeric(nlines)
+for (k in 1:nlines) {
+new <- lm(net ~ age + sex + poly(age,2) + age:sex + 
+            rand(round(runif(1,5,20))), data=TenMileRace)
+  r2s[k] <- rsquared(new)
+  dfs[k] <- degreesOfFreedom(new)
+}
+RPts <- data.frame( xend=dfs, yend=r2s, 
+                   x=degreesOfFreedom(startMod),
+                   y=rsquared(startMod))   
+ggplot( data=RPts ) +
+  geom_segment(color="red",alpha=0.2,  
+               aes(xend=xend,yend=yend,x=x,y=y)) +
+  geom_point( aes(x=xend,y=yend), color="red", size=2) +
+  ylab("R-squared") + xlab("Degrees of Freedom")
+@
+
+This rate of increase is characteristic of the ``effectiveness" or random variables in increasing R$^2$. The p-values in {\sc Anova} come from comparing the rates of increase in R$^2$ for the genuine model terms. As you can see, the slope for \code{mod0} to \code{mod1} is much steeper than the random-variable slopes.  The same holds true for \code{mod1} to \code{mod2}, and so on, but not for \code{mod3} to \code{mod4}. Thus, the p-value for the terms added in going from \code{mod3} to \code{mod4} is large and one cannot reject the Null Hypothesis that those added terms are no better than random.\marginpar{The random-variable line segments from the previous graph have been added to those coming from \code{mod4}. Seen on this scale, the slopes of the \code{mod4} segments can be compared to the slopes of the random-variable line segments. The Null Hypothesis in {\sc Anova} is that the slopes of the random-variable segments are approximately the same as the slopes for the genuine model terms.}
+
+<<>>=
+ggplot(data=Pts, aes(x=DF, y=R2)) + 
+  geom_point() + geom_line()  + 
+  geom_segment(data=RPts,color="red",alpha=0.2, lwd=2, aes(xend=xend,yend=yend,x=x,y=y))
+@
+\section{Activities}
+
+\begin{itemize}
+\item Is it justifiable to add a \code{pwt:cwt} interaction term to a model fitted to the \code{TrebTrials} data?
+\item Comparing anova to what happens when a random term is implemented.
+\end{itemize}
+
+
+
+
+
+
+

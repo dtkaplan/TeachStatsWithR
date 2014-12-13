@@ -1,7 +1,14 @@
 
 
-\marginnote{Remember to load the \pkg{mosaic} and \pkg{mosaicData} packages:\\
-\code{require(mosaic, mosaicData)}
+\marginnote{Remember to load the \pkg{mosaic} and \pkg{mosaicData} packages:
+<<>>=
+require(mosaic)
+require(mosaicData)
+@
+Data for the trebuchet example come from the \pkg{fastR} package.
+<<>>=
+require(fastR)
+@
 }
 
 Let's start by building a statistical model of a trebuchet.
@@ -12,6 +19,8 @@ A trebuchet is a device used for throwing projectiles. A heavy counter-weight pu
 As always, it's important to know the purpose for which the model is intended.  Imagining ourselves to have been commissioned by a trebuchet operator to construct a model that predicts how far a projectile will be thrown so that the operator can set up the trebuchet to hit a target at a specified distance. In reality, the trebuchet operator is Andrew Pruim in a Science Olympiad competition when he was a high-school student.
 
 To support the predictions, Andrew made many trial throws with his trebuchet.  He tried several different types of projectiles (e.g. a golf ball, a tennis ball), varied the counter-weight and the configuration of the trebuchet's sling, and measured the distance flown by the projectile for each trial. The weight of the projectile likely plays a role, so Andrew weighed each projectile.
+
+\marginpar{Note in DRAFT:  I'm planning revert back to using \code{fastR::trebuchet}.  I introduced \code{TrebTrials} to shorten the variable names.  But with the book revision, it's not clear that this is needed.  If it is still needed, I'll do it with \function{dplyr::rename}.}
 
 The data Andrew collected are in a spreadsheet named \code{TrebTrials.csv}.  You can read that table in to R with this command:
 <<>>=

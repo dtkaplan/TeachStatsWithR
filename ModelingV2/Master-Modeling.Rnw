@@ -13,6 +13,11 @@
 \author{Daniel Kaplan, Randall Pruim, and Nicholas J. Horton}
 \date{DRAFT: \today}
 
+<<include=FALSE>>=
+.include. <- TRUE
+.testing. <- TRUE
+@
+
 \begin{document}
 \def\cplabel{^X} 
 
@@ -32,6 +37,7 @@ require(grid)
 # require(fastR)	# commented out by NH on 7/12/2012
 require(mosaic) 
 require(mosaicData) 
+require(fastR)
 trellis.par.set(theme=col.mosaic(bw=FALSE))
 trellis.par.set(fontsize=list(text=9))
 options(keep.blank.line=FALSE) 
@@ -74,19 +80,20 @@ knit_hooks$set(document = function(x) {
 
 
 \chapter{Foundations}
-<<child='Foundations.Rnw', eval=TRUE>>=
+<<child='Foundations.Rnw', eval=.include.>>=
 @
 
 \chapter{Functions and data}
-<<child='FunctionsData.Rnw', eval=TRUE>>=
+<<child='FunctionsData.Rnw', eval=.include.>>=
 @
 
 \chapter{Multiple explanatory variables}
-<<child='MultipleVariables.Rnw', eval=TRUE>>=
+<<child='MultipleVariables.Rnw', eval=.include.>>=
 @
 
-\chapter{Sampling variation and statistical inference}
-<<child='SamplingVariation.Rnw', eval=TRUE>>=
+\chapter{{\sc Anova}: a tool for guiding model construction}
+\label{chap:anova}
+<<child='Anova.Rnw', eval=.include.>>=
 @
 
 
@@ -95,8 +102,15 @@ knit_hooks$set(document = function(x) {
 @
 
 \chapter{Covariates}
-<<child='Covariates.Rnw', eval=TRUE>>=
+<<child='Covariates.Rnw', eval=.include.>>=
 @
+
+\chapter{Keeping models in proportion}
+\label{chap:logistic}
+<<child='Proportions.Rnw', eval=.include.>>=
+@
+
+
 %\backmatter
 
 \bibliographystyle{alpha}

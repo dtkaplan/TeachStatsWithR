@@ -1,10 +1,191 @@
-Outline of the tests in a traditional textbook and show how the \function{lm} approach corresponds.
+Conventional introductory statistics courses often include hypothesis testing.  There is a traditional set of tests:
 
-The null hypothesis is a kind of model.  One way to think about hypothesis testing is as a comparison between models: the null-hypothesis model and a model with more detail.  The question addressed in a hypothesis test is whether the added detail can be justified by the available data.  
+\begin{itemize}
+\item The one- and two-sample t tests.
+\item The one- and two-sample p tests.
+\item So-called ``one-way {\sc Anova}" and (sometimes) ``two-way {\sc Anova}"
+\item The chi-squared test.
+\item Rank tests such as Wilcoxon ranked-sum or signed-rank.
+\end{itemize}
+
+There was a time when such tests were common in the natural and social science literature.  That time has passed.\DiggingDeeper{GIVE HERE A REFERENCE TO Nick's analysis of papers in NEJM.}  Nowadays, it seems, the point of teaching such tests is to demonstrate to students how a hypothesis test is constructed. A student who goes on to use statistics in his or her professional work, or to make sense of statistical presentations in the literature, will have to make sense of covariates and describe effect sizes among other things.
+
+Increasingly, colleges and universities offer what has come to be called ``a second course in statistics," to prepare students for actual applied work. Such courses feature ``regression," which is much the same thing as the sort of modeling described in this book. The tests taught in intro stats are seen as a preparation or foundation for the techniques needed for applied statistical work.
+
+An instructor teaching the "second course" that includes modeling may well want to relate it to the tests students learned in their first course.  The point of this chapter is to show the connections between the modeling presented in this book and the traditional tests of intro stats.
+
+\section{Two-sample tests}
+
+The t-test is in a first course is generally about comparing means.  For instance, suppose we're interested in whether the mean wage differs between males and females in the population from whom the \code{CPS85} data were collected.  This sort of situation motivates the two-sample t-test.\DiggingDeeper{Of course, there are other factors than sex that lead to differences in wages: years of experience, type of work, education, etc.}
+
+R offers a convenient function for carrying out this sort of two-sample t-test.  The notation will be familiar.  It's the same as the modeling notation and follows the function/data template:
+<<>>=
+t.test(wage ~ sex, data=CPS85)
+@
+Conclusion: We can reject the Null Hypothesis that the two means are equal.
 
 
-MORE STUFF comparing things like the t-test to models.
+Let's compare this to an {\sc Anova} test based on a linear model:
+<<>>=
+mod1 <- lm(wage ~ sex, data=CPS85)
+anova(mod1)
+@
+Conclusion: We can reject the Null Hypothesis that \code{sex} is unrelated to \code{wage}.
 
-Use Whickham for proportion.
+In fact, the {\sc Anova} test on the model is the same as the t-test, only carried out by different mathematical approaches.  Notice that the p-values are essentially the same.  Similarly, the F-statistic from {\em Anova} (23.4) is the matches the square of the t-statistic ($-4.885^2 = 23.9$) from the t-test.
 
+In fact, the {\sc Anova} test is exactly the same as the equal-variance\DiggingDeeper{Is there any reason to prefer an unequal-variance t-test to the equal-variance equivalent?  When the group variances are very different, the unequal-variance test has slightly more power.  In practice, this is meaningless.  Usually the interest is in whether the two groups are different, not whether their means are different.  Even if the means for the two groups were exactly the same, the difference in variances would signal that the groups are not the same.} t-test.
+<<>>=
+t.test(wage ~ sex, data=CPS85, var.equal=TRUE)
+@
+
+For the rank tests, model \code{rank(wage)} as a function of \code{sex}.
+<<>>=
+rankMod <- lm( rank(wage) ~ sex, data=CPS85)
+anova(rankMod)
+@
+
+\newthought{A two-sample p-test has much the same structure} as the t-test.  Suppose you want to compare the proportions of men and women who earn more than \$10/hour in the setting of \code{CPS85}.  Here are the proportions:
+<<>>=
+tally( ~ wage>10 | sex, data=CPS85)
+@
+Or, in counts
+<<>>=
+tally( ~ wage>10 & sex, data=CPS85)
+@
+In the textbook formula calculation takes as inputs the two proportions to compare --- 0.224 and 0.384 --- and the number of cases in each group.
+<<>>=
+tally( ~ sex, data=CPS85)
+@
+In R, you can use \function{prop.test} to carry out the calculations:
+<<>>=
+prop.test(n=c(245,289), x=c(55,111) )
+@
+
+More compactly, you can do both the tabulations and the test calculations in one step, using the formula interface:
+
+<<>>=
+prop.test(wage>10 ~ sex, data=CPS85)
+@
+
+In terms of models, this corresponds to:
+<<>>=
+mod2 <- lm( wage>10 ~ sex, data=CPS85)
+anova(mod2)
+@
+The question the model addresses is formally the same, but can be phrased, ``Does \code{sex} account for whether a worker's wage is greater than \$10/hour.  The difference between the two p-values --- 0.00011 versus 0.0000664 --- stems from the small difference between the z-test and t-test. In practice, this makes no difference.
+
+
+\section{One-sample tests}
+
+What we call a one-sample test is a test of whether there is a difference between between the value inferred from the data and a stated reference value.  Often this reference value is zero, but it doesn't need to be.
+
+For example, a one-sample t-test of whether {\em CPS85} points to a population difference between \$10/hour and the mean wage.
+<<>>=
+t.test( ~ wage, data=CPS85, mu=10)
+@
+
+The equivalent test in modeling is whether the intercept term is different from zero, as in this model.
+<<>>=
+wage10Model <- lm(wage-10 ~ 1, data=CPS85)
+coef(summary(wage10Model))
+@
+Notice that the regression table is being used here. These notes have avoided introducing interpretation of coefficients and regression tables. Instead, we've emphasized prediction intervals and {\sc Anova}. But that can't be avoided when dealing with one-sample tests.  {\sc Anova} is about variance and there is no model variability in a model with only an intercept.
+
+The one-sample question can, however, be answered with a confidence interval:\marginpar{Wondering what the zero is doing as an argument to \function{wageFun}?  The software for model functions assumes that there is some input variable. This is not always true, but \function{wageFun} nevertheless will work only when there is some input. The zero is that input. It's there as a placeholder, so that the \code{interval=} and \code{level=} arguments are in the right position.}
+<<>>=
+wageModel <- lm(wage ~ 1, data=CPS85)
+wageFun <- makeFun(wageModel)
+wageFun(0, interval="confidence", level=0.95)
+@
+The confidence interval doesn't include \$10/hour.
+
+An approximation using {\sc Anova} is possible.  Compare the wage data to a synthetic data set where the wage is \$10/hour.
+<<>>=
+Real <- with( CPS85, data.frame( wage=wage, group="B"))
+HypotheticalAt10 <- data.frame(wage=rep(10, times=nrow(CPS85)), 
+                               group="A")
+realVsHypothetical <- lm( wage ~ group, 
+                          data=rbind(Real, HypotheticalAt10))
+anova(realVsHypothetical)
+@
+
+\section{``One-way" and ``two-way" {\sc Anova}}
+
+In a conventional introductory statistics course, one-way {\sc Anova} is introduced as a kind of generalization of the two-sample t-test to more than two groups. One-way {\sc Anova} is a special case of \function{anova} applied to a linear model.  In the special case, the model has a very simple form.
+For example, does \code{CPS85} provide an indication that the mean wages differ between job sectors:
+<<>>=
+wageModel <- lm(wage ~ sector, data=CPS85)
+anova(wageModel)
+@
+
+Calculation of {\em post hoc} tests such as the Tukey honest significant difference test: 
+<<results='hide'>>=
+TukeyHSD(wageModel)
+@
+
+\newthought{Two-way Anova} is often used to test for an interaction between variables.  It is simply a special case of {\em Anova} applied to linear models
+<<>>=
+wageModel2 <- lm(wage ~ sector + sex + sector:sex, data=CPS85)
+anova(wageModel2)
+@
+
+Non-parametric tests such as the Kruskal-Wallis are available in R, but they are in practice little different than using the ranks of the response variable, e.g.
+<<>>=
+wageRankModel <- lm(rank(wage) ~ sector, data=CPS85)
+anova(wageRankModel)
+@
+
+Compare this to:
+<<>>=
+kruskal.test(wage ~ sector, data=CPS85)
+@
+
+
+\section{Chi-square}
+
+The chi-square test is used to assess whether a set of counts in different conditions is a statistical match for a stated set of probabilities of those conditions.  In conventional statistics, it's often used in conjunction with a two-way tabulation of counts.  
+
+Chi-square is not equivalent to a linear model. There are two closely related models that are appropriate replacements for chi-square.
+\begin{itemize}
+\item Poisson regression.  In the context of a two-variable contingency table, the chi-square test corresponds to a hypothesis test on the interaction term. CHECK THIS ! !
+\item Logistic regression.  Very often, at least one of the two variables has just two levels, e.g., survived or not, smoker or not, female or male, etc.  In such situations, logistic regression is appropriate.
+\end{itemize}
+Logistic and poisson regression are presented in Chapter \ref{chap:logistic}.
+
+These techniques can handle the relationships among more than two variables and also work with continuous explanatory variables. Often, the contingency table being examined with chi-square was constructed by turning a continuous variable into a discrete one.  In such situations, logistic and poisson regression are more appropriate than chi-square.
+
+We suspect that if the introductory statistics curriculum were being developed from scratch in today's environment of ubiquitous computing, chi-square would not be included. The inclusion of chi-square tests in introductory statistics seems to be based largely on historical precedence and amenability to hand calculation (except for the all-important step of finding the p-value).  Generations of students have been cautioned to watch out for cell counts less than 5, despite the availability of exact tests (e.g. Fisher's, Barnard's) that require no such caution.
+
+
+
+\section{But the p-values were different!}
+
+Before worrying about the second or third digit in a p-value, it makes sense to see how sensitive the p-value is to sampling variation.
+
+... that the p-values are different doesn't mean that one of them is right and the other wrong.  Although we don't use the term, the ``sample p-value" is not really the quantity of interest.  That sample p-value has sampling variability.  
+
+DEMO THAT HERE using bootstrapping.
+
+\section{One- and two-sided tests}
+
+PERHAPS WE DON'T WANT THAT HERE ... but to me the question is whether we should spend any time on a distinction that leads to more abuse than benefit.
+
+
+
+
+\newthought{Do we need the tests covered in a conventional intro course?}
+
+In draft.
+
+A little editorial here: Just as the function/data template helps students to understand and use the computer operations of statistics, students may be helped by using the general framework provided by linear models for addressing many statistical problems that are seen as unconnected in the conventional introduction to statistics.\Pointer{The American Statistical Association
+{\em Guidelines for Undergraduate Programs in Statistical Science} states:
+``Students need to see that the discipline of statistics is more than a collection of unrelated tools (or methods), but a general approach to problem-solving using data."}%
+
+
+\section{Activities}
+
+\begin{itemize}
+\item Sampling variation in the p-value for different tests.
+\end{itemize}
 
