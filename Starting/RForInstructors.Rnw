@@ -1144,9 +1144,9 @@ xyplot(time_til_next ~ duration, faithful)
 @
 
 \end{center}
+
 \marginnote[-1cm]{
-If the variable containing a data frame is modified or used to store a different object,
-the original data from the package can be recovered using \function{data()}.
+If the variable containing a data frame is modified or used to store a different object, the original data from the package can be recovered using \function{data()}.
 }
 
 \begin{problem}
@@ -1228,8 +1228,8 @@ OLD <- options(width=110)
 @
 <<>>=
 favstats( age ~ sex + substance, data=HELPrct )
-mean( age ~ sex + substance, data=HELPrct, .format="table" )
-sd( age ~ sex + substance, data=HELPrct, .format="table" )
+mean( age ~ sex + substance, data=HELPrct) #, .format="table" )
+sd( age ~ sex + substance, data=HELPrct) #, .format="table" )
 @
 <<echo=FALSE>>=
 options(OLD)
@@ -1241,6 +1241,7 @@ options(OLD)
 Sometimes it is convenient to reorder a data frame.  We can do this with 
 the \function{arrange()} function by specifying the variable(s) on which to 
 do the sorting.
+
 <<tidy=FALSE>>=
 HELPrct %>% 
   group_by(sex, substance) %>%
@@ -1250,14 +1251,7 @@ HELPrct %>%
 
 \subsection{Merging datasets}
 
-The \dataframe{fusion1} data frame in the \pkg{fastR} package contains 
-genotype information for a SNP (single nucleotide polymorphism) in the gene
-\emph{TCF7L2}.  
-The \dataframe{pheno} data frame contains phenotypes
-(including type 2 diabetes case/control status) for an intersecting set of individuals.
-We can merge these together to explore the association between
-genotypes and phenotypes using one of the join functions in 
-\pkg{dplry} or using the \function{merge()} function.
+The \dataframe{fusion1} data frame in the \pkg{fastR} package contains genotype information for a SNP (single nucleotide polymorphism) in the gene \emph{TCF7L2}.  The \dataframe{pheno} data frame contains phenotypes (including type 2 diabetes case/control status) for an intersecting set of individuals. We can merge these together to explore the association between genotypes and phenotypes using one of the join functions in\pkg{dplry} or using the \function{merge()} function.
 
 %\Rindex{merge()}%
 \begin{widestuff}
@@ -1269,12 +1263,19 @@ require(fastR)
 head(fusion1,3)
 head(pheno,3)
 @
+\end{widestuff}
 
+\begin{widestuff}
 <<tidy=FALSE>>=
 # merge fusion1 and pheno keeping only id's that are in both
 fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id', 
                   all.x=FALSE, all.y=FALSE)
 head(fusion1m, 3)
+@
+\end{widestuff}
+
+\begin{widestuff}
+<<>>=
 left_join( pheno, fusion1, by="id") %>% dim()
 inner_join( pheno, fusion1, by="id") %>% dim()
 # which ids are only in \dataframe{pheno}?
@@ -1313,10 +1314,13 @@ another SNP.  Merge \dfn{fusion1}, \dfn{fusion2}, and \dfn{pheno} into a single 
 frame.
 
 Note that \dfn{fusion1} and \dfn{fusion2} have the same columns.
+
+\begin{widestuff}
 <<>>=
 names(fusion1)
 names(fusion2)
 @
+\end{widestuff}
 
 You may want to use the \option{suffixes} argument to \function{merge()} or rename the variables
 after you are done merging to make the resulting data frame easier to navigate.
@@ -1324,5 +1328,812 @@ after you are done merging to make the resulting data frame easier to navigate.
 Tidy up your data frame by dropping any columns that are redundant or that you just don't want to
 have in your final data frame.
 \end{problem}
+
+
+\section{Getting data from mySQL data bases}
+
+\Rindex{RMySQL}%
+\myindex{SQL}%
+The \pkg{RMySQL} package allows direct access to data in MySQL data bases and the \pkg{dplyr} package facilitates processing this data in the same way as for data in a data frame. This makes it easy to work with very large data sets stored in public databases. The example below queries the UCSC\marginnote{UCSC --- Univ. of California, Santa Cruz}%
+genome browser to find all the known genes on chromosome~1.
+
+\begin{widestuff}
+<<echo=FALSE>>=
+OLD <- options( width=100 )
+@
+<<tidy=FALSE, message=FALSE,warning=FALSE>>=
+# connect to a UCSC database
+UCSCdata <- src_mysql(
+  host="genome-mysql.cse.ucsc.edu",
+  user="genome",
+  dbname="mm9")
+# grab one of the many tables in the database
+KnownGene <- tbl(UCSCdata, "knownGene")
+
+# Get the gene name, chromosome, start and end sites for genes on Chromosome 1
+Chrom1 <-
+  KnownGene %>% 
+  select( name, chrom, txStart, txEnd ) %>%
+  filter( chrom == "chr1" )
+@
+<<echo=FALSE>>=
+options(OLD)
+@
+\end{widestuff}
+
+\Rindex{src_mysql}
+\Rindex{tbl}
+The resulting \dataframe{Chrom1} is not a data frame, but behaves much like one.
+<<>>=
+class(Chrom1)
+@
+\Rindex{mutate()}
+<<>>=
+Chrom1 %>% 
+  mutate(length=(txEnd - txStart)/1000) -> Chrom1l
+Chrom1l
+@
+\Caution[-1in]{The arithmetic operations in this \function{mutate()} command are being executed in SQL, not in \R, and the palette of allowable functions is much smaller. It is not possible, for example, to compute the logarithm of the length here using \function{log()}.  For that we must first collect the data into a real data frame.}
+For efficiency, the full data are not pulled from the database until needed (or until we request this using \function{collect()}).  This allows us, for example, to inspect the firstfew rows of a potentially large pull from the database without actually having done all ofthe work required to pull that data.
+
+
+But certain things do not work unless we collect the results from the data based into an actual data frame.  To plot the data using \pkg{lattice} or \pkg{ggplot2}, for example, we must first \function{collect()} it into a data frame.
+\Rindex{collect()}
+<<tidy=FALSE>>=
+Chrom1df <- collect(Chrom1l)       # collect into a data frame
+histogram( ~length, data=Chrom1df, xlab="gene length (kb)" )
+@
+
+
+%A great example of this is the 12 gigabytes of data from the Airline on-time
+%performance dataset included in the 2009 Data Expo (\url{http://stat-computing.org/dataexpo/2009}).
+%There is an \href{http://csg.sph.umich.edu/docs/R/rsql.html}{online document}
+%describing this type of manipulation.
+
+\section{Reshaping data}
+\authNote{NH to expand}
+\authNote{Hadley is working on a new package for tidying data that will replace this.}
+
+
+\function{reshape()} provides a flexible way to change the arrangement of data.  
+\Rindex{reshape()}%
+It was designed for converting between long and wide versions of 
+time series data and its arguments are named with that in mind.
+
+A common situation is when we want to convert from a wide form to a 
+long form because of a change in perspective about what a unit of 
+observation is.  For example, in the \dfn{traffic} data frame, each 
+row is a year, and data for multiple states are provided.
+
+<<traffic-reshape>>=
+traffic
+@
+
+We can reformat this so that each row contains a measurement for a 
+single state in one year.
+
+<<tidy=FALSE>>=
+longTraffic <-
+  reshape(traffic[,-2], idvar="year", ids=row.names(traffic),
+      times=names(traffic)[3:6], timevar="state",
+      varying=list(names(traffic)[3:6]), v.names="deathRate",
+      direction="long") 
+head(longTraffic)
+@
+
+We can also reformat the other way, this time having all data for a given state form a row in the data frame.
+
+\begin{widestuff}
+<<echo=FALSE>>=
+OLD <- options(width=100)
+@
+<<tidy=FALSE>>=
+stateTraffic <- 
+   reshape(longTraffic, direction='wide', 
+           v.names="deathRate", idvar="state", timevar="year")
+stateTraffic
+@
+<<echo=FALSE>>=
+options(OLD)
+@
+\end{widestuff}
+
+In simpler cases, \function{stack()} or \function{unstack()} may suffice.
+\verb!Hmisc! also provides \verb!reShape()! as an alternative 
+to \verb!reshape()!.
+\Rindex{stack()}%
+\Rindex{unstack()}%
+
+
+%\subsection{Simple Relational Database Operations}
+%
+%\newthought{Example: Grades/Courses}
+%
+%Using the grade/courses database, show how to combine data from
+%different data frames. [DTK]
+
+%\newthought{Example: Merging Genotype and Phenotype Data}
+%\label{example:fusion1-glm1}%
+%\myindex{FUSION|exampleidx}%
+%\myindex{logistic regression}%
+
+
+\section{Functions in \R} %{An introduction to writing functions}
+\label{sec:writingFunctions}
+\myindex{functions in {\sf R}}%
+
+%To really customize a &lattice& plot -- and for many other applications in \R\ -- 
+%you need to learn how to use the &panel& argument,
+%which means you need to learn how to write functions.
+Functions in \R\ have several components:
+\begin{itemize}
+  \item a \rterm{name} (like \code{histogram})\footnote{Actually, it is possible to define 
+  functions without naming them; and for short functions that are only needed once,
+  this can actually be useful.}
+  \item
+  an ordered list of named \rterm{arguments} that serve as inputs to the function
+	\myindex{argument of an R function@argument of an {\sf R} function}%
+
+	These are matched first by name and then by order to the values supplied by
+	the call to the function.  This is why we don't always include the argument name
+	in our function calls.  On the other hand, the availability of names means that
+	we don't have to remember the order in which arguments are listed.
+
+	Arguments often have \rterm{default values} which are used if no value is 
+	supplied in the function call.
+  \item
+	a \rterm{return value}
+
+	This is the output of the function.  It can be assigned to a variable
+	using the assignment operator (\code{=}, \code{<-}, or \code{->}).
+	\Rindex{->}%
+	\Rindex{<-}%
+	\Rindex{=}%
+
+  \item
+	\rterm{side effects}
+	
+	A function may do other things (like make a graph or set some preferences) 
+	that are not necessarily part of the return value.
+
+\end{itemize}
+When you read the help pages for an \R\ function, you will see that they are organized
+in sections related to these components.  
+The list of arguments appears in the \rterm{Usage} section along 
+with any default values.  Details about how the arguments are used appear in the 
+\rterm{Arguments} section.  The return value is listed in the \rterm{Value} section.
+Any side effects are typically mentioned in the \rterm{Details} section.  
+\marginnote{Even if you do not end up writing many functions yourself, writing a few functions will give you a much better feel for how information flows through \R\ code.}
+
+Now let's try writing our own function.  Suppose you frequently wanted to compute the mean, median, and standard deviation of a distribution.  You could make a function to do all three to save some typing.  
+
+Let's name our function  \function{mystats()}. The \function{mystats()} will have one argument, which we are assuming will be a vector of
+numeric values. %
+\Rindex{mystats()}%
+\Rindex{function()}%
+\marginnote{There are ways to check the \rterm{class} of an argument to see if it is a data frame, a vector, numeric, etc.  A really robust function should check to make sure that the values supplied to the arguments are of appropriate types.}%
+Here is how we could define it:
+\Rindex{mystats()}%
+
+<<defFun01>>=
+mystats <- function(x) {
+    mean(x)
+    median(x)
+    sd(x)
+}
+@
+
+<<>>=
+mystats((1:20)^2)
+@
+
+The first line says that we are defining a function called \function{mystats()} with one argument, named \variable{x}.  The lines surrounded by curly braces give the code to be executed when the function is called.  So our function computesthe mean, then the median, then the standard deviation of its argument.
+
+But as you see, this doesn't do exactly what we wanted.  So what's going on?  
+The value returned by the last line of a function is (by default) returned
+by the function to its calling environment, where it is (by default) printed
+to the screen so you can see it.  In our case, we computed the mean, median,
+and standard deviation, but only the standard deviation is being returned 
+by the function and hence displayed.  So this function is just an inefficient
+version of \function{sd()}.  That isn't really what we wanted.
+
+We can use \function{print()} to print out things along the way if we like.
+
+
+<<defFun02>>=
+mystats <- function(x) {
+    print(mean(x))
+    print(median(x))
+    print(sd(x))
+}
+
+mystats((1:20)^2)
+@
+
+
+Alternatively, we could use a combination of \verb!cat()! and \verb!paste()!, which would give us more control over how the output is displayed.
+\Rindex{cat()}%
+\Rindex{paste()}%
+
+<<defFun02-cat>>=
+altmystats <- function(x) {
+    cat(paste("  mean:", format(mean(x),4),"\n"))
+    cat(paste(" edian:", format(median(x),4),"\n"))
+    cat(paste("    sd:", format(sd(x),4),"\n"))
+}
+altmystats((1:20)^2)
+@
+Either of these methods will allow us to see all three values, but if we try to store them \dots
+\authNote{Talk about \function{paste()} some more somewhere?}%
+
+<<defFun02a>>=
+temp <- mystats((1:20)^2)
+temp
+@
+A function in \R\ can only have one return value, and by default it is the value of the last line in the function. In the preceding example we only get the standard deviation since that is the value we calculated last.
+
+We would really like the function to return all three summary statistics. Our solution will be to store all three in a vector and return the vector.%
+\footnote{If the values had not all been of the same mode, we 
+could have used a list instead.}
+
+<<defFun03>>=
+mystats <- function(x) {
+	c(mean(x), median(x), sd(x))
+}
+mystats((1:20)^2)
+@
+Now the only problem is that we have to remember which number is which. We can fix this by giving names to the slots in our vector. While we're at it, let's add a few more favorites to the list. We'll also add an explicit \function{return()}.
+\Rindex{return()}%
+
+\begin{widestuff}
+
+<<defFun04>>=
+mystats <- function(x) {
+    result <- c(min(x), max(x), mean(x), median(x), sd(x))
+    names(result) <- c("min","max","mean","median","sd")
+    return(result)
+}
+mystats((1:20)^2)
+summary(Sepal.Length~Species, data=iris, fun=mystats)
+aggregate(Sepal.Length~Species, data=iris, FUN=mystats)
+@
+
+\end{widestuff}
+
+Notice how nicely this works with \function{aggregate()} and with the \function{summary()} function from the \pkg{Hmisc} package. You can, of course, define your own favorite function to use with \function{summary()}.
+\Rindex{favstats()}%
+The \function{favstats()} function in the \pkg{mosaic} package includes the quartiles, mean, standard, deviation, sample size and number of missing observations.
+
+\begin{widestuff}
+<<echo=FALSE>>=
+OLD <- options(width=100)
+@
+<<>>=
+favstats(Sepal.Length ~ Species, data=iris)
+@
+<<echo=FALSE>>=
+options(width=60)
+@
+\end{widestuff}
+
+
+
+\authNote{rjp to add a section here showing how to start with a code chunk 
+and make it reusable by wrapping it up into a function.}
+
+\iffalse
+\section{A Few Graphical Bells and Whistles}
+There are lots of arguments that control how lattice plots look.  Here are just a few examples.
+
+\newthought{auto.key}
+When using overlayed groups in a plot, it is often useful to 
+have a legend.  \verb!auto.key=TRUE!  turns on a simple legend.  
+(There are ways to have more control, if you need it.)
+<<iris-xyplot-key,cache=TRUE,tidy=FALSE>>=
+xyplot(Sepal.Length ~ Sepal.Width, groups=Species, 
+    data=iris, auto.key=TRUE)   
+@
+
+\newthought{alpha, cex}
+Sometimes it is nice to have elements of a plot be partly transparent.  When such elements overlap, they get darker, showing us where data are ``piling up." Setting the \verb!alpha! argument to a value between 0 and 1 controls the degree  of transparency: 1 is completely opaque, 0 is invisible.
+The \verb!cex! argument controls ``character expansion" and can be used to make the plotting ``characters" larger or smaller by specifying the scaling ratio.
+<<iris-xyplot-alpha,cache=TRUE,tidy=FALSE>>=
+xyplot(Sepal.Length ~ Sepal.Width, data=iris, 
+    groups=Species, 
+    auto.key=list(columns=3),
+    alpha=.5, cex=1.3)   
+@
+
+\vspace{-8mm}
+\newthought{main, sub, xlab, ylab}
+
+You can add a title or subtitle, or change the default labels of the axes.
+<<iris-xyplot-text,cache=TRUE,tidy=FALSE>>=
+xyplot(Sepal.Length ~ Sepal.Width, groups=Species, data=iris, 
+    main="Some Iris Data",
+    sub="(R. A. Fisher analysed these data in 1936)",
+    xlab="sepal width (cm)",
+    ylab="sepal length (cm)",
+    alpha=.5,        
+    auto.key=list(columns=3))   
+@
+
+\newthought{trellis.par.set()}
+Default settings for lattice graphics are set using 
+\verb!trellis.par.set()!.
+Don't like the default font sizes?  You can change to a 7 point (base) font using
+
+<<fontsize,eval=TRUE>>=
+# set the base size for text to 7 point 
+trellis.par.set(fontsize=list(text=7))    
+@
+
+Nearly every feature of a lattice plot can be controlled: fonts, colors, symbols, line thicknesses, colors, etc. Rather than describe them all here, we'll mention only that groups of these settings can be collected into a theme.  \verb!show.settings()! will show you what the theme looks like.
+
+<<themes-whitbg,cache=TRUE,fig.height=4.0,fig.width=6>>=
+# a theme in the lattice package
+trellis.par.set(theme=col.whitebg())      
+show.settings()
+@
+
+<<themes-mosaic,cache=TRUE,fig.height=4,fig.width=6>>=
+# a theme in the mosaic package
+trellis.par.set(theme=col.mosaic())        
+show.settings()
+@
+%\SuggestionBox{Do you have a great eye for colors?  Help us design other 
+%lattice themes.}%
+
+\DiggingDeeper{The \pkg{RColorBrewer} package provides several palettes of colors that are highly distinguishable and aesthetically pleasing.}%
+<<themes-mosaicbw,cache=TRUE,fig.height=4,fig.width=6>>=
+# black and white version of previous theme
+trellis.par.set(theme=col.mosaic(bw=TRUE)) 
+show.settings()
+@
+
+<<themes-mosaic-redo>>=
+# back to the mosaic theme
+trellis.par.set(theme=col.mosaic())       
+# and back to a larger font 
+trellis.par.set(fontsize=list(text=9))    
+@
+
+\begin{problem}
+The \verb!Jordan8687! data set (in the \verb!fastR! package) contains the number of points Michael Jordan scored in each game of the 1986--87 season.  
+\begin{enumerate}
+\item
+Make a histogram of this data.  Add an appropriate title.
+\item
+How would you describe the shape of the distribution?
+\item
+In approximately what percentage of his games, did Michael Jordan score less than 20 points? More than 50? (You may want to add \verb!breaks=seq(0,70,by=5)! to your command to neaten up the bins.)
+\end{enumerate}
+\end{problem}
+
+\begin{problem}
+Cuckoos lay their eggs in the nests of other birds.  Is the size of cuckoo eggs different in different host species nests?  The \verb!cuckoo! data set (in \verb!fastR!) contains data from a study attempting to answer this question.
+\begin{enumerate}
+\item
+When were these data collected?  (Use \verb!?cuckoo! to get information about the data set.)
+\item
+What are the units on the length measurements?
+\item
+Make side-by-side boxplots of the length of the eggs by species.
+\item
+Calculate the mean length of the eggs for each host species.
+\item
+What do you think?  Does it look like the size is differs among the different host species?  Refer to your \R\ output as you answer this question. (We'll learn formal methods to investigate this later in the semester.)
+\end{enumerate}
+\vspace{-5mm}
+\end{problem}
+
+\fi
+
+
+%\subsection{Accounting for missing data}
+
+\section{Sharing With and Among Your Students}
+\label{sec:distributing-data}
+
+Instructors often have their own data sets to illustrate points of statistical interest or to make a particular connection with a class.  Sometimes you may want your class as a whole to construct a data set, perhaps by filling in a survey or by contributing their own small bit of data to a class collection.  Students may be working on projects in small groups; it's nice to have tools to support such work so that all members of the group have access to the data and can contribute to a written report.
+
+There are now many technologies that support such sharing.  For the sake of simplicity, we will emphasize three that we have found particularly useful both in teaching statistics and in our professional collaborative work.  These are:
+\begin{itemize}
+\item Within \RStudio\ server.
+\item A web site with minimal overhead, such as provided by Dropbox.
+\item The services of Google Docs.
+\item A web-based \RStudio\ server for \R.
+\end{itemize}
+The first two are already widely used in university environments and are readily accessible simply by setting up accounts.  Setting up an \RStudio\ web server requires some IT support, but is well within the range of skills found in IT offices and even among some individual faculty.
+
+\subsection{Using \RStudio\ server to share files}
+\TeachingTip[.2in]{When accounts are set up on the \RStudio\ server for a new class at Calvin, each user is given a symbolic link to a directory where the instructor can write files and students can only read files.  This provides an easy way to make data, \R\ code, or history files available to students from inside \RStudio.}
+
+The \RStudio\ server runs on a Linux machine.  Users of \RStudio\ have accounts on the underlying Linux file system and it is possible to set up shared directories with permissions that allow multiple users to read and/or write files stored there. This has to be done outside of \RStudio, but if you are familiar with the Linux operating system or have a system administrator who is willing to help you out, this is not difficult to do.  
+
+
+\subsection{Your own web site}
+
+You may already have a web site.  We have in mind a place where you
+can place files and have them accessed directly from the Internet.
+For sharing data, it's best if this site is public, that is, 
+it does not require a login.  In this case, \function{read.file()}
+can read the data into \R\ directly from the URL:
+<<>>=
+Fires <- read.csv("http://www.calvin.edu/~rpruim/data/Fires.csv")
+dim(Fires)
+head(Fires)
+@
+
+\newpage
+
+<<>>=
+xyplot( Acres ~ Year, data=Fires, type=c("p","smooth") )
+xyplot( Acres/Fires ~ Year, data=Fires, ylab="acres per fire",
+        type=c("p","smooth"))
+@
+
+\authNote{Need to check whether Dropbox workflow is still correct. --rjp 2014-06-28}
+\index{Dropbox}
+Unfortunately, most ``course support'' systems such as Moodle or
+Blackboard do not provide such easy access to data.  
+The Dropbox service for storing files in the ``cloud'' provides a very
+convenient way to distribute files over the web.  (Go to
+\texttt{dropbox.com} for information and to sign up for a free account.)
+Dropbox is routinely used to provide automated backup and coordinated
+file access on multiple computers.  But the Dropbox service also
+provides a \code{Public} directory.  Any files that you place in that
+directory can be accessed directly by a URL.  
+\FoodForThought{Our discussion of Dropbox is primarily for those who do
+not already know how to do this other ways.}%
+
+To illustrate, suppose you wish to share some data set with your
+students.  You've constructed this data set in a spreadsheet and
+stored it as a csv file, let's call it \code{example-A.csv}.  Move this
+file into the \code{Public} directory under Dropbox --- on most
+computers Dropbox arranges things so that its directories appear
+exactly like ordinary directories and you'll use the ordinary, familiar
+file management techniques as in Figure ??.
+
+
+\begin{center}
+\includegraphics[width=3.5in]{images/dropbox1.png}
+\end{center}
+\marginnote{Figure ??. Dragging a csv file to a Dropbox Public directory}
+
+Dropbox also makes it straightforward to construct the web-location
+identifying URL for any file by using mouse-based menu commands to
+place the URL into the clipboard, whence it can be copied to your
+course-support software system or any other place for distribution to
+students.  For a csv file, reading the contents of the file into \R\
+can be done with the \function{read.csv} function, by giving it the
+quoted URL:
+
+
+
+<<read-quoted-URL, eval=FALSE>>=
+a <- read.file("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
+@ 
+
+%\InstructorNote{The history feature in \RStudio\ can be used to 
+%re-run this command in future sessions.}
+
+\begin{center}
+\includegraphics[width=.9\textwidth]{images/dropbox2.png}
+\end{center}
+\marginnote[2cm]{Getting the URL of a file in a Dropbox Public directory}
+
+This technique makes it easy to distribute data with little advance preparation.  It's fast enough to do in the middle of a class: the csv file is available to your students (after a brief lag while Dropbox synchronizes).  It can even be edited by you (but not by your students).
+
+The same technique can be applied to all sorts of files like \R\ workspaces or \R\ scripts (files containing code). Of course, your students need to
+use the appropriate \R\ command: \function{load()} for a workspace or \function{source()} for a script.
+\authNote{RP: Not sure workspace is the best word for this.}
+
+The example below will source a file that will print a welcoming message for you.
+<<source-example>>=
+source('http://mosaic-web.org/go/R/hello.R')
+@
+
+But you can put any \R\ code you like in the files you have your students source. You can install and load packages, retrieve or modify data sets, define new functions, or anything else \R\ allows.
+
+Many instructors will find it useful to create a file with your course-specific \R\ scripts, adding on to it and modifying it as the course progresses. This allows you to distribute all sorts of special-purpose functions, letting you distribute new \R\ material to your students. That brilliant new idea you had at 2 AM can be programmed up and put in place for your students to use the next morning in class.  Then as you identify bugs and refine the program, you can make the updated software immediately available to your students.
+
+\Caution{\emph{Security through Obscurity} of this sort will 
+not generally satisfy institutional data protection regulations nor
+professional ethical requirements, so nothing truly
+sensitive or confidential should be ``protected" in this manner.}%
+If privacy is a concern, for instance if you want the data available
+only to your students, you can effectively accomplish this 
+by giving files names known only to your students, e.g.,
+\code{Example-A78r423.csv}.  
+
+
+\subsection{GoogleDocs}
+\authNote{NH wants to add something about RMarkdown in this section, but I'm not 
+sure what he wants to add --rjp  2014--6-28}
+
+The Dropbox technique (or any other system of posting files to the Internet) is excellent for broadcasting: taking files you create and distributing them in a read-only fashion to your students. But when you want two-way or multi-way sharing of files, other techniques are called for, such as provided by the GoogleDocs service.
+
+GoogleDocs allows students and instructors to create various forms of documents, including reports, presentations, and spreadsheets. (In addition to creating documents {\em de novo}, Google will also convert existing documents in a variety of formats.)
+
+Once on the GoogleDocs system, the documents can be edited  {\em  simultaneously} by multiple users in different locations.  They can be shared with individuals or groups and published for unrestricted viewing and even editing.
+
+
+For teaching, this has a variety of uses:
+\begin{itemize}
+  \item Students working on group projects can all simultaneously have
+    access to the report as it is being written and to data that is
+    being assembled by the group.
+  \item The entire class can be given access to a data set, both for
+    reading and for writing.
+  \item The Google Forms system can be used to construct surveys, the
+    responses to which can populate a spreadsheet that can
+    be read back into \RStudio\ by the survey creators.
+  \item Students can ``hand in'' reports and data sets by copying a link
+    into a course support system such as Moodle or Blackboard, or
+    emailing the link.
+  \item The instructor can insert comments and/or corrections directly
+    into the document.
+\end{itemize}
+
+An effective technique for organizing student work and ensuring
+that the instructor (and other graders) have access to it, is to
+create a separate Google directory for each student in your class
+(Dropbox can also be used in this manner).
+Set the permission on this directory to share it with the
+student.  Anything she or he drops into the directory is automatically
+available to the instructor.  The student can also share with specific
+other students (e.g., members of a project group).
+
+We will illustrate the entire process in the context of the following 
+example.
+
+\begin{example}
+One exercise for students starting out in a statistics course is to
+collect data to find out whether the ``close door'' button on an
+elevator has any effect.  This is an opportunity to introduce simple
+ideas of experimental design.  But it's also a chance to teach about
+the organization of data.
+
+Have your students, as individuals or small groups, study a particular
+elevator, organize their data into a spreadsheet, and hand in their
+individual spreadsheet.  Then review the spreadsheets in class.  You
+will likely find that many groups did not understand clearly the
+distinction between cases and variables, or coded their data in
+ambiguous or inconsistent ways.
+
+Work with the class to establish a consistent scheme for the variables
+and their coding, e.g.,  a variable \VN{ButtonPress} with levels
+``Yes'' and ``No'',  a variable \VN{Time} with the time in seconds
+from a fiducial time (e.g. when the button was pressed or would have
+been pressed) with time measured in seconds, and variables \VN{ElevatorLocation}
+and \VN{GroupName}.  Create a spreadsheet
+with these variables and a few cases filled in.  Share it with the class.
+
+Have each of your students add their own data to the class data
+set.  Although this is a trivial task, having to translate their
+individual data into a common format strongly reinforces the
+importance of a consistent measurement and coding system for recording
+data. 
+
+Once you have a spreadsheet file in GoogleDocs, you will want to open
+it in \R.  This can be exported as a csv file, then
+open it using the csv tools in \R, such as \function{read.csv}.
+%But there are easier ways that let you work with the data ``live.''
+
+%\paragraph{In the web-server version of \RStudio,} described below, you can
+%  use a menu item to locate and load your spreadsheet.
+%
+%\begin{center}
+%  \includegraphics[width=3in]{images/google-spreadsheet1.png}
+%\end{center}
+
+%\paragraph{If you are using other \R\ interfaces,} you must first use the Google
+%  facilities for publishing documents.
+
+%\begin{enumerate}
+  %\item From within the document, use the ``Share'' dropdown menu and
+    %choose ``Publish as a Web Page.''
+   %\item Press the ``Start Publishing'' button in the ``Publish to the
+     %web'' dialog box. (See figure \ref{fig:publish-google}.)
+   %\item In that dialog box, go to ``Get a link to the published
+     %data.''  Choose the csv format and copy out the link that's
+     %provided.  You can then publish that link on your web site, or via
+     %course-support software.  Only people with the link can see the
+     %document, so it remains effectively private to outsiders.
+%\end{enumerate}
+
+
+%\begin{figure}
+%\begin{center}
+  %\includegraphics[width=4.5in]{images/publishing-google1.png}
+%\end{center}
+%\caption{\label{fig:publish-google}Publishing a Google Spreadsheet so that it can be read
+    %directly into \R.}
+%\end{figure}
+
+Direct communication with GoogleDocs requires facilities
+that are not present in the base version of \R, but are available
+through the \pkg{RCurl} package.  
+In order to make these readily
+available to students, the \pkg{mosaic} package contains a function that takes the quoted (and cumbersome)
+string with the Google-published URL and reads the corresponding file
+into a data frame.  \pkg{RCurl} neads to be installed for this to work, and will be loaded
+if it is not already loaded when \function{fetchGoogle()} is called.
+
+\begin{widestuff}
+<<echo=FALSE>>=
+OLD <- options(width=120)
+@
+<<"read-from-google2",eval=FALSE,tidy=FALSE>>=
+elev <- fetchGoogle(
+"https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&
+key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
+@
+<<"read-from-google1",echo=FALSE,results="hide">>=
+elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
+@
+<<"read-from-google3">>=
+head(elev)
+@
+<<echo=FALSE>>=
+options(OLD)
+@
+\end{widestuff}
+\TeachingTip{Another options is to get shorter URLs using 
+a service like \url{tinyurl.com} or \url{bitly.com}.}
+Of course, you'd never want your students to type that URL by hand;
+you should provide it in a copy-able form on a web site or within a
+course support system.
+\end{example}
+
+\section{Additional Notes on R Syntax}
+
+
+\subsection{Text and Quotation Marks}
+
+For the most part, text in \R\ must be enclosed in either single or double quotations.  
+It usually doesn't matter which you use, unless you want one or the other type of 
+quotation mark \emph{inside} your text.  Then you should use the other type of 
+quotation mark to mark the beginning and the end.
+
+<<quotes>>=
+# apostrophe inside requires double quotes around text
+text1 <- "Mary didn't come"            
+# this time we flip things around
+text2 <- 'Do you use "scare quotes"?'  
+@
+
+
+\section{Common Error Messages and What Causes Them}
+
+\subsection{Error: Object not found}
+
+\R\ reports that an object is not found when it cannot locate an object with the name you have 
+used.  One common reason for this is a typing error.  This is easily corrected by retyping the
+name with the correct spelling.
+<<>>=
+histogram( ~ aeg, data=HELPrct )
+@
+
+Another reason for an object-not-found error is using unquoted 
+text where quotation marks were required.
+<<noquotes-error,error=TRUE>>=
+text3 <- hello
+@
+
+In this case, \R\ is looking for some object named \variable{hello}, but we meant to store
+a string:
+<<noquotes-error-fix,error=TRUE>>=
+text3 <- "hello"
+@
+
+\subsection{Error: unexpected \dots}
+
+If while \R\ is parsing a statement it encounters something that does not make sense it reports
+that something is ``unexpected''.  Often this is the result of a typing error -- like omitting 
+a comma.
+
+<<eval=FALSE,error=TRUE,tidy=FALSE>>=
+c(1,2 3)                        # missing a comma
+
+@
+
+\vspace*{-.55in}
+<<echo=FALSE,include=FALSE>>=
+c <- function(...) {
+  stop('unexpected numeric constant in "c(1,2 3"')
+}
+@
+
+<<error=TRUE,echo=FALSE,error=TRUE>>=
+c()
+@
+<<include=FALSE>>=
+rm(c)
+@
+
+\subsection{Error: object of type `closure' is not subsettable}
+The following produces an error if \variable{time} has not been defined.
+<<error=TRUE>>=
+time[3]
+@
+There is a function called \function{time()} in \R, so if you haven't defined a vector by that
+name, \R\ will try to subset the \function{time()} function, which doesn't make sense.  
+
+Typically when you see this error, you have a function in a place you don't mean to have a function.
+The message can be cryptic to new users because of the reference to a closure.
+
+\subsection{Other Errors}
+If you encounter other errors and cannot decipher them, often pasting the error message 
+into a google search will find a discussion of that error in a context where it stumped someone else.
+
+\newpage
+
+\section{Review of \R\ Commands}
+
+
+\begin{widestuff}
+Here is a brief summary of the commands introduced in this chapter.
+
+<<tidy=FALSE,results='hide',fig.keep='none'>>=
+source( "file.R" )                               # execute commands in a file
+
+x <- 1:10                                        # create vector with numbers 1 through 10
+M <- matrix( 1:12, nrow=3 )                      # create a 3 x 4 matrix
+data.frame(number = 1:26, letter=letters[1:26] ) # create a data frame
+
+mode(x)                                   # returns mode of object x
+length(x)                                 # returns length of vector or list
+dim(HELPrct)                              # dimension of a matrix, array, or data frame
+nrow(HELPrct)                             # number of rows
+ncol(HELPrct)                             # number of columns
+names( HELPrct )                          # variable names in data frame
+row.names( HELPrct )                      # row names in a data frame
+attributes(x)                             # returns attributes of x
+
+toupper(x)                                # capitalize
+as.character(x)                           # convert to a character vector 
+as.logical(x)                             # convert to a logical (TRUE or FALSE)
+as.numeric(x)                             # convert to numbers
+as.integer(x)                             # convert to integers
+factor(x)                                 # convert to a factor [categorical data]
+class(x)                                  # returns class of x
+
+smallPrimes <- c(2,3,5,7,11)              # create a (numeric) vector 
+rep(1, 10)                                # ten 1's
+seq(2, 10, by=2)                          # evens less than or equal to 10
+rank(x)                                   # ranks of items in x
+sort(x)                                   # returns elements of x in sorted order
+order(x)                                  # x[ order(x) ] is x in sorted order
+rev(x)                                    # returns elements of x in reverse order
+diff(x)                                   # returns differences between consecutive elements
+paste( "Group", 1:3, sep="" )             # same as c("Group1", "Group2", "Group3")
+
+write.table(HELPrct, file="myHELP.txt")          # write data to a file 
+write.csv(HELPrct, file="myHELP.csv")            # write data to a csv file 
+save(HELPrct, file="myHELP.Rda")                 # save object(s) in R's native format
+
+modData <- mutate( HELPrct, old = age > 50 )  # add a new variable to data frame
+women <- subset( HELPrct, sex=='female' )        # select only specified cases
+favs <- subset( HELPrct, select=c('age','sex','substance') )     # keep only 3 columns
+
+trellis.par.set(theme=col.mosaic())              # choose theme for lattcie graphics
+show.settings()                                  # inspect lattice theme
+
+@
+\vspace*{-.55in}
+<<eval=FALSE, tidy=FALSE>>=
+fetchGoogle( ... )                               # get data from google URL
+@
+
+\end{widestuff}
+
+\section{Exercises}
+%For these problems, create a single Word document containing all of your work.
+
+\shipoutProblems
+
+
 
 
