@@ -7,11 +7,77 @@
 \usepackage[hidenotes]{authNote}
 \usepackage{language}
 \usepackage{hyperref}
+\usepackage{fancyhdr} % DTK added for header.
+
+% Larger font sizes (from size12.clo)
+\makeatletter% allows us to use macros with @ in their names
+\renewcommand\normalsize{%
+   \@setfontsize\normalsize\@xiipt{14.5}%
+   \abovedisplayskip 12\p@ \@plus3\p@ \@minus7\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+\renewcommand\small{%
+   \@setfontsize\small\@xipt{13.6}%
+   \abovedisplayskip 11\p@ \@plus3\p@ \@minus6\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6.5\p@ \@plus3.5\p@ \@minus3\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 9\p@ \@plus3\p@ \@minus5\p@
+               \parsep 4.5\p@ \@plus2\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\renewcommand\footnotesize{%
+   \@setfontsize\footnotesize\@xpt\@xiipt
+   \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 6\p@ \@plus2\p@ \@minus2\p@
+               \parsep 3\p@ \@plus2\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+\renewcommand\scriptsize{\@setfontsize\scriptsize\@viiipt{9.5}}
+\renewcommand\tiny{\@setfontsize\tiny\@vipt\@viipt}
+\renewcommand\large{\@setfontsize\large\@xivpt{18}}
+\renewcommand\Large{\@setfontsize\Large\@xviipt{22}}
+\renewcommand\LARGE{\@setfontsize\LARGE\@xxpt{25}}
+\renewcommand\huge{\@setfontsize\huge\@xxvpt{30}}
+\let\Huge=\huge
+\setlength\leftmargini   {1.5em}
+\setlength\leftmarginii  {1.5em}
+\setlength\leftmarginiii {1.5em}
+\setlength\leftmarginiv  {1.5em}
+\setlength\leftmarginv   {1.5em}
+\setlength\leftmarginvi  {1.5em}
+\setlength\labelsep      {.5pc}
+\setlength\labelwidth    {\leftmargini}
+\addtolength\labelwidth{-\labelsep}
+\setlength{\parindent}{1.5em}%
+\renewcommand{\@tufte@reset@par}{%
+  \setlength{\RaggedRightParindent}{1.5em}%
+  \setlength{\JustifyingParindent}{1.5em}%
+  \setlength{\parindent}{1.5em}%
+  \setlength{\parskip}{0pt}%
+}
+\@tufte@reset@par
+\renewcommand{\@tufte@margin@par}{%
+  \setlength{\RaggedRightParindent}{1.0em}%
+  \setlength{\JustifyingParindent}{1.0em}%
+  \setlength{\parindent}{1.0em}%
+  \setlength{\parskip}{0pt}%
+}
+\makeatother% restores meaning of @
+
+
 
 
 \title{Start Teaching with R}
-\author{Randall Pruim, Nicholas J. Horton, and Daniel Kaplan}
-\date{DRAFT: \today}
+\author[Pruim, Horton & Kaplan]{Randall Pruim, Nicholas J. Horton, and Daniel Kaplan}
+\date{January 2015}
 
 \begin{document}
 \def\cplabel{^X} 
@@ -38,7 +104,7 @@ options(format.R.blank=FALSE)
 options(width=70)
 require(vcd)
 require(knitr)
-opts_chunk$set(  tidy=TRUE,
+opts_chunk$set(  tidy=FALSE,
 			     size='small',
                  dev="pdf",
                  fig.path="figures/fig-",  
@@ -49,6 +115,8 @@ opts_chunk$set(  tidy=TRUE,
 @
 
 <<include=FALSE>>=
+includeChapter <- FALSE # don't show chapters not yet being paginated.
+showEdited <- TRUE  # displaying chapters already paginated for printing
 knit_hooks$set(document = function(x) { 
 			   sub('\\usepackage[]{color}', '\\usepackage[]{xcolor}', 
 			   x, fixed = TRUE) 
@@ -60,36 +128,35 @@ knit_hooks$set(document = function(x) {
 @
 
 %\maketitle
-\includepdf{prelim-cover}
+\includepdf{frontice}
 \newpage
 
-\tableofcontents
+\hspace{1.3cm}\parbox{8in}{\tableofcontents}
 
 \newpage
 
-
-<<child='FrontMatter.Rnw', eval=TRUE>>=
+<<child='FrontMatter.Rnw', eval=showEdited>>=
 @
 
-<<child='StartingAdvice.Rnw', eval=TRUE>>=
+<<child='StartingAdvice.Rnw', eval=showEdited>>=
 @
 
-<<child='RStudio.Rnw', eval=TRUE>>=
+<<child='RStudio.Rnw', eval=showEdited>>=
 @
 
-<<child='EarlyRExamples.Rnw', eval=TRUE>>=
+<<child='EarlyRExamples.Rnw', eval=showEdited>>=
 @
 
-<<child='TheTemplate.Rnw', eval=TRUE>>=
+<<child='TheTemplate.Rnw', eval=showEdited>>=
 @
 
-<<child='RForStudents.Rnw', eval=TRUE>>=
+<<child='RForStudents.Rnw', eval=showEdited>>=
 @
 
-<<child='RForInstructors.Rnw', eval=TRUE>>=
+<<child='RForInstructors.Rnw', eval=showEdited>>=
 @
 
-<<child='Manipulate.Rnw', eval=TRUE>>=
+<<child='Manipulate.Rnw', eval=showEdited>>=
 @
 
 %\backmatter
@@ -100,3 +167,4 @@ knit_hooks$set(document = function(x) {
 \printindex
 
 \end{document}
+
