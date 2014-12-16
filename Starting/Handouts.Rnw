@@ -10,8 +10,6 @@ set.seed(123)
 This appendix contains materials that can be handed out as part of class activities (or repurposed
 for other situations).
 
-\newpage
-
 \section{What percentage of Earth is Covered with Water?}
 \label{sec:googleMap}
 You have probably heard that the Earth is 2/3 water, or 70\% water, or some other proportion

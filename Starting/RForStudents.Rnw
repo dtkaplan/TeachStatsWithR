@@ -29,14 +29,7 @@ important questions to ask before constructing an \R\ command.
 These questions are useful in contexts beyond the formula template, and indeed for 
 computer systems beyond \R, so we repeat them here.  
 
-\TeachingTip{When students have difficulty accomplishing a task in \R, make sure
-they can answer these questions before you show them what to do.  If they cannot 
-answer these questions, then the primary problem is not with \R.  If you do this
-consistently, eventually, you will find your students presenting their \R\ questions 
-to you by answering these two questions and then asking ``So how do I get \R\ to do that?"
-More likely, once they have answered these two questions, they will already know how
-to get \R\ to do what they want -- unless they are asking about functionality that
-you have not yet presented.}
+\TeachingTip[-1in]{When students have difficulty accomplishing a task in \R, make sure they can answer these questions before you show them what to do.  If they cannot answer these questions, then the primary problem is not with \R.  If you do this consistently, eventually, you will find your students presenting their \R\ questions to you by answering these two questions and then asking ``So how do I get \R\ to do that?" More likely, once they have answered these two questions, they will already know how to get \R\ to do what they want -- unless they are asking about functionality that you have not yet presented.}
 %
 \begin{enumerate}
 	\item What do you want \R\ to do?  
@@ -159,7 +152,7 @@ install.packages("mosaic") # fetch package from CRAN
 @
 Once the package has been installed it must be \emph{loaded} to make it available in
 the current session or file using
-\TeachingTip[-1cm]{The use of \function{library()} is more common
+\TeachingTip[-2.5cm]{The use of \function{library()} is more common
 in this situation, but we find that students remember the word \function{require()}
 better.  For their purposes, the two are essentially the same.  The biggest difference is how they respond when a package cannot be loaded (usually because it has not been installed).  \function{require()} generates a warning message and returns a logical value that can be used when programming. 
 \function{library()} generates an error when the package cannot be loaded.}
@@ -351,6 +344,8 @@ day in 1978.
 There are several ways we can get some idea about what is in the \dataframe{Births78} 
 data frame.
 
+\newpage
+
 \Rindex{head()}
 \Rindex{sample()}
 \Rindex{summary()}
@@ -439,7 +434,7 @@ avoid the \code{\$} operator.
 
 \subsection{Data in Packages}
 Data sets in \R\ packages are the easiest to deal with.%
-\TeachingTip{Start out using data in packages and show students
+\TeachingTip[-1cm]{Start out using data in packages and show students
 how to import their own data once they understand how to work with
 data.}%
 In section \ref{sec:usingdata},
@@ -494,9 +489,7 @@ the version of the data set stored with in the \pkg{mosaic} package.
 do with the data.  Later, once students are familiar 
 with \R\ and understand the format required for data,
 teach students how to import their own data.}
-Eventually, students will want to move from using example data sets in \R\ packages
-to using data they find or collect themselves.  When this happens will depend on 
-the type of students you have and the type of course you are teaching.
+Eventually, students will want to move from using example data sets in \R\ packages to using data they find or collect themselves.  When this happens will depend on the type of students you have and the type of course you are teaching.
 
 \Rindex{read.csv()}
 \Rindex{read.file()}
@@ -505,8 +498,7 @@ the type of students you have and the type of course you are teaching.
 \R\ provides the functions \function{read.csv()} (for comma separated values files),
 \function{read.table()} (for white space delimited files) 
 and \function{load()} (for loading data in \R's native format).
-The \pkg{mosaic} package includes a function called \function{read.file()} that uses 
-slightly different default settings and infers whether it should use \function{read.csv()},
+The \pkg{mosaic} package includes a function called \function{read.file()} that uses  slightly different default settings and infers whether it should use \function{read.csv()},
 \function{read.table()}, or \function{load()} based on the file name.  
 
 \myindex{Excel}
@@ -528,21 +520,25 @@ easy way to distribute data via the Internet:
 \authNote{Should we change URLs to something at mosaic-web.org?}
 \Rindex{read.table()}
 \Rindex{head()}
+
+\medskip
+
+\begin{widestuff}
 <<tidy=FALSE>>=
-births <- 
-  read.table('http://www.calvin.edu/~rpruim/data/births.txt', 
-              header=TRUE)
+births <- read.table('http://www.calvin.edu/~rpruim/data/births.txt', header=TRUE)
 head(births) # live births in the US each day of 1978.
 @
-
-\newpage
+\end{widestuff}
 
 We can omit the \option{header=TRUE} if we use \function{read.file()}
 \Rindex{read.file()}
+
+\begin{widestuff}
 <<tidy=FALSE>>=
-births <- 
-  read.file('http://www.calvin.edu/~rpruim/data/births.txt')
+births <- read.file('http://www.calvin.edu/~rpruim/data/births.txt')
 @
+\end{widestuff}
+
 %\Rstudio\ will help you import your own data.  To do so use the ``Import Dataset" 
 %button in the \tab{Workspace} tab.  You can load data from text files, from the web, or from
 %google spreadsheets.   
@@ -561,7 +557,7 @@ If you are running the desktop version, the upload step is not needed.
 
 
 \subsection{Working with Pretabulated Data}
-\InstructorNote{Even if you use \RStudio\ GUI for interactive work, you 
+\InstructorNote[-1cm]{Even if you use \RStudio\ GUI for interactive work, you 
 will want to know how to use functions like \function{read.csv()} for working
 in RMarkdown, or \pkg{knitr}/\LaTeX\ files.}
 \myindex{data!pretabulated}
@@ -577,7 +573,7 @@ of \function{c()}, \function{rbind()} and \function{cbind()}:
 that presents categorical data in tables.}
 
 <<rs-make-table>>=
-myrace <- c( NW=67, W=467 )       # c for combine or concatenate
+myrace <- c( NW=67, W=467 )  # c for combine or concatenate
 myrace
 @
 
@@ -590,23 +586,23 @@ mycrosstable <- rbind(
 			  )
 mycrosstable
 @
-Replacing \function{rbind()} with \function{cbind()} will allow you to give the data
-column-wise instead.
-\TeachingTip[-1cm]{If plotting pre-tabulated categorical data is important, you probably
-want to provide your students with a wrapper function to simplify all this.  We generally
-avoid this situation by provided the data in raw format or by presenting an analysing 
-the data in tables without using graphical summaries.}
 
-This arrangement of the data would be sufficient for applying the Chi-squared test, but
-it is not in a format suitable for plotting with \pkg{lattice}.
-Our cross table is still missing a bit of information -- the names of the variables being stored.  We can add this information if we convert it to a table:
+Replacing \function{rbind()} with \function{cbind()} will allow you to give the data column-wise instead.
+\TeachingTip[-1cm]{If plotting pre-tabulated categorical data is important, you probably want to provide your students with a wrapper function to simplify all this.  We generally avoid this situation by provided the data in raw format or by presenting an analysing the data in tables without using graphical summaries.}
 
-\begin{widestuff}
+This arrangement of the data would be sufficient for applying the Chi-squared test, but it is not in a format suitable for plotting with \pkg{lattice}. Our cross table is still missing a bit of information -- the names of the variables being stored.  We can add this information if we convert it to a table:
+
 <<>>=
 class(mycrosstable)
 mycrosstable <- as.table(mycrosstable)
+@
+
+\begin{widestuff}
+<<>>=
 # mycrosstable now has dimnames, but they are unnamed
 dimnames(mycrosstable)
+@
+<<>>=
 # let's add meaninful dimnames
 names(dimnames(mycrosstable)) <- c('race', 'sector')
 mycrosstable
@@ -625,14 +621,14 @@ head(as.data.frame(mycrosstable))
 
 \newpage
 
-<<tidy=FALSE>>=
+<<tidy=FALSE,out.width=".8\\textwidth">>=
 barchart( Freq ~ sector | race,
           data=as.data.frame(mycrosstable),
           auto.key=list(space='right'),
           scales=list(x=list(rot=45))
 		  )
 @
-<<tidy=FALSE>>=
+<<tidy=FALSE,out.width=".8\\textwidth">>=
 barchart( Freq ~ sector, groups=race, 
           data=as.data.frame(mycrosstable),
           auto.key=list(space='right'),
@@ -640,6 +636,7 @@ barchart( Freq ~ sector, groups=race,
 		  )
 @
 
+\newpage
 
 \subsection{Developing Good Data Habits}
 However you teach students to collect and import their data, students will need to 
@@ -691,7 +688,6 @@ abdData(2)               # all data sets in chapter 2
 %For information on how to create such packages, consult the \textit{Writing R Extensions} manual
 %on CRAN.
 
-\newpage
 \section{Review of \R\ Commands}
 
 

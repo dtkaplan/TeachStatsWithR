@@ -173,7 +173,7 @@ Try typing the following commands in the console panel.
 <<arithmetic>>=
 5 + 3
 15.3 * 23.4
-sqrt(16)                  # square root
+sqrt(16)              # square root
 @
 
 
@@ -187,9 +187,9 @@ You can save values to named variables for later reuse.
 
 
 <<rs-variables1a,tidy=FALSE>>=
-product = 15.3 * 23.4       # save result
-product                     # display the result
-product <- 15.3 * 23.4      # <- can be used instead of =
+product = 15.3 * 23.4   # save result
+product                 # display the result
+product <- 15.3 * 23.4  # <- can be used instead of =
 product                     
 @
 \TeachingTip[-2cm]{It's best to settle on using 
@@ -209,11 +209,11 @@ and functions.
 
 
 <<rs-variables2,tidy=FALSE>>=
-0.5 * product               # half of the product
-log(product)                # (natural) log of the product
-log10(product)              # base 10 log of the product
-log2(product)               # base 2 log of the product
-log(product, base=2)        # base 2 log of the product, another way
+0.5 * product           # half of the product
+log(product)            # (natural) log of the product
+log10(product)          # base 10 log of the product
+log2(product)           # base 2 log of the product
+log(product, base=2)    # another way for base 2 log
 @
 \authNote{can we come up with a better (e.g. less mathematical) example?}
 
@@ -221,7 +221,7 @@ The semi-colon can be used to place multiple commands on one line.
 One frequent use of this is to save and print a value all in one go:
 
 <<rs-variables-semi,tidy=FALSE>>=
-product <- 15.3 * 23.4; product    # save result and show it
+product <- 15.3 * 23.4; product  # store and show result
 @
 
 

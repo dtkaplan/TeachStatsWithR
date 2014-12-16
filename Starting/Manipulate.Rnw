@@ -7,6 +7,7 @@ set.seed(123)
 
 
 \chapter{Getting Interactive with \texttt{manipulate} and \texttt{shiny}}
+\label{chap:manipulate}
 
 One very attractive feature of \RStudio\ is the \function{manipulate()} function (in the 
 \pkg{manipulate} package, which is only available within \RStudio).  This function
@@ -58,7 +59,7 @@ When the slider is changed, we see a clearer view of the eruptions of Old Faithf
 
 \centerline{\includegraphics[width=3.8in]{images/manip-hist2.png}}
 
-
+\newpage
 
 \subsection{Check Boxes}
 

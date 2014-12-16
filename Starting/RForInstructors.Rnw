@@ -97,8 +97,6 @@ you can selectively copy portions of your history to a script file
 footModel <- lm( length ~ width, data=KidsFeet ); footModel
 @
 
-\newpage
-
 <<idiom2, tidy=FALSE>>=
 # alternative that reflects the order of operations
 lm( length ~ width, data=KidsFeet ) -> footModel; footModel
@@ -162,11 +160,13 @@ str(KidsFeet)                  # show the class for each variable
 @
 \end{widestuff}
 \Rindex{KidsFeet}
+
 From this we see that \dataframe{KidsFeet} is a data frame and that
 the variables are of different types (integer, numeric, and factor).  These
 are the kinds of variables you are most likely to encounter, although
 you may also see variables that are logical (true or false) or character (text)
 as well.
+
 Factors are the most common way for categorical data to be stored in
 \R, but sometimes the character class is better.  
 \Pointer{One difference between a factor and a character is 
@@ -182,26 +182,16 @@ and how it appears when printed, plotted, or displayed in the console.
 
 The situation is actually a little bit more complicated.  The
 \variable{birthmonth} variable in \dataframe{KidsFeet} is not a single
-integer but a collection of integers.  So we can think of \variable{birthmonth}
-as a kind of container holding a number of integers.
-\Pointer[-2cm]{Even when we only have a single integer, \R\ will treat it like
-a container of integers with only one integer in it.}
-There is more than one kind of container in \R.  The containers used 
-for variables in a data frame are called \term{vectors}.
-%There are important ways that \R\ has 
-%been optimized to work with vectors since they correspond to variables 
-%(in the sense of statistics).
+integer but a collection of integers.  So we can think of \variable{birthmonth} as a kind of container holding a number of integers.
+\Pointer{Even when we only have a single integer, \R\ will treat it like a container of integers with only one integer in it.} %
+There is more than one kind of container in \R.  The containers used  for variables in a data frame are called \term{vectors}.
 \myindex{vector}%
-The items in a vector are ordered (starting with 1) and must all be of the 
-same type.  
-\DiggingDeeper[-1cm]{In fact, they must all be of the same \emph{atomic} type.  
-Atomic types are are the basic building blocks for \R.  It is not possible
-to store more complicated objects (like data frames) in a vector.}
+The items in a vector are ordered (starting with 1) and must all be of the same type.  
+\DiggingDeeper[-1cm]{In fact, they must all be of the same \emph{atomic} type.  Atomic types are are the basic building blocks for \R.  It is not possible to store more complicated objects (like data frames) in a vector.}%
 
 Vectors can be created using the \function{c()} function:
 \Rindex{c()}
 
-\newpage
 <<>>=
 c(2, 3, 5, 7)
 c("Abe", "Betty", "Chan")
@@ -209,7 +199,7 @@ c(1.2, 3.2, 4.5)
 @
 If you attempt to put different types of objects into a vector,
 \R\ will attempt to convert them all to the same type of object.
-\Caution{When reading data created in other software (like Excel)
+\Caution[-1.5in]{When reading data created in other software (like Excel)
 or stored in CSV files, it is important to know how missing data
 were indicated, otherwise, the code for missing data may be
 interpreted as a character, causing all the other items in that
@@ -218,7 +208,7 @@ the important information that some of the data were missing.}%
 %
 If it is unable to do so, it will generate an error.
 <<tidy=FALSE>>=
-x <- c(1, 1.1, 1.2); x              # convert integer to numeric
+x <- c(1, 1.1, 1.2); x    # convert integer to numeric
 class(x)
 y <- c(TRUE, FALSE, 0, 1, 2); y     # logicals converted to numeric
 class(y)
@@ -226,14 +216,7 @@ z <- c(1, TRUE, 1.2, "vector"); z   # all converted to character
 class(z)
 @
 
-\DiggingDeeper{
-A factor can be ordered or unordered (which can affect how statistics
-tests are performed but otherwise does not matter much).  The default 
-is for factors to be unordered.
-Whether the factors are ordered or unordered, the 
-levels will appear in a fixed order -- alphabetical by default.  The 
-distinction between ordered and unordered factors has to do with 
-whether this order is meaningful or arbitrary.}%
+\DiggingDeeper{A factor can be ordered or unordered (which can affect how statistics tests are performed but otherwise does not matter much).  The default is for factors to be unordered. Whether the factors are ordered or unordered, thelevels will appear in a fixed order -- alphabetical by default.  The distinction between ordered and unordered factors has to do with whether this order is meaningful or arbitrary.}%
 %
 Factors can be created by wrapping a vector with \function{factor()}:
 \Rindex{factor()}
@@ -488,6 +471,8 @@ the original vector, but not as a componentwise transformation.
 \begin{widestuff}
 <<vectors02a, tidy=FALSE>>=
 z <- rnorm(5); z
+@
+<<tidy=FALSE>>=
 sort(z); rank(z); order(z) 
 @
 <<vectors02b, tidy=FALSE>>=
@@ -529,10 +514,8 @@ to make sure you get the intended behavior.
 \Rindex{pmin()}%
 \Rindex{pmax()}%
 
+The operations listed below can be helpful when writing your own functions.
 
-Some additional useful functions are included in Table~1.
-
-\marginnote{Table~1. Some useful \R\ functions.}
 \label{table:useful-functions}%
 \begin{center}
   \begin{longtable}{|p{1.2in}|p{4.0in}|}
@@ -661,39 +644,35 @@ In Section~\ref{sec:studentdata} we discussed using data in \R\ packages,
 and in Section~\ref{sec:usingdata} we discussed methods for bringing your
 own data into \R.   In both of these scenarios, we have assumed that the data
 had been entered and cleaned in some other software and focussed primarily on
-data import.
-In this section we discuss ways to create and manipulate 
+data import. In this section we discuss ways to create and manipulate 
 data within \R.   But first we discuss a few more details regarding importing data.
 
 
 \subsection{Finer control over data import}
 \myindex{data!importing}
 
-\marginnote{Even if you primarily use the \RStudio\ interface to import data, it is good to know about the command line methods since these are required to import data into scripts, RMarkdown, and \pkg{knitr}/\LaTeX\ files.}
+\marginnote[-2cm]{Even if you primarily use the \RStudio\ interface to import data, it is good to know about the command line methods since these are required to import data into scripts, RMarkdown, and \pkg{knitr}/\LaTeX\ files.}
 The \option{na.strings} argument can be used to specify
-codes for missing values.  
-The following can be useful, for example:
-\Pointer[2cm]{The function{read.file()} function in the \pkg{mosaic} package
-uses this as its default for \option{na.trings}.}
+codes for missing values.  Setting \code{na.strings} as in the following for reading csv files that might have been produced by systems such as SAS. 
+
 \Rindex{na.strings}
 <<tidy=FALSE>>=
 someData <- read.csv('file.csv', 
   na.strings=c('NA','','.','-','na'))
 @
-because SAS uses a period (\verb!.!) to code missing data, and some csv 
-exporters use `\texttt{-}'.  By default \R\ reads these as string data, 
-which forces the entire variable to be of character type instead of numeric.
-
+SAS uses a period (\verb!.!) to code missing data and some csv 
+exporters use `\texttt{-}'.  If the above definition for \code{na.strings}, or something like it, \R\ will treat missing-data markers as string data, instead of \code{NA}. This forces the entire variable to be of character type even if it's otherwise purely numeric.
+\Pointer[-2cm]{The \function{read.file()} function in the \pkg{mosaic} package
+uses this as its default for \option{na.strings}.}
 \Rindex{read.file()}
 \Rindex{read.csv()}
 \Rindex{read.table()}
 \Rindex{stringsAsFactors}
-By default, \R\ will recode character data as a factor.  If you prefer to leave
-such variables in character format, you can use
+By default, \R\ will recode character data as a factor.  If you prefer to leave such variables in character format, you can use
 \Pointer{This works with \function{read.csv()} and \function{read.table()}
 as well.}
 <<tidy=FALSE>>=
-somData <- read.file('file.csv', 
+someData <- read.file('file.csv', 
   stringsAsFactors=FALSE) 
 @
 
@@ -719,22 +698,12 @@ x <- c(1, 1, 2, 3, 5, 8, 13); x
 The \function{scan()} function can speed up data entry in the console 
 by allowing you to avoid the commas.
 \Rindex{scan()}%
-Individual values are separated by white space or new lines.  
-A blank line is used to signal the end of the data.
-By default, \function{scan()} is expecting numeric data,
-but it is possible to tell \function{scan()} to expect something else,
-like \rterm{character} data (i.e., text). 
-\Caution[-1cm]{
-Be sure when using \function{scan()} that you remember to save your data somewhere. Otherwise you will have to type it again.}
+Individual values are separated by white space or new lines. A blank line is used to signal the end of the data. By default, \function{scan()} is expecting numeric data, but it is possible to tell \function{scan()} to expect something else, like \rterm{character} data (i.e., text). 
+\Caution{When using \function{scan()} be sure to remember to save your data somewhere. Otherwise you will have to type it again.}
 There are other options for data types, but numerical and text data handle the most important cases.  See \code{?scan} for more information and examples.
 
 \subsection{Simulating samples from distributions}
-\R\ has functions that make it simple to sample from a wide range of distributions.
-Each of these functions begins with the letter `r' (for random) followed by the 
-name of the distribution (often abbreviated somewhat).  
-The arguments to the function specify the size of the sample desired and any
-parameter values required for the distribution.
-For example, to simulate selecting a sample of size 12 from a normal population with mean 100 and standard deviation 10, use
+\R\ has functions that make it simple to sample from a wide range of distributions. Each of these functions begins with the letter `r' (for random) followed by the name of the distribution (often abbreviated somewhat).  The arguments to the function specify the size of the sample desired and any parameter values required for the distribution. For example, to simulate selecting a sample of size 12 from a normal population with mean 100 and standard deviation 10, use
 \Rindex{rnorm()}
 
 \begin{widestuff}
@@ -953,7 +922,7 @@ Here we show how to modify the \dataframe{Births78} data frame so
 that it contains a new variable \variable{day} that is an ordered factor.
 %(Details about some of the functions involved will be presented later 
 %in this chapter).
-\Pointer{The pkg{lubridate} package provides a 
+\Pointer[3.5cm]{The \pkg{lubridate} package provides a 
 \function{wday()} function that can do this more simply
 and directly from the \variable{date} variable as well as
 a number of utilities for creating and manipulating date and time objects.}
@@ -1015,10 +984,7 @@ tally( ~ newsex + female, data=HELP2 )
 The \function{derivedFactor()} function can simplify creating factors based 
 on some logical tests.
 
-\begin{widestuff}
-<<echo=FALSE>>=
-OLD <- options(width=100)
-@
+
 <<tidy=FALSE>>=
 HELP3 <- mutate(HELPrct, 
   risklevel = derivedFactor(
@@ -1028,7 +994,13 @@ HELP3 <- mutate(HELPrct,
 	.method = "first"      # use first rule that applies
 	)
 )
-head(HELP3, 4)
+@
+\begin{widestuff}
+<<echo=FALSE>>=
+OLD <- options(width=90)
+@
+<<>>=
+head(HELP3, 4) 
 @
 <<echo=FALSE>>=
 options(OLD)
@@ -1044,9 +1016,10 @@ options(OLD)
 %\newthought{recoding variables}
 %stuff here 
 
-\newpage
-
 \subsection{Dropping variables}
+
+\label{sec:dropping}
+
 \Rindex{select()}%
 Since we already have \variable{educ}, there is no reason to keep our new variable
 \variable{workforce.years}.  Let's drop it.
@@ -1108,12 +1081,12 @@ HELPrct %>% select( matches("i[12]")) %>% head(2)  # regex matching
 @
 
 \subsection{Renaming variables}
-Both the column (variable) names and the row names of a data frames can be changed by
-simple assignment using \function{names()} or \function{row.names()}.
+Both the column (variable) names and the row names of a data frames can be changed by simple assignment using \function{names()} or \function{row.names()}.
 <<>>=
-ddd                        # small data frame we defined earlier
+ddd           # small data frame we defined earlier
+# changing the row.names affects how a data.frame prints
 row.names(ddd) <- c("Abe","Betty","Claire","Don","Ethel")
-ddd                        # row.names affects how a data.frame prints
+ddd           
 @
 It is also possible to reset just individual names with the following
 syntax.
@@ -1123,16 +1096,13 @@ row.names(ddd)[2] <- "Bette"
 row.names(ddd)
 @
 
-The \dataframe{faithful} data set (in the \pkg{datasets} package, which is always available)
-has very unfortunate names.
-\TeachingTip{An alternative solution is to use the \dataframe{geyser} data set in
-the \pkg{MASS} package.  The \dataframe{gyser} data frame has better names and more data.
-But here we want to illustrate how to repair the damage in \dataframe{faithful}.}
+The \dataframe{faithful} data set (in the \pkg{datasets} package, which is always available) has very unfortunate names.
 <<>>=
 names(faithful)
 @
 The measurements are the duration of an eruption and the time until the subsequent eruption,
 so let's give it some better names.
+\TeachingTip{An alternative solution is to use the \dataframe{geyser} data set in the \pkg{MASS} package.  The \dataframe{gyser} data frame has better names and more data. But here we want to illustrate how to repair the damage in \dataframe{faithful}.}
 <<>>=
 names(faithful) <- c('duration', 'time_til_next')
 head(faithful, 3)
@@ -1145,38 +1115,34 @@ xyplot(time_til_next ~ duration, faithful)
 
 \end{center}
 
-\marginnote[-1cm]{
-If the variable containing a data frame is modified or used to store a different object, the original data from the package can be recovered using \function{data()}.
-}
+\marginnote[-1cm]{If the variable containing a data frame is modified or used to store a different object, the original data from the package can be recovered using \function{data()}.}
 
 \begin{problem}
-Using \dataframe{faithful} data frame, make a scatter plot of eruption duration 
-times vs. the time since the previous eruption.
+Using \dataframe{faithful} data frame, make a scatter plot of eruption duration times vs. the time since the previous eruption.
 \end{problem}
 
-We can also rename a single variable using \function{names()}. 
-For example, perhaps we want to rename \variable{educ} (the second column) 
-to \variable{education}.
+We can also rename a single variable using \function{names()}. For example, perhaps we want to rename \variable{educ} (the second column) to \variable{education}.
 <<>>=
 names(CPS85)[2] <- 'education'
 CPS85[1,1:4]
 @
 
-If we don't know the column number (or generally to make our code clearer), a few more 
-keystrokes produces
-\FoodForThought{See Section \ref{sec:Rvectors} for information that will make 
-it clearer what is going on here.}
+If we don't know the column number (or generally to make our code clearer), a few more keystrokes produces
+
 <<>>=
 names(CPS85)[names(CPS85) == 'education'] <- 'educ'
 CPS85[1,1:4]
 @
+
+\FoodForThought{See Section \ref{sec:dropping} for information that will make 
+it clearer what is going on here.}
 
 The \function{select()} function can also be used to rename variables.
 <<tidy=FALSE>>=
 data(faithful)    # restore the original version
 faithful2 <- faithful %>% 
   select(duration=eruptions, time_til_next = waiting)
-head( faithful2, 2 )
+head(faithful2, 2)
 @
 
 
@@ -1249,14 +1215,15 @@ HELPrct %>%
   arrange(x.bar)
 @
 
+
 \subsection{Merging datasets}
 
-The \dataframe{fusion1} data frame in the \pkg{fastR} package contains genotype information for a SNP (single nucleotide polymorphism) in the gene \emph{TCF7L2}.  The \dataframe{pheno} data frame contains phenotypes (including type 2 diabetes case/control status) for an intersecting set of individuals. We can merge these together to explore the association between genotypes and phenotypes using one of the join functions in\pkg{dplry} or using the \function{merge()} function.
+The \dataframe{fusion1} data frame in the \pkg{fastR} package contains genotype information for a SNP (single nucleotide polymorphism) in the gene \emph{TCF7L2}.  The \dataframe{pheno} data frame contains phenotypes (including type 2 diabetes case/control status) for an intersecting set of individuals. We can merge these together to explore the association between genotypes and phenotypes using one of the join functions in \pkg{dplyr} or using the \function{merge()} function.
 
 %\Rindex{merge()}%
 \begin{widestuff}
 <<echo=FALSE>>=
-OLD <- options(width=100)
+OLD <- options(width=90)
 @
 <<>>=
 require(fastR)
@@ -1272,36 +1239,26 @@ fusion1m <- merge(fusion1, pheno, by.x='id', by.y='id',
                   all.x=FALSE, all.y=FALSE)
 head(fusion1m, 3)
 @
-\end{widestuff}
-
-\begin{widestuff}
-<<>>=
-left_join( pheno, fusion1, by="id") %>% dim()
-inner_join( pheno, fusion1, by="id") %>% dim()
-# which ids are only in \dataframe{pheno}?
-setdiff(pheno$id, fusion1$id)   
-@
 <<echo=FALSE>>=
 options(OLD)
 @
 \end{widestuff}
 
-The difference between an inner join and a left join is that the inner join 
-only includes rows from the first data frame that have a match in the second but a 
-left join includes all rows of the first data frame, even if they do not have 
-a match in the second.  In the example above, there are two subjects in 
-\dataframe{pheno} that do not appear in \dataframe{fusion1}.
+<<>>=
+left_join( pheno, fusion1, by="id") %>% dim()
+@
+<<>>=
+inner_join( pheno, fusion1, by="id") %>% dim()
+@
+<<>>=
+# which ids are only in \dataframe{pheno}?
+setdiff(pheno$id, fusion1$id)   
+@
 
 
-\function{merge()} handles these distinctions with the \option{all.x}
-and \option{all.y} arguments.
-In this case, since the values are the same for each data frame, we could collapse
-\option{by.x} and \option{by.y} to \option{by} and collapse
-\option{all.x} and \option{all.y} to \option{all}.
-The first of these specifies which column(s) to use to identify matching cases.
-The second indicates whether cases in one data frame that do not appear in the other 
-should be kept (\code{TRUE}) or dropped 
-(filling in \code{NA} as needed) or dropped from the merged data frame.
+The difference between an inner join and a left join is that the inner join only includes rows from the first data frame that have a match in the second but aleft join includes all rows of the first data frame, even if they do not have a match in the second.  In the example above, there are two subjects in \dataframe{pheno} that do not appear in \dataframe{fusion1}.
+
+\function{merge()} handles these distinctions with the \option{all.x} and \option{all.y} arguments. In this case, since the values are the same for each data frame, we could collapse \option{by.x} and \option{by.y} to \option{by} and collapse \option{all.x} and \option{all.y} to \option{all}. The first of these specifies which column(s) to use to identify matching cases. The second indicates whether cases in one data frame that do not appear in the other should be kept (\code{TRUE}) or dropped (filling in \code{NA} as needed) or dropped from the merged data frame.
 
 Now we are ready to begin our analysis.
 <<fusion1-xtabs>>=
@@ -1368,12 +1325,13 @@ The resulting \dataframe{Chrom1} is not a data frame, but behaves much like one.
 class(Chrom1)
 @
 \Rindex{mutate()}
+\Caution[1cm]{The arithmetic operations in this \function{mutate()} command are being executed in SQL, not in \R, and the palette of allowable functions is much smaller. It is not possible, for example, to compute the logarithm of the length here using \function{log()}.  For that we must first collect the data into a real data frame.}
 <<>>=
 Chrom1 %>% 
   mutate(length=(txEnd - txStart)/1000) -> Chrom1l
 Chrom1l
 @
-\Caution[-1in]{The arithmetic operations in this \function{mutate()} command are being executed in SQL, not in \R, and the palette of allowable functions is much smaller. It is not possible, for example, to compute the logarithm of the length here using \function{log()}.  For that we must first collect the data into a real data frame.}
+
 For efficiency, the full data are not pulled from the database until needed (or until we request this using \function{collect()}).  This allows us, for example, to inspect the firstfew rows of a potentially large pull from the database without actually having done all ofthe work required to pull that data.
 
 
@@ -1428,9 +1386,8 @@ We can also reformat the other way, this time having all data for a given state 
 OLD <- options(width=100)
 @
 <<tidy=FALSE>>=
-stateTraffic <- 
-   reshape(longTraffic, direction='wide', 
-           v.names="deathRate", idvar="state", timevar="year")
+stateTraffic <- reshape(longTraffic, direction='wide', v.names="deathRate", 
+                        idvar="state", timevar="year")
 stateTraffic
 @
 <<echo=FALSE>>=
@@ -1460,6 +1417,7 @@ to \verb!reshape()!.
 
 \section{Functions in \R} %{An introduction to writing functions}
 \label{sec:writingFunctions}
+\label{sec:functions}
 \myindex{functions in {\sf R}}%
 
 %To really customize a &lattice& plot -- and for many other applications in \R\ -- 
@@ -1511,7 +1469,6 @@ Let's name our function  \function{mystats()}. The \function{mystats()} will hav
 numeric values. %
 \Rindex{mystats()}%
 \Rindex{function()}%
-\marginnote{There are ways to check the \rterm{class} of an argument to see if it is a data frame, a vector, numeric, etc.  A really robust function should check to make sure that the values supplied to the arguments are of appropriate types.}%
 Here is how we could define it:
 \Rindex{mystats()}%
 
@@ -1527,15 +1484,11 @@ mystats <- function(x) {
 mystats((1:20)^2)
 @
 
+\marginnote[-2cm]{There are ways to check the \rterm{class} of an argument to see if it is a data frame, a vector, numeric, etc.  A really robust function should check to make sure that the values supplied to the arguments are of appropriate types.}%
+
 The first line says that we are defining a function called \function{mystats()} with one argument, named \variable{x}.  The lines surrounded by curly braces give the code to be executed when the function is called.  So our function computesthe mean, then the median, then the standard deviation of its argument.
 
-But as you see, this doesn't do exactly what we wanted.  So what's going on?  
-The value returned by the last line of a function is (by default) returned
-by the function to its calling environment, where it is (by default) printed
-to the screen so you can see it.  In our case, we computed the mean, median,
-and standard deviation, but only the standard deviation is being returned 
-by the function and hence displayed.  So this function is just an inefficient
-version of \function{sd()}.  That isn't really what we wanted.
+But as you see, this doesn't do exactly what we wanted.  So what's going on?   The value returned by the last line of a function is (by default) returned by the function to its calling environment, where it is (by default) printed to the screen so you can see it.  In our case, we computed the mean, median, and standard deviation, but only the standard deviation is being returned by the function and hence displayed.  So this function is just an inefficient version of \function{sd()}.  That isn't really what we wanted.
 
 We can use \function{print()} to print out things along the way if we like.
 
@@ -1759,55 +1712,27 @@ can place files and have them accessed directly from the Internet.
 For sharing data, it's best if this site is public, that is, 
 it does not require a login.  In this case, \function{read.file()}
 can read the data into \R\ directly from the URL:
-<<>>=
+<<out.width=".5\\textwidth">>=
 Fires <- read.csv("http://www.calvin.edu/~rpruim/data/Fires.csv")
-dim(Fires)
 head(Fires)
-@
-
-\newpage
-
-<<>>=
-xyplot( Acres ~ Year, data=Fires, type=c("p","smooth") )
 xyplot( Acres/Fires ~ Year, data=Fires, ylab="acres per fire",
         type=c("p","smooth"))
 @
 
 \authNote{Need to check whether Dropbox workflow is still correct. --rjp 2014-06-28}
 \index{Dropbox}
-Unfortunately, most ``course support'' systems such as Moodle or
-Blackboard do not provide such easy access to data.  
-The Dropbox service for storing files in the ``cloud'' provides a very
-convenient way to distribute files over the web.  (Go to
-\texttt{dropbox.com} for information and to sign up for a free account.)
-Dropbox is routinely used to provide automated backup and coordinated
-file access on multiple computers.  But the Dropbox service also
-provides a \code{Public} directory.  Any files that you place in that
-directory can be accessed directly by a URL.  
-\FoodForThought{Our discussion of Dropbox is primarily for those who do
-not already know how to do this other ways.}%
+Unfortunately, most ``course support'' systems such as Moodle orBlackboard do  not provide such easy access to data.  The Dropbox service for storing files in the ``cloud'' provides a very convenient way to distribute files over the web.  (Go to \texttt{dropbox.com} for information and to sign up for a free account.) Dropbox is routinely used to provide automated backup and coordinated file access on multiple computers.  But the Dropbox service also provides a \code{Public} directory.  Any files that you place in that directory can be accessed directly by a URL.  
+\FoodForThought{Our discussion of Dropbox is primarily for those who do not already know how to do this other ways.}%
 
-To illustrate, suppose you wish to share some data set with your
-students.  You've constructed this data set in a spreadsheet and
-stored it as a csv file, let's call it \code{example-A.csv}.  Move this
-file into the \code{Public} directory under Dropbox --- on most
-computers Dropbox arranges things so that its directories appear
-exactly like ordinary directories and you'll use the ordinary, familiar
-file management techniques as in Figure ??.
+To illustrate, suppose you wish to share some data set with your students.  You've constructed this data set in a spreadsheet and stored it as a csv file, let's call it \code{example-A.csv}.  Move this file into the \code{Public} directory under Dropbox --- on most computers Dropbox arranges things so that its directories appear exactly like ordinary directories and you'll use the ordinary, familiar file management techniques as in Figure ??.
 
 
 \begin{center}
 \includegraphics[width=3.5in]{images/dropbox1.png}
 \end{center}
-\marginnote{Figure ??. Dragging a csv file to a Dropbox Public directory}
+\marginnote[-2cm]{Dragging a csv file to a Dropbox Public directory}
 
-Dropbox also makes it straightforward to construct the web-location
-identifying URL for any file by using mouse-based menu commands to
-place the URL into the clipboard, whence it can be copied to your
-course-support software system or any other place for distribution to
-students.  For a csv file, reading the contents of the file into \R\
-can be done with the \function{read.csv} function, by giving it the
-quoted URL:
+Dropbox also makes it straightforward to construct the web-location identifying URL for any file by using mouse-based menu commands to place the URL into the clipboard, whence it can be copied to your course-support software system or any other place for distribution to students.  For a csv file, reading the contents of the file into \R\ can be done with the \function{read.csv} function, by giving it the quoted URL:
 
 
 
@@ -1821,12 +1746,11 @@ a <- read.file("http://dl.dropbox.com/u/5098197/USCOTS2011/ExampleA.csv")
 \begin{center}
 \includegraphics[width=.9\textwidth]{images/dropbox2.png}
 \end{center}
-\marginnote[2cm]{Getting the URL of a file in a Dropbox Public directory}
+\marginnote[-1cm]{Getting the URL of a file in a Dropbox Public directory}
 
 This technique makes it easy to distribute data with little advance preparation.  It's fast enough to do in the middle of a class: the csv file is available to your students (after a brief lag while Dropbox synchronizes).  It can even be edited by you (but not by your students).
 
-The same technique can be applied to all sorts of files like \R\ workspaces or \R\ scripts (files containing code). Of course, your students need to
-use the appropriate \R\ command: \function{load()} for a workspace or \function{source()} for a script.
+The same technique can be applied to all sorts of files like \R\ workspaces or \R\ scripts (files containing code). Of course, your students need to use the appropriate \R\ command: \function{load()} for a workspace or \function{source()} for a script.
 \authNote{RP: Not sure workspace is the best word for this.}
 
 The example below will source a file that will print a welcoming message for you.
@@ -1952,27 +1876,28 @@ open it using the csv tools in \R, such as \function{read.csv}.
     %directly into \R.}
 %\end{figure}
 
-Direct communication with GoogleDocs requires facilities
-that are not present in the base version of \R, but are available
-through the \pkg{RCurl} package.  
-In order to make these readily
-available to students, the \pkg{mosaic} package contains a function that takes the quoted (and cumbersome)
-string with the Google-published URL and reads the corresponding file
-into a data frame.  \pkg{RCurl} neads to be installed for this to work, and will be loaded
-if it is not already loaded when \function{fetchGoogle()} is called.
+Direct communication with GoogleDocs requires facilities that are not present in the base version of \R, but are available through the \pkg{RCurl} package.  In order to make these readily available to students, the \pkg{mosaic} package contains a function that takes the quoted (and cumbersome) string with the Google-published URL and reads the corresponding file into a data frame.  \pkg{RCurl} neads to be installed for this to work, and will be loaded if it is not already loaded when \function{fetchGoogle()} is called.
+
+\medskip
 
 \begin{widestuff}
 <<echo=FALSE>>=
-OLD <- options(width=120)
+OLD <- options(width=90)
 @
 <<"read-from-google2",eval=FALSE,tidy=FALSE>>=
 elev <- fetchGoogle(
 "https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&
 key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
 @
+\end{widestuff}
+
+\begin{widestuff}
 <<"read-from-google1",echo=FALSE,results="hide">>=
 elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
 @
+\end{widestuff}
+
+\begin{widestuff}
 <<"read-from-google3">>=
 head(elev)
 @
@@ -1980,7 +1905,8 @@ head(elev)
 options(OLD)
 @
 \end{widestuff}
-\TeachingTip{Another options is to get shorter URLs using 
+
+\TeachingTip[2.5cm]{Another option is to get shorter URLs using 
 a service like \url{tinyurl.com} or \url{bitly.com}.}
 Of course, you'd never want your students to type that URL by hand;
 you should provide it in a copy-able form on a web site or within a
@@ -2006,6 +1932,7 @@ text2 <- 'Do you use "scare quotes"?'
 
 
 \section{Common Error Messages and What Causes Them}
+\label{sec:errors}
 
 \subsection{Error: Object not found}
 
@@ -2058,31 +1985,30 @@ The following produces an error if \variable{time} has not been defined.
 <<error=TRUE>>=
 time[3]
 @
-There is a function called \function{time()} in \R, so if you haven't defined a vector by that
-name, \R\ will try to subset the \function{time()} function, which doesn't make sense.  
+There is a function called \function{time()} in \R, so if you haven't defined a vector by that name, \R\ will try to subset the \function{time()} function, which doesn't make sense.  
 
-Typically when you see this error, you have a function in a place you don't mean to have a function.
-The message can be cryptic to new users because of the reference to a closure.
+Typically when you see this error, you have a function in a place you don't mean to have a function. The message can be cryptic to new users because of the reference to a closure.
 
 \subsection{Other Errors}
-If you encounter other errors and cannot decipher them, often pasting the error message 
-into a google search will find a discussion of that error in a context where it stumped someone else.
-
-\newpage
+If you encounter other errors and cannot decipher them, often pasting the error message into a google search will find a discussion of that error in a context where it stumped someone else.
 
 \section{Review of \R\ Commands}
 
 
-\begin{widestuff}
 Here is a brief summary of the commands introduced in this chapter.
 
+\begin{widestuff}
 <<tidy=FALSE,results='hide',fig.keep='none'>>=
 source( "file.R" )                               # execute commands in a file
 
 x <- 1:10                                        # create vector with numbers 1 through 10
 M <- matrix( 1:12, nrow=3 )                      # create a 3 x 4 matrix
 data.frame(number = 1:26, letter=letters[1:26] ) # create a data frame
+@
+\end{widestuff}
 
+\begin{widestuff}
+<<tidy=FALSE,results='hide',fig.keep='none'>>=
 mode(x)                                   # returns mode of object x
 length(x)                                 # returns length of vector or list
 dim(HELPrct)                              # dimension of a matrix, array, or data frame
@@ -2091,7 +2017,11 @@ ncol(HELPrct)                             # number of columns
 names( HELPrct )                          # variable names in data frame
 row.names( HELPrct )                      # row names in a data frame
 attributes(x)                             # returns attributes of x
+@
+\end{widestuff}
 
+\begin{widestuff}
+<<tidy=FALSE,results='hide',fig.keep='none'>>=
 toupper(x)                                # capitalize
 as.character(x)                           # convert to a character vector 
 as.logical(x)                             # convert to a logical (TRUE or FALSE)
@@ -2099,7 +2029,11 @@ as.numeric(x)                             # convert to numbers
 as.integer(x)                             # convert to integers
 factor(x)                                 # convert to a factor [categorical data]
 class(x)                                  # returns class of x
+@
+\end{widestuff}
 
+\begin{widestuff}
+<<tidy=FALSE,results='hide',fig.keep='none'>>=
 smallPrimes <- c(2,3,5,7,11)              # create a (numeric) vector 
 rep(1, 10)                                # ten 1's
 seq(2, 10, by=2)                          # evens less than or equal to 10
@@ -2109,7 +2043,11 @@ order(x)                                  # x[ order(x) ] is x in sorted order
 rev(x)                                    # returns elements of x in reverse order
 diff(x)                                   # returns differences between consecutive elements
 paste( "Group", 1:3, sep="" )             # same as c("Group1", "Group2", "Group3")
+@
+\end{widestuff}
 
+\begin{widestuff}
+<<tidy=FALSE,results='hide',fig.keep='none'>>=
 write.table(HELPrct, file="myHELP.txt")          # write data to a file 
 write.csv(HELPrct, file="myHELP.csv")            # write data to a csv file 
 save(HELPrct, file="myHELP.Rda")                 # save object(s) in R's native format
@@ -2120,13 +2058,10 @@ favs <- subset( HELPrct, select=c('age','sex','substance') )     # keep only 3 c
 
 trellis.par.set(theme=col.mosaic())              # choose theme for lattcie graphics
 show.settings()                                  # inspect lattice theme
-
 @
-\vspace*{-.55in}
-<<eval=FALSE, tidy=FALSE>>=
+<<eval=FALSE>>=
 fetchGoogle( ... )                               # get data from google URL
 @
-
 \end{widestuff}
 
 \section{Exercises}

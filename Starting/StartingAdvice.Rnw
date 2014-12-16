@@ -39,7 +39,7 @@ Do something with \R\ on day 1.  Do something else on day 2.  Have students do s
 
 \item Illustrate frequently.
 
-\TeachingTip{RMarkdown provides a easy way to create handouts or slides for 
+\TeachingTip[-2cm]{RMarkdown provides a easy way to create handouts or slides for 
 your students.  See 
 \href{http://arxiv.org/abs/1402.1894}%
 {\emph{R Markdown: Integrating a Reproducible Analysis Tool into Introductory Statistics}} 
@@ -184,7 +184,7 @@ they will have a difficult time providing the correct information to a plotting 
 The student may blame \R, but that is not the primary source of the difficulty.  If you can
 diagnose the true problem, you will improve their understanding of statistics
 and fix \R\ difficulties simultaneously.
-\TeachingTip[-8ex]{When introducing \R\ code to students, we emphasize the 
+\TeachingTip[-2cm]{When introducing \R\ code to students, we emphasize the 
 following questions:  \emph{What do you want \R\ to do for you?} and 
 \emph{What information must you provide, if \R\ is going to do that?}  
 The first question generally determines the function that will be used.  

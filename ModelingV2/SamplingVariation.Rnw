@@ -1,0 +1,146 @@
+% Sampling Variation
+
+Earlier chapters introduced the {\em prediction interval} for models. This is a good place to start in teaching about variation.  People find it easy to understand why a prediction might be off by a bit.  It may still be mysterious how prediction intervals can be formed, but their use is more or less self-evident.
+
+In this chapter, we'll introduce other ways of describing the precision of models.  Often, the purpose of this is to provide a meaningful way to compare two or more models.  Such comparisons are an important part of the modeling process.  They can indicate whether or not it's worthwhile to add detail to a model.  This can guide a modeler's decisions in constructing a useful model.
+
+\section{Sampling variation}
+
+Models are meant to account for case-to-case variation in the collection of cases comprising the data.  For instance, the  throw distance for a trebuchet varies depending on the projectile weight, the counter-weight, and perhaps other factors. 
+
+There is another form of variation: how the collection of cases might differ if the study were repeated from scratch.  The particular cases found in one data set are a sample from a ``population" of all the cases that might be encountered.  The inclusion of a particular, individual case in a sample is fortuitous.  A replication of the sampling process would likely result in different cases being included in the sample.
+
+Sampling variation introduces some randomness into models.  It's to be expected that the fitting a model to a new sample will produce results {\em somewhat different} than the fit to the original sample.
+
+The central questions of this chapter are how to describe sampling variation and how to state meaningfully what ``somewhat different" means.
+
+As in previous chapters, the principle in teaching sampling variation is to\TeachingTip{``Practice before theory" is the way we learn many things.  The standard style in teaching mathematics --- prove before using --- is not necessarily the best way to teach and learn.}% 
+make it a object rather than a concept.  You've built models so that you can answer "what if?" questions.  You don't need to have a complete theoretical understanding of them in order to use them.  Instead, you can develop an understanding by working with them.
+
+\section{Sampling}
+
+To teach about sampling, sample!  There are many useful in-class activities to give students an understanding that sampling introduces variation and that this variation is not complete, unbounded randomness.\TeachingTip{For instance, give each student a coin and have her flip it 20 times.  Count the number of heads.  Then compare the results across students.  You will often encounter students who think that the result should always be 10 heads.  It's not hard to disabuse them of this idea and to demonstrate that the results tend to fall in a narrow range around 10.}  Some of the potential random outcomes are typical, others are hardly ever seen.
+
+Start by establishing the population from which the sample is to be taken. A nice data set for doing this is in the \pkg{mosaic} package.  The \code{TenMileRace}data table has measurements of {\em each and every} of the 8636 people who participated in the Cherry Blossom 10-mile race in 2005. \Pointer{The setting in which the \code{TenMileRace} data was assembled is familiar to students: there's a known group of people who registered for the race and ran it, 8636 of them. That number is large enough that students will immediately understand why a study might be done with a sample of the participants rather than the whole population.  For coin flips, draws from an urn, etc., the population is abstract and increases the cognitive load of thinking about samples.}  You might be interested\Pointer{Always have a genuine purpose in mind when you build a model.} in using these data to see if people run faster or slower as they age.
+
+The program for drawing a random sample from the population in a data table such as \code{TenMileRace} is straightforward.  Let's draw a random sample of 500 runners:
+<<include=FALSE>>=
+set.seed(101) # for reproducibility of the example
+@
+<<>>=
+MySamp <- sample(TenMileRace, size=100)
+@
+
+
+With the sample in hand, a model relevant to the faster-or-slower age question can be fitted to it.
+<<>>=
+Model <- lm(net ~ age + sex, data=MySamp)
+@
+The \code{net} variable gives, for each runner, the elapsed time from crossing the starting line to crossing the finish line.  \code{age} and \code{sex} are self-explanatory.
+
+Here's the model output comparing a 45-year old woman to a 40-year old woman:
+<<>>=
+runFun <- makeFun(Model)
+runFun(age=45, sex='F') - runFun(age=40, sex='F')
+@
+
+Imagine that you took another sample.  Actually, don't imagine.  Do it!
+<<>>=
+MySamp2 <- sample(TenMileRace, size=100)
+Model2 <- lm(net ~ age + sex, data=MySamp2)
+runFun2 <- makeFun(Model2)
+runFun2(age=45, sex='F') - runFun2(age=40, sex='F')
+@
+We got a somewhat different result.  Perhaps this will be obvious to your students.\TeachingTip{Exploit the fact that many of your students will have laptop computers in class.  Ask each of them to draw their own sample and fit the \code{net \tilde age + sex} model.  Then ask them to report each of their model results, say, the model output for a 40-year old female.  You might also have each of these students repeat the process, so they can see that results vary even between their own trials.}
+
+Once students accept that sampling variation is natural, you can start to study the variation itself. Even with a dozen or so trials using \function{sample}, students can get a good idea about the size of sampling variation.
+
+As a teacher, you may want to show not dozens but hundreds of trials.  This can be done in a straightforward way, but even if it is simple for the instructor it can be an overload for students.  
+
+To generate hundreds or thousands of trials in a convenient way, you can use the \pkg{mosaic} \code{do} function to automate the process of generating trials, fitting a model to the sample in each trial, and reporting the spread induced by sampling variation.  The process starts by packaging up the steps in a single trial. 
+
+<<>>=
+oneTrial <- function(){
+  # construct the model function from a sample
+  fun <- makeFun(
+    lm(net ~ age + sex, 
+       data=sample(TenMileRace, size=100))
+  )
+  # calculate the statistic of interest
+  changeWithAge <- fun(age=45, sex='F') - 
+                   fun(age=40, sex='F')
+  # give the stat, naming it "result"
+  return( list(result=changeWithAge) )
+}
+@
+
+
+<<eval=FALSE>>=
+oneTrial <- function( ) {
+  # generate the new sample
+  Samp <- sample(TenMileRace, size=100)
+  # fit the model
+  model <- lm(net ~ age + sex, data=Samp)
+  # use the model to generate a quantity of interest
+  fun <- makeFun(model)
+  return(formals(fun)[[1]])
+  return(fun(age=40,sex="M"))
+  changeWithAge <- fun(age=45, sex='F') - fun(age=40, sex='F')
+  
+  return( list(result=changeWithAge) )
+}
+@
+  
+The \code{oneTrial} function has been constructed with the particular example being used in this chapter about \code{TenMileRace}.  To use it in another situation, use this function as a template, taking care to change as needed the name of the data table, the sampling size, the model formula, and the inputs at which the function is to be evaluated.
+
+Whether to expose students to the R programming involved in the \code{oneTrial} function is a choice you can make.  If your purpose is to teach about modeling, rather than programming, we suggest that you don't.
+
+
+The use of \code{newTrial}, on the other hand, is simplicity itself.
+<<>>=
+oneTrial()
+@
+
+To run, say, 1000 trials, use \function{do} and store the results where you can use them.
+<<message=FALSE>>=
+ManyTrials <- do(1000) * oneTrial()
+@
+
+Once you have run the trials, you can analyze them in whatever way you think is important.
+<<>>=
+head(ManyTrials) # to see how the data are structured
+mean( ~ result , data=ManyTrials)
+sd( ~ result, data=ManyTrials)
+qdata( ~ result, p=range(0.025, 0.975), data=ManyTrials)
+@
+
+About 95\% of the trials give a result between 9 s and 158 s.  You can also see this graphically:
+<<>>=
+densityplot( ~ result, data=ManyTrials,
+             xlab="Change in net time age 40 to 45 (s) for women")  
+@
+
+\newthought{There are some simple do's and don'ts when writing functions} like \function{oneTrial} which involve R constructs not heavily used elsewhere in a course.  There's no strict need for you to expose students to such nuts-and-bolts. On the other hand, it is important for students to believe that \code{oneTrial} is doing the same sort of thing that they have done.
+
+A programmer might suggest that \function{oneTrial} be replace with a function that carries out the many trials internally, for instance using a programming loop.
+
+By writing \function{oneTrial} to carry out just a single trial, you and your students can run it and confirm that it does what it's supposed to do.
+
+
+
+% \TeachingTip{
+One way to introduce \function{do} is to simulate something random, for example the roll of a die.  Here's one roll:
+<<>>=
+sample(1:6, size=1)
+@
+
+Here are five rolls:
+<<>>=
+do(5) * sample(1:6, size=1)
+@
+%    }%
+
+If you want to have students use a function like \function{oneTrial}, put the R code in a place like a course web site where students can cut and paste it into their console.
+
+\subsection{Statistical inference}
+

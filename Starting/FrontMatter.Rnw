@@ -71,18 +71,11 @@ fit into each category as we go along.
 \R\ can be obtained from \url{http://cran.r-project.org/}.  
 Download and installation are quite straightforward for Mac, PC, or linux machines.
 
-\RStudio\ is an integrated development environment (IDE) that facilitates use of \R\ for
-both novice and expert users.  We have adopted it as our standard teaching environment
-because it dramatically simplifies the use of \R\ for instructors and for students.
-There are several things we use that can only be done in \RStudio\ 
-(mainly things that make use \function{manipulate()} or \RStudio's support for 
-reproducible research).  \RStudio\ is available from \url{http://www.rstudio.org/}.
-\RStudio\ can be installed as a desktop (laptop) application or as a server application
-that is accessible to users via the Internet.
+\RStudio\ is an integrated development environment (IDE) that facilitates use of \R\ for both novice and expert users.  We have adopted it as our standard teaching environment because it dramatically simplifies the use of \R\ for instructors and for students.\Pointer{Several things we use that can be done only in \RStudio, for instance \function{manipulate} or \RStudio's support for reproducible research).}
+%\RStudio\ is available from \url{http://www.rstudio.org/}.
+\RStudio\ can be installed as a desktop (laptop) application or as a server application that is accessible to users via the Internet.\TeachingTip{RStudio server version works well with starting students.  All they need is a web browser, avoiding any potential problems with oddities of students' individual computers.}
 
-In addition to \R\ and \RStudio, we will make use of several packages that need to be installed
-and loaded separately. The \pkg{mosaic} package (and its dependencies) will be used throughout.  
-Other packages appear from time to time as well.
+In addition to \R\ and \RStudio, we will make use of several packages that need to be installed and loaded separately. The \pkg{mosaic} package (and its dependencies) will be used throughout.  Other packages appear from time to time as well.
 \iffalse
 including
 \begin{multicols}{3}
@@ -231,7 +224,7 @@ connections between the MOSAIC topics.
 
 We welcome and encourage your participation in all of these initiatives.
 
-\chapter*{Statistical Computation, Computational Statistics, and Data Science}
+\chapter*{Computational Statistics and Statistical Computation}
 
 There are at least two ways in which statistical software
 can be introduced into a statistics course.  In the first approach, the course
@@ -243,13 +236,7 @@ data sets will also be increased.   We will refer to this approach as
 since the computer serves primarily as a computational
 tool to replace pencil-and-paper calculations and drawing plots manually.
 
-In the second approach, more fundamental changes in the course result from the
-introduction of the computer.  Some new topics are covered, some old topics are
-omitted.  Some old topics are treated in very different ways, and perhaps at
-different points in the course.  We will refer to this approach as
-\term{computational statistics} because the availability of computation is
-shaping how statistics is done and taught.  Computational statistics is a key component of \term{data science}, defined as the ability to use data to answer questions
-and communicate those results.
+In the second approach, more fundamental changes in the course result from the introduction of the computer.  Some new topics are covered, some old topics are omitted.  Some old topics are treated in very different ways, and perhaps at different points in the course.  We will refer to this approach as \term{computational statistics} because the availability of computation is shaping how statistics is done and taught.  Computational statistics is a key component of \term{data science}, defined as the ability to use data to answer questions and communicate those results.
 
 \FoodForThought{Our students need to see aspects of computation and data science early and often
 to develop deeper skills.  Establishing precursors in introductory courses will help them get started.}%
