@@ -7,13 +7,6 @@ set.seed(123)
 
 \chapter*{About These Notes}
 
-These materials were initially created for a workshop entitled 
-\emph{Teaching Statistics Using R} prior to the 2011 United States Conference 
-on Teaching Statistics and revised for USCOTS 2011 and eCOTS 2014.  
-We organized these workshops to help instructors integrate \R\ (as well as some 
-related technologies) into their statistics courses at all levels.
-We received great feedback and many wonderful ideas from the participants and those
-that we've shared this with since the workshops.  
 
 We present an approach to teaching introductory and intermediate
 statistics courses that is tightly coupled with computing generally and with
@@ -34,8 +27,16 @@ demonstrate key concepts in statistics and modeling
 while also supporting the core material of more traditional courses.
 
 \subsection*{A Work in Progress}
+
 \Caution{Despite our best efforts, you WILL find bugs both in this document and in our code.
 Please let us know when you encounter them so we can call in the exterminators.}%
+
+These materials were developed for a workshop entitled 
+\emph{Teaching Statistics Using R} prior to the 2011 United States Conference 
+on Teaching Statistics and revised for USCOTS 2011 and eCOTS 2014.  
+We organized these workshops to help instructors integrate \R\ (as well as some related technologies) into statistics courses at all levels.
+We received great feedback and many wonderful ideas from the participants and those that we've shared this with since the workshops.  
+
 Consider these notes to be a work in progress.  
 %\SuggestionBox{Sometimes we will mark
 %places where we would especially like feedback with one of these suggestion boxes.
@@ -48,14 +49,6 @@ corrections, etc.
 
 Updated versions will be posted at \url{http://mosaic-web.org}.
 
-\subsection*{What's Ours Is Yours -- To a Point}
-
-This material is copyrighted by the authors under a Creative Commons Attribution 3.0 
-Unported License.
-You are free to \emph{Share} (to copy, distribute and transmit the work) and to \emph{Remix} 
-(to adapt the work) if you attribute our work.
-More detailed information about the licensing is available at this web page:
-\url{http://www.mosaic-web.org/go/teachingRlicense.html}.
 
 \subsection*{Two Audiences}
 
@@ -124,10 +117,7 @@ Marginal notes appear here and there.
 %\DiggingDeeper{Some marginal notes will look like this one and provide
 %some additional information that you may find of interest.}%
 \marginnote{Have a great suggestion for a marginal note?  Pass it along.}%
-Sometimes these are side comments that we 
-wanted to say, but we didn't want to interrupt the flow to mention them in
-the main text.  
-Others provide teaching tips or caution about traps, pitfalls and gotchas.
+Sometimes these are side comments that we wanted to say, but we didn't want to interrupt the flow to mention them in the main text. Others provide teaching tips or caution about traps, pitfalls and gotchas.
 %\Caution{But warnings are set differently to make sure they catch your attention.}%
 %These may describe more advanced features of the language or make suggestions
 %about how to implement things in the classroom.  Some are warnings
@@ -136,7 +126,14 @@ Others provide teaching tips or caution about traps, pitfalls and gotchas.
 %notes?}
 
 
-\section*{Document Creation}
+\subsection*{What's Ours Is Yours -- To a Point}
+
+This material is copyrighted by the authors under a Creative Commons Attribution 3.0 
+Unported License.
+You are free to \emph{Share} (to copy, distribute and transmit the work) and to \emph{Remix} 
+(to adapt the work) if you attribute our work.
+More detailed information about the licensing is available at this web page:
+\url{http://www.mosaic-web.org/go/teachingRlicense.html}.
 
 
 
@@ -226,7 +223,7 @@ at the Project MOSAIC web site, \url{http://mosaic-web.org}.
 %concepts.
 
 \item[The construction of syllabi and materials] 
-for courses that teach the MOSAIC topics in a better integrated way. Such
+for courses that teach MOSAIC topics in a better integrated way. Such
 courses and materials might be wholly new constructions, or they might be 
 incremental modifications of existing resources that draw on the 
 connections between the MOSAIC topics.
@@ -251,8 +248,7 @@ introduction of the computer.  Some new topics are covered, some old topics are
 omitted.  Some old topics are treated in very different ways, and perhaps at
 different points in the course.  We will refer to this approach as
 \term{computational statistics} because the availability of computation is
-shaping how statistics is done and taught.  This is a key capacity of 
-\term{data science}, defined as the ability to use data to answer questions
+shaping how statistics is done and taught.  Computational statistics is a key component of \term{data science}, defined as the ability to use data to answer questions
 and communicate those results.
 
 \FoodForThought{Our students need to see aspects of computation and data science early and often
@@ -282,14 +278,7 @@ At the same time, the development of \R\ and of \RStudio\ (an optional
 interface and integrated development environment for \R) are making it
 easier and easier to get started with \R.
 
-Nevertheless, those who are unfamiliar with \R\ or who have never used \R\ 
-for teaching are often cautious about using it with students.  If you are 
-in that category, then this book is for you.  Our goal is to reveal some of 
-what we have learned teaching with \R\ and to make teaching statistics with
-\R\ as rewarding and easy as possible -- for both students and faculty.
-We will cover both technical aspects of \R\ and \RStudio\ (e.g., how do I get \R\ to do thus and such?) as well as some perspectives on how to use computation to teach statistics.
-The latter will be illustrated in \R\ but would be equally applicable with
-other statistical software.
+Nevertheless, those who are unfamiliar with \R\ or who have never used \R\ for teaching are understandably cautious about using it with students.  If you are in that category, then this book is for you.  Our goal is to reveal some of what we have learned teaching with \R\ and to make teaching statistics with \R\ as rewarding and easy as possible -- for both students and faculty. We will cover both technical aspects of \R\ and \RStudio\ (e.g., how do I get \R\ to do thus and such?) as well as some perspectives on how to use computation to teach statistics. The latter will be illustrated in \R\ but would be equally applicable with other statistical software.
 
 Others have used \R\ in their courses, but have perhaps left the course feeling
 like there must have been better ways to do this or that topic.  If that

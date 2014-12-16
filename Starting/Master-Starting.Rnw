@@ -1,6 +1,4 @@
-
-
-\documentclass[openany,12pt]{tufte-book}
+\documentclass[openany]{tufte-book}
 
 
 \usepackage{RBook}
@@ -36,8 +34,8 @@ require(mosaic)
 require(mosaicData) 
 trellis.par.set(theme=col.mosaic(bw=FALSE))
 trellis.par.set(fontsize=list(text=9))
-options(keep.blank.line=FALSE) 
-options(width=60)
+options(format.R.blank=FALSE) 
+options(width=70)
 require(vcd)
 require(knitr)
 opts_chunk$set(  tidy=TRUE,
@@ -91,24 +89,9 @@ knit_hooks$set(document = function(x) {
 <<child='RForInstructors.Rnw', eval=TRUE>>=
 @
 
-% don't need this -- just a stub at moment anyway -- 2014-06-21 rjp
-<<child='ByHand.Rnw', eval=FALSE>>=
+<<child='Manipulate.Rnw', eval=FALSE>>=
 @
 
-% Unless we create more examples, this is being deleted.
-<<child='MoreExamples.Rnw', eval=FALSE>>=
-@
-
-% Most of this should be in RForInstructors now (there was a lot of duplication between them)
-<<child='MoreR.Rnw', eval=FALSE>>=
-@
-
-<<child='Manipulate.Rnw', eval=TRUE>>=
-@
-
-% This seems unneeded -- 2014-06-21 rjp
-<<child='RIntro.Rnw', eval=FALSE>>=
-@
 
 <<child='Handouts.Rnw', eval=FALSE>>=
 @

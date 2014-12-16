@@ -47,9 +47,7 @@ manipulate(
   N = slider(5,40)
 )
 @
-\marginnote{We find it useful to capitalize the inputs to the manipulated expression
-that are hooked up to \pkg{manipulate} controls.  This helps avoid naming collisions 
-and signals how the main manipulated expression is being used.}
+\marginnote{We find it useful to capitalize the inputs to the manipulated expression that are hooked up to \pkg{manipulate} controls.  This helps avoid naming collisions and signals how the main manipulated expression is being used.}
 This generates a plot along with a slider ranging from 5 bins to 40.
 
 \begin{center}

@@ -127,7 +127,7 @@ This is the goal.
 
 \section{Graphical summaries of data}
 
-\TeachingTip{We recommend showing some plots on the first day and having student
+\TeachingTip[-2cm]{We recommend showing some plots on the first day and having student
 generate their own graphs before the end of the first week.}
 %
 Graphical summaries are an important and eye-catching way to demonstrate the 
@@ -142,7 +142,7 @@ data, to think about distributions, and to pose statistical questions.
 \Rindex{gplot2}
 \Rindex{lattice}
 \Rindex{ggvis}
-\Pointer{We are often asked about the other graphics systems, especially 
+\Pointer[-1cm]{We are often asked about the other graphics systems, especially 
 \pkg{ggplot2} graphics.  In our experience, \pkg{lattice} makes it easier for
 beginners to create a wide variety of more or less ``standard'' plots -- including
 the ability to represent multiple variables at once.  \pkg{ggplot2}, on the 
@@ -171,7 +171,7 @@ numerical summaries and linear models.
 
 As an example, let's create the following plot, which shows the 
 number of births in the United States for each day in 1978.
-\TeachingTip{This plot can make an interested discussion starter
+\TeachingTip{This plot can make an interesting discussion starter
 early in a course.  Ask students to conjecture explanations for
 the patterns they observe in the plots.  Their answers will reveal
 whether they are interpreting the plot correctly.}
@@ -246,6 +246,9 @@ So we can create the plot with
 
 If we want the boxplots to be horizontal instead of vertical, we obtain that by reversing
 the roles of \variable{age} and \variable{substance}:
+
+\newpage
+
 <<>>=
 bwplot( substance ~ age, data=HELPrct )
 @
@@ -283,20 +286,11 @@ the reason why things are this way, but it helps them remember.}
 histogram( ~ age, data=HELPrct) 
 @
 
-\InstructorNote{Introducing \option{width} and \option{center} here is perhaps
-a violation of our usual policy of accepting defaults and saving options for later.
-But it is important that histogram bins be chosen appropriately, and no algorithmic
-default works well for all data sets.  We encourage students to make several 
-histograms and to experiment with \option{center} and especially \option{width}.}
-The \pkg{mosaic} package adds some extra functionality to \function{histogram()}
-to make it easier to specify the bins used.  In particular, the options
-\option{width} and \option{center} (default is 0) can be used to define the 
-width of the bins and the center of one of the bins.  For example, to create a histogram
-with bins that are 5 years wide we can use \option{width=5}, 
+\InstructorNote{Introducing \option{width} and \option{center} here is perhaps a violation of our usual policy of accepting defaults and saving options for later. But it is important that histogram bins be chosen appropriately, and no algorithmic default works well for all data sets.  We encourage students to make several histograms and to experiment with \option{center} and especially \option{width}.}
+The \pkg{mosaic} package adds some extra functionality to \function{histogram} to make it easier to specify the bins used.  In particular, the options \option{width} and \option{center} (default is 0) can be used to define the width of the bins and the center of one of the bins.  For example, to create a histogram with bins that are 5 years wide we can use \option{width=5}, 
 and we can shift the bins left and right by providing a value for \option{center}.
-\Note{\option{center} need not be contained in the bins that are displayed.  So to 
-get bins with edges ``on the 0's and 5's'', we can set the \option{center} to 
-2.5, regardless of the range of the data.}
+\Note{\option{center} need not be contained in the bins that are displayed.  So to get bins with edges ``on the 0's and 5's'', we can set the \option{center} to 2.5, regardless of the range of the data.}
+
 <<out.width=".47\\textwidth">>=
 histogram( ~ age, data=HELPrct, width=5) 
 histogram( ~ age, data=HELPrct, width=5, center=2.5) 
@@ -375,9 +369,8 @@ plotPoints( width ~ length, data=KidsFeet )  # mosaic alternative
 @
 
 
-\Caution{Note that \function{dotplot()} produces a very different kind of plot 
-from the plot produced by \function{dotPlot()}, 
-which is what students will more commonly think of as a dot plot.}
+\Caution{There is also a function \function{dotPlot} (with a capital P). Note that \function{dotplot()} produces a very different kind of plot 
+from that produced by \function{dotPlot()}.}
 
 The \pkg{lattice} package also provides the \function{stripplot()} and 
 \function{dotplot()} functions which can be used for one-dimensional scatter plots.
@@ -476,7 +469,7 @@ our favorite statistics all at once:
 favstats( ~ age, data=HELPrct )
 @
 \Rindex{tally()}
-And the \function{tally()} function can be used to tally counts.
+The \function{tally()} function can be used to count cases.
 
 
 <<>>=
@@ -484,6 +477,7 @@ tally( ~ sex, data=HELPrct)
 tally( ~ substance, data=HELPrct)
 @
 Sometimes it is more convenient to display proportions or percents.
+
 <<>>=
 tally( ~ substance, data=HELPrct, format="percent")
 tally( ~ substance, data=HELPrct, format="proportion")
@@ -530,9 +524,11 @@ graphics system already makes use of the same template as linear models, and the
 \pkg{mosaic} package makes it possible to do numerical summaries with the same template.
 By introducing students to the template for graphical and numerical summaries, there
 is very little new to learn when they are ready to fit a model.
-\FoodForThought{Perhaps you are thinking this means that we don't 
+\FoodForThought[-2cm]{Perhaps you are thinking this means that we don't 
 need to wait so long to introduce modeling in the introductory
-statistics course.  We're thinking the same thing.}
+statistics course.  We think so too. See the companion volume, {\em Start Modeling in R}.}
+
+\newpage
 
 
 For example, suppose we want to know how the width of kids' feet depends on the
@@ -578,6 +574,10 @@ confint( t.test( ~ length, data=KidsFeet ) )
 @
 \Rindex{binom.test()}
 \Rindex{prop.test()}
+\begin{widestuff}
+<<echo=FALSE>>=
+OLD <- options(width=110)
+@
 <<>>=
 confint(t.test( length ~ sex, data=KidsFeet ))
 # using Binomial distribution
@@ -586,7 +586,10 @@ confint(binom.test( ~ sex, data=HELPrct ))
 confint(prop.test( ~ sex, data=HELPrct ))    
 confint(prop.test( sex ~ homeless, data=HELPrct ))
 @
-
+<<echo=FALSE>>
+options(OLD)
+@
+\end{widestuff}
 
 
 \section{\texttt{lattice} bells and whistles}
@@ -622,15 +625,15 @@ students ask or an analysis demands them.
 We have seen the \dataframe{Births78} data set in
 Section~\ref{sec:Births78Intro}.  The plots below take
 advantage of additional arguments to improve the plot.
-\Note{\texttt{\%\%} performs modular arithmetic, in this 
+\Pointer{\texttt{\%\%} performs modular arithmetic, in this 
 case giving seven groups, one for each day of the week.}
 %
 The first plot below illustrates one of the important 
 features of this data set -- there are usually fewer births
 on two days of the week and more on the other five.
 %
-\Pointer{Some of the arguments here use lists.  Lists are 
-one of the fundamental ``container types'' in \R.  We will
+\Pointer[1cm]{Some of the arguments here use lists.  Lists are 
+one of the fundamental ``container types'' in \R. Instructors will benefit from being able to recognize them.  We will
 have more to say about them in Chapter~\ref{chap:containers}.}%
 From this we can be quite certain that 1978 began on a Sunday.
 \Pointer{We could also use the \function{wday()} function
@@ -655,6 +658,8 @@ xyplot( births ~ date, data=Births78,
           superpose.symbol=list(pch=16, cex=.8, alpha=.8))
 )
 @
+
+\newpage
 
 \noindent
 Here we have used
@@ -793,19 +798,16 @@ histogram(~ Sepal.Length, data=iris, n=25,
 \Rindex{freqpolygon()}
 \myindex{frequency polygon|see{\texttt{freqpolygon()}}}
 
-\term{Frequency polygons} and \term{density plots} provide alternatives to histograms
-that make it easier to overlay the representations of multiple subsets of the data.
-A frequency polygon is created from the same data summary (bins and counts) as a histogram, 
-but instead of representing each bin with a bar, it is represented by a point 
-(at the center of the where the top of the histogram bar would have been).  
+\term{Frequency polygons} and \term{density plots} provide alternatives to histograms that make it easier to overlay the representations of multiple subsets of the data. A frequency polygon is created from the same data summary (bins and counts) as a histogram,  but instead of representing each bin with a bar, it is represented by a point  (at the center of the where the top of the histogram bar would have been).  
+
+These points are then connected with line segments. Here is an example that shows the distribution of Old Faithful eruptions times from a sequence of observations 
+
+\newpage
+
 \Caution{The \dataframe{faithful} data set contains similar data, but the 
 variable names in that data frame are 
 poorly chosen.  The \dataframe{geyser} data set in the \pkg{MASS}
 package has better names and more data.}
-These points are then connected with line segments.
-Here is an example that shows the distribution of Old Faithful eruptions times
-from a sequence of observations 
-
 \Rindex{MASS}
 \Rindex{geyser}
 <<>>=
@@ -814,11 +816,8 @@ freqpolygon( ~ duration, data=geyser, n=15)
 @
 \TeachingTip[-1.5in]{Point out that an interesting feature of this distribution is its clear 
 bimodality.
-In particular, the mean and median eruption time are not a good measures of the duration of a  
-``typical'' eruption since almost none of the eruption durations are near the mean and median.}
-Numerically, the data are being summarized and  represented in exactly the same way as for 
-histograms, but visually the horizontal and vertical line segments of the histogram are 
-replaced by sloped line segments.  
+In particular, the mean and median eruption time are not a good measures of the duration of a ``typical'' eruption since almost none of the eruption durations are near the mean and median.}
+Numerically, the data are being summarized and  represented in exactly the same way as for histograms, but visually the horizontal and vertical line segments of the histogram are replaced by sloped line segments.  
 \Rindex{ladd()}
 <<echo=FALSE>>=
 histogram( ~ duration, data=geyser, n=15, col="lightskyblue")
@@ -827,10 +826,13 @@ ladd( panel.freqpolygon(geyser$duration, n=15) )
 This may give a more accurate visual representation in some 
 situations (since the distribution can ``taper off'' better).  More importantly, it makes 
 it much easier to overlay multiple distributions.
+
+\newpage
+
 <<tidy=FALSE>>=
 freqpolygon( ~ Sepal.Length, data=iris, 
 			groups=Species, 
-			ylim=c(0,1.5)   # manually choose the range for the y-axis
+			ylim=c(0,1.5)  # manually set y-axis range
 )
 @
 
@@ -849,6 +851,9 @@ of how that smooth curve is generated, but should be introduced to the \option{a
 argument which controls the degree of smoothing.  It is roughly equivalent to choosing 
 wider or narrower bins for a histogram or frequency polygon.  The default value is 1.
 Higher values smooth more heavily; lower values, less so.
+
+\newpage
+
 <<tidy=FALSE, out.width=".47\\textwidth">>=
 densityplot( ~ Sepal.Length, data=iris, groups=Species, 
              adjust=3, main="adjust=3")
@@ -916,7 +921,11 @@ different species using different symbols on the same panel.
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, 
   auto.key=list(columns=3), data=iris)
 @
-Sometimes it is useful to do both at once.
+
+\newpage
+ 
+Sometimes it is helpful to use both panels and symbol \code{groups}.
+
 
 <<rs2-iris-xyplot-condgroups,cache=TRUE,tidy=FALSE>>=
 xyplot(Sepal.Length ~ Sepal.Width | Species, groups=Species, 
@@ -1160,19 +1169,19 @@ x <- 1:10
 \Rindex{mplot()}
 \myindex{quantile-quantile plots|see{\texttt{qqmath}}}
 <<tidy=FALSE,results='hide',fig.keep="none",warning=FALSE>>=
-require(mosaic)                        # load the mosaic package
-require(mosaicData)                    # load the mosaic data sets
+require(mosaic)                                # load the mosaic package
+require(mosaicData)                            # load the mosaic data sets
 
-tally( ~ sector, data=CPS85 )          # frequency table
-tally( ~ sector + race, data=CPS85 )   # cross tabulation of sector by race   
-mean( ~ age, data = HELPrct )          # mean age of HELPrct subjects
-mean( ~ age | sex, data = HELPrct )    # mean age of male and female HELPrct subjects
-mean( age ~ sex, data = HELPrct )      # mean age of male and female HELPrct subjects
-median(x); var(x); sd(x);              # more numerical summaries
-quantile(x); sum(x); cumsum(x)         # still more summaries
-favstats( ~ Sepal.Length, data=iris )  # compute favorite numerical summaries
+tally( ~ sector, data=CPS85 )                  # frequency table
+tally( ~ sector + race, data=CPS85 )           # cross tabulation of sector by race   
+mean( ~ age, data = HELPrct )                  # mean age of HELPrct subjects
+mean( ~ age | sex, data = HELPrct )            # mean age of male and female HELPrct subjects
+mean( age ~ sex, data = HELPrct )              # mean age of male and female HELPrct subjects
+median(x); var(x); sd(x);                      # more numerical summaries
+quantile(x); sum(x); cumsum(x)                 # still more summaries
+favstats( ~ Sepal.Length, data=iris )          # compute favorite numerical summaries
 
-histogram( ~ Sepal.Length | Species, data=iris )      # histograms (with extra features)
+histogram( ~ Sepal.Length | Species, data=iris )           # histograms (with extra features)
 dotPlot( ~ Sepal.Length | Species, data=iris )             # dot plots for each species
 freqpolygon( ~ Sepal.Length, groups = Species, data=iris ) # overlaid frequency polygons
 densityplot( ~ Sepal.Length, groups = Species, data=iris ) # overlaid densityplots

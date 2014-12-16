@@ -249,17 +249,19 @@ might as well be flipping a coin.
 
 So here's the plan.  We'll flip 10 coins.  We'll call the heads correct 
 guesses and the tails incorrect guesses.  
-\marginnote{There is a subtle switch here.  Before we were asking how 
-many of the students H's and T's matched the flipped coin.  Now we are 
-using H to simulate a correct guess and T to simulate an incorrect guess.
-This makes simulating easier.}
 Then we'll flip 10 more coins,
 and 10 more, and 10 more, and \dots.  That would get pretty tedious.
 Fortunately, computers are good at tedious things, so we'll let the computer 
 do the flipping for us.
 
+\newpage
+
 The \function{rflip()} function can flip one coin
 
+\marginnote[3cm]{There is a subtle switch here.  Before we were asking how 
+many of the students H's and T's matched the flipped coin.  Now we are 
+using H to simulate a correct guess and T to simulate an incorrect guess.
+This makes simulating easier.}
 
 <<flip1coin>>=
 require(mosaic)
@@ -291,7 +293,7 @@ set.seed(123)
 @
 and make a table of the results.
 
-\TeachingTip{There is always the question of how many simulations to perform.
+\TeachingTip[-1cm]{There is always the question of how many simulations to perform.
 This is a trade-off between speed and accuracy.  For simple things, one can easily
 perform 10,000 or more simulations live in class.  For more complicated things (that 
 might require fitting a model and extracting information from it at each iteration)
@@ -374,37 +376,22 @@ tally(~ M, data=results, format="perc")
 \section{Births by Day}
 
 \label{sec:Births78Intro}
-The \dataframe{Births78} data set contains the number of births in the United States for 
-each day of 1978.  
+The \dataframe{Births78} data set contains the number of births in the United States for each day of 1978.  
 \marginnote{The use of the phrase ``depends on'' is intentional.  
 Later we will emphasize how \texttt{\~} can often be interpreted as ``depends on''.}
-A scatter plot of births by day of year reveals some interesting patterns.
-Let's see how the number of births depends on the day of the year.
+A scatter plot of births by day of year reveals some interesting patterns. Let's see how the number of births depends on the day of the year.
 
 \TeachingTip{The plot could also be made using \variable{date}.  For general 
-purposes, this is probably the better plot to make, but using \variable{dayofyear}
-forces students to think more about what the x-axis means.}
+purposes, this is probably the better plot to make, but using \variable{dayofyear} forces students to think more about what the x-axis means.}
 <<births1,out.width=".8\\textwidth",fig.width=5>>=
 xyplot(births ~ dayofyear, data=Births78)
 @
 
-When shown this image, students should readily be able to 
-describe two patterns in the data; they should notice both the rise and 
-fall over the course of the year and the two ``parallel waves". 
-\TeachingTip{This can make a good ``think-pair-share'' activity.
-Have students come up with possible explanations, then discuss these
-explanations with a partner.  Finally, have some of the pairs share 
-their explanations with the entire class.}
-Many students will be able to come up with conjectures about the peaks and valleys,
-but they often struggle to correctly interpret the parallel waves.  Having them
-make conjectures about this will quickly reveal whether they are correctly 
-interpreting the plot.
+When shown this image, students should readily be able to describe two patterns in the data; they should notice both the rise and  fall over the course of the year and the two ``parallel waves". 
+\TeachingTip{This can make a good ``think-pair-share'' activity. Have students come up with possible explanations, then discuss these explanations with a partner.  Finally, have some of the pairs share their explanations with the entire class.}
+Many students will be able to come up with conjectures about the peaks and valleys, but they often struggle to correctly interpret the parallel waves.  Having them make conjectures about this will quickly reveal whether they are correctly interpreting the plot.
 
-One conjecture about the parallel waves can be checked using the data at hand.
-If we display each day of the week with a different symbol or color, we see
-that there are fewer births on weekends -- likely because scheduled births are
-less likely on weekends.  There are a handful of exceptions which are 
-readily seen to be holidays.
+One conjecture about the parallel waves can be checked using the data at hand. If we display each day of the week with a different symbol or color, we see that there are fewer births on weekends -- likely because scheduled births are less likely on weekends.  There are a handful of exceptions which are  readily seen to be holidays.
 <<births2,echo=FALSE,results="hide">>=
 trellis.par.set(superpose.symbol=list(pch=16, alpha=.6, cex=.6))
 @
@@ -415,11 +402,8 @@ xyplot(births ~ dayofyear, data=Births78, groups=dayofyear%%7,
        auto.key=list(space="right")) 
 @
 
-A discussion of this or some other data set that can be explored through graphical displays
-is a good way to demonstrate ``statistical curiosity", to illustrate the power of \R\ 
-for creating graphs, and to introduce the importance of covariates in statistical analysis.
-\marginnote{Visualization has been called the ``gateway drug'' to statistics.  It can be 
-a great way to lure students into statistics -- and away from their graphing calculators.}
+A discussion of this or some other data set that can be explored through graphical displays is a good way to demonstrate ``statistical curiosity", to illustrate the power of \R\ for creating graphs, and to introduce the importance of covariates in statistical analysis.
+\marginnote{Visualization has been called the ``gateway drug'' to statistics.  It can be a great way to lure students into statistics -- and away from their graphing calculators.}
 
 %We'll return to this data set later to see ways it can be used for more formal analyses.
 \authNote{rjp: Restore comment about returning to this data only if we do return to it.}
@@ -428,16 +412,12 @@ a great way to lure students into statistics -- and away from their graphing cal
 \label{sec:secconfound}
 \authNote{NH (or others) to finish this example.}
 
-The \dataframe{SAT} data set contains information about 
-the link between SAT scores and measures of educational expenditures.
-Students are often surprised to see that states that spend more on education
-do worse on the SAT.
+The \dataframe{SAT} data set contains information about the link between SAT scores and measures of educational expenditures. Students are often surprised to see that states that spend more on education do worse on the SAT.
 <<SAT1>>=
 xyplot(sat ~ expend, data=SAT)
 @
 
-The problem is that expenditures are confounded with the proportion of students who take the exam,
-and scores are higher in states where fewer students take the exam.
+The implication, that spending less might give better results, is not justified. Expenditures are confounded with the proportion of students who take the exam, and scores are higher in states where fewer students take the exam.
 <<out.width=".47\\textwidth">>=
 xyplot(expend ~ frac, data=SAT)
 xyplot(sat ~ frac, data=SAT)
@@ -446,9 +426,11 @@ xyplot(sat ~ frac, data=SAT)
 It is interesting to look at the original plot if we place the states into two groups
 depending on whether more or fewer than 40\% of students take the SAT:
 <<out.width=".47\\textwidth">>=
-SAT <- mutate(SAT, fracGroup = derivedFactor( hi = (frac > 40), lo = (frac <=40) ))
+SAT <- mutate(SAT, 
+        fracGroup = derivedFactor( hi = (frac > 40), lo = (frac <=40) ))
 xyplot( sat ~ expend | fracGroup , data=SAT, type=c("p","r") )
-xyplot( sat ~ expend, groups = fracGroup , data=SAT, type=c("p","r") )
+xyplot( sat ~ expend, groups = fracGroup , data=SAT, 
+        type=c("p","r") )
 @
 
 This example can be used to warn against interpreting relationships causally and 
@@ -555,6 +537,8 @@ Then have students process the results by answering the following questions.
 
 Once the simulation with cards has been completed, we can use \R\ to do many more
 simulations very quickly.
+\hfill\newpage
+
 \begin{boxedText}
 	\centerline{\textbf{Computational Simulation}}
 

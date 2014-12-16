@@ -141,22 +141,22 @@ follow the appropriate instructions for your platform.
 
 \subsection{Running RStudio the first time}
 Once you have launched the desktop version of \RStudio\ or logged in to an \RStudio\ server, 
-you will see something like Figure~\ref{fig:Rstudio-bigview}.
+you will see something like Figure~1.
 \authNote{Get updated screen shot?}
 
-\begin{figure}
+
 \begin{center}
 \includegraphics[width=1.0\textwidth]{images/RStudio-bigview}
 \end{center}
-\caption{Welcome to \Rstudio.}
-\label{fig:Rstudio-bigview}%
-\end{figure}
+\marginpar[-2cm]{Figure 1. Welcome to \Rstudio.}
+
+% \label{fig:Rstudio-bigview}%
+
 
 Notice that \Rstudio\ divides its world into four panels.  Several of the panels
 are further subdivided into multiple tabs.  Which tabs appear in which panels
 can be customized by the user.
-\marginnote[-2in]{We find it convenient to put the console in the upper left rather than the default 
-location (lower right) so that students can see it better when we project our \R\ 
+\marginnote{We find it convenient to put the console in the upper left rather than the default location (lower right) so that students can see it better when we project our \R\ 
 session in class.}
 
 \section{Using R as a Calculator in the Console}
@@ -184,7 +184,15 @@ Comments can be very helpful when writing scripts
 with multiple commands or to annotate example code for your students.
 
 You can save values to named variables for later reuse.
-\TeachingTip{It's probably best to settle on using 
+
+
+<<rs-variables1a,tidy=FALSE>>=
+product = 15.3 * 23.4       # save result
+product                     # display the result
+product <- 15.3 * 23.4      # <- can be used instead of =
+product                     
+@
+\TeachingTip[-2cm]{It's best to settle on using 
 one or the other of the right-to-left assignment operators rather than to switch
 back and forth.  The authors have different preferences:
 two of us find the equal sign to be simpler for students and more 
@@ -195,16 +203,10 @@ a clear distinction between the assignment operator, the use of \code{=}
 to provide values to arguments of functions, and the use of \code{==} to test
 for equality.}%
 
-<<rs-variables1a,tidy=FALSE>>=
-product = 15.3 * 23.4       # save result
-product                     # display the result
-product <- 15.3 * 23.4      # <- can be used instead of =
-product                     
-@
-
-
 Once variables are defined, they can be referenced in other operations
 and functions.
+
+
 
 <<rs-variables2,tidy=FALSE>>=
 0.5 * product               # half of the product
@@ -226,7 +228,7 @@ product <- 15.3 * 23.4; product    # save result and show it
 
 \section{Working with Files}
 
-\subsection{Working with \R\ Script Files}
+\subsection{\R\ Script Files}
 As an alternative, \R\ commands can be stored in a file.  \RStudio\ provides
 an integrated editor for editing these files and facilitates executing some or all of 
 the commands.  To create a file, select \tab{File}, then \tab{New File}, then \tab{R Script}
@@ -235,7 +237,7 @@ from the \RStudio\ menu.  A file editor tab will open in the \tab{Source} panel.
 buttons and menu items are provided to run all the code (called sourcing the file) or 
 to run the code on a single line or in a selected section of the file.
 
-\subsection{Working with RMarkdown, and knitr/\LaTeX}
+\subsection{RMarkdown, and knitr/\LaTeX}
 A third alternative is to take advantage of \RStudio's support for reproducible research.
 If you already know \LaTeX, you will want to investigate the \pkg{knitr}/\LaTeX\ capabilities.
 For those who do not already know \LaTeX, the simpler RMarkdown system provides an easy
@@ -321,6 +323,9 @@ choose to save the environment when shutting down \RStudio\, since in these case
 can stay in the environment essentially indefinitely.
 
 \subsection{The Plots Tab}
+
+\marginnote{If you haven't been entering these example commands at your console, go back and do it!}
+
 Plots created in the console are displayed in the \tab{Plots} tab.  For example,
 <<>>=
 # this will make lattice graphics available to the session

@@ -1,0 +1,11 @@
+WORKFLOW for generating the book.
+
+1. Compile "Master-Starting.Rnw"
+
+When you're ready to get the final version
+
+2. Run 
+makeindex Master-Starting.idx
+at the shell prompt
+
+3. Compile "Master-Book-Form.Rnw" which will trim the pages and thereby make the font look bigger.

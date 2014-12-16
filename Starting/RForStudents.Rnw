@@ -58,7 +58,7 @@ your students about) a few key features of the \R\ language.
 
 \begin{enumerate}
 \item \R\ is case-sensitive
-\TeachingTip{Some students will be slow
+\TeachingTip[-1cm]{Some students will be slow
 to catch on to the importance of capitalization. So you may
 have to remind them several times early on.} 
 
@@ -159,12 +159,9 @@ install.packages("mosaic") # fetch package from CRAN
 @
 Once the package has been installed it must be \emph{loaded} to make it available in
 the current session or file using
-\TeachingTip{Although the use of \function{library()} is more common
-in this situation, we find that students remember the word \function{require()}
-better.  For their purposes, the two are essentially the same.  The biggest
-difference is how they respond when a package cannot be loaded (usually because
-it has not been installed).  \function{require()} generates a warning message 
-and returns a logical value that can be used when programming. 
+\TeachingTip[-1cm]{The use of \function{library()} is more common
+in this situation, but we find that students remember the word \function{require()}
+better.  For their purposes, the two are essentially the same.  The biggest difference is how they respond when a package cannot be loaded (usually because it has not been installed).  \function{require()} generates a warning message and returns a logical value that can be used when programming. 
 \function{library()} generates an error when the package cannot be loaded.}
 <<>>=
 library(mosaic)           # load the package before use
@@ -175,7 +172,7 @@ or
 require(mosaic)            # alternative way to load
 require(mosaicData)        # load data sets too 
 @
-\Pointer{Although the command is called \function{library()}, the thing
+\Pointer{Even though the command is called \function{library()}, the thing
 loaded is a \emph{package}, not a library.}
 
 
@@ -186,8 +183,7 @@ The \tab{Packages} tab in \RStudio\ makes installing and loading packages
 particularly easy and avoids the need for \function{install.packages()}
 for packages on CRAN, and makes loading packages into the console as easy
 as selecting a check box.  The \function{require()} (or \function{library()})
-function is still needed to load packages within RMarkdown, \pkg{knitr}/\LaTeX, 
-and script files.
+function is still needed to load packages within RMarkdown, \pkg{knitr}/\LaTeX, and script files.
 
 If you are running on a machine where you don't have privileges to
 write to the default library location, you can install a personal 
@@ -343,7 +339,7 @@ Columns correspond to \term{variables} (measurements collected on each
 observational unit).
 \end{itemize}
 \end{boxedText}
-\TeachingTip{To help students keep variables and data frames straight, and to
+\TeachingTip[-1cm]{To help students keep variables and data frames straight, and to
 make it easier to remember the names, we have adopted the convention that data
 frames in the \pkg{mosaic} package are capitalized and variables (usually) are
 not.  This convention has worked well, and you may wish to adopt it for your
@@ -399,10 +395,9 @@ View(Births78)
 \authNote{add pointer to fetchData()?}
 
 %\subsection{Getting at the Variables}
-We can gain access to a single variable in a data frame using the \code{\$} operator or using
+We can gain access to a single variable in a data frame using the \code{\$} operator or, alternatively, using
 the \function{with()} function.
-\marginnote{An alternative is to use the \function{with()} function.
-}
+
 \Rindex{\$}
 \Rindex{with()}
 <<rs-dollar-sign,eval=FALSE>>=
@@ -539,6 +534,9 @@ births <-
               header=TRUE)
 head(births) # live births in the US each day of 1978.
 @
+
+\newpage
+
 We can omit the \option{header=TRUE} if we use \function{read.file()}
 \Rindex{read.file()}
 <<tidy=FALSE>>=
@@ -594,15 +592,16 @@ mycrosstable
 @
 Replacing \function{rbind()} with \function{cbind()} will allow you to give the data
 column-wise instead.
-\TeachingTip{If plotting pre-tabulated categorical data is important, you probably
+\TeachingTip[-1cm]{If plotting pre-tabulated categorical data is important, you probably
 want to provide your students with a wrapper function to simplify all this.  We generally
 avoid this situation by provided the data in raw format or by presenting an analysing 
 the data in tables without using graphical summaries.}
 
 This arrangement of the data would be sufficient for applying the Chi-squared test, but
 it is not in a format suitable for plotting with \pkg{lattice}.
-Our cross table is still missing a bit of information -- the names of the variables being
-stored.  We can add this information if we convert it to a table
+Our cross table is still missing a bit of information -- the names of the variables being stored.  We can add this information if we convert it to a table:
+
+\begin{widestuff}
 <<>>=
 class(mycrosstable)
 mycrosstable <- as.table(mycrosstable)
@@ -612,6 +611,7 @@ dimnames(mycrosstable)
 names(dimnames(mycrosstable)) <- c('race', 'sector')
 mycrosstable
 @
+\end{widestuff}
 
 \Rindex{barchart()}
 \Rindex{bargraph()}
@@ -622,6 +622,8 @@ already tabulated in this way, but first we need yet one more transformation.
 <<>>=
 head(as.data.frame(mycrosstable))
 @
+
+\newpage
 
 <<tidy=FALSE>>=
 barchart( Freq ~ sector | race,
