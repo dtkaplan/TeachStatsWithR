@@ -165,8 +165,7 @@ or
 require(mosaic)            # alternative way to load
 require(mosaicData)        # load data sets too 
 @
-\Pointer{Even though the command is called \function{library()}, the thing
-loaded is a \emph{package}, not a library.}
+\Pointer{Even though the command is called \function{library()}, the thing loaded is a \emph{package}, not a library.}
 
 
 \Caution{Remember that in RMarkdown and Rnw files, any
@@ -569,8 +568,7 @@ of \function{c()}, \function{rbind()} and \function{cbind()}:
 \Rindex{c()}
 \Rindex{cbind()}
 \Rindex{rbind()}
-\TeachingTip{This is an important technique if you use a text book
-that presents categorical data in tables.}
+\TeachingTip[2cm]{This is an important technique if you use a text book that presents pre-tabulated categorical data.}
 
 <<rs-make-table>>=
 myrace <- c( NW=67, W=467 )  # c for combine or concatenate
@@ -708,22 +706,22 @@ Here is a brief summary of the commands introduced in this chapter.
 \Rindex{read.csv()}
 \Rindex{read.file()}
 <<tidy=FALSE,results='hide',fig.keep="none">>=
-require(mosaic)                        # load the mosaic package
-require(mosaicData)                    # load the mosaic data sets
-answer <- 42                           # store the number 42 in a variable named answer
-log(123); log10(123); sqrt(123)        # some standard numerical functions
-x <- c(1,2,3)                          # make a vector containing 1, 2, 3 (in that order)
+require(mosaic)                   # load the mosaic package
+require(mosaicData)               # load the mosaic data sets
+answer <- 42                      # store the number 42 in a variable named answer
+log(123); log10(123); sqrt(123)   # some standard numerical functions
+x <- c(1,2,3)                     # make a vector containing 1, 2, 3 (in that order)
 
-data(iris)                             # (re)load the iris data set
-names(iris)                            # see the names of the variables in the iris data
-head(iris)                             # first few rows of the iris data set
-sample(iris, 3)                        # 3 randomly selected rows of the iris data set
-summary(iris)                          # summarize each variables in the iris data set
-str(iris)                              # show the structure of the iris data set
+data(iris)                        # (re)load the iris data set
+names(iris)                       # see the names of the variables in the iris data
+head(iris)                        # first few rows of the iris data set
+sample(iris, 3)                   # 3 randomly selected rows of the iris data set
+summary(iris)                     # summarize each variables in the iris data set
+str(iris)                         # show the structure of the iris data set
 
-mydata <- read.table("file.txt")       # read data from a text file
-mydata <- read.csv("file.csv")         # read data from a csv file
-mydata <- read.file("file.txt")        # read data from a text or csv file
+mydata <- read.table("file.txt")  # read data from a text file
+mydata <- read.csv("file.csv")    # read data from a csv file
+mydata <- read.file("file.txt")   # read data from a text or csv file
 @
 
 \end{widestuff}

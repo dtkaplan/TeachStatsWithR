@@ -6,7 +6,7 @@ set.seed(123)
 @
 
 
-\chapter{Getting Interactive with \texttt{manipulate} and \texttt{shiny}}
+\chapter{Getting Interactive: \texttt{manipulate} and \texttt{shiny}}
 \label{chap:manipulate}
 
 One very attractive feature of \RStudio\ is the \function{manipulate()} function (in the 

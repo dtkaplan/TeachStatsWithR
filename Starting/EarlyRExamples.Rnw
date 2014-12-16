@@ -272,14 +272,10 @@ or a number of coins
 rflip(10)
 @
 
-Typing \code{rflip(10)} a bunch of times is almost as tedious as 
-flipping all those coins.   But it is not too hard to 
+Typing \code{rflip(10)} a bunch of times is almost as tedious as flipping all those coins.   But it is not too hard to 
 tell \R\ to \function{do()} this a bunch of times.
-\marginnote{Notice that \function{do()} is clever about what information
-it records.  Rather than recording all of the individual tosses, it is 
-only recording the number of flips, the number of heads, and the number 
-of tails.}%
-<<flip2,cache=TRUE>>=
+\marginnote{Notice that \function{do()} is clever about what information it records.  Rather than recording all of the individual tosses, it is only recording the number of flips, the number of heads, and the number of tails.}%
+<<flip2,cache=TRUE,message=FALSE,warning=FALSE>>=
 do(3) * rflip(10)
 @
 
@@ -409,7 +405,7 @@ xyplot(births ~ dayofyear, data=Births78,
 @
 
 A discussion of this or some other data set that can be explored through graphical displays is a good way to demonstrate ``statistical curiosity", to illustrate the power of \R\ for creating graphs, and to introduce the importance of covariates in statistical analysis.
-\marginnote{Visualization has been called the ``gateway drug'' to statistics.  It can be a great way to lure students into statistics -- and away from their graphing calculators.}
+\marginnote[-3cm]{Visualization has been called the ``gateway drug'' to statistics.  It can be a great way to lure students into statistics -- and away from their graphing calculators.}
 
 %We'll return to this data set later to see ways it can be used for more formal analyses.
 \authNote{rjp: Restore comment about returning to this data only if we do return to it.}
@@ -419,6 +415,9 @@ A discussion of this or some other data set that can be explored through graphic
 \authNote{NH (or others) to finish this example.}
 
 The \dataframe{SAT} data set contains information about the link between SAT scores and measures of educational expenditures. Students are often surprised to see that states that spend more on education do worse on the SAT.
+
+\hfill\newpage
+
 <<SAT1>>=
 xyplot(sat ~ expend, data=SAT)
 @
@@ -435,6 +434,9 @@ SAT <- mutate(SAT,
         fracGroup = derivedFactor( 
           hi = (frac > 40), 
           lo = (frac <=40) ))
+@
+
+<<out.width=".47\\textwidth">>=
 xyplot( sat ~ expend | fracGroup , data=SAT, 
         type=c("p","r") )
 xyplot( sat ~ expend, groups = fracGroup , data=SAT, 
@@ -475,6 +477,8 @@ Mites <- data.frame(
              rep("Yes", 15), rep("No", 4)),
    wilt = c(rep("Yes", 28), rep("No", 19))
 )
+@
+<<eval=TRUE, message=FALSE, tidy=FALSE>>=
 tally(~ wilt + mites, Mites)
 @
 
@@ -495,6 +499,8 @@ Students can begin exploring this data by answering the following questions.
 	  would be more unusual than the value for these data?
 	  \saveenumi
 \end{enumerate}
+
+\hfill\newpage
 
 Now we can set up a randomization simulation using some cards.
 
@@ -547,21 +553,19 @@ Then have students process the results by answering the following questions.
 
 Once the simulation with cards has been completed, we can use \R\ to do many more
 simulations very quickly.
-\hfill\newpage
+%\hfill\newpage
 
 \begin{widestuff}
 
 \begin{boxedText}
 	\centerline{\textbf{Computational Simulation}}
 
-<<eval=TRUE,tidy=FALSE>>=
+<<eval=TRUE,tidy=FALSE,out.width="0.75\\textwidth",warning=FALSE,message=FALSE>>=
 tally(~ wilt + mites, data=Mites)
-X <- tally(~ wilt + mites, data=Mites)["No","No"]
-X
+X <- tally(~ wilt + mites, data=Mites)["No","No"]; X
 nullDist <- do(1000) * 
     tally(~ wilt + shuffle(mites), data=Mites)["No","No"]
-histogram(~ result, data=nullDist,
-		  width=1, type="density", fit="normal") 
+histogram(~ result, data=nullDist, width=1, type="density", fit="normal") 
 @
 
 \end{boxedText}

@@ -71,9 +71,10 @@ fit into each category as we go along.
 \R\ can be obtained from \url{http://cran.r-project.org/}.  
 Download and installation are quite straightforward for Mac, PC, or linux machines.
 
-\RStudio\ is an integrated development environment (IDE) that facilitates use of \R\ for both novice and expert users.  We have adopted it as our standard teaching environment because it dramatically simplifies the use of \R\ for instructors and for students.\Pointer{Several things we use that can be done only in \RStudio, for instance \function{manipulate} or \RStudio's support for reproducible research).}
+\RStudio\ is an integrated development environment (IDE) that facilitates use of \R\ for both novice and expert users.  We have adopted it as our standard teaching environment because it dramatically simplifies the use of \R\ for instructors and for students.%
+\Pointer[-3cm]{Several things we use that can be done only in \RStudio, for instance \function{manipulate} or \RStudio's support for reproducible research).}%
 %\RStudio\ is available from \url{http://www.rstudio.org/}.
-\RStudio\ can be installed as a desktop (laptop) application or as a server application that is accessible to users via the Internet.\TeachingTip{RStudio server version works well with starting students.  All they need is a web browser, avoiding any potential problems with oddities of students' individual computers.}
+\RStudio\ can be installed as a desktop (laptop) application or as a server application that is accessible to users via the Internet.\TeachingTip[-.5cm]{RStudio server version works well with starting students.  All they need is a web browser, avoiding any potential problems with oddities of students' individual computers.}
 
 In addition to \R\ and \RStudio, we will make use of several packages that need to be installed and loaded separately. The \pkg{mosaic} package (and its dependencies) will be used throughout.  Other packages appear from time to time as well.
 \iffalse
@@ -167,22 +168,15 @@ are today usually taught in isolation, if at all.
 
 In particular, we focus on:
 \begin{description}
-	\item[Modeling] The ability to create, manipulate and investigate useful
-	and informative mathematical representations of a real-world situations.
+	\item[Modeling] The ability to create, manipulate and investigate useful	and informative mathematical representations of a real-world situations.
 
-	\item[Statistics] The analysis of variability that draws on our ability to
-	quantify uncertainty and to draw logical inferences from observations and
-	experiment.
+	\item[Statistics] The analysis of variability that draws on our ability to	quantify uncertainty and to draw logical inferences from observations and experiment.
 
     \item[Computation] 
-	The capacity to think algorithmically, to manage data on large scales, to
-	visualize and interact with models, and to automate tasks for efficiency,
-	accuracy, and reproducibility.
+	The capacity to think algorithmically, to manage data on large scales, to	visualize and interact with models, and to automate tasks for efficiency, accuracy, and reproducibility.
 
     \item[Calculus] 
-	The traditional mathematical entry point for college and university
-	students and a subject that still has the potential to provide important
-	insights to today's students.
+	The traditional mathematical entry point for college and university students and a subject that still has the potential to provide important insights to today's students.
 	\end{description}
 
 Drawing on support from the US National Science Foundation (NSF DUE-0920350),
@@ -224,7 +218,7 @@ connections between the MOSAIC topics.
 
 We welcome and encourage your participation in all of these initiatives.
 
-\chapter*{Computational Statistics and Statistical Computation}
+\chapter*{Computational Statistics}
 
 There are at least two ways in which statistical software
 can be introduced into a statistics course.  In the first approach, the course

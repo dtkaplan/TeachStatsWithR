@@ -92,15 +92,17 @@ for stand-alone processing.
 
 
 %You should be able to log in using the Gmail address that you provided earlier.
-Once you have logged in to an \RStudio\ server, you will see something like Figure~\ref{fig:Rstudio-bigview}.
+Once you have logged in to an \RStudio\ server, you will see something like this: % Figure~\ref{fig:Rstudio-bigview}.
 
-\begin{figure}
+IS THIS THE RIGHT PLACE?
+
+%\begin{figure}
 \begin{center}
-\includegraphics[width=1.0\textwidth]{images/RStudio-bigview}
+\includegraphics[width=1.0\textwidth]{images/RStudio-bigview.png}
 \end{center}
-\caption{Welcome to \Rstudio.}
-\label{fig:Rstudio-bigview}%
-\end{figure}
+%\caption{Welcome to \Rstudio.}
+%\label{fig:Rstudio-bigview}%
+%\end{figure}
 
 Notice that \Rstudio\ divides its world into four panels.  Several of the panels
 are further subdivided into multiple tabs.
@@ -133,7 +135,7 @@ sqrt(16)
 This last example demonstrates how functions are called within \R.
 
 You can save values to named variables for later reuse.
-\TeachingTip{It's probably best to settle on using 
+\TeachingTip{It's best to settle on using 
 one or the other of the right-to-left assignment operators rather than to switch
 back and forth.  The authors of this document have different preferences.}%
 

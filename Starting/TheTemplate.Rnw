@@ -34,7 +34,7 @@ team and towards your players.
 Perfection is achieved, not when there is nothing more to add, but when there
 is nothing left to take away. 
 
-\hfill -- Antoine de Saint-Exupery,  writer, poet, pioneering aviator
+\hfill -- Antoine de Saint-Exupery,  writer, poet, aviator
 \end{quote}
 
 
@@ -142,18 +142,9 @@ data, to think about distributions, and to pose statistical questions.
 \Rindex{gplot2}
 \Rindex{lattice}
 \Rindex{ggvis}
-\Pointer[-1cm]{We are often asked about the other graphics systems, especially 
-\pkg{ggplot2} graphics.  In our experience, \pkg{lattice} makes it easier for
-beginners to create a wide variety of more or less ``standard'' plots -- including
-the ability to represent multiple variables at once.  \pkg{ggplot2}, on the 
-other hand, makes it easier to generate custom plots or to combine plot components.
-Each has their place, and we use both systems.  But for beginners, we typically
-emphasize \pkg{lattice}.
+\Pointer[-1cm]{We are often asked about the other graphics systems, especially \pkg{ggplot2} graphics.  In our experience, \pkg{lattice} makes it easier for beginners to create a wide variety of more or less ``standard'' plots -- including the ability to represent multiple variables at once.  \pkg{ggplot2}, on the other hand, makes it easier to generate custom plots or to combine plot components. Each has their place, and we use both systems.  But for beginners, we typically emphasize \pkg{lattice}.
 
-Coming soon is a new player in the visualization arena: \pkg{ggvis}.  This package,
-by the same author as \pkg{ggplot2} is already available in a developmental version
-and promises to add interactivity and speed to the strengths of \pkg{ggplot2}.
-}
+The new \pkg{ggvis} package, by the same author as \pkg{ggplot2} adds interactivity and speed to the strengths of \pkg{ggplot2}.}
 %
 There are several ways to make graphs in \R.  One approach is a system called
 \pkg{lattice} graphics.   Whenever the \pkg{mosaic} package is loaded, the \pkg{lattice}
@@ -171,16 +162,18 @@ numerical summaries and linear models.
 
 As an example, let's create the following plot, which shows the 
 number of births in the United States for each day in 1978.
-\TeachingTip{This plot can make an interesting discussion starter
-early in a course.  Ask students to conjecture explanations for
-the patterns they observe in the plots.  Their answers will reveal
-whether they are interpreting the plot correctly.}
+
 \myindex{scatter plot|see{\texttt{xyplot()}}}
 \Rindex{xyplot()}
 
 <<scatter-births, echo=FALSE>>=
 xyplot( births ~ date, data=Births78) 
 @
+
+\TeachingTip[-2cm]{This plot can make an interesting discussion starter
+early in a course.  Ask students to conjecture explanations for
+the patterns they observe in the plots.  Their answers will reveal
+whether they are interpreting the plot correctly.}
 
 \begin{enumerate}
 	\item What is the goal?
@@ -207,8 +200,9 @@ Putting this all together, we get the following command
 <<scatter-births>>
 @
 
+\newpage
 
-
+\vspace*{-1cm}
 \subsubsection{Another Example: Boxplots}
 
 \myindex{boxplot|see{\texttt{bwplot()}}}
@@ -217,49 +211,33 @@ Now let's create this plot, which shows boxplots
 of age for each of three substances abused by participants in the 
 \emph{Health Evaluation and Linkage to Primary Care} randomized
 clinical trial.
-\Pointer{You can find out more about the
-\dataframe{HELPrct} data set using the command
-<<eval=FALSE, tidy=FALSE>>=
-?HELPrct
-@
-}
+\Pointer{You can find out more about the \dataframe{HELPrct} data set using the help command: \code{?HELPrct}.}
 
 \Rindex{HELPrct}
 <<bwplot-example1, echo=FALSE>>=
 bwplot( age ~ substance, data=HELPrct)
 @
 
-The data we need are in the \dataframe{HELPrct} data frame, from which 
-we want to display variables \variable{age} and \variable{substance} on the 
-$y$- and $x$-axes.  According to our template, the command to create this plot has 
-the form
+The data we need are in the \dataframe{HELPrct} data frame, from which we want to display variables \variable{age} and \variable{substance} on the $y$- and $x$-axes.  According to our template, the command to create this plot has the form
 
 <<eval=FALSE>>=
 goal( age ~ substance, data=HELPrct )
 @
-The only additional information we need is the name of the function that creates
-boxplots.  That function is \function{bwplot()}.
-So we can create the plot with
+The only additional information we need is the name of the function that creates boxplots.  That function is \function{bwplot()}. So we can create the plot with
 <<eval=FALSE>>=
 <<bwplot-example1>>
 @
 
-If we want the boxplots to be horizontal instead of vertical, we obtain that by reversing
-the roles of \variable{age} and \variable{substance}:
-
-\newpage
+To make the boxplots horizontal instead of vertical, reverse the roles of \variable{age} and \variable{substance}:
 
 <<>>=
 bwplot( substance ~ age, data=HELPrct )
 @
-\Pointer{You may be wondering about plots for two categorical variables.
-A commonly used plot for this is a segmented bar graph.  We will treat this
-as a augmented version of a simple bar graph, which is a graphical summary
-of one categorical variable.
 
-Another plot that can be used to display two (or more) categorical variables is a 
-mosaic plot.  The \pkg{lattice} package does not include mosaic plots, but the
-\pkg{vcd} package provides a \function{mosaic()} function that creates mosaic plots.}
+\Pointer{You may be wondering about plots for two categorical variables.
+A commonly used plot for this is a segmented bar graph.  We will treat this as a augmented version of a simple bar graph, which is a graphical summary of one categorical variable.
+
+Another plot that can be used to display two (or more) categorical variables is a mosaic plot.  The \pkg{lattice} package does not include mosaic plots, but the \pkg{vcd} package provides a \function{mosaic()} function that creates mosaic plots.}
 \Rindex{vcd}
 \myindex{mosaic plot}
 
@@ -312,10 +290,7 @@ we can make a bar graph for a categorical variable using
 Since formulas are required to have a right-hand side,
 horizontal bar graphs are produced using \option{horizontal = TRUE}.
 \Rindex{barchart()}
-\Pointer{The \function{bargraph()} function is not in the \pkg{lattice} package 
-but in the \pkg{mosaic} package.  The \pkg{lattice} function \function{barchart()}
-creates bar graphs from \emph{summarized} data; \pkg{bargraph()} takes care of 
-creating this summary data and then uses \function{barchart()} to create the plot.}
+\Pointer{The \function{bargraph()} function is not in the \pkg{lattice} package but in the \pkg{mosaic} package.  The \pkg{lattice} function \function{barchart()} creates bar graphs from \emph{summarized} data; \pkg{bargraph()} takes care of creating this summary data and then uses \function{barchart()} to create the plot.}
 <<out.width=".47\\textwidth">>=
 bargraph( ~ substance, data=HELPrct ) 
 bargraph( ~ substance, data=HELPrct, horizontal=TRUE ) 
@@ -357,6 +332,8 @@ chart.}
 @
 
 
+\bigskip
+
 \Rindex{plotPoints()}
 <<two-var-plots, eval=FALSE, tidy=FALSE>>=
     xyplot( width ~ length, data=KidsFeet )  # 2 quantitative vars
@@ -384,10 +361,8 @@ stripplot( ~length, data=KidsFeet )
 @
 \TeachingTip{We generally don't introduce \function{dotplot()} and
 \function{stripplot()} to students but simply use \function{xyplot()}
-or \function{plotPoints()}.}
-These and \function{xyplot()} or \function{plotPoints()} can also be used with one 
-quantitative variable and one categorical variable.
-<<tidy=FALSE, out.width=".47\\textwidth">>=
+or \function{plotPoints()}.} These and \function{xyplot()} or \function{plotPoints()} can also be used with one quantitative variable and one categorical variable.
+<<tidy=FALSE, out.width=".42\\textwidth">>=
     xyplot( sex ~ length, data=KidsFeet )
 plotPoints( sex ~ length, data=KidsFeet )
  stripplot( sex ~ length, data=KidsFeet )
@@ -408,7 +383,7 @@ y ~ x | z
 @
 
 For example, we can overlay density plots of age for each substance group
-in separate panels for each sex as follows:
+in separate panels for each sex:
 
 <<tidy=FALSE>>=
 densityplot( ~ age | sex, data=HELPrct,  
@@ -440,12 +415,9 @@ histogram( ~ age, data=HELPrct )
      mean( ~ age, data=HELPrct )
 @
 
-\Pointer{To see the full list of these formula-aware
-numerical summary functions, use
-<<eval=FALSE, tidy=FALSE>>=
-?favstats
-@
-}
+\Pointer[-2cm]{To see the full list of these formula-aware
+numerical summary functions, use \code{help(favstats).} }
+
 \Rindex{sd()}
 \Rindex{var()}
 \Rindex{median()}
@@ -528,8 +500,6 @@ is very little new to learn when they are ready to fit a model.
 need to wait so long to introduce modeling in the introductory
 statistics course.  We think so too. See the companion volume, {\em Start Modeling in R}.}
 
-\newpage
-
 
 For example, suppose we want to know how the width of kids' feet depends on the
 length of the their feet.  We could make a scatter plot
@@ -551,8 +521,7 @@ tests for means and proportions.  The \pkg{mosaic} package brings these into
 the template as well.
 \Pointer{For a more thorough treatment of how to use \R\ for 
 the core topics of a traditional introductory statistics course,
-see \emph{A Compendium of Commands to Teach Statistics with R}.
-}
+see \emph{A Compendium of Commands to Teach Statistics with R}.}%
 \authNote{We could use better examples here.  -- rjp 2014-06-21}%
 \Rindex{t.test()}
 <<tidy=FALSE>>=
@@ -561,10 +530,7 @@ t.test( ~ length, data=KidsFeet )
 The output from these functions also includes more than we really need.
 The \pkg{mosaic} package provides \function{pval()} and \function{confint()}
 for extracting p-values and confidence intervals:
-\Pointer{Chi-squared tests can be performed using \function{chisq.test()}.
-This function is a little different in that it operates on tabulated data 
-of the sort produced by \function{tally()} rather than on the 
-data itself.  So the use of the template happens inside \function{tally()}
+\Pointer{Chi-squared tests can be performed using \function{chisq.test()}. This function is a little different in that it operates on tabulated data of the sort produced by \function{tally()} rather than on the data itself.  So the use of the template happens inside \function{tally()} %
 rather than in \function{chisq.test()}.}
 \Rindex{pval()}
 \Rindex{confint()}
@@ -576,17 +542,21 @@ confint( t.test( ~ length, data=KidsFeet ) )
 \Rindex{prop.test()}
 \begin{widestuff}
 <<echo=FALSE>>=
-OLD <- options(width=110)
+OLD <- options(width=100)
 @
 <<>>=
 confint(t.test( length ~ sex, data=KidsFeet ))
+@
+<<>>=
 # using Binomial distribution
-confint(binom.test( ~ sex, data=HELPrct ))   
+confint(binom.test( ~ sex, data=HELPrct ))  
+@
+<<>>=
 # using normal approximation to the binomial distribution
 confint(prop.test( ~ sex, data=HELPrct ))    
 confint(prop.test( sex ~ homeless, data=HELPrct ))
 @
-<<echo=FALSE>>
+<<echo=FALSE>>=
 options(OLD)
 @
 \end{widestuff}
@@ -636,10 +606,8 @@ on two days of the week and more on the other five.
 one of the fundamental ``container types'' in \R. Instructors will benefit from being able to recognize them.  We will
 have more to say about them in Chapter~\ref{chap:containers}.}%
 From this we can be quite certain that 1978 began on a Sunday.
-\Pointer{We could also use the \function{wday()} function
-in the \pkg{lubridate} package to compute the weekday directly
-from \variable{date}.}
-%
+\Pointer{We could also use the \function{wday()} function in the \pkg{lubridate} package to compute the weekday directly from \variable{date}.} %
+
 \Rindex{auto.key}
 \myindex{labels!axis}
 \Rindex{xlab}
@@ -658,8 +626,6 @@ xyplot( births ~ date, data=Births78,
           superpose.symbol=list(pch=16, cex=.8, alpha=.8))
 )
 @
-
-\newpage
 
 \noindent
 Here we have used
@@ -703,30 +669,27 @@ package provides such a theme called \function{theme.mosaic()}.
 The \function{show.settings()} function displays the settings of the 
 currently active theme.
 
+\newpage
+
 \Rindex{trellis.par.set()}
 \Rindex{show.settings()}
 \myindex{\texttt{lattice} settings}
 \myindex{themes!\texttt{lattice}|see{\texttt{trellis.par.set()}}}
-\begin{widestuff}
-<<out.width=".9\\textwidth", fig.width=10, fig.height=6>>=
+
+<<out.width=".8\\textwidth", fig.width=10, fig.height=6>>=
 trellis.par.set(col.whitebg())
 show.settings()
 @
-\end{widestuff}
 
-\begin{widestuff}
-<<out.width=".9\\textwidth", fig.width=10, fig.height=6>>=
+<<out.width=".8\\textwidth", fig.width=10, fig.height=6>>=
 trellis.par.set(theme.mosaic(bw=TRUE))
 show.settings()
 @
-\end{widestuff}
 
-\begin{widestuff}
-<<out.width=".9\\textwidth", fig.width=10, fig.height=6>>=
+<<out.width=".8\\textwidth", fig.width=10, fig.height=6>>=
 trellis.par.set(theme.mosaic())
 show.settings()
 @
-\end{widestuff}
 
 \noindent
 Themes can also be assigned to \option{par.settings} if we want them to
@@ -756,35 +719,30 @@ Dotplots are not as commonly seen in the statistical literature as they are in
 statistics education, where they can serve an important role in helping students
 learn to interpret histograms (and frequency polygons and density plots).  
 A \term{dot plot} represents each value of a quantitative variable with a dot.  The values
-are rounded a bit so that the dots line up neatly, and dots are stacked up into little
-towers when the data values cluster near each other.  Dot plots are primarily used with 
-modestly sized data sets and can be used as a bridge to the other plots, where there is
-no longer a direct connection between a component of the plot and an individual observation.
-\TeachingTip{Using dot plots for sampling distributions and bootstrap distributions
-is useful for testing purposes since probabilities can be easily estimated by counting
-dots -- especially if the total number of dots is chosen to be something simple like 1000.}
+are rounded a bit so that the dots line up neatly, and dots are stacked up into little towers when the data values cluster near each other.  Dot plots are primarily used with modestly sized data sets and can be used as a bridge to the other plots, where there is no longer a direct connection between a component of the plot and an individual observation.
 
-
+\newpage
 \Rindex{dotPlot()}
-Here is an example using the sepal lengths recorded in the \dataframe{iris} data set.
-<<rs2-dotPlot,cache=FALSE,fig.width=4,fig.height=3.0, tidy=FALSE>>=
+\vspace*{-1cm} Here is an example using the sepal lengths recorded in the \dataframe{iris} data set.
+
+
+<<rs2-dotPlot,cache=FALSE,fig.width=4,fig.height=3.0,out.width=".75\\textwidth", tidy=FALSE>>=
 dotPlot(~ Sepal.Length, data=iris, 
 		n=30,      # approx. 30 bins/columns
 		alpha=.6)  # partially transparent
 @
+\TeachingTip[-2cm]{Dot plots are useful for displaying sampling distributions and bootstrap distributions, especially if the total number of dots is chosen to be something simple like 1000. In that case, probabilities can be easily estimated by counting dots.}%
 \myindex{conditional plots}
-We can use a conditional variable to give us separate dot plots for each of the three
-species in this data set.
-<<rs2-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width="\\textwidth",fig.width=6>>=
+We can use a conditional variable to give us separate dot plots for each of the three species in this data set.
+<<rs2-dotPlot-condB,tidy=FALSE,cache=FALSE,out.width=".75\\textwidth",fig.width=6>>=
 dotPlot(~ Sepal.Length | Species, data=iris, n=20, 
          layout=c(3,1)) # 3 columns (x) and 1 row (y)
 @
 
 
-The connection between histograms and dot plots can be visualized by overlaying one on 
-top of the other
+The connection between histograms and dot plots can be visualized by overlaying one on top of the other.
 \Rindex{histogram()}
-<<echo=FALSE,fig.height=2.5>>=
+<<echo=FALSE,fig.height=2.3>>=
 histogram(~ Sepal.Length, data=iris, n=25, 
 		  panel=function(x,...) {
 			  mosaic:::panel.xhistogram(x, alpha=.7, ...)
@@ -793,7 +751,6 @@ histogram(~ Sepal.Length, data=iris, n=25,
 			  type="count") 
 @
 
-\medskip
 \subsection{Frequency polygons: \texttt{freqpolygon()}}
 \Rindex{freqpolygon()}
 \myindex{frequency polygon|see{\texttt{freqpolygon()}}}
@@ -801,8 +758,6 @@ histogram(~ Sepal.Length, data=iris, n=25,
 \term{Frequency polygons} and \term{density plots} provide alternatives to histograms that make it easier to overlay the representations of multiple subsets of the data. A frequency polygon is created from the same data summary (bins and counts) as a histogram,  but instead of representing each bin with a bar, it is represented by a point  (at the center of the where the top of the histogram bar would have been).  
 
 These points are then connected with line segments. Here is an example that shows the distribution of Old Faithful eruptions times from a sequence of observations 
-
-\newpage
 
 \Caution{The \dataframe{faithful} data set contains similar data, but the 
 variable names in that data frame are 
@@ -817,7 +772,7 @@ freqpolygon( ~ duration, data=geyser, n=15)
 \TeachingTip[-1.5in]{Point out that an interesting feature of this distribution is its clear 
 bimodality.
 In particular, the mean and median eruption time are not a good measures of the duration of a ``typical'' eruption since almost none of the eruption durations are near the mean and median.}
-Numerically, the data are being summarized and  represented in exactly the same way as for histograms, but visually the horizontal and vertical line segments of the histogram are replaced by sloped line segments.  
+Numerically, the data are being summarized and represented in exactly the same way as for histograms, but visually the horizontal and vertical line segments of the histogram are replaced by sloped line segments.  
 \Rindex{ladd()}
 <<echo=FALSE>>=
 histogram( ~ duration, data=geyser, n=15, col="lightskyblue")
@@ -826,8 +781,6 @@ ladd( panel.freqpolygon(geyser$duration, n=15) )
 This may give a more accurate visual representation in some 
 situations (since the distribution can ``taper off'' better).  More importantly, it makes 
 it much easier to overlay multiple distributions.
-
-\newpage
 
 <<tidy=FALSE>>=
 freqpolygon( ~ Sepal.Length, data=iris, 
@@ -851,8 +804,6 @@ of how that smooth curve is generated, but should be introduced to the \option{a
 argument which controls the degree of smoothing.  It is roughly equivalent to choosing 
 wider or narrower bins for a histogram or frequency polygon.  The default value is 1.
 Higher values smooth more heavily; lower values, less so.
-
-\newpage
 
 <<tidy=FALSE, out.width=".47\\textwidth">>=
 densityplot( ~ Sepal.Length, data=iris, groups=Species, 
@@ -881,24 +832,13 @@ The density scale is chosen so that the constant of proportionality is 1, in whi
 \begin{boxedText}
 	\centerline{Area equals proportion.}
 \end{boxedText}
-\TeachingTip{Create some histograms or frequency polygons with a density scale and see
-if your students can determine what the scale is.  Choosing convenient bin widths (but not 1)
-and comparing plots with different bin widths and different scale types can help them
-reach a good conjecture about the density scale.}
-This is the only scale available for \function{densityplot()} and is the most suitable 
-scale if one is primarily interested in the \emph{shape} of the distribution.  The vertical scale
-is affected very little by the choice of bin widths or \option{adjust} multipliers.
-It is also the appropriate scale to use when overlaying a density function onto a histogram,
-something the \pkg{mosaic} package makes easy to do.
+\TeachingTip[-1.5cm]{Create some histograms or frequency polygons with a density scale and see if your students can determine what the scale is.  Choosing convenient bin widths (but not 1) and comparing plots with different bin widths and different scale types can help them reach a good conjecture about the density scale.}
+This is the only scale available for \function{densityplot()} and is the most suitable scale if one is primarily interested in the \emph{shape} of the distribution.  The vertical scale is affected very little by the choice of bin widths or \option{adjust} multipliers. It is also the appropriate scale to use when overlaying a density function onto a histogram, something the \pkg{mosaic} package makes easy to do.
 <<fig.width=6,out.width="\\textwidth", tidy=FALSE>>=
 histogram( ~ Sepal.Length | Species, data=iris, fit="normal" )
 @
 
-The other scales
-are primarily of use when one wants to be able to read off bin counts or percents from the plot.
-
-
-
+The other scales are primarily of use when one wants to be able to read off bin counts or percents from the plot.
 
 \subsection{Groups or panels?}
 
@@ -913,17 +853,13 @@ species into three separate panels.
 xyplot(Sepal.Length ~ Sepal.Width | Species, data=iris,
   layout=c(3,1)) # layout controls number of columns and rows
 @
-Alternatively, 
-we can use the \option{groups} argument to indicate the 
-different species using different symbols on the same panel.
+Alternatively, we can use the \option{groups} argument to indicate the  different species using different symbols on the same panel.
 \Rindex{auto.key}
 <<rs2-iris-xyplot-groups,cache=TRUE,tidy=FALSE>>=
 xyplot(Sepal.Length ~ Sepal.Width, groups=Species, 
   auto.key=list(columns=3), data=iris)
 @
 
-\newpage
- 
 Sometimes it is helpful to use both panels and symbol \code{groups}.
 
 
@@ -1127,12 +1063,8 @@ controls that allow the user to select variables and create plots of various sor
 \Rindex{lattice}
 \Rindex{ggplot2}
 \Rindex{manipulate}
-The plots can be made using \pkg{lattice} or \pkg{ggplot2}, and there is a ``Show expression''
-button that displays the code used to create the plot.  This can be used to learn how to 
-make the plot and can be copied and pasted into the console or documents.
-\Caution{This feature of \function{mplot()} only works within \RStudio{} because it
-takes advantage of the \pkg{manipulate} package which only works within \RStudio.
-See Chapter~\ref{chap:manipulate} for more about \pkg{manipulate}.}
+The plots can be made using \pkg{lattice} or \pkg{ggplot2}, and there is a ``Show expression'' button that displays the code used to create the plot.  This can be used to learn how to make the plot and can be copied and pasted into the console or documents.
+\Caution{This feature of \function{mplot()} takes advantage of the \pkg{manipulate} package and so works only within \RStudio. See Chapter~\ref{chap:manipulate} for more about \pkg{manipulate}.}
 
 
 The use of \function{mplot()} makes it easy to explore a number of plots

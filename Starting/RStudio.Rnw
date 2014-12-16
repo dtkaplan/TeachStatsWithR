@@ -141,17 +141,11 @@ follow the appropriate instructions for your platform.
 
 \subsection{Running RStudio the first time}
 Once you have launched the desktop version of \RStudio\ or logged in to an \RStudio\ server, 
-you will see something like Figure~1.
-\authNote{Get updated screen shot?}
-
+you will see something like the following.
 
 \begin{center}
 \includegraphics[width=1.0\textwidth]{images/RStudio-bigview}
 \end{center}
-\marginpar[-2cm]{Figure 1. Welcome to \Rstudio.}
-
-% \label{fig:Rstudio-bigview}%
-
 
 Notice that \Rstudio\ divides its world into four panels.  Several of the panels
 are further subdivided into multiple tabs.  Which tabs appear in which panels

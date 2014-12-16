@@ -53,8 +53,7 @@ less error-prone.
   scripts and especially RMarkdown files.  
 
 You can execute all the code in an \R\ script file using 
-\Pointer[-2cm]{\R\ can be used to create executable scripts.  Option parsing and 
-handling is supported with the \pkg{optparse} package.}
+\Pointer[-2cm]{\R\ can be used to create executable scripts.  Option parsing and handling is supported with the \pkg{optparse} package.}
 
 \Rindex{source()}
 <<mr-source,eval=FALSE>>=
@@ -108,13 +107,7 @@ lm( length ~ width, data=KidsFeet ) -> footModel; footModel
 
   \item Write reusable functions.
 
-	  Learning to write your own functions (see Section~\ref{sec:functions})
-	  will greatly increase your efficiency and also help you understand better 
-	  how \R\ works.  This, in turn, will help you debug your students error messages. 
-	  (More on error messages in \ref{sec:error-messages}.) It also makes it
-  possible for you to simplify tasks you want your students to be able to do in
-  \R.  That is how the \pkg{mosaic} package originated -- as a collection of tools
-  we had assembled over time to make teaching and learning easier.
+	  Learning to write your own functions (see Section~\ref{sec:functions}) will greatly increase your efficiency and also help you understand better how \R\ works.  This, in turn, will help you debug your students error messages. (More on error messages in \ref{sec:error-messages}.) It also makes it possible for you to simplify tasks you want your students to be able to do in \R.  That is how the \pkg{mosaic} package originated -- as a collection of tools we had assembled over time to make teaching and learning easier.
 
   \item Comment your code.
 
@@ -142,10 +135,7 @@ In \R, data are stored in objects.  Each \rterm{object}
 has a \emph{name}, \emph{contents}, and a \emph{class}.
 The class of an object tells what kind of a thing it is.
 The class of an object can be queried using \function{class()}
-\Pointer[-2cm]{Many objects also have \emph{attributes} which contain
-additional information about the object, but unless you are 
-doing programming with these objects, you don't need to
-worry much about them.}%
+\Pointer[-2cm]{Many objects also have \emph{attributes} which contain additional information about the object, but unless you are doing programming with these objects, you don't need to worry much about them.}%
 %
 \Rindex{class()}%
 \Rindex{[ ]}%
@@ -273,8 +263,7 @@ letters                       # alphabet
 @
 \end{widestuff}
 
-\Pointer{\variable{letters} is a built-in character vector containing the
-lower case letters.  \variable{LETTERS} contains capitals.}%
+\Pointer{\variable{letters} is a built-in character vector containing the lower case letters.  \variable{LETTERS} contains capitals.}%
 <<>>=
 x <- letters[1:10]; x         # first 10 letters
 x[2:4]                        # select items 2 through 4
@@ -487,13 +476,7 @@ cumprod(x)       # cumulative product
 
 \label{r:sumprod}%
 
-Whether a function is vectorized or treats a vector as a unit
-depends on its implementation.  Usually, things are implemented 
-the way you would expect.  Occasionally you may discover a function
-that you wish were vectorized and is not.    
-When writing your own functions, give some thought to whether they
-should be vectorized, and test them with vectors of length greater than 1
-to make sure you get the intended behavior.
+Whether a function is vectorized or treats a vector as a unit depends on its implementation.  Usually, things are implemented the way you would expect.  Occasionally you may discover a function that you wish were vectorized and is not. When writing your own functions, give some thought to whether they should be vectorized, and test them with vectors of length greater than 1 to make sure you get the intended behavior.
 \Rindex{sum()}%
 \Rindex{prod()}%
 \Rindex{cumsum()}%
@@ -513,6 +496,8 @@ to make sure you get the intended behavior.
 \Rindex{na.omit()}%
 \Rindex{pmin()}%
 \Rindex{pmax()}%
+
+\hfill\newpage
 
 The operations listed below can be helpful when writing your own functions.
 
@@ -662,15 +647,13 @@ someData <- read.csv('file.csv',
 @
 SAS uses a period (\verb!.!) to code missing data and some csv 
 exporters use `\texttt{-}'.  If the above definition for \code{na.strings}, or something like it, \R\ will treat missing-data markers as string data, instead of \code{NA}. This forces the entire variable to be of character type even if it's otherwise purely numeric.
-\Pointer[-2cm]{The \function{read.file()} function in the \pkg{mosaic} package
-uses this as its default for \option{na.strings}.}
+\Pointer[-2cm]{The \function{read.file()} function in the \pkg{mosaic} package uses this as its default for \option{na.strings}.}
 \Rindex{read.file()}
 \Rindex{read.csv()}
 \Rindex{read.table()}
 \Rindex{stringsAsFactors}
 By default, \R\ will recode character data as a factor.  If you prefer to leave such variables in character format, you can use
-\Pointer{This works with \function{read.csv()} and \function{read.table()}
-as well.}
+\Pointer{This works with \function{read.csv()} and \function{read.table()} as well.}
 <<tidy=FALSE>>=
 someData <- read.file('file.csv', 
   stringsAsFactors=FALSE) 
@@ -854,9 +837,7 @@ write.csv(ddd, "ddd.csv")
 Data can also be saved in native \R\ format.  Saving data sets 
 (and other \R\ objects) using \function{save()} has some advantages over other 
 file formats:
-\Pointer[-2cm]{If you want to save an \R\ object but not its name, you can 
-use \function{saveRDS()} and choose its name when you read it with 
-\function{readRDS()}.}
+\Pointer[-2cm]{If you want to save an \R\ object but not its name, you can use \function{saveRDS()} and choose its name when you read it with \function{readRDS()}.}
 \begin{itemize}
   \item 
   Complete information about the objects is saved, including attributes.
@@ -1325,7 +1306,7 @@ The resulting \dataframe{Chrom1} is not a data frame, but behaves much like one.
 class(Chrom1)
 @
 \Rindex{mutate()}
-\Caution[1cm]{The arithmetic operations in this \function{mutate()} command are being executed in SQL, not in \R, and the palette of allowable functions is much smaller. It is not possible, for example, to compute the logarithm of the length here using \function{log()}.  For that we must first collect the data into a real data frame.}
+\Caution[3cm]{The arithmetic operations in this \function{mutate()} command are being executed in SQL, not in \R, and the palette of allowable functions is much smaller. It is not possible, for example, to compute the logarithm of the length here using \function{log()}.  For that we must first collect the data into a real data frame.}
 <<>>=
 Chrom1 %>% 
   mutate(length=(txEnd - txStart)/1000) -> Chrom1l
@@ -1700,7 +1681,7 @@ There are now many technologies that support such sharing.  For the sake of simp
 The first two are already widely used in university environments and are readily accessible simply by setting up accounts.  Setting up an \RStudio\ web server requires some IT support, but is well within the range of skills found in IT offices and even among some individual faculty.
 
 \subsection{Using \RStudio\ server to share files}
-\TeachingTip[.2in]{When accounts are set up on the \RStudio\ server for a new class at Calvin, each user is given a symbolic link to a directory where the instructor can write files and students can only read files.  This provides an easy way to make data, \R\ code, or history files available to students from inside \RStudio.}
+\TeachingTip[-3cm]{When accounts are set up on the \RStudio\ server for a new class at Calvin, each user is given a symbolic link to a directory where the instructor can write files and students can only read files.  This provides an easy way to make data, \R\ code, or history files available to students from inside \RStudio.}
 
 The \RStudio\ server runs on a Linux machine.  Users of \RStudio\ have accounts on the underlying Linux file system and it is possible to set up shared directories with permissions that allow multiple users to read and/or write files stored there. This has to be done outside of \RStudio, but if you are familiar with the Linux operating system or have a system administrator who is willing to help you out, this is not difficult to do.  
 
@@ -1724,7 +1705,7 @@ xyplot( Acres/Fires ~ Year, data=Fires, ylab="acres per fire",
 Unfortunately, most ``course support'' systems such as Moodle orBlackboard do  not provide such easy access to data.  The Dropbox service for storing files in the ``cloud'' provides a very convenient way to distribute files over the web.  (Go to \texttt{dropbox.com} for information and to sign up for a free account.) Dropbox is routinely used to provide automated backup and coordinated file access on multiple computers.  But the Dropbox service also provides a \code{Public} directory.  Any files that you place in that directory can be accessed directly by a URL.  
 \FoodForThought{Our discussion of Dropbox is primarily for those who do not already know how to do this other ways.}%
 
-To illustrate, suppose you wish to share some data set with your students.  You've constructed this data set in a spreadsheet and stored it as a csv file, let's call it \code{example-A.csv}.  Move this file into the \code{Public} directory under Dropbox --- on most computers Dropbox arranges things so that its directories appear exactly like ordinary directories and you'll use the ordinary, familiar file management techniques as in Figure ??.
+To illustrate, suppose you wish to share some data set with your students.  You've constructed this data set in a spreadsheet and stored it as a csv file, let's call it \code{example-A.csv}.  Move this file into the \code{Public} directory under Dropbox --- on most computers Dropbox arranges things so that its directories appear exactly like ordinary directories and you'll use the ordinary, familiar file management techniques such as drag and drop.
 
 
 \begin{center}
@@ -1891,11 +1872,12 @@ key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
 @
 \end{widestuff}
 
-\begin{widestuff}
+\hfill
 <<"read-from-google1",echo=FALSE,results="hide">>=
 elev <- fetchGoogle("https://spreadsheets.google.com/spreadsheet/pub?hl=en&hl=en&key=0Am13enSalO74dEVzMGJSMU5TbTc2eWlWakppQlpjcGc&single=TRUE&gid=0&output=csv")
 @
-\end{widestuff}
+
+\hfill\newpage
 
 \begin{widestuff}
 <<"read-from-google3">>=
@@ -1932,7 +1914,7 @@ text2 <- 'Do you use "scare quotes"?'
 
 
 \section{Common Error Messages and What Causes Them}
-\label{sec:errors}
+\label{sec:error-messages}
 
 \subsection{Error: Object not found}
 
