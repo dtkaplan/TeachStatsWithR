@@ -97,7 +97,7 @@ observed <- tally( ~ substance, data=HELPrct)
 observed
 @
 
-\Caution[-1cm]{In addition to the \option{format} option, there is an option \options{margins} that sets whether to include marginal totals in the table. The default in \function{tally} is \option{margins=FALSE}. Try it out!}
+\Caution[-1cm]{In addition to the \option{format} option, there is an option \option{margins} to include marginal totals in the table. The default in \function{tally} is \option{margins=FALSE}. Try it out!}
 \Rindex{chisq.test()}%
 <<tidy=FALSE>>=
 p <- c(1/3, 1/3, 1/3)   # equivalent to rep(1/3, 3)

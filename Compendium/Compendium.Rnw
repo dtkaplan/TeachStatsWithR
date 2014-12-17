@@ -1,4 +1,4 @@
-\documentclass[openany]{tufte-book}
+\documentclass{tufte-book} %[openany] option unselected
 
 
 \usepackage{RBook}
@@ -119,7 +119,9 @@ opts_chunk$set(  tidy=FALSE,
                  fig.align="center",
                  fig.show="hold",
                  comment=NA)
-knit_theme$set("greyscale0")
+knit_theme$set("greyscale0") # For printing in black and white
+opts_chunk$set( fig.path="figure/Core-fig-" ) 
+set.seed(123)
 @
 
 <<include=FALSE>>=
@@ -157,15 +159,69 @@ knit_hooks$set(document = function(x) {
 
 \parbox{4in}{\noindent {\bf Cover Photo}: . [Photo credit: Maya Hanna.]}
 
-\newpage
 
-\hspace{1.3cm}\parbox{8in}{\tableofcontents}
+\hspace*{1.3cm}\tableofcontents
 
-\newpage
 
-<<child='FrontMatter.Rnw', eval=TRUE>>=
+<<child='../Starting/FrontMatter.Rnw', eval=TRUE>>=
 @
 
+\chapter{Introduction}
+<<child='Introduction.Rnw', eval=TRUE>>=
+@
+
+\chapter{One Quantitative Variable}
+<<child='OneQuantitative.Rnw', eval=TRUE>>=
+@
+
+\chapter{One Categorical Variable}
+<<child='OneCategorical.Rnw', eval=TRUE>>=
+@
+
+\chapter{Two Quantitative Variables}
+<<child='TwoQuantitative.Rnw', eval=TRUE>>=
+@
+
+\chapter{Two Categorical Variables}
+<<child='TwoCategorical.Rnw', eval=TRUE>>=
+@
+
+\chapter{Quantitative Response, Categorical Predictor}
+<<child='QuantitativeResponse.Rnw', eval=TRUE>>=
+@
+
+\chapter{Categorical Response, Quantitative Predictor}
+<<child='CategoricalResponse.Rnw', eval=TRUE>>=
+@
+
+\chapter{Survival Time Outcomes}
+<<child='SurvivalTime.Rnw', eval=TRUE>>=
+@
+
+\chapter{More than Two Variables}
+<<child='MoreThanTwoVars.Rnw', eval=TRUE>>=
+@
+
+\chapter{Probability Distributions and Random Variables}
+<<child='ProbabilityDistributions.Rnw', eval=TRUE>>=
+@
+
+\chapter{Power Calculations}
+<<child='Power.Rnw', eval=TRUE>>=
+@
+
+\chapter{Data Management}
+<<child='DataManagement.Rnw', eval=TRUE>>=
+@
+
+\chapter{Health Evaluation and Linkage to Primary Care (HELP) Study}
+<<child='HELP-Study.Rnw', eval=TRUE>>=
+@
+
+
+\chapter{Exercises and Problems}
+
+\shipoutProblems
 
 
 %\backmatter

@@ -1,0 +1,42 @@
+
+\section{Logistic regression}
+\myindex{logistic regression}%
+
+Logistic regression is available using the \function{glm()} function, 
+which supports
+a variety of
+link functions and distributional forms for generalized linear models, including logistic regression.
+\FoodForThought[-1cm]{The \function{glm()} function has argument \option{family}, which can take an option 
+\option{link}.  The \code{logit} link is the default link for the binomial family,
+so we don't need to specify it here. The more verbose usage would be \code{family=binomial(link=logit)}.}%
+\Rindex{glm()}%
+\Rindex{family option}%
+\Rindex{exp()}%
+<<help-logit,tidy=FALSE>>=
+logitmod <- glm(homeless ~ age + female, family=binomial, 
+  data=HELPrct)
+summary(logitmod)
+exp(coef(logitmod))
+exp(confint(logitmod))
+@
+
+We can compare two models (for multiple degree of freedom tests).  For example, we
+might be interested in the association of homeless status and age for each of the three substance groups.
+\Rindex{anova()}%
+\Rindex{test option}%
+<<tidy=FALSE>>=
+mymodsubage = glm((homeless=="homeless") ~ age + substance, 
+  family=binomial, data=HELPrct)
+mymodage = glm((homeless=="homeless") ~ age, family=binomial, 
+  data=HELPrct)
+summary(mymodsubage)
+exp(coef(mymodsubage))
+anova(mymodage, mymodsubage, test="Chisq")
+@
+We observe that the cocaine and heroin groups are significantly less likely to be homeless than alcohol involved subjects, after controlling for age.  (A similar result is seen when considering just homeless status and substance.)
+
+<<>>=
+tally(~ homeless | substance, format="percent", margins=TRUE, data=HELPrct)
+@
+
+

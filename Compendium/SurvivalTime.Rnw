@@ -1,0 +1,42 @@
+\myindex{survival analysis}%
+\myindex{failure time analysis}%
+\myindex{time to event analysis}%
+Extensive support for survival (time to event) analysis is available within the 
+\pkg{survival} package.
+
+\section{Kaplan-Meier plot}
+
+\myindex{Kaplan-Meier plot}%
+\Rindex{survfit()}%
+\Rindex{Surv()}%
+\Rindex{conf.int option}%
+\Rindex{xlab option}%
+\begin{center}
+<<help-km,fig.width=6,fig.height=3.9,tidy=FALSE,message=FALSE>>=
+require(survival)
+fit <- survfit(Surv(dayslink, linkstatus) ~ treat, 
+  data=HELPrct)
+plot(fit, conf.int=FALSE, lty=1:2, lwd=2, 
+  xlab="time (in days)", ylab="P(not linked)")
+legend(20, 0.4, legend=c("Control", "Treatment"), 
+  lty=c(1,2), lwd=2)
+title("Product-Limit Survival Estimates (time to linkage)")
+@
+\end{center}
+
+We see that the subjects in the treatment (Health Evaluation and Linkage to Primary Care clinic) were significantly more likely to 
+link to primary care (less likely to ``survive'') than the control (usual care) group.
+
+\section{Cox proportional hazards model}
+\myindex{Cox proportional hazards model}%
+\myindex{proportional hazards model}%
+\Rindex{coxph()}%
+
+<<help-surv,tidy=FALSE>>=
+require(survival)
+summary(coxph(Surv(dayslink, linkstatus) ~ age + substance, 
+  data=HELPrct))
+@
+
+Neither age or substance group was significantly associated with linkage to primary care.
+

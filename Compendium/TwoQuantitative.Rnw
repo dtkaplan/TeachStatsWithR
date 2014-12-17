@@ -44,6 +44,7 @@ xyplot(Murder ~ Assault, panel=panel.labels,
 @
 
 
+\vspace*{-1cm}
 
 \section{Correlation}
 
@@ -151,7 +152,8 @@ qqmath(~ resid(cesdmodel))
 \Rindex{alpha option}%
 \begin{center}
 <<HELPrct-resid-plot>>=
-xyplot(resid(cesdmodel) ~ fitted(cesdmodel), type=c("p", "smooth", "r"), alpha=0.5, cex=0.3, pch=20)
+xyplot(resid(cesdmodel) ~ fitted(cesdmodel), type=c("p", "smooth", "r"), 
+       alpha=0.5, cex=0.3, pch=20)
 @
 \end{center}
 
@@ -162,8 +164,7 @@ The \function{mplot()} function can facilitate creating a variety of useful plot
 mplot(cesdmodel, which=1)
 @
 
-It can also generate a 
-normal quantile-quantile plot (\option{which=2}),
+It can also generate a normal quantile-quantile plot (\option{which=2}),
 <<results='hide'>>=
 mplot(cesdmodel, which=2)
 @
@@ -180,8 +181,10 @@ Cook's distance by observation number,
 mplot(cesdmodel, which=4)
 @
 
+\newpage
+
 \myindex{leverage}%
-residuals vs.\,leverage, and
+residuals vs.\,leverage
 <<results='hide'>>=
 mplot(cesdmodel, which=5)
 @

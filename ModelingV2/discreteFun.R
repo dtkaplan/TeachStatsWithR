@@ -20,6 +20,12 @@ Browse[1]> class(substitute(a ~ 3))
 Browse[1]> class(substitute(a))
 [1] "<-"
 
+
+# Any of these will work
+# 
+# fish := 7 + 3*x
+# fish == 7 + 3*x
+# fish <- 7 + 3*x
 # return a function that's already vectorized.
 makeDiscreteFun <- function(a,b,c,d){
   browser()

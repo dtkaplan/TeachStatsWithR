@@ -5,6 +5,8 @@
 \myindex{thinking with data}%
 
 \TeachingTip{The \emph{Start Teaching with R} book features an extensive section on data management, including use of the \function{read.file()} function to load data into \R\ and \RStudio.}
+
+\vspace*{-1cm}
 Data management is a key capacity to allow students (and instructors) to ``compute with data'' or  
 as Diane Lambert of Google has stated, ``think with data''.
 We tend to keep student data management to a minimum during the early part of an introductory
@@ -39,7 +41,7 @@ irisSmall <- mutate(irisSmall,
   Length = cut(Sepal.Length, breaks=4:8))    
 @
 
-\TeachingTip{The \function{cut()} function has an option called \option{labels} which can be used to specify more descriptive names for the groups.}
+\TeachingTip[1cm]{The \function{cut()} function has an option \option{labels} which can be used to specify more descriptive names for the groups.}
 <<"mr-adding-variable2-again">>=
 head(irisSmall)
 @
@@ -171,13 +173,11 @@ head(sorted, 3)
 \section{Merging datasets}
 \myindex{merging dataframes}%
 
+<<echo=FALSE>>=
+OLD <- options(width=90)
+@
 The \dataframe{fusion1} dataframe in the \pkg{fastR} package contains 
-genotype information for a SNP (single nucleotide polymorphism) in the gene
-\emph{TCF7L2}.  
-The \dataframe{pheno} dataframe contains phenotypes
-(including type 2 diabetes case/control status) for an intersecting set of individuals.
-We can join (or merge) these together to explore the association between
-genotypes and phenotypes using \verb!merge()!.
+genotype information for a SNP (single nucleotide polymorphism) in the gene \emph{TCF7L2}. The \dataframe{pheno} dataframe contains phenotypes (includingtype 2 diabetes case/control status) for an intersecting set of individuals. We can join (or merge) these together to explore the association between genotypes and phenotypes using \verb!merge()!.
 
 \Rindex{arrange()}%
 <<warning=FALSE,message=FALSE>>=
@@ -191,7 +191,7 @@ head(pheno, 3)
 \Rindex{arrange()}%
 \Rindex{all.x option}%
 \Rindex{by.x option}%
-<<message=FALSE, tidy=FALSE>>=
+<<message=FALSE, warning=FALSE,tidy=FALSE>>=
 require(tidyr)
 fusion1m <- inner_join(fusion1, pheno, by='id')
 head(fusion1m, 3)
@@ -378,4 +378,8 @@ Alternatively, we could generate the same dataset using logical conditions.
 nomiss = filter(smaller, 
   (!is.na(mcs) & !is.na(indtot) & !is.na(drugrisk)))
 dim(nomiss)
+@
+
+<<echo=FALSE>>=
+options(OLD) 
 @

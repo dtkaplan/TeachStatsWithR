@@ -1,0 +1,329 @@
+
+\section{Two (or more) way ANOVA}
+
+We can fit a two (or more) way ANOVA model, without or with an interaction,
+using the same modeling syntax.
+<<help-aovplot>>=
+median(cesd ~ substance | sex, data=HELPrct)
+bwplot(cesd ~ subgrp | sex, data=HELPrct)
+@
+<<help-aov2>>=
+summary(aov(cesd ~ substance + sex, data=HELPrct))
+@
+<<help-aov3>>=
+summary(aov(cesd ~ substance * sex, data=HELPrct))
+@
+There's little evidence for the interaction, though there are statistically
+significant main effects terms for \variable{substance} group and 
+\variable{sex}.
+
+<<help-interaction,tidy=FALSE>>=
+xyplot(cesd ~ substance, groups=sex, 
+  auto.key=list(columns=2, lines=TRUE, points=FALSE), type='a',
+  data=HELPrct)
+@
+\Rindex{auto.key option}
+
+
+\section{Multiple regression}
+\myindex{multiple regression}%
+\myindex{multivariate relationships}%
+
+Multiple regression is a logical extension of the prior commands, where 
+additional predictors are added.  This allows students to start to try to disentangle 
+multivariate relationships.  
+
+\InstructorNote[-2cm]{We tend to introduce multiple linear regression
+early in our courses, as a purely descriptive technique, then return to it
+regularly.  The motivation for this is described at length in the companion volume 
+\emph{Start Modeling with R}.}
+
+Here we consider a model (parallel slopes) for depressive symptoms as a function of Mental Component Score (MCS),
+age (in years) and sex of the subject.
+
+\newpage
+
+<<help-multreg>>=
+lmnointeract <- lm(cesd ~ mcs + age + sex, data=HELPrct)
+summary(lmnointeract)
+@
+\myindex{interactions}%
+We can also fit a model that includes an interaction between MCS and sex.
+<<help-multreg2>>=
+lminteract <- lm(cesd ~ mcs + age + sex + mcs:sex, data=HELPrct)
+summary(lminteract)
+anova(lminteract)
+@
+<<help-multreg3>>=
+anova(lmnointeract, lminteract)
+@
+
+There is little evidence for an interaction effect, so we drop
+this from the model.
+
+\subsection{Visualizing the results from the regression}
+
+\label{sec:plotFun}
+\Rindex{plotFun()}%
+\Rindex{makeFun()}%
+The \function{makeFun()} and \function{plotFun()} functions from the \pkg{mosaic} package 
+can be used to display the results from a regression model.  For this example, we might 
+display the predicted CESD values for a range of MCS values a 36 year old male and female subject from the parallel
+slopes (no interaction) model.
+<<makeFUN>>=
+lmfunction = makeFun(lmnointeract)
+@
+
+\Rindex{xyplot()}%
+\Rindex{auto.key option}%
+\Rindex{ylab option}%
+\Rindex{groups option}%
+\Rindex{add option}%
+We can now plot this function for male and female subjects over a range of MCS (mental component score) values, along
+with the observed data for 36 year olds.  
+<<plotFUN,tidy=FALSE,fig.keep='last'>>=
+xyplot(cesd ~ mcs, groups=sex, auto.key=TRUE, 
+  data=filter(HELPrct, age==36))
+plotFun(lmfunction(mcs, age=36, sex="male") ~ mcs, 
+  xlim=c(0, 60), lwd=2, ylab="predicted CESD", add=TRUE)
+plotFun(lmfunction(mcs, age=36, sex="female") ~ mcs, 
+  xlim=c(0, 60), lty=2, lwd=3, add=TRUE)
+@
+
+
+\subsection{Coefficient plots}
+
+\myindex{coefficient plots}%
+It is sometimes useful to display a plot of the coefficients for a multiple regression model (along with their associated
+confidence intervals).
+
+\Rindex{mplot()}%
+<<results='hide'>>=
+mplot(lmnointeract, rows=-1, which=7)
+@
+
+\TeachingTip[-4cm]{Darker dots indicate regression coefficients where the 95\% confidence interval does not include the null hypothesis value of zero.}
+
+\Caution[-2cm\{Be careful when fitting regression models with missing values (see also section \ref{sec:miss}).}
+
+\newpage
+
+\subsection{Residual diagnostics}
+\myindex{residual diagnostics}
+\myindex{regression diagnostics}
+
+It's straightforward to undertake residual diagnostics for this model.  We begin by adding the
+fitted values and residuals to the dataset.
+\TeachingTip[-1cm]{The \function{mplot} function can also be used to create these graphs.}
+\Rindex{resid()}%
+\Rindex{fitted()}%
+\Rindex{abs()}%
+\InstructorNote{Here we are adding two new variables into an existing dataset. It's often a good practice to give the resulting dataframe a new name.}
+<<tidy=FALSE>>=
+HELPrct = mutate(HELPrct, residuals = resid(lmnointeract), 
+  pred = fitted(lmnointeract))
+@
+<<tidy=FALSE, message=FALSE>>=
+histogram(~ residuals, xlab="residuals", fit="normal", 
+  data=HELPrct)
+@
+
+We can identify the subset of observations with extremely large residuals.
+
+\Rindex{abs()}%
+<<>>=
+filter(HELPrct, abs(residuals) > 25)
+@
+
+\Rindex{cex option}%
+\Rindex{type option}%
+<<tidy=FALSE>>=
+xyplot(residuals ~ pred, ylab="residuals", cex=0.3,
+  xlab="predicted values", main="predicted vs. residuals",
+  type=c("p", "r", "smooth"), data=HELPrct)
+@
+<<tidy=FALSE>>=
+xyplot(residuals ~ mcs, xlab="mental component score", 
+  ylab="residuals", cex=0.3,
+  type=c("p", "r", "smooth"), data=HELPrct)
+@
+
+The assumptions of normality, linearity and homoscedasticity seem reasonable here.
+\begin{problem}
+The \dataframe{RailTrail} dataset within the \pkg{mosaic} package includes the counts 
+of crossings of a rail trail in Northampton, Massachusetts for 90 days in 2005.  
+City officials are interested in understanding usage of the trail network, and
+how it changes as a function of temperature and day of the week.  
+Describe the distribution of the variable \variable{avgtemp} in terms of its
+center, spread and shape.
+<<tidy=FALSE>>=
+favstats(~ avgtemp, data=RailTrail)
+densityplot(~ avgtemp, xlab="Average daily temp (degrees F)", 
+  data=RailTrail)
+@
+\end{problem}
+\begin{solution}
+The distribution of average temperature (in degrees Fahrenheit) is approximately normally
+distributed with mean 57.4 degrees and standard deviation of 11.3 degrees.
+\end{solution}
+\begin{problem}
+The \dataframe{RailTrail} dataset also includes a variable called \variable{cloudcover}.  
+Describe the distribution of this variable in terms of its
+center, spread and shape.
+\end{problem}
+\begin{solution}
+<<>>=
+favstats(~ cloudcover, data=RailTrail)
+densityplot(~ cloudcover, data=RailTrail)
+@
+The distribution of cloud cover is ungainly (almost triangular), with increasing probability for more
+cloudcover.  The mean is 5.8 oktas (out of 10), with standard deviation of 3.2 oktas.  It tends to be
+cloudy in Northampton!
+\end{solution}
+\begin{problem}
+The variable in the \dataframe{RailTrail} dataset that provides the daily count
+of crossings is called \variable{volume}. 
+Describe the distribution of this variable in terms of its
+center, spread and shape.
+\end{problem}
+\begin{solution}
+<<>>=
+favstats(~ volume, data=RailTrail)
+densityplot(~ volume, xlab="# of crossings", data=RailTrail)
+filter(RailTrail, volume > 700)
+@
+The distribution of daily crossings is approximately normally
+distributed with mean 375 crossings  and standard deviation of 127 crossings.
+There is one outlier with 736 crossings which occurred on a Monday holiday in the spring
+(Memorial Day).  
+\end{solution}
+\begin{problem}
+The \dataframe{RailTrail} dataset also contains an indicator of whether the day was 
+a weekday (\variable{weekday==1}) or a weekend/holiday (\variable{weekday==0}).
+Use \function{tally()} to describe the distribution of this categorical variable.
+What percentage of the days are weekends/holidays?
+\end{problem}
+\begin{solution}
+<<>>=
+tally(~ weekday, data=RailTrail)
+tally(~ weekday, format="percent", data=RailTrail)
+@
+Just over 30\% of the days are weekends or holidays.
+\end{solution}
+\begin{problem}
+Use side-by-side boxplots to compare the distribution of \variable{volume} by day type in the \dataframe{RailTrail} dataset.
+Hint: you'll need to turn the numeric \variable{weekday} variable into a factor variable using \function{as.factor()}.
+What do you conclude?
+\end{problem}
+\begin{solution}
+<<>>=
+bwplot(volume ~ as.factor(weekday), data=RailTrail)
+@
+or
+<<>>=
+RailTrail = mutate(RailTrail, daytype = ifelse(weekday==1, "weekday", "weekend/holiday"))
+bwplot(volume ~ daytype, data=RailTrail)
+@
+We see that the weekend/holidays tend to have more users.
+\end{solution}
+
+\begin{problem}
+Use overlapping densityplots to compare the distribution of \variable{volume} by day type in the 
+\dataframe{RailTrail} dataset.
+What do you conclude?
+\end{problem}
+\begin{solution}
+<<>>=
+densityplot(volume ~ weekday, auto.key=TRUE, data=RailTrail)
+@
+We see that the weekend/holidays tend to have more users.
+\end{solution}
+\begin{problem}
+Create a scatterplot of \variable{volume} as a function of \variable{avgtemp} using the \dataframe{RailTrail} dataset, along with a regression line and scatterplot
+smoother (lowess curve).  What do you observe about the relationship?  
+\end{problem}
+\begin{solution}
+<<>>=
+xyplot(volume ~ avgtemp, xlab="average temperature (degrees F)", 
+  type=c("p", "r", "smooth"), lwd=2, data=RailTrail)
+@
+We see that there is a positive relationship between these two variables, but the association is 
+somewhat nonlinear (which makes sense as we wouldn't continue to predict an increase in usage when the 
+temperature becomes uncomfortably warm).  
+\end{solution}
+\begin{problem}
+Using the \dataframe{RailTrail} dataset,
+fit a multiple regression model for \variable{volume} as a function of \variable{cloudcover}, \variable{avgtemp}, 
+\variable{weekday} and the interaction
+between day type and average temperature.
+Is there evidence to retain the interaction term at the $\alpha=0.05$ level?
+\end{problem}
+\begin{solution}
+<<>>=
+fm = lm(volume ~ cloudcover + avgtemp + weekday + avgtemp:weekday, data=RailTrail)
+summary(fm)
+@
+The interaction between average temperature and day-type is statistically significant (p=0.016).  We 
+interpret this as being a steeper slope (stronger association) on weekdays rather than weekends.
+(Perhaps on weekends/holidays people will tend to head out on the trails irrespective of the weather?)
+\end{solution}
+\begin{problem}
+Use \function{makeFun()} to calculate the predicted number of crossings on a weekday with average 
+temperature 60 degrees and no clouds.  Verify this calculation using the coefficients from the 
+model.
+<<>>=
+coef(fm)
+@
+\end{problem}
+\begin{solution}
+<<>>=
+myfun = makeFun(fm)
+myfun(cloudcover=0, avgtemp=60, weekday=1)
+@
+We expect just over 480 crossings on a day with these characteristics.
+\end{solution}
+\begin{problem}
+Use \function{makeFun()} and \function{plotFun()} to display predicted values for the number of crossings
+on weekdays and weekends/holidays for average temperatures between 30 and 80 degrees and a cloudy day 
+(\variable{cloudcover=10}).  
+\end{problem}
+\begin{solution}
+<<>>=
+myfun = makeFun(fm)
+xyplot(volume ~ avgtemp, data=RailTrail)
+plotFun(myfun(cloudcover=10, avgtemp, weekday=0) ~ avgtemp, lwd=2, add=TRUE)
+plotFun(myfun(cloudcover=10, avgtemp, weekday=1) ~ avgtemp, lty=2, lwd=3, add=TRUE)
+@
+We
+interpret this as being a steeper slope (stronger association) on weekdays rather than weekends.
+(Perhaps on weekends/holidays people will tend to head out on the trails irrespective of the weather?)
+\end{solution}
+\begin{problem}
+Using the multiple regression model, generate a histogram (with overlaid normal 
+density) to assess the normality of the residuals.  
+\end{problem}
+\begin{solution}
+<<>>=
+histogram(~ resid(fm), fit="normal")
+@
+The distribution is approximately normal.
+\end{solution}
+\begin{problem}
+Using the same model generate a scatterplot of the residuals versus predicted values and comment
+on the linearity of the model and assumption of equal variance.
+\end{problem}
+\begin{solution}
+<<>>=
+xyplot(resid(fm) ~ fitted(fm), type=c("p", "r", "smooth"))
+@
+The association is fairly linear, except in the tails.  There's some evidence that the variability of the residuals increases with larger fitted values.
+\end{solution}
+\begin{problem}
+Using the same model generate a scatterplot of the residuals versus average temperature and comment on the linearity of the model and assumption of equal variance.
+\end{problem}
+\begin{solution}
+<<>>=
+xyplot(resid(fm) ~ avgtemp, type=c("p", "r", "smooth"), data=RailTrail)
+@
+The association is somewhat non-linear.  There's some evidence that the variability of the residuals increases with larger fitted values.
+\end{solution}
