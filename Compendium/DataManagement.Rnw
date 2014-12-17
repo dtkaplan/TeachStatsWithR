@@ -1,0 +1,381 @@
+
+
+\label{sec:manipulatingData}%
+\myindex{data management}%
+\myindex{thinking with data}%
+
+\TeachingTip{The \emph{Start Teaching with R} book features an extensive section on data management, including use of the \function{read.file()} function to load data into \R\ and \RStudio.}
+Data management is a key capacity to allow students (and instructors) to ``compute with data'' or  
+as Diane Lambert of Google has stated, ``think with data''.
+We tend to keep student data management to a minimum during the early part of an introductory
+statistics course, then gradually introduce topics as needed.  For courses where students
+undertake substantive projects, data management is more important.  This chapter describes 
+some key data management tasks.
+\myindex{read.file()}%
+
+\TeachingTip{The \pkg{dplyr} and \pkg{tidyr} packages provide an elegant approach to data management and facilitate the ability of students to compute with data.  Hadley Wickham, author of the packages,
+suggests that there are six key idioms (or verbs) implemented within these packages that allow a large set of tasks to be accomplished: 
+filter (keep rows matching criteria),
+select (pick columns by name),
+arrange (reorder rows),
+mutate (add new variables),
+summarise (reduce variables to values), and
+group by (collapse groups).}
+\section{Adding new variables to a dataframe}
+\myindex{dataframe}%
+We can add additional variables to an existing dataframe (name for a dataset in \R) using \function{mutate()}.  But first we create a smaller version of the \dataframe{iris} dataframe.
+
+\myindex{iris dataset}%
+<<mr-adding-variable2>>=
+irisSmall <- select(iris, Species, Sepal.Length)
+@
+
+\myindex{adding variables}%
+\Rindex{mutate()}%
+\Rindex{cut()}%
+<<mr-adding-variable,tidy=FALSE>>=
+# cut places data into bins
+irisSmall <- mutate(irisSmall, 
+  Length = cut(Sepal.Length, breaks=4:8))    
+@
+
+\TeachingTip{The \function{cut()} function has an option called \option{labels} which can be used to specify more descriptive names for the groups.}
+<<"mr-adding-variable2-again">>=
+head(irisSmall)
+@
+\Rindex{head()}%
+\myindex{display first few rows}%
+
+\myindex{CPS85 dataset}%
+The \dataframe{CPS85} dataframe contains data from a Current Population Survey (current in 1985, that is).
+Two of the variables in this dataframe are \variable{age} and \variable{educ}.  We can estimate
+the number of years a worker has been in the workforce if we assume they have been in the workforce
+since completing their education and that their age at graduation is 6 more than the number
+of years of education obtained.  We can add this as a new variable in the dataframe 
+using \function{mutate()}.
+\myindex{CPS85 dataset}%
+\Rindex{mutate()}%
+<<>>=
+CPS85 <- mutate(CPS85, workforce.years = age - 6 - educ)
+favstats(~ workforce.years, data=CPS85)
+@
+In fact this is what was done for all but one of the cases to create the \variable{exper} 
+variable that is already in the \dataframe{CPS85} data.
+<<>>=
+tally(~ (exper - workforce.years), data=CPS85)
+@
+
+\section{Dropping variables}
+\myindex{dropping variables}%
+\Rindex{filter()}%
+\Rindex{select option}%
+Since we already have the \variable{exper} variable, there is no reason to keep our new variable.  Let's drop it.
+Notice the clever use of the minus sign.
+
+<<>>=
+names(CPS85)
+CPS1 <- select(CPS85, select = -matches("workforce.years"))
+names(CPS1)
+@
+
+Any number of variables can be dropped or kept in a similar manner.
+<<>>=
+CPS1 <- select(CPS85, select = -matches("workforce.years|exper"))
+@
+
+
+\section{Renaming variables}
+\myindex{renaming variables}%
+\Rindex{rename()}%
+\Rindex{row.names()}%
+The column (variable) names for a dataframe can be changed using the \function{rename()} function in the
+\pkg{dplyr} package.
+<<>>=
+names(CPS85)
+CPSnew = rename(CPS85, workforce=workforce.years)
+names(CPSnew)
+@
+
+The row names of a dataframes can be changed by
+simple assignment using \function{row.names()}.
+
+\Rindex{names()}%
+\myindex{faithful dataset}%
+The \dataframe{faithful} data set (in the \pkg{datasets} package, which is always available)
+has very unfortunate names.
+\TeachingTip{It's a good idea to start teaching good practices for choice of variable names from day one.}
+<<>>=
+names(faithful)
+@
+
+The measurements are the duration of an euption and the time until the subsequent eruption,
+so let's give it some better names.
+<<tidy=FALSE>>=
+faithful = rename(faithful, 
+  duration = eruptions, 
+  time.til.next=waiting)
+names(faithful)
+@
+\myindex{faithful dataset}%
+\begin{center}
+<<"mr-faithful-xy">>=
+xyplot(time.til.next ~ duration, alpha=0.5, data=faithful)
+@
+\end{center}
+If the variable containing a dataframe is modified or used to store a different object,
+the original data from the package can be recovered using \function{data()}.
+\Rindex{data()}%
+<<>>=
+data(faithful)
+head(faithful, 3)
+@
+
+\begin{problem}
+Using \dataframe{faithful} dataframe, make a scatter plot of eruption duration times vs.\,the time
+since the previous eruption.
+\end{problem}
+
+
+\section{Creating subsets of observations}
+\myindex{creating subsets}%
+\myindex{subsets of dataframes}%
+\label{sec:subsets}
+We can also use \function{filter()} to reduce the size of a dataframe by selecting 
+only certain rows.
+\begin{center}
+<<"mr-faithful-long-xy">>=
+data(faithful)
+names(faithful) <- c('duration', 'time.til.next')
+# any logical can be used to create subsets
+faithfulLong <- filter(faithful, duration > 3)        
+xyplot( time.til.next ~ duration, data=faithfulLong )
+@
+\end{center}
+
+
+\section{Sorting dataframes}
+\myindex{sorting dataframes}%
+\Rindex{arrange()}%
+
+Data frames can be sorted using the \function{arrange()} function.
+<<>>=
+head(faithful, 3)
+sorted = arrange(faithful, duration)
+head(sorted, 3)
+@
+\Caution{It is usually better to make new datasets rather than modifying the original.}
+
+
+
+
+\section{Merging datasets}
+\myindex{merging dataframes}%
+
+The \dataframe{fusion1} dataframe in the \pkg{fastR} package contains 
+genotype information for a SNP (single nucleotide polymorphism) in the gene
+\emph{TCF7L2}.  
+The \dataframe{pheno} dataframe contains phenotypes
+(including type 2 diabetes case/control status) for an intersecting set of individuals.
+We can join (or merge) these together to explore the association between
+genotypes and phenotypes using \verb!merge()!.
+
+\Rindex{arrange()}%
+<<warning=FALSE,message=FALSE>>=
+require(fastR)
+require(dplyr)
+fusion1 = arrange(fusion1, id)
+head(fusion1, 3)
+head(pheno, 3)
+@
+
+\Rindex{arrange()}%
+\Rindex{all.x option}%
+\Rindex{by.x option}%
+<<message=FALSE, tidy=FALSE>>=
+require(tidyr)
+fusion1m <- inner_join(fusion1, pheno, by='id')
+head(fusion1m, 3)
+@
+\Rindex{tidyr package}%
+
+\myindex{fusion1 dataset}%
+Now we are ready to begin our analysis.
+<<"mr-fusion1-xtabs">>=
+tally(~t2d + genotype, data=fusion1m)
+@
+
+\begin{problem}
+The \dataframe{fusion2} data set in the \pkg{fastR} package contains genotypes for 
+another SNP.  Merge \dataframe{fusion1}, \dataframe{fusion2}, and \dataframe{pheno} into a single data
+frame.
+
+Note that \dataframe{fusion1} and \dataframe{fusion2} have the same columns.
+<<>>=
+names(fusion1)
+names(fusion2)
+@
+You may want to use the \option{suffixes} argument to \function{merge()} or rename the variables
+after you are done merging to make the resulting dataframe easier to navigate.
+
+Tidy up your dataframe by dropping any columns that are redundant or that you just don't want to
+have in your final dataframe.
+\end{problem}
+
+\section{Slicing and dicing}
+\myindex{reshaping dataframes}%
+\myindex{transforming dataframes}%
+\myindex{transposing dataframes}%
+The \pkg{tidyr} package provides a flexible way to change the arrangement of data.  
+It was designed for converting between long and wide versions of 
+time series data and its arguments are named with that in mind.
+\TeachingTip{The vignettes that accompany the \pkg{tidyr} and \pkg{dplyr} packages feature a number of useful examples of common data manipulations.}
+
+
+A common situation is when we want to convert from a wide form to a 
+long form because of a change in perspective about what a unit of 
+observation is.  For example, in the \dataframe{traffic} dataframe, each 
+row is a year, and data for multiple states are provided.
+
+<<"mr-traffic-reshape">>=
+traffic
+@
+We can reformat this so that each row contains a measurement for a 
+single state in one year.
+
+\Rindex{gather()}%
+<<tidy=FALSE>>=
+longTraffic <- traffic %>% 
+  gather(state, deathRate, ny:ri) 
+head(longTraffic)
+@
+
+We can also reformat the other way, this time having all data for a given state 
+form a row in the dataframe.
+<<tidy=FALSE>>=
+stateTraffic <- longTraffic %>% 
+  select(year, deathRate, state) %>%
+  mutate(year=paste("deathRate.", year, sep="")) %>%
+  spread(year, deathRate)
+stateTraffic
+@
+\Rindex{spread()}%
+\Rindex{select()}%
+\Rindex{mutate()}%
+\Rindex{paste()}%
+
+\section{Derived variable creation}
+\myindex{derived variables}
+
+A number of functions help facilitate the creation or recoding of variables.
+
+\subsection{Creating categorical variable from a quantitative variable}
+
+Next we demonstrate how to 
+create a three-level categorical variable
+with cuts at 20 and 40 for the CESD scale (which ranges from 0 to 60 points).
+
+\Rindex{cut()}%
+\Rindex{mutate()}%
+\Rindex{include.lowest option}%
+\Rindex{breaks option}%
+<<tidy=FALSE>>=
+favstats(~ cesd, data=HELPrct)
+HELPrct = mutate(HELPrct, cesdcut = cut(cesd, 
+  breaks=c(0, 20, 40, 60), include.lowest=TRUE))
+bwplot(cesd ~ cesdcut, data=HELPrct)
+@
+\Rindex{ntiles()}%
+\TeachingTip{The \function{ntiles} function can be used to automate creation of groups in this manner.}
+
+It might be preferable to give better labels.
+<<tidy=FALSE>>=
+HELPrct = mutate(HELPrct, cesdcut = cut(cesd, 
+  labels=c("low", "medium", "high"),
+  breaks=c(0, 20, 40, 60), include.lowest=TRUE))
+bwplot(cesd ~ cesdcut, data=HELPrct)
+@
+
+
+\subsection{Reordering factors}
+\myindex{reordering factors}%
+\myindex{factor reordering}%
+\Rindex{relevel()}%
+\Rindex{mutate()}%
+\Rindex{coef()}%
+\Rindex{tally()}%
+By default R uses the first level in lexicographic order as the reference group for modeling.  This 
+can be overriden using the \function{relevel()} function (see also \function{reorder()}).
+<<tidy=FALSE>>=
+tally(~ substance, data=HELPrct)
+coef(lm(cesd ~ substance, data=HELPrct))
+HELPrct = mutate(HELPrct, subnew = relevel(substance, 
+  ref="heroin"))
+coef(lm(cesd ~ subnew, data=HELPrct))
+@
+
+\section{Group-wise statistics}
+\label{sec:groupby}
+
+\myindex{group-wise statistics}%
+\Rindex{select()}%
+
+It can often be useful to calculate summary statistics by group, and add
+these into a dataset.  The \function{group_by} function in the \pkg{dplyr} package
+facilitates this process.  Here we demonstrate how to add a variable containing
+the median age of subjects by substance group.
+
+\Rindex{favstats()}%
+\Rindex{group\_by()}%
+\Rindex{left\_join()}%
+\Rindex{summarise()}%
+<<tidy=FALSE>>=
+favstats(age ~ substance, data=HELPrct)
+ageGroup <- HELPrct %>% 
+  group_by(substance) %>%
+  summarise(agebygroup = mean(age))
+ageGroup
+HELPmerged <- left_join(ageGroup, HELPrct, by="substance") 
+favstats(agebygroup ~ substance, data=HELPmerged)
+@
+
+
+\section{Accounting for missing data}
+\label{sec:miss}
+
+\myindex{missing data}%
+\myindex{incomplete data}%
+\Rindex{select()}%
+\Rindex{dim()}%
+\Rindex{NA character}%
+Missing values arise in almost all real world investigations.  R uses the \variable{NA} character as an 
+indicator for missing data.  The \dataframe{HELPmiss} dataframe within the \pkg{mosaicData} package includes all 
+$n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some missing data who 
+were not included in \dataframe{HELPrct}).  
+\myindex{HELPmiss dataset}%
+<<tidy=FALSE>>=
+smaller = select(HELPmiss, cesd, drugrisk, indtot, mcs, pcs, 
+  substance)
+dim(smaller)
+summary(smaller)
+@
+
+Of the 470 subjects in the 6 variable dataframe, only the \code{drugrisk}, \code{indtot}, \code{mcs}, and \code{pcs} variables have missing values.  
+
+\Rindex{with()}%
+\Rindex{na.omit()}%
+\Rindex{favstats()}%
+\Rindex{is.na()}%
+<<tidy=FALSE>>=
+favstats(~ mcs, data=smaller)
+with(smaller, sum(is.na(mcs)))
+nomiss = na.omit(smaller)
+dim(nomiss)
+favstats(~ mcs, data=nomiss)
+@
+
+Alternatively, we could generate the same dataset using logical conditions.
+<<tidy=FALSE>>=
+nomiss = filter(smaller, 
+  (!is.na(mcs) & !is.na(indtot) & !is.na(drugrisk)))
+dim(nomiss)
+@

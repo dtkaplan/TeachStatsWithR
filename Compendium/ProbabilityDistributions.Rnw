@@ -1,0 +1,213 @@
+
+
+\label{sec:DiscreteDistributions}
+\label{sec:probability}
+\myindex{random variables}%
+
+\R\ can calculate quantities related to probability distributions of all types.  
+It is straightforward to generate
+random samples from these distributions, which can be used 
+for simulation and exploration.
+<<probdist,fig.height=4,fig.width=6>>=
+xpnorm(1.96, mean=0, sd=1)    # P(Z < 1.96)
+@
+\Rindex{qnorm()}%
+\Rindex{dnorm()}%
+\Rindex{pnorm()}%
+\Rindex{xpnorm()}%
+\Rindex{rnorm()}%
+\Rindex{integrate()}%
+<<>>=
+# value which satisfies P(Z < z) = 0.975
+qnorm(.975, mean=0, sd=1)   
+integrate(dnorm, -Inf, 0)   # P(Z < 0)
+@
+The following table displays the basenames for probability distributions 
+available within base \R.  These functions can be prefixed by {\tt d} to 
+find the density function for the distribution, {\tt p} to find the 
+cumulative distribution function, {\tt q} to find quantiles, and {\tt r} to 
+generate random draws. For example, to find the density function of an exponential
+random variable, use the command \function{dexp()}.
+The \function{qDIST()} function is the inverse of the 
+\function{pDIST()} function, for a given basename {\tt DIST}. 
+\begin{center}
+\begin{tabular}{|c|c|c|} \hline
+Distribution   & Basename                 \\ \hline
+Beta           &  {\tt beta}        \\
+binomial       &  {\tt binom}    \\
+Cauchy         &  {\tt cauchy}   \\
+chi-square     &  {\tt chisq}    \\
+exponential    &  {\tt exp}      \\
+F              &  {\tt f}        \\
+gamma          &  {\tt gamma}    \\
+geometric      &  {\tt geom}     \\
+hypergeometric &  {\tt hyper}    \\
+logistic       &  {\tt logis}    \\
+lognormal      &  {\tt lnorm}    \\
+negative binomial &  {\tt nbinom} \\
+normal         &  {\tt norm}      \\
+Poisson        &  {\tt pois}      \\
+Student's t    &  {\tt t}        \\
+Uniform        &  {\tt unif}     \\
+Weibull        &  {\tt weibull}   \\ \hline
+\end{tabular}
+\end{center}
+\DiggingDeeper{The \function{fitdistr()} within the \pkg{MASS} package facilitates estimation
+of parameters for many distributions.}
+The \function{plotDist()} can be used to display distributions in a variety of ways.
+<<tidy=FALSE>>=
+plotDist('norm', mean=100, sd=10, kind='cdf')
+@
+<<tidy=FALSE>>=
+plotDist('exp', kind='histogram', xlab="x")
+@
+<<tidy=FALSE>>=
+plotDist('binom', size=25, prob=0.25, xlim=c(-1,26))
+@
+\begin{problem}
+Generate a sample of 1000 exponential random variables with rate parameter
+equal to 2, and calculate the mean of those variables.
+\end{problem}
+\begin{solution}
+<<expprob>>=
+x <- rexp(1000, rate=2)
+mean(x)
+@
+\end{solution}
+
+\begin{problem}
+Find the median of the random variable X, if it is exponentially distributed
+with rate parameter 10.
+\end{problem}
+\begin{solution}
+<<expprob2>>=
+qexp(.5, rate=10)
+@
+\end{solution}
+
+
+\chapter{Power Calculations}
+\label{chap:onesamppower}
+
+While not generally a major topic in introductory courses, power and sample size calculations
+help to reinforce key ideas in statistics.  In this section, we will explore how \R\ can 
+be used to undertake power calculations using analytic approaches.
+We consider a simple problem with two tests (t-test and
+sign test) of
+a one-sided comparison.
+
+We will compare the power of the sign test and the power of the test based on normal theory (one sample one sided t-test) assuming that $\sigma$ 
+is known.
+Let $X_1, ..., X_{25}$ be i.i.d. $N(0.3, 1)$ (this is the alternate that we wish to calculate power for).  Consider testing the null hypothesis $H_0: \mu=0$ versus $H_A: \mu>0$ at significance level $\alpha=.05$.  
+
+\section{Sign test}
+
+We start by calculating the Type I error rate for the sign test.  Here we want to
+reject when the number of positive values is large.  Under the null hypothesis, this is
+distributed as a Binomial random variable with n=25 trials and p=0.5 probability of being
+a positive value.  Let's consider values between 15 and 19.
+
+<<pbinom>>=
+xvals <- 15:19
+probs <- 1 - pbinom(xvals, size=25, prob=0.5)
+cbind(xvals, probs)
+qbinom(.95, size=25, prob=0.5)
+@
+So we see that if we decide to reject when the number of positive values is
+17 or larger, we will have an $\alpha$ level of \Sexpr{round(1-pbinom(16, 25, 0.5), 3)},
+which is near the nominal value in the problem.
+
+We calculate the power of the sign test as follows. The probability that $X_i > 0$, given that $H_A$ is true is given by:
+<<pnorm1>>=
+1 - pnorm(0, mean=0.3, sd=1)
+@
+We can view this graphically using the command:
+\begin{center}
+<<pnorm2,fig.width=5,fig.height=1.9>>= 
+xpnorm(0, mean=0.3, sd=1, lower.tail=FALSE)
+@
+\end{center}
+The power under the alternative is equal to the probability of getting 17 or more positive values,
+given that $p=0.6179$:
+
+\Rindex{pbinom()}%
+<<pbinom2>>=
+1 - pbinom(16, size=25, prob=0.6179)
+@
+The power is modest at best.
+
+\section{T-test}
+
+We next calculate the power of the test based on normal theory.  To keep the comparison
+fair, we will set our $\alpha$ level equal to 0.05388.
+
+<<tidy=FALSE>>=
+alpha <- 1-pbinom(16, size=25, prob=0.5); alpha
+@
+
+First we find the rejection region.  
+<<tidy=FALSE>>=
+n <- 25; sigma <- 1 # given
+stderr <- sigma/sqrt(n)
+zstar <- qnorm(1-alpha, mean=0, sd=1)
+zstar
+crit <- zstar*stderr
+crit
+@
+
+
+\noindent
+Therefore, we reject for observed means greater than \Sexpr{round(crit,3)}.  
+
+To calculate the power of this one-sided test we find the probability
+under the alternative hypothesis 
+to the right of this cutoff.
+
+<<>>=
+power <- 1 - pnorm(crit, mean=0.3, sd=stderr)
+power
+@
+
+The power of the test based on normal theory is \Sexpr{round(power,3)}.
+To provide a check (or for future calculations of this sort) we can use the 
+\function{power.t.test()} function.
+<<>>=
+power.t.test(n=25, delta=.3, sd=1, sig.level=alpha, alternative="one.sided",
+type="one.sample")$power
+@
+
+This analytic (formula-based approach) yields a similar estimate to the value that we calculated directly.  
+
+Overall, we see that the t-test has higher power than the sign test, if the underlying
+data are truly normal.  \TeachingTip{It's useful to have students calculate power empirically, 
+to demonstrate the power of simulations.}
+\begin{problem}
+\label{prob:power1}%
+Find the power of a two-sided two-sample t-test where both distributions 
+are approximately normally distributed with the same standard deviation, but the group differ by 50\% of the standard deviation.  Assume that there are 
+\Sexpr{n}
+observations per group and an alpha level of \Sexpr{alpha}.
+\end{problem}
+\begin{solution}
+<<setup1,echo=FALSE>>=
+n <- 100
+alpha <- 0.01
+@
+<<power>>=
+n
+alpha
+power.t.test(n=n, delta=.5, sd=1, sig.level=alpha)
+@
+\end{solution}
+\begin{problem}
+Find the sample size needed to have 90\% power for a two group t-test
+where the true 
+difference between means is 25\% of the standard deviation in the groups
+(with $\alpha=0.05$).
+\end{problem}
+\begin{solution}
+<<power2>>=
+power.t.test(delta=.25, sd=1, sig.level=alpha, power=0.90)
+@
+\end{solution}
+

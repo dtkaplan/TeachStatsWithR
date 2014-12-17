@@ -1,0 +1,130 @@
+\section{Numerical summaries}
+
+\myindex{categorical variables}
+\myindex{contingency tables}
+\myindex{tables}
+
+\DiggingDeeper{The \emph{Start Teaching with R} companion book introduces the formula notation used throughout this book. See also \emph{Start Teaching with R} for the connections to statistical modeling.}
+
+The \function{tally()} function can be used to calculate
+counts, percentages and proportions for a categorical variable.
+
+\Rindex{tally()}%
+\Rindex{margins option}%
+<<homeless-table>>=
+tally( ~ homeless, data=HELPrct)      
+tally( ~ homeless, margins=TRUE, data=HELPrct)      
+tally( ~ homeless, format="percent", data=HELPrct)      
+tally( ~ homeless, format="proportion", data=HELPrct)  
+@
+
+\section{The binomial test}
+
+\myindex{binomial test}%
+\Rindex{binom.test()}%
+An exact confidence interval for a proportion (as well as a test of the null 
+hypothesis that the population proportion is equal to a particular value [by default 0.5]) can be calculated
+using the \function{binom.test()} function.
+The standard \function{binom.test()} requires us to tabulate.
+<<>>=
+binom.test(209, 209 + 244)
+@
+The \pkg{mosaic} package provides a formula interface that avoids the need to pre-tally
+the data.
+<<binomtest>>=
+result <- binom.test( ~ (homeless=="homeless"), HELPrct)
+result
+@
+
+As is generally the case with commands of this sort, 
+there are a number of useful quantities available from 
+the object returned by the function.  
+<<>>=
+names(result)
+@
+These can be extracted using the {\tt \$} operator or an extractor function.
+For example, the user can extract the confidence interval or p-value.
+\Rindex{confint()}%
+\Rindex{pval()}%
+\Rindex{print()}%
+<<binomtest2>>=
+result$statistic
+confint(result)
+pval(result)
+@
+\DiggingDeeper{Most of the objects in \R\ have a \function{print()}
+method.  So when we get \code{result}, what we are seeing displayed in the console is
+\code{print(result)}.  There may be a good deal of additional information
+lurking inside the object itself.  
+
+In some situations, such as graphics, the object is returned \emph{invisibly}, so nothing prints.  That avoids your having to look at a long printout not intended for human consumption. You can still assign the returned object to a variable and process it later, even if nothing shows up on the screen.  This is sometimes helpful for \pkg{lattice} graphics functions.}%
+
+
+\section{The proportion test}
+
+A similar interval and test can be calculated using the function \function{prop.test()}.
+\Rindex{prop.test()}%
+\Rindex{correct option}%
+Here is a count of the number of people at each of the two levels of \variable{homeless}
+
+<<tidy=FALSE>>=
+tally( ~ homeless, data=HELPrct)
+@
+
+The \function{prop.test} function will carry out the calculations of the proportion test and report the result.
+
+\hfill\newpage
+
+<<tidy=FALSE>>=
+prop.test( ~ (homeless=="homeless"), correct=FALSE, data=HELPrct)
+@
+In this statement, prop.test is examing the \variable{homeless} variable in the same way that \function{tally} would. \Pointer{We write \code{homeless=="homeless"} to define unambiguously which proportion we are considering. We could also have written \code{homeless=="housed"}. }
+\function{prop.test} can also work directly with numerical counts, the way \function{binom.test()} does.
+\InstructorNote{\function{prop.test()} calculates a Chi-squared statistic.
+Most introductory texts use a $z$-statistic.  They are mathematically equivalent in terms of inferential statements, but you may need to address the discrepancy with your students.}%
+<<>>=
+prop.test(209, 209 + 244, correct=FALSE)
+@
+
+\section{Goodness of fit tests}
+
+A variety of goodness of fit tests can be calculated against a reference  distribution.  For the HELP data, we could test the null hypothesis that there is an equal proportion of subjects in each substance abuse group back in the original populations.
+
+
+<<gofmore,tidy=FALSE>>=
+tally( ~ substance, format="percent", data=HELPrct)
+observed <- tally( ~ substance, data=HELPrct)
+observed
+@
+
+\Caution[-1cm]{In addition to the \option{format} option, there is an option \options{margins} that sets whether to include marginal totals in the table. The default in \function{tally} is \option{margins=FALSE}. Try it out!}
+\Rindex{chisq.test()}%
+<<tidy=FALSE>>=
+p <- c(1/3, 1/3, 1/3)   # equivalent to rep(1/3, 3)
+chisq.test(observed, p=p)
+total <- sum(observed); total
+expected <- total*p; expected
+@
+
+We can also calculate the $\chi^2$ statistic manually, as a function of observed and expected values.
+
+\TeachingTip[-1cm]{We don't have students do  much if any manual calculations in our courses.}%
+\Rindex{sum()}%
+\Rindex{pchisq()}%
+<<gof2,tidy=FALSE>>=
+chisq <- sum((observed - expected)^2/(expected)); chisq
+1 - pchisq(chisq, df=2)
+@
+\TeachingTip[-2cm]{The \function{pchisq} function calculates the probability that a $\chi^2$ random variable with \function{df} degrees is freedom is less than or equal to a given value.  Here we calculate the complement to find the area to the right of the observed Chi-square statistic.}%
+
+Alternatively, the \pkg{mosaic} package provides a version of \function{chisq.test()} with more verbose output.
+<<>>=
+xchisq.test(observed, p=p)
+@
+\FoodForThought[-1.5cm]{\code{x} in \function{xchisq.test} stands for eXtra.}
+
+\TeachingTip{Objects in the workspace are listed in the {\sc Environment} tab in \RStudio.  If you want to clean up that listing, remove objects that are no longer needed with \function{rm}.}
+<<>>=
+# clean up variables no longer needed
+rm(observed, p, total, chisq)  
+@

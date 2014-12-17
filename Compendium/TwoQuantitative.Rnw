@@ -1,0 +1,212 @@
+
+\section{Scatterplots}
+\myindex{scatterplots}%
+\myindex{lowess}%
+\myindex{smoothers}%
+\myindex{linearity}%
+
+We always encourage students to start any analysis by graphing their data.  
+Here we augment a scatterplot
+of the CESD (a measure of depressive symptoms, higher scores indicate more symptoms) and the MCS (mental component score from the SF-36, where higher scores indicate better functioning) for female subjects
+with a lowess (locally weighted scatterplot smoother) line, using a circle
+as the plotting character and slightly thicker line.
+
+\InstructorNote{The lowess line can help to assess linearity of a relationship. This is added by specifying both points (using `p') and a lowess smoother.}
+\Rindex{xyplot()}%
+\Rindex{pch option}%
+\Rindex{cex option}%
+\Rindex{lwd option}%
+\Rindex{type option}%
+\begin{center}
+<<HELPrct-xyplot,fig.height=3,tidy=FALSE>>=
+females <- filter(HELPrct, female==1)
+xyplot(cesd ~ mcs, type=c("p","smooth"), pch=1, cex=0.6,
+  lwd=3, data=females)
+@
+\end{center}
+\DiggingDeeper{The \emph{Start Modeling with R} companion book will be helpful if you are unfamiliar with the
+modeling language.  The \emph{Start Teaching with R} also provides useful guidance in getting started.}
+
+It's straightforward to plot something besides a character in a scatterplot.  
+In this example, the \dataframe{USArrests} can be used to plot the association
+between murder and assault rates, with the state name displayed.  This
+requires a panel function to be written.
+\Rindex{function()}%
+\Rindex{panel.labels()}%
+\Rindex{panel.text()}%
+\Rindex{rownames()}%
+<<tidy=FALSE>>=
+panel.labels <- function(x, y, labels='x',...) { 
+  panel.text(x, y, labels, cex=0.4, ...)
+}
+xyplot(Murder ~ Assault, panel=panel.labels, 
+  labels=rownames(USArrests), data=USArrests)
+@
+
+
+
+\section{Correlation}
+
+<<echo=FALSE>>=
+#detach(package:MASS)   # where did MASS come from?  (histogram in mosaic XX)
+@
+
+
+Correlations can be calculated for a pair of variables, or for a matrix of variables.
+\myindex{correlation}%
+\Rindex{cor()}%
+<<>>=
+cor(cesd, mcs, data=females)
+smallHELP = select(females, cesd, mcs, pcs)
+cor(smallHELP)
+@
+\myindex{Pearson correlation}%
+\myindex{Spearman correlation}%
+
+By default, Pearson correlations are provided. Other variants (e.g., Spearman) can be specified using the
+\option{method} option.
+<<>>=
+cor(cesd, mcs, method="spearman", data=females)
+@
+
+\section{Pairs plots}
+\myindex{pairs plot}%
+\myindex{scatterplot matrix}%
+
+A pairs plot (scatterplot matrix) can be calculated for each pair of a set of variables.
+\TeachingTip{The \pkg{GGally} package has support for more elaborate pairs plots.}
+\Rindex{splom()}%
+<<fig.height=3>>=
+splom(smallHELP)
+@
+
+\section{Simple linear regression}
+
+\InstructorNote{We tend to introduce linear regression
+early in our courses, as a purely descriptive technique.}
+\myindex{linear regression}%
+\myindex{regression}%
+
+Linear regression models are described in detail in \emph{Start Modeling with R}.
+These use the same formula interface introduced previously for numerical and graphical
+summaries
+to specify the outcome 
+and predictors.  Here we consider fitting the model \model{\variable{cesd}}{\variable{mcs}}.
+
+
+\Rindex{lm()}%
+\Rindex{coef()}%
+<<>>=
+cesdmodel <- lm(cesd ~ mcs, data=females)
+coef(cesdmodel)
+@
+\InstructorNote{It's important to pick good names for modeling
+objects.  Here the output of \function{lm} is saved as \code{cesdmodel},
+which denotes that it is a regression model of depressive symptom
+scores.}
+
+To simplify the output, we turn off the option to display significance stars.
+\myindex{significance stars}%
+\Rindex{summary()}%
+\Rindex{confint()}%
+\Rindex{rsquared()}%
+\Rindex{coef()}%
+<<>>=
+options(show.signif.stars=FALSE)
+coef(cesdmodel)
+summary(cesdmodel)
+coef(summary(cesdmodel))
+confint(cesdmodel)
+rsquared(cesdmodel)
+@
+
+
+\Rindex{class()}%
+<<lmclass>>=
+class(cesdmodel)
+@
+The return value from \function{lm()} is a linear model object.
+A number of functions can operate on these objects, as
+seen previously with \function{coef()}.  
+The function \function{residuals()} returns a
+vector of the residuals.
+\Rindex{residuals()}%
+\FoodForThought{The function \function{residuals()} can be abbreviated 
+\function{resid()}.  Another useful function is \function{fitted()}, which 
+returns a vector of predicted values.}
+
+
+\Rindex{density option}%
+\begin{center}
+<<lmhist>>=
+histogram(~ residuals(cesdmodel), density=TRUE)
+@
+\end{center}
+\Rindex{qqmath()}%
+\begin{center}
+<<HELPrct-resid-qq>>=
+qqmath(~ resid(cesdmodel))
+@
+\end{center}
+\Rindex{alpha option}%
+\begin{center}
+<<HELPrct-resid-plot>>=
+xyplot(resid(cesdmodel) ~ fitted(cesdmodel), type=c("p", "smooth", "r"), alpha=0.5, cex=0.3, pch=20)
+@
+\end{center}
+
+The \function{mplot()} function can facilitate creating a variety of useful plots, including the same residuals vs. fitted scatterplots, by specifying the \option{which=1} option.
+\Rindex{mplot()}%
+\Rindex{which option}%
+<<results='hide'>>=
+mplot(cesdmodel, which=1)
+@
+
+It can also generate a 
+normal quantile-quantile plot (\option{which=2}),
+<<results='hide'>>=
+mplot(cesdmodel, which=2)
+@
+
+\myindex{scale versus location}%
+scale vs.\,location,
+<<results='hide'>>=
+mplot(cesdmodel, which=3)
+@
+
+\myindex{Cook's distance}%
+Cook's distance by observation number,
+<<results='hide'>>=
+mplot(cesdmodel, which=4)
+@
+
+\myindex{leverage}%
+residuals vs.\,leverage, and
+<<results='hide'>>=
+mplot(cesdmodel, which=5)
+@
+
+Cook's distance vs. leverage.
+<<results='hide'>>=
+mplot(cesdmodel, which=6)
+@
+
+\myindex{prediction bands}%
+\Rindex{panel.lmbands()}%
+\Rindex{band.lwd option}%
+Prediction bands can be added to a plot using the \function{panel.lmbands()} function.
+\begin{center}
+<<>>=
+xyplot(cesd ~ mcs, panel=panel.lmbands, cex=0.2, band.lwd=2, data=HELPrct)
+@
+\end{center}
+
+\begin{problem}
+Using the \dataframe{HELPrct} dataset, fit a simple linear regression model 
+predicting the number of drinks per day as a function of the mental
+component score.  
+This model can be specified using the formula:
+\model{\variable{i1}}{\variable{mcs}}.  
+Assess the distribution of the residuals for this model.
+\end{problem}
+
