@@ -1,0 +1,26 @@
+---
+title: "Homework #3"
+author: "Abby Seedief"
+date: "January 7, 2015"
+output: pdf_document
+---
+
+```{r include=FALSE}
+require(mosaic)
+require(mosaicData)
+```
+
+## Problem 1
+
+Build a model of wage as a function of sex, 
+adjusting for relevant covariates.
+```{r}
+lm(wage ~ sex + exper, data=CPS85)
+```
+
+## Problem 2
+
+Show whether the covariate is related to sex.
+```{r}
+bwplot(exper ~ sex, data=CPS85)
+```

@@ -1,0 +1,158 @@
+\documentclass{article}
+\usepackage[total={3in, 8in}]{geometry}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{bold-extra}
+\pagestyle{empty}
+\def\tilde{\texttt{\~}}
+\newcommand{\Wspace}{{\tiny\color{white}.}\hfill}
+\newcommand{\NewSection}[1]{{\noindent\color{blue}\bfseries\scshape#1}}
+
+<<include=FALSE>>=
+require(mosaic)
+require(mosaicData)
+require(knitr)
+opts_chunk$set( out.width="1in", echo=FALSE,
+                comment="| ",fig.show='hold',
+                warning=FALSE,message=FALSE,
+                out.height="2cm")
+thickSettings <- list(box.umbrella=list(lwd=6),
+                      box.rectangle=list(lwd=6),
+                      xlab=list(cex=2), ylab=list(cex=2), 
+                      main=list(cex=2), cex=2, pch=19)
+trellis.par.set(theme.mosaic())
+@
+
+%\AtBeginDocument{\raggedright}
+
+\begin{document}
+\NewSection{Load Packages}\hfill\verb+require(mosaic)+\\ 
+\hspace*{1cm}\hfill\verb+require(mosaicData)+\\
+\\
+\NewSection{Essential R Syntax}\\
+Function \& arguments:\hfill \verb+rflip(10)+\\
+Optional arguments:\hfill \verb+rflip(10, prob=0.3)+\\
+Assignment:\hfill \verb+x <- rflip(10, prob=0.3)+\\
+\\
+\NewSection{Formula Interface}\\
+Used for graphics, statistics, inference, and modeling operations.\\
+\def\phbox#1{\fbox{\phantom{g#1l}}} %
+\def\ffbox#1{\fbox{\phantom{g}#1\phantom{b}}} %
+\vspace*{-.5cm}\begin{center}
+	\sf
+	\ffbox{goal} $\Big($ 
+	\ffbox{y} $\sim$  \ffbox{x} {\LARGE,} data = \ffbox{mydata} $\Big)$
+\end{center}
+\noindent {\small Read as:} {Calculate {\sf goal} using {\sf mydata} for {\sf y} ``broken down" by {\sf x}, or ``modeled by" {\sf x}.} Examples:\\
+\Wspace\verb+favstats(age~homeless, data=HELPrct)+%
+\vspace*{-2mm}
+<<echo=FALSE>>=
+mean(age~homeless,data=HELPrct)
+@
+\Wspace\verb+quantile(age~sex,data=HELPrct,p=c(.2,.8))+%
+\vspace*{-6mm}
+<<echo=FALSE>>=
+quantile(age~sex, p=c(.2,.8), data=HELPrct)
+@
+\Wspace\verb+tally(homeless~sex, data=HELPrct)+%
+\vspace*{-2mm}
+<<echo=FALSE>>=
+tally(homeless~sex, data=HELPrct)
+@
+\NewSection{RMarkdown documents}\\
+\\
+\hbox{\fbox{\includegraphics[width=1.6in]{RMarkdown-example-source.pdf}} \hfill \fbox{\includegraphics[width=1.2in]{RMarkdown-example.pdf}}}\\
+\begin{small}%
+\noindent Compile to any of HTML, PDF, or Word.\\
+See \texttt{mosaic plain} template through RStudio menu:\\ 
+{\sc File/New File/RMarkdown/From Template}
+\end{small}%
+
+\newpage
+\hrule\vspace*{1mm}%
+\NewSection{Graphics Formula Syntax}\\
+\noindent{\sf
+	\ffbox{goal} $\Big($ 
+	\ffbox{y} $\sim$  \ffbox{x} {$\ \Big\boldmath|\ $} \ffbox{z} {\LARGE,}}\\\Wspace 
+  {\sf groups=\ffbox{w} , data = \ffbox{mydata} $\Big)$}
+
+
+\noindent$\bullet$ {\sf y} --- y-axis variable ({\sc optional})\\
+$\bullet$ {\sf x} --- x-axis variable ({\sc\color{blue}Required})\\
+$\bullet$ {\sf z} --- facet-by variable ({\sc optional})\\
+$\bullet$ {\sf w} --- color-by variable ({\sc optional})\\
+\vspace*{-2mm}
+\hrule
+\noindent%
+\hspace*{-2mm}%
+<<>>=
+bwplot( wage ~ sex, data=CPS85, 
+        par.settings = thickSettings,
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        lwd=3, cex=3, fill="grey")
+xyplot( wage ~ educ | sex, data=CPS85,
+        scales=list(cex=2),
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        cex=2, pch=19, alpha=0.4)
+xyplot( wage ~ educ, groups=sex, data=CPS85,
+        scales=list(cex=2),
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        cex=2, pch=19, alpha=0.4)
+@
+\begin{small}
+\noindent {\tiny \sc Left:}\hfill\verb+bwplot(wage~sex, data= CPS85)+\\
+{\tiny \sc Middle:}\hfill\verb+xyplot(wage~educ | sex, data= CPS85)+\\
+{\tiny \sc Right:}\hfill\verb+xyplot(wage~educ, groups=sex, data=CPS85)+\\
+\end{small}
+\hrule%
+\noindent\hspace*{-2mm}%
+<<>>=
+densityplot( ~ wage, data=CPS85, 
+        par.settings = thickSettings,
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        lwd=3, cex=3, fill="grey")
+densityplot( ~ wage | sex, data=CPS85,
+        scales=list(cex=2),
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        cex=2, pch=19, alpha=0.4)
+densityplot( ~ wage, groups=sex, data=CPS85,
+        scales=list(cex=2),
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        cex=2, pch=19, alpha=0.4)
+@
+\begin{small}
+\noindent {\tiny \sc Left:}\hfill\verb+densityplot(~wage, data= CPS85)+\\
+{\tiny \sc Middle:}\hfill\verb+densityplot(~wage | sex, data= CPS85)+\\
+{\tiny \sc Right:}\hfill\verb+densityplot(~wage,groups=sex, data=CPS85)+\\
+\end{small}
+\hrule
+\hrule
+\vspace*{2mm}
+\NewSection{Randomization and Iteration}\\
+\begin{small}
+\noindent{\sc Resample/Bootstrap:}\\
+\verb+do(100)*mean(wage ~ sex, data=resample(CPS85))+\\
+{\sc Random Permutations:}\\
+\verb+do(100)*mean(wage ~ shuffle(sex), data=CPS85)+\\
+\end{small}
+\hrule
+\hrule
+\vspace*{2mm}
+\NewSection{Confidence Intervals \& Statistical Tests}\\
+\begin{small}\Wspace\verb+t.test(wage ~ sex, data=CPS85)+\\
+\Wspace\verb+prop.test(43, 100)+\\
+\Wspace\verb#crosstab <- tally(~union+sex, data=CPS85)#\\
+\Wspace\verb#chisq.test( crosstab )  fisher.test(crosstab)#\\
+\Wspace\verb+mod <- lm(wage ~ sector, data=CPS85)+\\
+\Wspace{Then ... \verb+anova(mod)    TukeyHSD(mod)+   etc.}\\
+\noindent{\bf\sc\small Modeling \& Covariates}\\
+\Wspace\verb#mod <- lm(wage ~ sex + educ, data=CPS85)#\\
+\Wspace\verb#summary(mod)# or \verb#anova(mod)# or \verb#confint(mod)#\\
+\noindent {\sc\small Extract model function:}\\
+\Wspace\verb+fun <- makeFun(mod)+\\
+\Wspace \verb+fun(sex="F",educ=10)+}\\
+\Wspace{\footnotesize{\small\verb+plotFun(+}\verb+fun(sex="F",educ=x)} ~ x,x.lim=range(0,8))+}\\\hrule
+\end{small}
+\vfill
+
+\end{document}
