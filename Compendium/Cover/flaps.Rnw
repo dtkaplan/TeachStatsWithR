@@ -12,10 +12,12 @@
 require(mosaic)
 require(mosaicData)
 require(knitr)
+options(digits=3)
 opts_chunk$set( out.width="1in", echo=FALSE,
                 comment="| ",fig.show='hold',
                 warning=FALSE,message=FALSE,
-                out.height="2cm")
+                out.height="2cm",
+                background='#D0D0F0')
 thickSettings <- list(box.umbrella=list(lwd=6),
                       box.rectangle=list(lwd=6),
                       xlab=list(cex=2), ylab=list(cex=2), 
@@ -44,12 +46,12 @@ Used for graphics, statistics, inference, and modeling operations.\\
 	\ffbox{y} $\sim$  \ffbox{x} {\LARGE,} data = \ffbox{mydata} $\Big)$
 \end{center}
 \noindent {\small Read as:} {Calculate {\sf goal} using {\sf mydata} for {\sf y} ``broken down" by {\sf x}, or ``modeled by" {\sf x}.} Examples:\\
-\Wspace\verb+favstats(age~homeless, data=HELPrct)+%
+\Wspace\verb+mean(age~homeless, data=HELPrct)+%
 \vspace*{-2mm}
 <<echo=FALSE>>=
 mean(age~homeless,data=HELPrct)
 @
-\Wspace\verb+quantile(age~sex,data=HELPrct,p=c(.2,.8))+%
+\noindent\Wspace\verb+quantile(age~sex,data=HELPrct,p=c(.2,.8))+%
 \vspace*{-6mm}
 <<echo=FALSE>>=
 quantile(age~sex, p=c(.2,.8), data=HELPrct)
