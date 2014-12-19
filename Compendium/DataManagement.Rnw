@@ -113,7 +113,7 @@ names(faithful)
 The measurements are the duration of an euption and the time until the subsequent eruption,
 so let's give it some better names.
 <<tidy=FALSE>>=
-faithful = rename(faithful, 
+faithful <- rename(faithful, 
   duration = eruptions, 
   time.til.next=waiting)
 names(faithful)
@@ -162,7 +162,7 @@ xyplot( time.til.next ~ duration, data=faithfulLong )
 Data frames can be sorted using the \function{arrange()} function.
 <<>>=
 head(faithful, 3)
-sorted = arrange(faithful, duration)
+sorted <- arrange(faithful, duration)
 head(sorted, 3)
 @
 \Caution{It is usually better to make new datasets rather than modifying the original.}
@@ -183,7 +183,7 @@ genotype information for a SNP (single nucleotide polymorphism) in the gene \emp
 <<warning=FALSE,message=FALSE>>=
 require(fastR)
 require(dplyr)
-fusion1 = arrange(fusion1, id)
+fusion1 <- arrange(fusion1, id)
 head(fusion1, 3)
 head(pheno, 3)
 @
@@ -280,7 +280,7 @@ with cuts at 20 and 40 for the CESD scale (which ranges from 0 to 60 points).
 \Rindex{breaks option}%
 <<tidy=FALSE>>=
 favstats(~ cesd, data=HELPrct)
-HELPrct = mutate(HELPrct, cesdcut = cut(cesd, 
+HELPrct <- mutate(HELPrct, cesdcut = cut(cesd, 
   breaks=c(0, 20, 40, 60), include.lowest=TRUE))
 bwplot(cesd ~ cesdcut, data=HELPrct)
 @
@@ -289,7 +289,7 @@ bwplot(cesd ~ cesdcut, data=HELPrct)
 
 It might be preferable to give better labels.
 <<tidy=FALSE>>=
-HELPrct = mutate(HELPrct, cesdcut = cut(cesd, 
+HELPrct <- mutate(HELPrct, cesdcut = cut(cesd, 
   labels=c("low", "medium", "high"),
   breaks=c(0, 20, 40, 60), include.lowest=TRUE))
 bwplot(cesd ~ cesdcut, data=HELPrct)
@@ -308,7 +308,7 @@ can be overriden using the \function{relevel()} function (see also \function{reo
 <<tidy=FALSE>>=
 tally(~ substance, data=HELPrct)
 coef(lm(cesd ~ substance, data=HELPrct))
-HELPrct = mutate(HELPrct, subnew = relevel(substance, 
+HELPrct <- mutate(HELPrct, subnew = relevel(substance, 
   ref="heroin"))
 coef(lm(cesd ~ subnew, data=HELPrct))
 @
@@ -353,7 +353,7 @@ $n=470$ subjects enrolled at baseline (including the $n=17$ subjects with some m
 were not included in \dataframe{HELPrct}).  
 \myindex{HELPmiss dataset}%
 <<tidy=FALSE>>=
-smaller = select(HELPmiss, cesd, drugrisk, indtot, mcs, pcs, 
+smaller <- select(HELPmiss, cesd, drugrisk, indtot, mcs, pcs, 
   substance)
 dim(smaller)
 summary(smaller)
@@ -368,14 +368,14 @@ Of the 470 subjects in the 6 variable dataframe, only the \code{drugrisk}, \code
 <<tidy=FALSE>>=
 favstats(~ mcs, data=smaller)
 with(smaller, sum(is.na(mcs)))
-nomiss = na.omit(smaller)
+nomiss <- na.omit(smaller)
 dim(nomiss)
 favstats(~ mcs, data=nomiss)
 @
 
 Alternatively, we could generate the same dataset using logical conditions.
 <<tidy=FALSE>>=
-nomiss = filter(smaller, 
+nomiss <- filter(smaller, 
   (!is.na(mcs) & !is.na(indtot) & !is.na(drugrisk)))
 dim(nomiss)
 @

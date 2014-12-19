@@ -138,7 +138,7 @@ knit_hooks$set(document = function(x) {
 @
 
 %\maketitle
-\includepdf{frontice}
+\includepdf[trim=0 0 3.5cm 0]{Cover/frontice}
 
 \newpage
 \vspace*{2in}
@@ -157,7 +157,7 @@ knit_hooks$set(document = function(x) {
 
 \vspace*{2.in}
 
-\parbox{4in}{\noindent {\bf Cover Photo}: . [Photo credit: Maya Hanna.]}
+\parbox{4in}{\noindent {\bf Cover Photo}: Maya Hanna.}
 
 
 \hspace*{1.3cm}\tableofcontents

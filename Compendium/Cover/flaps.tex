@@ -80,20 +80,20 @@ Used for graphics, statistics, inference, and modeling operations.\\
 	\ffbox{y} $\sim$  \ffbox{x} {\LARGE,} data = \ffbox{mydata} $\Big)$
 \end{center}
 \noindent {\small Read as:} {Calculate {\sf goal} using {\sf mydata} for {\sf y} ``broken down" by {\sf x}, or ``modeled by" {\sf x}.} Examples:\\
-\Wspace\verb+favstats(age~homeless, data=HELPrct)+%
+\Wspace\verb+mean(age~homeless, data=HELPrct)+%
 \vspace*{-2mm}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.816, 0.816, 0.941}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 |  homeless   housed 
-|  36.36842 35.04098
+|      36.4     35.0
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
-\Wspace\verb+quantile(age~sex,data=HELPrct,p=c(.2,.8))+%
+\noindent\Wspace\verb+quantile(age~sex,data=HELPrct,p=c(.2,.8))+%
 \vspace*{-6mm}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.816, 0.816, 0.941}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 |    .group 20%  80%
 |  1 female  30 42.8
@@ -104,12 +104,12 @@ Used for graphics, statistics, inference, and modeling operations.\\
 \Wspace\verb+tally(homeless~sex, data=HELPrct)+%
 \vspace*{-2mm}
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\definecolor{shadecolor}{rgb}{0.816, 0.816, 0.941}\color{fgcolor}\begin{kframe}
 \begin{verbatim}
 |            sex
-|  homeless      female      male
-|    homeless 0.3738318 0.4884393
-|    housed   0.6261682 0.5115607
+|  homeless   female  male
+|    homeless  0.374 0.488
+|    housed    0.626 0.512
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -140,7 +140,7 @@ $\bullet$ {\sf w} --- color-by variable ({\sc optional})\\
 \noindent%
 \hspace*{-2mm}%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\definecolor{shadecolor}{rgb}{0.816, 0.816, 0.941}\color{fgcolor}
 \includegraphics[width=1in,height=2cm]{figure/unnamed-chunk-5-1} 
 \includegraphics[width=1in,height=2cm]{figure/unnamed-chunk-5-2} 
 \includegraphics[width=1in,height=2cm]{figure/unnamed-chunk-5-3} 
@@ -154,7 +154,7 @@ $\bullet$ {\sf w} --- color-by variable ({\sc optional})\\
 \hrule%
 \noindent\hspace*{-2mm}%
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}
+\definecolor{shadecolor}{rgb}{0.816, 0.816, 0.941}\color{fgcolor}
 \includegraphics[width=1in,height=2cm]{figure/unnamed-chunk-6-1} 
 \includegraphics[width=1in,height=2cm]{figure/unnamed-chunk-6-2} 
 \includegraphics[width=1in,height=2cm]{figure/unnamed-chunk-6-3} 

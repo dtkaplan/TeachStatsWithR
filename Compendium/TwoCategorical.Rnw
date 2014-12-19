@@ -24,7 +24,7 @@ tally(~ sex | homeless, margins=TRUE, format="percent",
 
 We can calculate the odds ratio directly from the table:
 <<tidy=FALSE>>=
-OR = (40/169)/(67/177); OR
+OR <- (40/169)/(67/177); OR
 @
 
 The

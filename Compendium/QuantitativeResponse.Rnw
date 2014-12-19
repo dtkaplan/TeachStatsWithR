@@ -98,7 +98,7 @@ do(3) * diffmean(age ~ shuffle(sex), data=HELPrct)
 \Rindex{xlim option}%
 \Rindex{groups option}%
 <<permute-HELPrct,fig.keep='last', tidy=FALSE>>=
-rtest.stats = do(500) * diffmean(age ~ shuffle(sex), 
+rtest.stats <- do(500) * diffmean(age ~ shuffle(sex), 
   data=HELPrct)
 favstats(~ diffmean, data=rtest.stats)
 histogram(~ diffmean, n=40, xlim=c(-6, 6),

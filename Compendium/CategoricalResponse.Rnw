@@ -25,9 +25,9 @@ might be interested in the association of homeless status and age for each of th
 \Rindex{anova()}%
 \Rindex{test option}%
 <<tidy=FALSE>>=
-mymodsubage = glm((homeless=="homeless") ~ age + substance, 
+mymodsubage <- glm((homeless=="homeless") ~ age + substance, 
   family=binomial, data=HELPrct)
-mymodage = glm((homeless=="homeless") ~ age, family=binomial, 
+mymodage <- glm((homeless=="homeless") ~ age, family=binomial, 
   data=HELPrct)
 summary(mymodsubage)
 exp(coef(mymodsubage))

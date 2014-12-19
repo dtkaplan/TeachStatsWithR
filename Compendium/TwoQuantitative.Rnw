@@ -58,7 +58,7 @@ Correlations can be calculated for a pair of variables, or for a matrix of varia
 \Rindex{cor()}%
 <<>>=
 cor(cesd, mcs, data=females)
-smallHELP = select(females, cesd, mcs, pcs)
+smallHELP <- select(females, cesd, mcs, pcs)
 cor(smallHELP)
 @
 \myindex{Pearson correlation}%

@@ -259,6 +259,6 @@ called \texttt{trials}:
 \Rindex{do()}%
 \Rindex{qdata()}%
 <<bootint>>=
-trials = do(1000) * mean( ~ cesd, data=resample(female))
+trials <- do(1000) * mean( ~ cesd, data=resample(female))
 qdata(c(.025, .975), ~ result, data=trials)
 @
