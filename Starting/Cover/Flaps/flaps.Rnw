@@ -102,8 +102,8 @@ File reading and writing\\
 \hrule\hrule
 \vspace*{2mm}
 \NewSection{Graphics interactively {\sc (in RStudio)}}\\
-\Wspace\verb+mplot(CPS85, "scatter")+\\
-\Wspace Other types: \verb+"boxplot" "violin"+\\
+\Wspace\verb+mplot(CPS85, format="scatter")+\\
+\Wspace Other formats: \verb+"boxplot" "violin"+\\
 \Wspace\verb+"frequency" "density" "frequency polygon"+\\
 
 \newpage

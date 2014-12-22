@@ -1173,15 +1173,37 @@ package are probably easier for this particular task, but using \pkg{dplyr} is m
 <<echo=FALSE>>=
 OLD <- options(width=110)
 @
-<<>>=
-favstats( age ~ sex + substance, data=HELPrct )
-mean( age ~ sex + substance, data=HELPrct) #, .format="table" )
-sd( age ~ sex + substance, data=HELPrct) #, .format="table" )
+<<results='hide',eval=FALSE>>=
+favstats( age ~ sex + substance, data=HELPrct, .format="table" )
+@
+<<echo=FALSE>>=
+favstats( age ~ sex + substance, data=HELPrct) %>% data.frame
+@
+<<results='hide',eval=FALSE>>=
+mean( age ~ sex + substance, data=HELPrct, .format="table" )
+@
+<<echo=FALSE>>=
+mean( age ~ sex + substance, data=HELPrct) -> foo
+foo <- data.frame( group=names(foo), mean=foo )
+row.names(foo) <- NULL
+foo
+@
+
+<<results='hide',eval=FALSE>>=
+sd( age ~ sex + substance, data=HELPrct, .format="table" )
+@
+<<echo=FALSE>>=
+sd( age ~ sex + substance, data=HELPrct) -> foo
+foo <- data.frame( group=names(foo), sd=foo )
+row.names(foo) <- NULL
+foo
 @
 <<echo=FALSE>>=
 options(OLD)
 @
 \end{widestuff}
+
+\newpage
 
 \subsection{Arranging a data frame}
 

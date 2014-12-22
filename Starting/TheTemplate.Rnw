@@ -664,10 +664,7 @@ xyplot( births ~ date, data=Births78,
 
 \subsection{Themes}
 \Rindex{theme.mosaic()}
-Settings that are used repeatedly can be collected into a theme.  The mosaic 
-package provides such a theme called \function{theme.mosaic()}.  
-The \function{show.settings()} function displays the settings of the 
-currently active theme.
+Settings that are used repeatedly can be collected into a theme.  The mosaic package provides such a theme called \function{theme.mosaic()}. The \function{show.settings()} function displays the settings of the currently active theme.
 
 \newpage
 
@@ -680,6 +677,8 @@ currently active theme.
 trellis.par.set(col.whitebg())
 show.settings()
 @
+
+\Pointer{In the printed version of this book, all three examples appear in black and white and were processed with \verb+theme.mosaic(bw=TRUE)+.  In the online version, the first and third examples appear in color.}
 
 <<out.width=".8\\textwidth", fig.width=10, fig.height=6>>=
 trellis.par.set(theme.mosaic(bw=TRUE))

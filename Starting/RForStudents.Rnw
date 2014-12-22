@@ -524,7 +524,7 @@ easy way to distribute data via the Internet:
 
 \begin{widestuff}
 <<tidy=FALSE>>=
-births <- read.table('http://www.calvin.edu/~rpruim/data/births.txt', header=TRUE)
+births <- read.file('http://www.calvin.edu/~rpruim/data/births.txt', header=TRUE)
 head(births) # live births in the US each day of 1978.
 @
 \end{widestuff}

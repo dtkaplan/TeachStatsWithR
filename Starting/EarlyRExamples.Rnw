@@ -478,12 +478,18 @@ Mites <- data.frame(
    wilt = c(rep("Yes", 28), rep("No", 19))
 )
 @
+
+\newpage
+\vspace*{-10mm}
+
 <<eval=TRUE, message=FALSE, tidy=FALSE>>=
 tally(~ wilt + mites, Mites)
 @
+\vspace*{-5mm}
 
-Students can begin exploring this data by answering the following questions.
+Some questions for students:
 \begin{enumerate}
+\setlength\itemsep{1mm}
   \item Here, what do you think is the explanatory variable?  Response variable? 
   \item What proportion of the plants in the study with mites developed Wilt disease?
   \item What proportion of the plants in the study with no mites developed Wilt disease?
@@ -500,9 +506,8 @@ Students can begin exploring this data by answering the following questions.
 	  \saveenumi
 \end{enumerate}
 
-\hfill\newpage
+Questions 6-7 can be addressed using cards:
 
-Now we can set up a randomization simulation using some cards.
 
 \begin{widestuff}
 \begin{boxedText}
@@ -546,6 +551,7 @@ at the front of the room.
 Then have students process the results by answering the following questions.
 \begin{enumerate}
 		\reuseenumi
+    \setlength\itemsep{2mm}
   \item How many black cards would we expect (on average)?  Why?
   \item What did we observe?
   \item How would we summarize these results?   What is the big idea?
@@ -560,7 +566,7 @@ simulations very quickly.
 \begin{boxedText}
 	\centerline{\textbf{Computational Simulation}}
 
-<<eval=TRUE,tidy=FALSE,out.width="0.75\\textwidth",warning=FALSE,message=FALSE>>=
+<<eval=TRUE,tidy=FALSE,out.width="0.65\\textwidth",warning=FALSE,message=FALSE>>=
 tally(~ wilt + mites, data=Mites)
 X <- tally(~ wilt + mites, data=Mites)["No","No"]; X
 nullDist <- do(1000) * 
@@ -570,3 +576,5 @@ histogram(~ result, data=nullDist, width=1, type="density", fit="normal")
 
 \end{boxedText}
 \end{widestuff}
+
+\hfill\newpage

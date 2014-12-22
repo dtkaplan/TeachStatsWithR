@@ -19,3 +19,4 @@ example-file.pdf
 *.synctex.gz
 ByHand.pdf
 MoreExamples.aux
+.DS_Store
