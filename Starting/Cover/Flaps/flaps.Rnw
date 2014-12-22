@@ -1,0 +1,252 @@
+\documentclass{article}
+\usepackage[paperwidth=3.2in,paperheight=8.25in,total={3in, 8in}]{geometry}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{bold-extra}
+\pagestyle{empty}
+\def\tilde{\texttt{\~}}
+\newcommand{\Wspace}{{\tiny\color{white}.}\hfill}
+\newcommand{\NewSection}[1]{{\noindent\color{blue}\bfseries\scshape#1}}
+
+<<include=FALSE>>=
+require(mosaic)
+require(mosaicData)
+require(knitr)
+options(digits=3)
+opts_chunk$set( out.width="1in", echo=FALSE,
+                comment="| ",fig.show='hold',
+                warning=FALSE,message=FALSE,
+                out.height="2cm",
+                background='#D0D0F0')
+thickSettings <- list(box.umbrella=list(lwd=6),
+                      box.rectangle=list(lwd=6),
+                      xlab=list(cex=2), ylab=list(cex=2), 
+                      main=list(cex=2), cex=2, pch=19)
+trellis.par.set(theme=theme.mosaic())
+@
+
+%\AtBeginDocument{\raggedright}
+
+\begin{document}
+
+Hello
+\newpage
+\NewSection{Load Packages}\hfill\verb+require(mosaic)+\\ 
+\hspace*{1cm}\hfill\verb+require(mosaicData)+\\
+\hrule\hrule
+\vspace*{2mm}
+\NewSection{Essential R Syntax}\\
+Function \& arguments:\hfill \verb+rflip(10)+\\
+Optional arguments:\hfill \verb+rflip(10, prob=0.3)+\\
+Assignment:\hfill \verb+x <- rflip(10, prob=0.3)+\\
+\hrule\hrule
+\vspace*{2mm}
+\NewSection{Formula Interface}\\
+Used for graphics, statistics, inference, and modeling operations.\\
+\def\phbox#1{\fbox{\phantom{g#1l}}} %
+\def\ffbox#1{\fbox{\phantom{g}#1\phantom{b}}} %
+\vspace*{-.5cm}\begin{center}
+	\sf
+	\ffbox{goal} $\Big($ 
+	\ffbox{y} $\sim$  \ffbox{x} {\LARGE,} data = \ffbox{mydata} $\Big)$
+\end{center}
+\noindent {\small Read as:} {Calculate {\sf goal} for how {\sf y} ``depends on" by {\sf x}, or ``is modeled by" {\sf x} using variables in {\sf mydata}} Examples:\\
+% \Wspace\verb+mean(age~homeless, data=HELPrct)+%
+% \vspace*{-2mm}
+% <<echo=FALSE>>=
+% mean(age~homeless,data=HELPrct)
+% @
+\Wspace\verb+favstats(homeless~sex, data=HELPrct)+%\\
+\vspace*{-2mm}
+\begin{small}
+\begin{verbatim}
+|   .group min Q1 median   Q3 max     mean ...
+| 1 female  21 31     35 40.5  58 36.25234 ...
+| 2   male  19 30     35 40.0  60 35.46821 ...
+\end{verbatim}
+\end{small}
+\noindent\Wspace\verb+quantile(age~sex,data=HELPrct,p=c(.2,.8))+%\\
+\vspace*{-2mm}
+\begin{small}
+\begin{verbatim}
+|    .group 20%  80%
+|  1 female  30 42.8
+|  2   male  29 41.0
+\end{verbatim}
+\end{small}
+Only one variable? It goes to right of \verb+~+\\
+\Wspace\verb+mean( ~ age, data=HELPrct)+\\
+\vspace*{-3mm}
+\begin{small}
+\begin{verbatim}
+|  [1] 35.65342
+\end{verbatim}
+\end{small}
+
+\hrule\hrule
+\vspace*{2mm}
+\NewSection{Data Frames}\\
+Number of rows: \hfill\verb+nrow(CPS85)+ \\
+Names of variables.\hfill\verb+names(CPS85)+\\
+Add a new variable to a data frame\\
+\Wspace\verb+res <- mutate(CPS85, yearly=wage*2000)+\\
+Drop a variable from a data frame\\
+\Wspace\verb+res <- select(CPS85, -married)+\\
+Extract cases meeting a criterion\\
+\Wspace\verb+res <- filter(CPS85, sector=="manag")+\\
+Random sample of 50 cases\\
+\Wspace\verb+mysamp <- sample(CPS85, size=50)+\\
+File reading and writing\\
+\Wspace\verb+myData <- read.file( "+URL or filename\verb+" )+\\
+\Wspace\verb+write.csv(myData, "+filename\verb+.csv" )+\\
+\hrule\hrule
+\vspace*{2mm}
+\NewSection{Graphics interactively {\sc (in RStudio)}}\\
+\Wspace\verb+mplot(CPS85, "scatter")+\\
+\Wspace Other types: \verb+"boxplot" "violin"+\\
+\Wspace\verb+"frequency" "density" "frequency polygon"+\\
+
+\newpage
+
+\vspace*{-4mm}
+\hrule
+\vspace*{1mm}
+\NewSection{Statistical Graphics}\\
+{Distribution of 1 Variable:}\\
+\Wspace\verb+histogram( ~ wage, data=CPS85)+\\
+\Wspace\verb+densityplot( ~ wage, data=CPS85)+\\
+\Wspace\verb+freqpolygon( ~ wage, data=CPS85)+\\
+{Scatter plot:\hfill\verb+xyplot(wage ~ educ, data=CPS85)+\\
+{Compare distribution by group:}\\
+\Wspace\verb+bwplot(wage ~ sex, data=CPS85)+\\
+Can use \verb+groups=sex+ as an argument to \verb+xyplot()+\\
+\Wspace\verb+densityplot()+, or  \verb+freqpolygon()+\\
+\vspace*{-1mm}
+\hrule\hrule
+\vspace*{1mm}
+
+\NewSection{RMarkdown documents}\\
+\vspace*{1mm}%
+\hbox{\fbox{\includegraphics[width=1.6in]{RMarkdown-example-source.pdf}} \hfill \fbox{\includegraphics[width=1.2in]{RMarkdown-example.pdf}}}\\
+\begin{small}%
+\noindent Compile to any of HTML, PDF, or Word.\\
+See \texttt{mosaic plain} template through RStudio menu:\\ 
+{\sc File/New File/RMarkdown/From Template}
+\vspace*{1mm}
+\end{small}%
+
+
+
+\hrule\hrule
+\vspace*{2mm}
+\NewSection{Basic Statistical Tests}\\
+\vspace*{2mm}%
+\noindent Difference between two means\\
+$\ $\vspace*{-7mm} \\% trick latex to moving the verbatim up
+\Wspace{\small\verb+res <- t.test(wage ~ sex, data=CPS85, mu=1.50)+}\\
+\noindent{Difference between two proportions}\\
+\Wspace{\small\verb+res <- prop.test(sex ~ union, data=CPS85)+}\\
+{\small For terse output use \verb+pval(res)+ or \verb+confint(res)+.}\\\vspace*{1mm}%
+\noindent{\sc Linear models}\\
+\Wspace{\small\verb$res <- lm(wage ~ sex + educ, data=CPS85)$}
+{\small For \verb+lm( )+ use \verb+summary(res)+, \verb+anova(res)+, \verb+pval(res)+ or \verb+confint(res)+.}\\
+\vspace*{-2mm}\hrule\hrule\vspace*{1mm}
+
+\NewSection{Randomization and Iteration}\\
+\begin{small}%
+\noindent{\sc Resample/Bootstrap:}\\
+\verb+do(100)*mean(wage ~ sex, data=resample(CPS85))+\\
+{\sc Random Permutations:}\\
+\verb+do(100)*mean(wage ~ shuffle(sex), data=CPS85)+\\
+\end{small}
+\noindent{1000 trials of flipping 6 coins, count heads}\\
+\Wspace{\small\verb+flips <- do(1000) * rflip(6)+}\\
+\Wspace{\small\verb+tally( ~ heads, data=flips)+}\\
+\noindent{10000 trials of adding three dice}\\
+\Wspace{\small\verb+scores <- do(10000)*sum(resample(1:6,size=3))+}\\
+\Wspace{\small\verb+freqpolygon(~ result, data=scores)+}\\
+
+\newpage
+
+\hrule\hrule
+\vspace*{2mm}
+\NewSection{Confidence Intervals \& Statistical Tests}\\
+\begin{small}\Wspace\verb+t.test(wage ~ sex, data=CPS85)+\\
+\Wspace\verb+prop.test(43, 100)+\\
+\Wspace\verb#crosstab <- tally(~union+sex, data=CPS85)#\\
+\Wspace\verb#chisq.test( crosstab )  fisher.test(crosstab)#\\
+\Wspace\verb+mod <- lm(wage ~ sector, data=CPS85)+\\
+\Wspace{Then ... \verb+anova(mod)    TukeyHSD(mod)+   etc.}\\
+\noindent{\bf\sc\small Modeling \& Covariates}\\
+\Wspace\verb#mod <- lm(wage ~ sex + educ, data=CPS85)#\\
+\Wspace\verb#summary(mod)# or \verb#anova(mod)# or \verb#confint(mod)#\\
+\noindent {\sc\small Extract model function:}\\
+\Wspace\verb+fun <- makeFun(mod)+\\
+\Wspace \verb+fun(sex="F",educ=10)+}\\
+\Wspace{\footnotesize{\small\verb+plotFun(+}\verb+fun(sex="F",educ=x)} ~ x,x.lim=range(0,8))+}\\\hrule
+\end{small}
+\vfill
+
+\newpage
+
+\NewSection{Graphics Formula Syntax}\\
+\noindent{\sf
+  \ffbox{goal} $\Big($ 
+	\ffbox{y} $\sim$  \ffbox{x} {$\ \Big\boldmath|\ $} \ffbox{z} {\LARGE,}}\\\Wspace 
+  {\sf groups=\ffbox{w} , data = \ffbox{mydata} $\Big)$}
+
+
+\noindent$\bullet$ {\sf y} --- y-axis variable ({\sc optional})\\
+$\bullet$ {\sf x} --- x-axis variable ({\sc\color{blue}Required})\\
+$\bullet$ {\sf z} --- facet-by variable ({\sc optional})\\
+$\bullet$ {\sf w} --- color-by variable ({\sc optional})\\
+\vspace*{-2mm}
+\hrule
+\noindent%
+\hspace*{-2mm}%
+<<>>=
+bwplot( wage ~ sex, data=CPS85, 
+        par.settings = thickSettings,
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        lwd=3, cex=3, fill="grey")
+xyplot( wage ~ educ | sex, data=CPS85,
+        scales=list(cex=2),
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        cex=2, pch=19, alpha=0.4)
+xyplot( wage ~ educ, groups=sex, data=CPS85,
+        scales=list(cex=2),
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        cex=2, pch=19, alpha=0.4)
+@
+\begin{small}
+\noindent {\tiny \sc Left:}\hfill\verb+bwplot(wage~sex, data= CPS85)+\\
+{\tiny \sc Middle:}\hfill\verb+xyplot(wage~educ | sex, data= CPS85)+\\
+{\tiny \sc Right:}\hfill\verb+xyplot(wage~educ, groups=sex, data=CPS85)+\\
+\end{small}
+\hrule%
+\noindent\hspace*{-2mm}%
+<<>>=
+densityplot( ~ wage, data=CPS85, 
+        par.settings = thickSettings,
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        lwd=3, cex=3, fill="grey")
+densityplot( ~ wage | sex, data=CPS85,
+        scales=list(cex=2),
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        cex=2, pch=19, alpha=0.4)
+densityplot( ~ wage, groups=sex, data=CPS85,
+        scales=list(cex=2),
+        xlab=list(cex=2), ylab=list(cex=2), main=list(cex=2),
+        cex=2, pch=19, alpha=0.4)
+@
+\begin{small}
+\noindent {\tiny \sc Left:}\hfill\verb+densityplot(~wage, data= CPS85)+\\
+{\tiny \sc Middle:}\hfill\verb+densityplot(~wage | sex, data= CPS85)+\\
+{\tiny \sc Right:}\hfill\verb+densityplot(~wage,groups=sex, data=CPS85)+\\
+\end{small}
+\hrule
+\hrule
+\vspace*{2mm}
+
+
+\end{document}

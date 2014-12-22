@@ -12,7 +12,7 @@ We present an approach to teaching introductory and intermediate
 statistics courses that is tightly coupled with computing generally and with \R\ and \RStudio\ in particular. These activities and examples are intended to highlight a modern approach to statistical education that focuses on modeling, resampling based inference, and multivariate graphical techniques.  A secondary goal is to
 facilitate computing with data through use of small simulation studies %data scraping from the internet 
 and appropriate statistical analysis workflow. This follows the
-philosophy outlined by Nolan and Temple Lang\cite{nola:temp:2010}. The importance of modern computation in statistics education is a principal component of the recently adopted American Statistical Association's curriculum guidelines\cite{ASAcurriculum2014}.
+philosophy outlined by Nolan and Temple Lang\cite{nola:temp:2010}. The importance of modern computation\marginnote{$\ $} in statistics education is a principal component of the recently adopted American Statistical Association's curriculum guidelines\cite{ASAcurriculum2014}.
 
 Throughout this book (and its companion volumes), we
 introduce multiple activities, some
@@ -97,8 +97,6 @@ including
 %Exercises marked with 1 star are intended for students in courses beyond the
 %introductory level.  Exercises marked with 2 stars are intended primarily for
 %instructors (but may also be appropriate for students in higher level courses).
-
-\newpage    % hack to avoid bad page break
 
 \subsection*{Marginal Notes}
 Marginal notes appear here and there.  
