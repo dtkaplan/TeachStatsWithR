@@ -38,7 +38,7 @@ Consider these notes to be a work in progress.
 %anything else.}%
 We appreciate any feedback you are willing to share as we continue
 to work on these materials and the accompanying \pkg{mosaic} package.  
-Drop us an email at \url{pis@mosaic.org} with any comments, suggestions,
+Drop us an email at \url{pis@mosaic-web.org} with any comments, suggestions,
 corrections, etc.
 
 Updated versions will be posted at \url{http://mosaic-web.org}.
