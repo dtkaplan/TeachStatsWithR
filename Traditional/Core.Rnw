@@ -1883,7 +1883,7 @@ row is a year, and data for multiple states are provided.
 traffic
 @
 We can reformat this so that each row contains a measurement for a 
-single state in one year.
+single state in a particular year.
 
 \Rindex{gather()}%
 <<tidy=FALSE>>=
