@@ -919,11 +919,11 @@ do(3) * diffmean(age ~ shuffle(sex), data=HELPrct)
 \Rindex{xlim option}%
 \Rindex{groups option}%
 <<permute-HELPrct,fig.keep='last', tidy=FALSE>>=
-rtest.stats = do(500) * diffmean(age ~ shuffle(sex), 
+rtest.stats <- do(500) * diffmean(age ~ shuffle(sex), 
   data=HELPrct)
-favstats(~ result, data=rtest.stats)
-histogram(~ result, n=40, xlim=c(-6, 6),
-  groups=result >= test.stat, pch=16, cex=.8, 
+favstats(~ diffmean, data=rtest.stats)
+histogram(~ diffmean, n=40, xlim=c(-6, 6),
+  groups=diffmean >= test.stat, pch=16, cex=.8, 
   data=rtest.stats)
 ladd(panel.abline(v=test.stat, lwd=3, col="red"))
 @
@@ -1439,7 +1439,7 @@ of the residuals increases with larger fitted values.
 It is straightforward to generate
 random samples from these distributions, which can be used 
 for simulation and exploration.
-<<probdist,fig.height=4,fig.width=6>>=
+<<probdist,fig.height=4,fig.width=6, tidy=FALSE>>=
 xpnorm(1.96, mean=0, sd=1)    # P(Z < 1.96)
 @
 \Rindex{qnorm()}%
@@ -1448,7 +1448,7 @@ xpnorm(1.96, mean=0, sd=1)    # P(Z < 1.96)
 \Rindex{xpnorm()}%
 \Rindex{rnorm()}%
 \Rindex{integrate()}%
-<<>>=
+<<tidy=FALSE>>=
 # value which satisfies P(Z < z) = 0.975
 qnorm(.975, mean=0, sd=1)   
 integrate(dnorm, -Inf, 0)   # P(Z < 0)
@@ -1804,7 +1804,7 @@ xyplot( time.til.next ~ duration, data=faithfulLong )
 Data frames can be sorted using the \function{arrange()} function.
 <<>>=
 head(faithful, 3)
-sorted = arrange(faithful, duration)
+sorted <- arrange(faithful, duration)
 head(sorted, 3)
 @
 \Caution{It is usually better to make new datasets rather than modifying the original.}
@@ -1827,7 +1827,7 @@ genotypes and phenotypes using \verb!merge()!.
 <<>>=
 require(fastR)
 require(dplyr)
-fusion1 = arrange(fusion1, id)
+fusion1 <- arrange(fusion1, id)
 head(fusion1, 3)
 head(pheno, 3)
 @
@@ -2012,14 +2012,14 @@ Of the 470 subjects in the 6 variable dataframe, only the \code{drugrisk}, \code
 <<tidy=FALSE>>=
 favstats(~ mcs, data=smaller)
 with(smaller, sum(is.na(mcs)))
-nomiss = na.omit(smaller)
+nomiss <- na.omit(smaller)
 dim(nomiss)
 favstats(~ mcs, data=nomiss)
 @
 
 Alternatively, we could generate the same dataset using logical conditions.
 <<tidy=FALSE>>=
-nomiss = filter(smaller, 
+nomiss <- filter(smaller, 
   (!is.na(mcs) & !is.na(indtot) & !is.na(drugrisk)))
 dim(nomiss)
 @
@@ -2062,7 +2062,7 @@ The \pkg{mosaicData} package contains several forms of the de-identified HELP da
 We will focus on \pkg{HELPrct}, which contains
 27 variables for the 453 subjects
 with minimal missing data, primarily at baseline.
-Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found here\cite{Horton:2011:R}.
+Variables included in the HELP dataset are described in Table \ref{tab:helpvars}.  More information can be found here\cite{horton:kleinman:2015}.
 A copy of the study instruments can be found at: \url{http://www.amherst.edu/~nhorton/help}.
 \begin{longtable}{|p{2.1cm}|p{6.8cm}|p{3.5cm}|}
 \caption{Annotated description of variables in the \dataframe{HELPrct} dataset}

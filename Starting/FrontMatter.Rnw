@@ -27,7 +27,7 @@ Please let us know when you encounter them so we can call in the exterminators.}
 
 These materials were developed for a workshop entitled 
 \emph{Teaching Statistics Using R} prior to the 2011 United States Conference 
-on Teaching Statistics and revised for USCOTS 2011 and eCOTS 2014.  
+on Teaching Statistics and revised for USCOTS 2011, USCOTS 2013, eCOTS 2014, ICOTS 9, and USCOTS 2015.
 We organized these workshops to help instructors integrate \R\ (as well as some related technologies) into statistics courses at all levels.
 We received great feedback and many wonderful ideas from the participants and those that we've shared this with since the workshops.  
 
