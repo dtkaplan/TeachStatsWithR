@@ -14,7 +14,8 @@ require(fastR)
 
 In this monograph, we briefly review the commands and functions needed
 to analyze data from introductory and second courses in statistics.  This is intended to complement
-the \emph{Start Teaching with R} and \emph{Start Modeling with R} books.
+the \emph{Start Teaching with R} and \emph{Start Modeling with R} books that are freely available as part of the 
+\pkg{mosaic} package.
 
 Most of our examples will use data from the HELP (Health Evaluation and Linkage to Primary 
 Care) study: a randomized clinical trial of a novel 
