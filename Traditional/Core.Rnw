@@ -900,18 +900,18 @@ wilcox.test(cesd ~ sex, data=HELPrct)
 
 Here we extend the methods introduced in section \ref{sec:bootstrapsing} to 
 undertake a two-sided test comparing the ages at baseline by gender.  First we calculate the observed difference in means:
-\Rindex{compareMean()}%
+\Rindex{diffmean()}%
 \Rindex{shuffle()}%
 <<>>=
 mean(age ~ sex, data=HELPrct)
-test.stat <- compareMean(age ~ sex, data=HELPrct)
+test.stat <- diffmean(age ~ sex, data=HELPrct)
 test.stat
 @
 We can calculate the same statistic after shuffling the group labels:
 <<>>=
-do(1) * compareMean(age ~ shuffle(sex), data=HELPrct)
-do(1) * compareMean(age ~ shuffle(sex), data=HELPrct)
-do(3) * compareMean(age ~ shuffle(sex), data=HELPrct)
+do(1) * diffmean(age ~ shuffle(sex), data=HELPrct)
+do(1) * diffmean(age ~ shuffle(sex), data=HELPrct)
+do(3) * diffmean(age ~ shuffle(sex), data=HELPrct)
 @
 
 \DiggingDeeper{More details and examples can be found in the
@@ -919,7 +919,7 @@ do(3) * compareMean(age ~ shuffle(sex), data=HELPrct)
 \Rindex{xlim option}%
 \Rindex{groups option}%
 <<permute-HELPrct,fig.keep='last', tidy=FALSE>>=
-rtest.stats = do(500) * compareMean(age ~ shuffle(sex), 
+rtest.stats = do(500) * diffmean(age ~ shuffle(sex), 
   data=HELPrct)
 favstats(~ result, data=rtest.stats)
 histogram(~ result, n=40, xlim=c(-6, 6),
